@@ -1,0 +1,71 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<form id="edit_rider_form" method="POST" action="/admin/save_riders">
+	<% if (@edit_mode) %>
+		<div class="info">
+			<label style="margin-right:34px;">Name:</label>
+			<input type="text" name="rider_name" value="<%=@rider.name%>"></br>
+			<label>Image URL:</label>
+			<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=@rider.photo_url%>">
+			<hr/>
+		</div>
+	<% end %>
+</form>
+
+<% if (!@edit_mode) %>
+	<button id="new_rider" name="new_rider" value="new_rider" style="float:left;">Add another rider</button>
+<% end %>
+<button id="save_close" name="save_close" value="save_close" style="float:right;">Save and close</button>
+
+<% if (!@edit_mode) %>
+	<div class="info template">
+		<label style="margin-right:34px;">Name:</label>
+		<input type="text" name="rider_name"></br>
+		<label>Image URL:</label>
+		<input type="text" name="image_url" placeholder="http://google.com/img.jpg">
+		<hr/>
+	</div>
+<% end %>
+
+<script>
+$(document).ready(function() {
+	new_row();
+	
+	$('#save_close').click(function() {
+		submit_riders();
+	});
+	
+	$('#new_rider').click(function() {
+		new_row();
+	});
+});
+
+function new_row() {
+	var template = $('.template').clone().removeClass('template');
+	$('#edit_rider_form').append(template);
+}
+
+function submit_riders() {
+	var rider_info = [];
+	$('#edit_rider_form div.info').each(function(ndx, elt) {
+		var info = {};
+		info['rider_name'] = $(elt).find('input[name=rider_name]').val();
+		info['image_url'] = $(elt).find('input[name=image_url]').val();
+		<% if (@edit_mode) %>
+			info['id'] = '<%=@rider.id%>';
+		<% end %>
+		rider_info.push(info);
+	});
+	
+	$.post('/admin/save_riders', {rider_info:rider_info}, function(response) {
+		window.opener.location.reload();
+		self.close();
+	});
+}
+</script>
+
+<style>
+.template {
+	display: none;
+}
+</style>

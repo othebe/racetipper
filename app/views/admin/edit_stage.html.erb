@@ -1,0 +1,92 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<form id="edit_stage_form" method="POST" action="/admin/save_stages">
+	<% if (@edit_mode) %>
+		<div class="info">
+			<div class="label"><label style="margin-right:34px;">Name:</label></div>
+			<input type="text" name="stage_name" value="<%=@stage.name%>"></br>
+			
+			<div class="label"><label>Description:</label></div>
+			<textarea name="stage_description"><%=@stage.description%></textarea></br>
+			
+			<div class="label"><label>Profile</label></div>
+			<input type="text" name="stage_profile" value="<%=@stage.profile%>"></br>
+			
+			<div class="label"><label>Image URL:</label></div>
+			<input type="text" name="image_url" value="<%=@stage.image_url%>"></br>
+			<hr/>
+		</div>
+	<% end %>
+</form>
+
+<% if (!@edit_mode) %>
+	<button id="new_stage" name="new_stage" value="new_stage" style="float:left;">Add another stage</button>
+<% end %>
+<button id="save_close" name="save_close" value="save_close" style="float:right;">Save and close</button>
+
+<% if (!@edit_mode) %>
+	<div class="info template">
+		<div class="label"><label style="margin-right:34px;">Name:</label></div>
+		<input type="text" name="stage_name"></br>
+		
+		<div class="label"><label>Description:</label></div>
+		<textarea name="stage_description"></textarea></br>
+		
+		<div class="label"><label>Profile</label></div>
+		<input type="text" name="stage_profile"></br>
+		
+		<div class="label"><label>Image URL:</label></div>
+		<input type="text" name="image_url"></br>
+		<hr/>
+	</div>
+<% end %>
+
+<script>
+$(document).ready(function() {
+	new_row();
+	
+	$('#save_close').click(function() {
+		submit_stages();
+	});
+	
+	$('#new_stage').click(function() {
+		new_row();
+	});
+});
+
+function new_row() {
+	var template = $('.template').clone().removeClass('template');
+	$('#edit_stage_form').append(template);
+}
+
+function submit_stages() {
+	var stage_info = [];
+	$('#edit_stage_form div.info').each(function(ndx, elt) {
+		var info = {};
+		info['stage_name'] = $(elt).find('input[name=stage_name]').val();
+		info['stage_description'] = $(elt).find('textarea[name=stage_description]').val();
+		info['stage_profile'] = $(elt).find('input[name=stage_profile]').val();
+		info['image_url'] = $(elt).find('input[name=image_url]').val();
+		<% if (@edit_mode) %>
+			info['id'] = '<%=@stage.id%>';
+		<% end %>
+		stage_info.push(info);
+	});
+	
+	$.post('/admin/save_stages', {stage_info:stage_info}, function(response) {
+		window.opener.location.reload();
+		self.close();
+	});
+}
+</script>
+
+<style>
+.template{
+	display: none;
+}
+
+div.label {
+	float: left;
+	width: 150px;
+}
+</style>

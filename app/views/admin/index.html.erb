@@ -1,0 +1,19 @@
+<div>
+	<form method="POST" action="/admin/login">
+		<div class="field">
+			<label>Username:</label>
+			<input type="text" name="username"></input>
+		</div>
+		
+		<div class="field">
+			<label>Password:</label>
+			<input type="password" name="password"></input>
+		</div>
+		
+		<input type="submit" name="Login" value="Login">
+	</form>
+	
+	<div style="color:red; font-style:italic;">
+		<%=flash[:admin_login]%>
+	</div>
+</div>
