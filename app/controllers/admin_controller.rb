@@ -34,38 +34,6 @@ class AdminController < ApplicationController
 		render :layout => false
 	end
 	
-	def manage_stages
-		@title = 'Manage stages'
-		@stages = Stage.where(:status=>STATUS[:ACTIVE])
-	end
-	
-	def edit_stage
-		@edit_mode = params.has_key?(:id)
-		if (@edit_mode)
-			@stage = Stage.find_by_id(params[:id])
-		end
-		@edit_mode = !@stage.nil?
-		render :layout => false
-	end
-	
-	def manage_races
-		@title = 'Manage races'
-		@races = Race.where(:status=>STATUS[:ACTIVE])
-	end
-	
-	def edit_race
-		@race = nil
-		@race_stages = []
-		@stages = Stage.where(:status=>STATUS[:ACTIVE])
-		@edit_mode = params.has_key?(:id)
-		if (@edit_mode)
-			@race = Race.find_by_id(params[:id])
-			@race_stages = RaceStage.where('race_stages.race_id=?', params[:id]).joins(:stage)
-		end
-		@edit_mode = !@race.nil?
-		render :layout => false
-	end
-	
 	def manage_season_teams
 		@title = 'Manage season teams'
 		@teams = Team.where(:status=>STATUS[:ACTIVE])
@@ -75,6 +43,7 @@ class AdminController < ApplicationController
 		@team = nil
 		@team_riders = []
 		@riders = Rider.where(:status=>STATUS[:ACTIVE])
+		@races = Race.where({:status=>STATUS[:ACTIVE], 'season_id'=>session[:season_id]})
 		@edit_mode = params.has_key?(:id)
 		if (@edit_mode)
 			@team = Team.find_by_id(params[:id])
@@ -83,20 +52,19 @@ class AdminController < ApplicationController
 		@edit_mode = !@team.nil?
 		render :layout => false
 	end
+		
+	def manage_season_races
+		@title = 'Manage season races'
+		@races = Race.where('season_id=? AND status=?', session[:season_id], STATUS[:ACTIVE])
+	end
 	
-	def manage_season_stages
-		@title = 'Manage season stages'
-		@races = {}
-		stages = RaceStage.where(:status=>STATUS[:ACTIVE]).order(:order_id).joins(:race).joins(:stage)
-		stages.each do |racestage|
-			race_id = racestage.race_id
-			@races[race_id] = {} if (@races[race_id].nil?)
-			race = @races[race_id]
-			race[:name] = racestage.race.name
-			race[:stages] = [] if (race[:stages].nil?)
-			race[:stages].push(racestage.stage)
-			@races[race_id] = race
-		end
+	def edit_season_race
+		@race = nil
+		@stages = []
+		
+		@race = Race.find_by_id(params[:id]) if (params.has_key?(:id))
+		@stages = Stage.where('race_id=? AND status=?', @race.id, STATUS[:ACTIVE]) if (!@race.nil?)
+		render :layout=>false
 	end
 	
 	#POST
@@ -135,58 +103,6 @@ class AdminController < ApplicationController
 		render :json => {:success=>true}
 	end
 	
-	def save_stages
-		stage_info = params[:stage_info]
-		stage_info.each do |ndx, info|
-			next if (info[:stage_name].length == 0)
-			if (info.has_key?(:id))
-				stage = Stage.find_by_id(info[:id])
-			end
-			stage ||= Stage.new
-			stage.name = info[:stage_name]
-			stage.description = info[:stage_description]
-			stage.profile = info[:stage_profile]
-			stage.image_url = info[:image_url]
-			stage.save
-		end
-		render :json => {:success=>true}
-	end
-	
-	def save_races
-		race_info = params[:race_info]
-		race_info.each do |ndx, info|
-			next if (info[:race_name].length==0 || info[:stages].empty?)
-			
-			if (info.has_key?(:id))
-				race = Race.find_by_id(info[:id])
-			end
-			race ||= Race.new
-			race.name = info[:race_name]
-			race.description = info[:race_description]
-			race.image_url = info[:image_url]
-			race.save
-			
-			ndx = 0
-			info[:stages].each do |stage_id|
-				racestage = RaceStage.where('race_id=? AND stage_id=?', race.id, stage_id).first
-				racestage ||= RaceStage.new
-				racestage.race_id = race.id
-				racestage.stage_id = stage_id
-				racestage.order_id = ndx
-				racestage.save
-				ndx += 1
-				
-				stage = Stage.find_by_id(stage_id)
-				stage.race_id = race.id
-				stage.save
-			end
-			
-			RaceStage.where('race_id=? AND stage_id NOT IN (?)', race.id, info[:stages]).delete_all
-		end
-		
-		render :json => {:success=>true} and return
-	end
-	
 	def save_season_teams
 		render :json=>{:success=>false, :msg=>'Select a season first.'} and return if (!session.has_key?(:season_id) || session[:season_id].empty?)
 		team_info = params[:team_info]
@@ -199,6 +115,7 @@ class AdminController < ApplicationController
 			team.name = info[:team_name]
 			team.image_url = info[:image_url]
 			team.season_id = session[:season_id]
+			team.race_id = info[:race_id]
 			team.save
 			
 			rider_arr = []
@@ -218,26 +135,41 @@ class AdminController < ApplicationController
 		render :json => {:success=>true, :msg=>'success'} and return
 	end
 	
-	def save_season_stages
+	def save_season_races
 		render :json=>{:success=>false, :msg=>'Select a season first.'} and return if (!session.has_key?(:season_id) || session[:season_id].empty?)
-		season_stage_info = params[:season_stage_info]
-		
-		season_stage_info.each do |ndx, info|
-			season_id = session[:season_id]
-			stage_id = info[:stage_id]
-			stage = Stage.find_by_id(stage_id)
-			next if stage.nil?
-			race_id = stage.race_id
-			
-			season_stage = SeasonStage.where('season_id=? AND stage_id=? AND race_id=?', season_id, stage_id, race_id).first
-			season_stage ||= SeasonStage.new
-			season_stage.season_id = season_id
-			season_stage.race_id = race_id
-			season_stage.stage_id = stage_id
-			season_stage.start_dt = info[:start_dt]
-			season_stage.save
+		race_info = params[:race_info]
+		if (race_info.has_key?(:id))
+			race = Race.find_by_id(race_info[:id])
 		end
-		render :json=>{:success=>true}
+		race ||= Race.new
+		
+		race.name = race_info[:race_name]
+		race.description = race_info[:race_description]
+		race.image_url = race_info[:race_image_url]
+		race.season_id = session[:season_id]
+		race.save
+		
+		stage_arr = []
+		race_info[:stage_data].each do |ndx, stage_info|
+			stage = Stage.find_by_id(stage_info[:stage_id]) if (stage_info.has_key?(:stage_id))
+			stage ||= Stage.new
+			stage.name = stage_info[:stage_name]
+			stage.description = stage_info[:stage_description]
+			stage.image_url = stage_info[:stage_image_url]
+			stage.profile = stage_info[:stage_profile]
+			stage.order_id = ndx
+			stage.race_id = race.id
+			stage.season_id = session[:season_id]
+			stage.starts_on = stage_info[:stage_starts_on]
+			stage.start_location = stage_info[:stage_start_location]
+			stage.end_location = stage_info[:stage_end_location]
+			stage.distance_km = stage_info[:stage_distance]
+			stage.save
+			stage_arr.push(stage.id)
+		end
+		Stage.where('race_id=? AND season_id=? AND id NOT IN (?)', race.id, session[:season_id], stage_arr).delete_all
+		
+		render :json=>{:success=>true, :msg=>'success'} and return
 	end
 	
 	private

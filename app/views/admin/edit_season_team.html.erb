@@ -9,6 +9,13 @@
 		<div class="label"><label>Image URL:</label></div>
 		<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=(@team.nil?)?'':@team.image_url%>"></br>
 		
+		<div class="label"><label>Race:</label></div>
+		<select name="race">
+			<% @races.each do |race| %>
+				<option value="<%=race.id%>"><%=race.name%></option>
+			<% end %>
+		</select>
+		
 		<div class="col1">
 			<div class="label"><label style="text-decoration:underline;">All Riders:</label></div></br>
 			<% @riders.each do |rider| %>
@@ -77,6 +84,7 @@ function submit_season_team() {
 	var info = {};
 	info['team_name'] = $(elt).find('input[name=team_name]').val();
 	info['image_url'] = $(elt).find('input[name=image_url]').val();
+	info['race_id'] = $(elt).find('select[name=race]').val();
 	<% if (@edit_mode) %>
 		info['id'] = '<%=@team.id%>';
 	<% end %>
@@ -98,8 +106,8 @@ function submit_season_team() {
 		if (!response.success) {
 			alert(response.msg);
 		}
-		//window.opener.location.reload();
-		//self.close();
+		window.opener.location.reload();
+		self.close();
 	});
 
 }

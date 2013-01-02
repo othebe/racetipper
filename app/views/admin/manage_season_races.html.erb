@@ -1,0 +1,47 @@
+<div style="margin-bottom:15px;">
+	<a href="#" onclick="edit_race(null);">+ Add new race</a>
+</div>
+
+<% if (!@races.empty?) %>
+	<table class="races">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Image</th>
+			<th></th>
+		</tr>
+		
+		<% @races.each do |race| %>
+			<tr>
+				<td><%=race.id%></td>
+				<td><%=race.name%></td>
+				<td><%=race.description%></td>
+				<td><%=race.image_url%></td>
+				<td>
+					<a href="#" onclick="edit_race('<%=race.id%>');">Edit</a>
+					<a href="#" onclick="remove_race('<%=race.id%>');">Remove</a>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<script>
+function edit_race(id) {
+	if (id==null)
+		window.open('/admin/edit_season_race', 'Add race(s)', 'height=400,width=800');
+	else window.open('/admin/edit_season_race/'+id, 'Edit race', 'height=400,width=800');
+}
+</script>
+
+<style>
+.races {
+	border: 1px solid #C3C3C3;
+	border-collapse: collapse;
+}
+	.races th,
+	.races td {
+		border: 1px solid #C3C3C3;
+	}
+</style>

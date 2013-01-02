@@ -1,0 +1,130 @@
+<%=csrf_meta_tag%>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<div class="info">
+	<div class="label"><label style="margin-right:34px;">Name:</label></div>
+	<input type="text" name="race_name" value="<%=(@race.nil?)?'':@race.name%>"></br>
+	
+	<div class="label"><label style="margin-right:34px;">Description:</label></div>
+	<input type="text" name="race_description" value="<%=(@race.nil?)?'':@race.description%>"></br>
+	
+	<div class="label"><label>Image URL:</label></div>
+	<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=(@race.nil?)?'':@race.image_url%>"></br>
+	
+	<div style="font-weight:bold; text-decoration:underline;">Stages:</div>
+	<div class="stage_list">
+		<table>
+			<tr class="header">
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Image URL</th>
+				<th>Profile</th>
+				<th>Start on</th>
+				<th>Start Location</th>
+				<th>End Location</th>
+				<th>Distance(km)</th>
+				<th></th>
+			</tr>
+			
+			<% @stages.each do |stage| %>	
+				<tr class="data">
+					<td name="stage_id"><%=stage.id%></td>
+					<td><input type="text" name="stage_name" value="<%=stage.name%>"></td>
+					<td><textarea name="stage_description"><%=stage.description%></textarea></td>
+					<td><input type="text" name="stage_image_url" value="<%=stage.image_url%>"></td>
+					<td><input type="text" name="stage_profile" value="<%=stage.profile%>"></td>
+					<td><input type="text" name="stage_starts_on" value="<%=stage.starts_on%>"></td>
+					<td><input type="text" name="stage_start_location" value="<%=stage.start_location%>"></td>
+					<td><input type="text" name="stage_end_location" value="<%=stage.end_location%>"></td>
+					<td><input type="text" name="stage_distance" style="width:90px;" value="<%=stage.distance_km%>"></td>
+					<td><a href="#" onclick="remove_stage(this);">Remove</a></td>
+				</tr>
+			<% end %>
+		</table>
+	</div>
+	<button onclick="add_stage();">Add Stage</button>
+	
+	<div style="clear:both;"></div>
+	</br>
+	<hr/>
+</div>
+
+<button onclick="submit_season_race();">Save and Close</button>
+
+<div class="stage_info template">
+	<table>
+		<tr class="data">
+			<td></td>
+			<td><input type="text" name="stage_name"></td>
+			<td><textarea name="stage_description"></textarea></td>
+			<td><input type="text" name="stage_image_url"></td>
+			<td><input type="text" name="stage_profile"></td>
+			<td><input type="text" name="stage_starts_on"></td>
+			<td><input type="text" name="stage_start_location"></td>
+			<td><input type="text" name="stage_end_location"></td>
+			<td><input type="text" name="stage_distance" style="width:90px;"></td>
+			<td><a href="#" onclick="remove_stage(this);">Remove</a></td>
+		</tr>
+	</table>
+<div>
+
+<script>
+$(document).ready(function() {
+	$("body").bind("ajaxSend", function(elm, xhr, s){
+		if (s.type == "POST") {
+		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+		}
+	});
+});
+
+function add_stage() {
+	elt = $('.stage_info.template').clone().removeClass('template').find('tr');
+	$('.stage_list table').append(elt);
+}
+
+function remove_stage(elt) {
+	row = $(elt).closest('tr');
+	$(row).remove();
+}
+
+function submit_season_race() {
+	race_info = {}
+	race_info['race_name'] = $('input[name=race_name]').val();
+	race_info['race_description'] = $('input[name=race_description]').val();
+	race_info['race_image_url'] = $('input[name=image_url]').val();
+	<% if (!@race.nil?)  %>
+		race_info['id'] = '<%=@race.id%>';
+	<% end %>
+	race_info['stage_data'] = [];
+	$('.stage_list table tr.data').each(function(ndx, elt) {
+		stage_data = {};
+		stage_id = $(elt).find('td[name=stage_id]').text();
+		if (stage_id.length>0) stage_data['stage_id'] = stage_id;
+		stage_data['stage_name'] = $(elt).find('input[name=stage_name]').val();
+		stage_data['stage_description'] = $(elt).find('textarea[name=stage_description]').val();
+		stage_data['stage_image_url'] = $(elt).find('input[name=stage_image_url]').val();
+		stage_data['stage_profile'] = $(elt).find('input[name=stage_profile]').val();
+		stage_data['stage_starts_on'] = $(elt).find('input[name=stage_starts_on]').val();
+		stage_data['stage_start_location'] = $(elt).find('input[name=stage_start_location]').val();
+		stage_data['stage_end_location'] = $(elt).find('input[name=stage_end_location]').val();
+		stage_data['stage_distance'] = $(elt).find('input[name=stage_distance]').val();
+		race_info['stage_data'].push(stage_data);
+	});
+	
+	$.post('/admin/save_season_races', {race_info:race_info}, function(response) {
+		console.log(response);
+	});
+}
+</script>
+
+<style>
+div.template {
+	display: none;
+}
+
+div.label {
+	float: left;
+	width: 150px;
+}
+</style>
