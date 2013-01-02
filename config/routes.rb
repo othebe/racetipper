@@ -17,6 +17,10 @@ Racetipper::Application.routes.draw do
 	match 'admin/edit_rider/:id' => 'admin#edit_rider'
 	match 'admin/edit_season_team/:id' => 'admin#edit_season_team'
 	match 'admin/edit_season_race/:id' => 'admin#edit_season_race'
+	
+	root :to => 'dashboard#index'
+	get 'dashboard/index'
+	get 'dashboard/show_competitions'
   
 
   # The priority is based upon order of creation:
