@@ -1,0 +1,91 @@
+<%=csrf_meta_tag%>
+<div style="display:none;">
+	<div id="login_form">
+		<div class="close_fancybox" style="float:right; cursor:pointer;">
+			<img src="/assets/close.png" style="height:15px;">
+		</div>
+		
+		<div style="float:left">
+			<div class="signin" style="float:left; border-right:1px solid darkGray; padding:15px;">
+				<div style="font-weight:bold;">Login to Racetipper</div>
+				<input type="text" name="email" placeholder="Email" style="margin-top:5px; margin-bottom:5px;">
+				<input type="password" name="password" placeholder="Password">
+				
+				<div style="float:right; padding-top:15px;">
+					<button onclick="submit_user_login();">Login</button>
+				</div>
+				<div style="clear:both;"></div>
+				
+				<div style="font-weight:bold; margin-top:25px;">Or, Login with Facebook</div>
+				<div style="text-align:center; margin-top:5px;">
+					<a href="#">
+						<img src="/assets/facebook.gif">
+					</a>
+				</div>
+			</div>
+			
+			<div class="signup" style="float:right; padding:15px;">
+				<div style="font-weight:bold;">Create an account</div>
+				<input type="text" name="firstname" placeholder="First name" style="margin-top:5px; margin-bottom:5px;">
+				<input type="text" name="lastname" placeholder="Last name" style="margin-top:5px; margin-bottom:5px;">
+				<input type="text" name="email" placeholder="Email" style="margin-top:5px; margin-bottom:5px;">
+				<input type="password" name="password" placeholder="Password" style="margin-top:5px; margin-bottom:5px;">
+				
+				<div style="float:right; padding-top:15px;">
+					<button onclick="submit_user_create();">Create</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function(response) {
+	$("body").bind("ajaxSend", function(elm, xhr, s){
+		if (s.type == "POST") {
+		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+		}
+	});
+	
+	$('.close_fancybox').click(function() {
+		$.fancybox.close();
+	});
+});
+
+function submit_user_create() {
+	var container = $('.signup');
+	data = {};
+	data['firstname'] = $(container).find('input[name=firstname]').val();
+	data['lastname'] = $(container).find('input[name=lastname]').val();
+	data['email'] = $(container).find('input[name=email]').val();
+	data['password'] = $(container).find('input[name=password]').val();
+	
+	$.post('/users/create', {data:data}, function(response) {
+		if (response.success) {
+			window.location.reload();
+		} else alert(response.msg);
+	});
+}
+
+function submit_user_login() {
+	var container = $('.signin');
+	data = {};
+	data['email'] = $(container).find('input[name=email]').val();
+	data['password'] = $(container).find('input[name=password]').val();
+	
+	$.post('/users/login', {data:data}, function(response) {
+		if (response.success) {
+			window.location.reload();
+		} else alert(response.msg);
+	});
+}
+</script>
+
+<style>
+	#login_form input {
+		border: 1px solid darkGray;
+		padding: 5px;
+		min-width: 200px;
+		width: 200px;
+	}
+</style>

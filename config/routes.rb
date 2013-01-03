@@ -21,6 +21,14 @@ Racetipper::Application.routes.draw do
 	root :to => 'dashboard#index'
 	get 'dashboard/index'
 	get 'dashboard/show_competitions'
+	
+	get 'users/logout'
+	post 'users/create'
+	post 'users/login'
+	
+	get 'competitions/edit'
+	post 'competitions/save_competition'
+	match 'competitions/edit/:id' => 'competitions#edit'
   
 
   # The priority is based upon order of creation:

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130102082607) do
+ActiveRecord::Schema.define(:version => 20130103053145) do
 
   create_table "competition_invitations", :force => true do |t|
     t.integer  "competition_id"
@@ -135,6 +135,17 @@ ActiveRecord::Schema.define(:version => 20130102082607) do
     t.integer  "status",     :default => 1
     t.string   "image_url"
     t.integer  "race_id"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "firstname"
+    t.string   "lastname"
+    t.string   "email"
+    t.string   "password"
+    t.string   "salt"
+    t.datetime "last_activity"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
 end

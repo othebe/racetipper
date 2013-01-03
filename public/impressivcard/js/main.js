@@ -426,7 +426,7 @@ function setupScrollBars() {
 			lockDirection : false,
 			hideScrollbar : true,
 			forceIscroll : false
-			});
+		});
 	}
 }
 

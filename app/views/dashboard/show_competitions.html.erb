@@ -1,3 +1,18 @@
+<% if (!@user.nil?) %>
+	<!-- New competition -->
+	<div class="item mine">
+		<div class="media-box" onclick="new_competition();">
+			<img src="/assets/new_competition.jpg" alt="New Competition">
+			<div class="mask">
+				<h3 class="title">Create a new competition</h3>
+				<a href="#" class="ico show-details"></a>
+			</div>
+		</div>
+		<h3 class="project-title">Create a new competition</h3>
+	</div>
+<% end %>
+
+<% if (1==0)  %>
 <div class="item mine">
 	<div class="media-box">
 		<!--<img src="/uploads/images/competitions/tour_de_france.jpg" alt="Tour De France">-->
@@ -33,3 +48,10 @@
 	<h3 class="project-title">Tour of Borneo</h3>
 	<p class="category">Open</p>
 </div>
+<% end %>
+
+<script>
+$(document).ready(function() {
+
+});
+</script>

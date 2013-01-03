@@ -1,0 +1,16 @@
+.regularFont {
+	font-family: Lora, Georgia, "Times New Roman", Times, serif !important;
+	font-size: 1.2em !important;
+}
+
+.autoScroll {
+	overflow: auto !important;
+}
+
+.loading {
+	display: none;
+}
+
+input, textarea {
+	border: 1px solid darkgray !important;
+}

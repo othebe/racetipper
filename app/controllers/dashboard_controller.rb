@@ -4,6 +4,7 @@ class DashboardController < ApplicationController
 	end
 	
 	def show_competitions
+		
 		render :layout=>false
 	end
 end
