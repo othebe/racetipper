@@ -1,0 +1,117 @@
+﻿<div class="portfolio-single container">
+		
+	<div class="row">
+	
+		<!-- InstanceBeginEditable name="Content" -->
+		
+		
+		<!-- TITLE - column 8/12 -->
+		<div class="span8 portfolio-field portfolio-title">
+			<h2><%=@data[:competition].name%></h2>
+		</div>
+		<!-- TITLE - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		<div class="span4 portfolio-field portfolio-nav">
+			<a class="icon button prev ajax" href="portfolio-item-03.html" title="Summary">"</a>
+			<a class="icon button prev ajax race_results" href="portfolio-item-03.html" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
+			<a class="icon button prev ajax" href="portfolio-item-03.html" title="Leaderboard">K</a>
+			<a class="icon button back" href="#/competitions" title="Close">Â</a>
+		</div>
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		
+		
+		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+		<div class="span8 portfolio-field">
+			<img src="<%=@data[:stages].first.image_url%>" alt="<%=@data[:stages].first.name%>">
+		</div>
+		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+		<div class="span4 portfolio-field">
+			<div class="history-group">
+                            
+                                <h3><span class="label black">Employment</span></h3>
+                                
+                                <div class="history-unit">
+                                    <h4>Lead UX Designer <span class="work-time">2011 - Present</span></h4>
+                                    <h5>Apple Inc.</h5>
+                                    <p>Worked in so many projects for best clients around the world and i get so many experiences based on my job.</p>
+                                </div>
+                                
+                                <div class="history-unit">
+                                    <h4>Game Designer <span class="work-time">2007 - 2011</span></h4>
+                                    <h5>Ubizoft Inc.</h5>
+                                    <p>Also i have designed levels of some cool games everyone plays.</p>
+                                </div>
+                                
+                                <div class="history-unit">
+                                    <h4>Web Developer <span class="work-time">2004 - 2007</span></h4>
+                                    <h5>Web Agency</h5>
+                                    <p>Worked in so many projects for best clients around the world.</p>
+                                </div>
+                            
+                            </div>
+			<h3>Stages</h3>
+			<p>
+				<select>
+					<% @data[:stages].each do|stage| %>
+						<option value="<%=stage.id%>"><%=stage.name%></option>
+					<% end %>
+				</select>
+			</p>
+			
+			<h3>Description</h3>
+			<p><%=@data[:stages].first.description%></p>
+			
+			<h3>Profile</h3>
+			<p><%=@data[:stages].first.profile%></p>
+			
+			<h3>Starts on</h3>
+			<p><%=@data[:stages].first.starts_on%></p>
+			
+			<h3>Distance</h3>
+			<p><%=@data[:stages].first.start_location%> to <%=@data[:stages].first.end_location%> (<%=@data[:stages].first.distance_km%>)</p>
+			
+			<h3>Tip a Rider</h3>
+			<p>
+				
+					<div class="item">
+						<div class="media-box">
+							<img src="/assets/new_competition.jpg" alt="New Competition">
+							<div class="mask">
+								<h3 class="title">Create a new competition</h3>
+								<a href="/competitions/edit" class="ico show-details new_competition"></a>
+							</div>
+						</div>
+						<h3 class="project-title">Create a new competition</h3>
+					</div>
+				
+			</p>
+			
+			<div class="launch">
+				<% if (@user.nil?) %>
+					<a href="#" class="btn">SIGN IN TO PARTICIPATE</a>
+				<% elseif (@data[:is_participant]) %>
+					<a href="#" class="btn">TIP</a>
+				<% else %>
+					<a href="#" class="btn" onclick="join_competition('<%=@data[:competition].id%>', event);">JOIN COMPETITION</a>
+				<% end %>
+			</div>
+			
+		</div>
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+			
+		<!-- InstanceEndEditable -->
+		
+	</div>
+	
+</div>
+
+<script>
+$(document).ready(function() {
+	
+});
+</script>

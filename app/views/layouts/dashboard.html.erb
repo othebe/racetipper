@@ -65,6 +65,7 @@
 
 
 <body>
+	<%=csrf_meta_tag%>
     <!-- BEGIN HEADER -->
     <header id="header">
         <div class="wrapper">
@@ -144,6 +145,7 @@
 						<ul id="filters">
 						  <li><a href="#" id="my_competitions" data-filter=".mine">Mine</a></li>
 						  <li class="current"><a href="#" id="all_competitions" data-filter="*">All</a></li>
+						  <li class="hide_new_competition" style="display:none;"><a href="#" onclick="hide_new_competition();">Back</a></li>
 						</ul>
 						<!--FILTERS-->
 							

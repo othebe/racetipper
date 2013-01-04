@@ -1,57 +1,36 @@
 <% if (!@user.nil?) %>
 	<!-- New competition -->
 	<div class="item mine">
-		<div class="media-box" onclick="new_competition();">
+		<div class="media-box">
 			<img src="/assets/new_competition.jpg" alt="New Competition">
 			<div class="mask">
 				<h3 class="title">Create a new competition</h3>
-				<a href="#" class="ico show-details"></a>
+				<a href="/competitions/edit" class="ico show-details new_competition"></a>
 			</div>
 		</div>
 		<h3 class="project-title">Create a new competition</h3>
 	</div>
 <% end %>
 
-<% if (1==0)  %>
-<div class="item mine">
-	<div class="media-box">
-		<!--<img src="/uploads/images/competitions/tour_de_france.jpg" alt="Tour De France">-->
-		<div class="mask">
-			<h3 class="title">SEE COMPETITION DETAILS</h3>
-			<a data_id="1" href="#/competitions/1" class="ico show-details"></a>
+<% @competitions.each do |data| %>
+	<div class="item <%=(data[:is_participant])?'mine':''%>">
+		<div class="media-box">
+			<img src="<%=data[:competition].image_url%>" alt="<%=data[:competition].name%>">
+			<div class="mask">
+				<h3 class="title">SEE COMPETITION DETAILS</h3>
+				<a data_id="1" href="#/competitions/show/1" class="ico show-details"></a>
+			</div>
 		</div>
+		<h3 class="project-title"><%=data[:competition].name%></h3>
+		<p class="category">In Progress</p>
 	</div>
-	<h3 class="project-title">Tour De France</h3>
-	<p class="category">In Progress</p>
-</div>
-
-<div class="item">
-	<div class="media-box">
-		<!--<img src="/uploads/images/competitions/tour_de_france.jpg" alt="Tour De France">-->
-		<div class="mask">
-			<h3 class="title">SEE COMPETITION DETAILS</h3>
-			<a data_id="1" href="#/competitions/1" class="ico show-details"></a>
-		</div>
-	</div>
-	<h3 class="project-title">Salem Criterium</h3>
-	<p class="category">Closed</p>
-</div>
-
-<div class="item mine">
-	<div class="media-box">
-		<!--<img src="/uploads/images/competitions/tour_de_france.jpg" alt="Tour De France">-->
-		<div class="mask">
-			<h3 class="title">SEE COMPETITION DETAILS</h3>
-			<a data_id="1" href="#/competitions/1" class="ico show-details"></a>
-		</div>
-	</div>
-	<h3 class="project-title">Tour of Borneo</h3>
-	<p class="category">Open</p>
-</div>
 <% end %>
 
 <script>
 $(document).ready(function() {
-
+	$('.new_competition').fancybox({
+		modal: true,
+		padding: 25,
+	});
 });
 </script>

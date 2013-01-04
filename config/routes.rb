@@ -27,9 +27,16 @@ Racetipper::Application.routes.draw do
 	post 'users/login'
 	
 	get 'competitions/edit'
+	get 'competitions/show'
+	get 'competitions/results'
+	get 'competitions/leaderboard'
+	get 'competitions/get_competition_race_info'
 	post 'competitions/save_competition'
+	post 'competitions/join'
 	match 'competitions/edit/:id' => 'competitions#edit'
-  
+	match 'competitions/show/:id' => 'competitions#show'
+	match 'competitions/results/:id' => 'competitions#results'
+	match 'competitions/leaderboard/:id' => 'competitions#leaderboard'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
