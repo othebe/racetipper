@@ -103,4 +103,5 @@ $(document).ready(function(event) {
 		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		}
 	});
+	show_competitions();
 });

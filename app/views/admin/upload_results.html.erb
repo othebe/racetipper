@@ -76,7 +76,7 @@
 			result_data.push(data);
 		<% end %>
 		
-		$.post('/admin/save_results', {stage_id:<%=@stage.id%>, result_data:result_data}, function(response) {
+		$.post('/admin/save_results', {stage_id:<%=@stage.id%>, race_id:<%=@race.id%>, result_data:result_data}, function(response) {
 			if (response.success) {
 				alert('Results have been uploaded.');
 				window.location.reload();

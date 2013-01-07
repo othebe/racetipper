@@ -228,6 +228,7 @@ class AdminController < ApplicationController
 	
 	def save_results
 		stage_id = params[:stage_id]
+		race_id = params[:race_id]
 		result_data = params[:result_data]
 		
 		#Clear old result data for this stage
@@ -236,6 +237,7 @@ class AdminController < ApplicationController
 		result_data.each do |ndx, result|
 			data = Result.new
 			data.season_stage_id = stage_id
+			data.race_id = race_id
 			data.rider_id = result[:rider_id].to_i
 			data.time = result[:time].to_f
 			data.kom_points = result[:kom_points].to_f

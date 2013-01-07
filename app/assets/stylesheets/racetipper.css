@@ -19,6 +19,15 @@
 	opacity: 0.3 !important;
 }
 
+.leaderboard_table tr {
+	border-bottom: 3px solid gray;
+}
+	.leaderboard_table tr th,
+	.leaderboard_table tr td {
+		min-width: 70px;
+		padding: 3px 10px 3px 5px;
+	}
+
 input, textarea {
 	border: 1px solid darkgray !important;
 }

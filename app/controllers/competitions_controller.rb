@@ -41,6 +41,9 @@ class CompetitionsController < ApplicationController
 	end
 	
 	def leaderboard
+		@data = get_competition_data(params[:id])
+		@races = Competition.get_all_races(params[:id])
+		@leaderboard = get_leaderboard(params[:id], @races.first.race_id)
 	end
 	
 	def edit
@@ -187,5 +190,36 @@ class CompetitionsController < ApplicationController
 		data[:is_participant] = participant
 		
 		return data
+	end
+	
+	private
+	def get_leaderboard(competition_id, race_id, limit=10)
+		race_results = Race.get_race_results_by_rider(race_id)
+		tips = CompetitionTip.where({:competition_id=>competition_id})
+		
+		user_scores = {}
+		tips.each do |tip|
+			rider_id = tip.rider_id
+			stage_id = tip.stage_id
+			user_id = tip.competition_participant_id
+			next if (race_results[rider_id][stage_id].nil?)
+			
+			user = User.find_by_id(user_id)
+			username = (user.firstname+' '+user.lastname).strip
+
+			user_score = user_scores[user_id] || Hash.new
+			user_score[:user_id] = user_id
+			user_score[:username] = username
+			user_score[:time] = (user_score[:time] || 0) + race_results[rider_id][stage_id][:time]
+			user_score[:points] = (user_score[:points] || 0) + race_results[rider_id][stage_id][:points]
+			user_score[:kom] = (user_score[:kom] || 0) + race_results[rider_id][stage_id][:kom]
+			user_score[:sprint] = (user_score[:sprint] || 0) + race_results[rider_id][stage_id][:sprint]
+			user_scores[user_id] = user_score
+		end
+		
+		#Sort leaderboard
+		leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
+
+		return leaderboard
 	end
 end
