@@ -67,6 +67,60 @@ class AdminController < ApplicationController
 		render :layout=>false
 	end
 	
+	def upload_results
+		@title = 'Upload stage results'
+		if (params.has_key?(:upload))
+			@result_keys = []
+			@result_data = []
+			@stage = nil
+			@race = nil
+			@season = nil
+			
+			file_data = params[:upload][:datafile].read
+			ndx = 0
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+				
+				ndx += 1
+				#Read stage/race/season info
+				if (ndx==1)
+					line_arr = line.split(',')
+					@stage = Stage.find_by_id(line_arr[0].strip)
+					@race = Race.find_by_id(line_arr[1].strip)
+					@season = Season.find_by_year(line_arr[2].strip)
+					next
+				end
+				
+				#Read result keys
+				if (line.starts_with?('!'))
+					key_line = line[1..-1]
+					line_arr = key_line.split(',')
+					line_arr.each do |key|
+						@result_keys.push(key.strip)
+					end
+					next
+				end
+				
+				#Read results
+				line_arr = line.split(',')
+				data = []
+				line_arr.each do |l|
+					data.push(l.strip)
+				end
+				@result_data.push(data)
+			end
+			
+			#Sort results
+			sort_column = @result_keys.index('time')
+			@result_data = @result_data.sort_by {|data| data[sort_column]}
+			
+			#Special keys
+			@rider_column = @result_keys.index('rider_id')
+			@time_column = @result_keys.index('time')
+		end
+	end
+	
 	#POST
 	def login
 		validated = true
@@ -170,6 +224,26 @@ class AdminController < ApplicationController
 		Stage.where('race_id=? AND season_id=? AND id NOT IN (?)', race.id, session[:season_id], stage_arr).delete_all
 		
 		render :json=>{:success=>true, :msg=>'success'} and return
+	end
+	
+	def save_results
+		stage_id = params[:stage_id]
+		result_data = params[:result_data]
+		
+		#Clear old result data for this stage
+		Result.where({:season_stage_id=>stage_id}).delete_all
+		
+		result_data.each do |ndx, result|
+			data = Result.new
+			data.season_stage_id = stage_id
+			data.rider_id = result[:rider_id].to_i
+			data.time = result[:time].to_f
+			data.kom_points = result[:kom_points].to_f
+			data.sprint_points = result[:sprint_points].to_f
+			data.points = result[:points].to_f
+			data.save
+		end
+		render :json=>{:success=>true}
 	end
 	
 	private

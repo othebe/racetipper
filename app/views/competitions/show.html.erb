@@ -14,9 +14,9 @@
 		
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		<div class="span4 portfolio-field portfolio-nav">
-			<a class="icon button prev ajax" href="portfolio-item-03.html" title="Summary">"</a>
+			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
 			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
-			<a class="icon button prev ajax" href="portfolio-item-03.html" title="Leaderboard">K</a>
+			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
 			<a class="icon button back" href="#/competitions" title="Close">Â</a>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
@@ -38,21 +38,22 @@
 			<h3>Creator</h3>
 			<p><%=(@data[:creator].firstname+' '+@data[:creator].lastname).strip%></p>
 			
-			<h3>Technology</h3>
+			<h3>Races</h3>
 			<ul class="tags">
-				<li><a>HTML 5</a></li>
-				<li><a>CSS 3</a></li>
-				<li><a>jQuery</a></li>
-				<li><a>Responsive Design</a></li>
+				<% @data[:races].each do |race| %>
+					<li><a><%=race.race.name%></a></li>
+				<% end %>
 			</ul>
 			
 			<div class="launch">
 				<% if (@user.nil?) %>
 					<a href="#" class="btn">SIGN IN TO PARTICIPATE</a>
-				<% elseif (@data[:is_participant]) %>
-					<a href="#" class="btn">TIP</a>
+				<% elsif (@data[:is_participant]) %>
+					<a class="btn" href="#/competitions/results/<%=@data[:competition].id%>">TIP RIDERS</a>
 				<% else %>
-					<a href="#" class="btn" onclick="join_competition('<%=@data[:competition].id%>', event);">JOIN COMPETITION</a>
+					<a href="#" class="btn join_competition_button" onclick="join_competition('<%=@data[:competition].id%>', event);">JOIN COMPETITION</a>
+					<img class="join_competition_loading" src="/assets/ajax-loader.gif" style="display:none; margin-top:2em;">
+					<a class="btn tip_rider_button" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">TIP RIDER</a>
 				<% end %>
 			</div>
 			

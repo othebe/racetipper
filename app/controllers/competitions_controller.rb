@@ -2,29 +2,42 @@ class CompetitionsController < ApplicationController
 	def show
 		redirect_to :root if (!params.has_key?(:id))
 		@data = get_competition_data(params[:id])
+		@data[:races] = Competition.get_all_races(params[:id])
 	end
 	
 	def results
 		redirect_to :root if (!params.has_key?(:id))
 		
-		@data = get_competition_data(params[:id])
-		
 		race_id = Competition.get_current_race(params[:id])
+		
+		@data = get_competition_data(params[:id])
+		@data[:race_id] = race_id
+		
 		stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order(:order_id)
 		@data[:stages] = stages
+		
+		first_stage_tip = CompetitionTip.where({
+			:competition_participant_id => @user.id,
+			:stage_id => stages.first.id,
+			:competition_id => params[:id]
+		})
+		if (!first_stage_tip.empty?)
+			@data[:first_stage_tipped_rider_id] = first_stage_tip.first.rider_id
+		else
+			@data[:first_stage_tipped_rider_id] = nil
+		end
 		
 		teams = Team.where({:season_id=>@data[:competition].season_id, :status=>STATUS[:ACTIVE]})
 		team_arr = []
 		teams.each do |team|
 			team_data = {}
 			riders = TeamRider.where({:team_id=>team.id, :status=>STATUS[:ACTIVE]})
-			team_data['team_id'] = team.id
-			team_data['riders'] = riders
+			team_data[:team_id] = team.id
+			team_data[:team_name] = team.name
+			team_data[:riders] = riders
 			team_arr.push(team_data)
 		end
-		
-		logger.debug(teams.inspect)
-		@data[:teams] = teams
+		@data[:teams] = team_arr
 	end
 	
 	def leaderboard
@@ -73,6 +86,7 @@ class CompetitionsController < ApplicationController
 				competition_stage ||= CompetitionStage.new
 				competition_stage.competition_id = competition.id
 				competition_stage.stage_id = stage.id
+				competition_stage.race_id = race_id
 				competition_stage.status = STATUS[:ACTIVE]
 				competition_stage.save
 			end
@@ -84,38 +98,72 @@ class CompetitionsController < ApplicationController
 	#Title:			get_competition_stage_info
 	#Description:	Retrieves stage info for a competition's race including selected tip.
 	#Returns:		JSON of data array
-	def get_competition_race_info
-		render :json=>{:success=>false} and return if (!params.has_key?(:race_id) || !params.has_key?(:competition_id))
+	def get_competition_stage_info
+		render :json=>{:success=>false} and return if (!params.has_key?(:stage_id) || !params.has_key?(:competition_id))
+		render :json=>{:success=>false} and return if (@user.nil?)
 		
-		uid = 0
-		uid = @user.id if (!@user.nil?)
+		stage = Stage.find_by_id(params[:stage_id])
+		tip = CompetitionTip.where({
+			:competition_participant_id=>@user.id, 
+			:competition_id=>params[:competition_id],
+			:stage_id=>params[:stage_id]
+		}).first
 		
-		data = []
-		race_id = params[:race_id]
-		competition_id = params[:competition_id]
-		stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order(:order_id)
-		stages.each do |stage|
-			tip = CompetitionTip.where({:competition_id=>competition_id, :stage_id=>stage.id, :competition_participant_id=>uid}).first
-			tipped_rider_id = -1;
-			tipped_rider_id = tip.rider_id if (!tip.nil?)
-			stage_data = {
-				:stage_id => stage.id,
-				:stage_name => stage.name,
-				:stage_description => stage.description,
-				:stage_profile => stage.profile,
-				:stage_starts_on => stage.starts_on,
-				:stage_start_location => stage.start_location,
-				:stage_end_location => stage.end_location,
-				:stage_distance_km => stage.distance_km,
-				:tipped_rider_id => tipped_rider_id
-			}
-			data.push(stage_data)
-		end
-		render :json=>{:stage_data=>data}
+		tipped_rider_id = nil
+		tipped_rider_id = tip.rider_id if (!tip.nil?)
+		
+		data = {
+			:stage_id => stage.id,
+			:stage_name => stage.name,
+			:stage_description => stage.description,
+			:stage_image_url => stage.image_url,
+			:stage_profile => stage.profile,
+			:stage_starts_on => stage.starts_on,
+			:stage_start_location => stage.start_location,
+			:stage_end_location => stage.end_location,
+			:stage_distance_km => stage.distance_km,
+			:tipped_rider_id => tipped_rider_id
+		}
+		
+		render :json=>{:data=>data}
 	end
 	
 	#POST
 	def join
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		render :json=>{:success=>false, :msg=>'No competition selected'} and return if (!params.has_key?(:competition_id))
+		
+		competition = Competition.find_by_id(params[:competition_id])
+		if (competition.status = STATUS[:ACTIVE])
+			participation = CompetitionParticipant.where({:competition_id=>params[:competition_id], :user_id=>@user.id}).first
+			participation ||= CompetitionParticipant.new
+			participation.competition_id = params[:competition_id]
+			participation.user_id = @user.id
+			participation.save
+		elsif (competition.status = STATUS[:PRIVATE])
+		end
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def tip
+		render :json=>{:success=>false, :msg=>'Rider not selected.'} and return if (!params.has_key?(:rider_id))
+		render :json=>{:success=>false, :msg=>'Competition not selected.'} and return if (!params.has_key?(:competition_id))
+		render :json=>{:success=>false, :msg=>'Stage not selected.'} and return if (!params.has_key?(:stage_id))
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		
+		tip = CompetitionTip.where({
+			:competition_participant_id => @user.id,
+			:stage_id => params[:stage_id],
+			:competition_id => params[:competition_id]
+		}).first
+		
+		tip ||= CompetitionTip.new
+		tip.competition_participant_id = @user.id
+		tip.stage_id = params[:stage_id]
+		tip.rider_id = params[:rider_id]
+		tip.competition_id = params[:competition_id]
+		tip.save
+		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	

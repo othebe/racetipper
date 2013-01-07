@@ -11,6 +11,14 @@
 	display: none;
 }
 
+.selected-mask {
+	opacity: 1 !important;
+}
+
+.fade {
+	opacity: 0.3 !important;
+}
+
 input, textarea {
 	border: 1px solid darkgray !important;
 }
