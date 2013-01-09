@@ -125,7 +125,7 @@ ul.personal-info.contact-form .title:after { top:auto; bottom:-0.5em; left:0; ri
 /* ------------------------------------------ 
    ---------------------  PORTFOLIO */
 .portfolio-items { margin-left:-30px; width:auto; }
-.portfolio-items .item { float:left; width:210px; margin-left:30px; margin-bottom:30px; }
+.portfolio-items .item { float:left; width:210px; margin-left:30px; margin-bottom:30px; margin-right:-5px; }
 .portfolio-items .item  h3.project-title { margin:12px 0 0 0; text-align:center; font-size:1.1em; line-height: 100%; font-weight:400; }
 .portfolio-items  .category { margin-top:1px; margin-bottom:10px; line-height: 134%; font-size:0.8em; text-align:center; }
 

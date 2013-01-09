@@ -6,7 +6,7 @@
 	<h3>Races</h3>
 	<div id="portfolio-items" class="portfolio-items" style="position: relative; overflow: hidden; height: auto;">
 		<% @races.each do |race| %>
-			<div class="item" style="width:37%">
+			<div class="item" style="width:140px;">
 				<div class="media-box">
 					<img src="<%=race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
 					<div class="mask" race_id="<%=race.id%>">
