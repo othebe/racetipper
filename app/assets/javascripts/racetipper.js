@@ -1,7 +1,7 @@
 //Show competition section
 competitions_loaded = false;
 function show_competitions() {
-	var container = $('#portfolio-items');
+	var container = $('.competition_portfolio');
 	if (competitions_loaded) return;
 	$.get('/dashboard/show_competitions', {}, function(response) {
 		$(container).html(response);
@@ -9,6 +9,20 @@ function show_competitions() {
 		competitions_loaded = true;
 	});
 }
+
+//Show season info section
+season_info_loaded = false;
+function show_season_info() {
+	var container = $('.season_info_portfolio');
+	if (season_info_loaded) return;
+	$.get('/dashboard/show_season_info', {}, function(response) {
+		$(container).html(response);
+		$(container).height('auto');
+		season_info_loaded = true;
+	});
+}
+
+
 
 //Show new competition screen
 function new_competition() {
@@ -97,11 +111,21 @@ function get_competition_stage_data(competition_id, stage_id) {
 	});
 }
 
+function init_slider() {
+	console.log('init');
+	$('.bxslider').bxSlider({
+		minSlides: 7,
+		maxSlides: 7,
+		slideMargin: 10
+	});
+}
+
 $(document).ready(function(event) {
 	$("body").bind("ajaxSend", function(elm, xhr, s){
 		if (s.type == "POST") {
 		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		}
 	});
+	show_season_info();
 	show_competitions();
 });

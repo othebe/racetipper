@@ -3,6 +3,8 @@ class CompetitionsController < ApplicationController
 		redirect_to :root if (!params.has_key?(:id))
 		@data = get_competition_data(params[:id])
 		@data[:races] = Competition.get_all_races(params[:id])
+		
+		render :layout=>false
 	end
 	
 	def results
@@ -38,12 +40,16 @@ class CompetitionsController < ApplicationController
 			team_arr.push(team_data)
 		end
 		@data[:teams] = team_arr
+		
+		render :layout=>false
 	end
 	
 	def leaderboard
 		@data = get_competition_data(params[:id])
 		@races = Competition.get_all_races(params[:id])
 		@leaderboard = get_leaderboard(params[:id], @races.first.race_id)
+		
+		render :layout=>false
 	end
 	
 	def edit

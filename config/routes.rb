@@ -24,6 +24,7 @@ Racetipper::Application.routes.draw do
 	root :to => 'dashboard#index'
 	get 'dashboard/index'
 	get 'dashboard/show_competitions'
+	get 'dashboard/show_season_info'
 	
 	get 'users/logout'
 	post 'users/create'
@@ -41,6 +42,14 @@ Racetipper::Application.routes.draw do
 	match 'competitions/show/:id' => 'competitions#show'
 	match 'competitions/results/:id' => 'competitions#results'
 	match 'competitions/leaderboard/:id' => 'competitions#leaderboard'
+	
+	get 'races/show'
+	match 'races/:id' => 'races#show'
+	match 'races/show/:id' => 'races#show'
+	
+	get 'stages/show'
+	match 'stages/:id' => 'stages#show'
+	match 'stages/show/:id' => 'stages#show'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

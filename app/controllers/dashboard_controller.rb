@@ -19,4 +19,10 @@ class DashboardController < ApplicationController
 		end
 		render :layout=>false
 	end
+	
+	def show_season_info
+		current_season = Season.find_by_year(Time.now.year)
+		@races = Race.where({:season_id=>current_season.id})
+		render :layout=>false
+	end
 end

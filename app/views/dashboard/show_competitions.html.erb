@@ -18,7 +18,7 @@
 			<img src="<%=data[:competition].image_url%>" alt="<%=data[:competition].name%>">
 			<div class="mask">
 				<h3 class="title">SEE COMPETITION DETAILS</h3>
-				<a data_id="1" href="#/competitions/show/1" class="ico show-details"></a>
+				<a data_id="1" href="#/competitions/show/<%=data[:competition].id%>" class="ico show-details"></a>
 			</div>
 		</div>
 		<h3 class="project-title"><%=data[:competition].name%></h3>

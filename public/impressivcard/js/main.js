@@ -35,11 +35,29 @@ $(function() {
 			//Support for competitions
 			address = $.address.value();
 			if (detailUrl<0 && address.indexOf('/competitions')!=-1) {
-				console.log(123);
 				if (address.length > 14) {
 					detailUrl = address;
 				} else hideProjectDetails(true, false);
 			} 
+			
+			//Support for race info
+			if (detailUrl<0 && address.indexOf('/races')!=-1) {
+				if (address.length > 7) {
+					detailUrl = address;
+				} else hideProjectDetails(true, false);
+			}
+			
+			//Support for stage info
+			if (detailUrl<0 && address.indexOf('/stages')!=-1) {
+				if (address.length > 8) {
+					detailUrl = address;
+				} else hideProjectDetails(true, false);
+			}
+			
+			//Back to home
+			if (detailUrl<0 && address.indexOf('/home')!=-1) {
+				hideProjectDetails(true, false);
+			}
 			
 			if(detailUrl != -1 ) {
 				showProjectDetails(detailUrl);
@@ -338,7 +356,7 @@ function showProjectDetails(url) {
 		}
 	
 	// ajax : fill data
-	p.empty().load(url + ' .portfolio-single', function() {
+	p.empty().load(url, function() {
 		
 		// wait for images to be loaded
 		p.waitForImages(function() {
@@ -397,8 +415,6 @@ function hideProjectDetails(forever, safeClose) {
 function giveDetailUrl() {
 
 	var address = $.address.value();
-	console.log(address);
-	console.log(address.indexOf("/"+ portfolioKeyword + "/"));
 	var detailUrl;
 	
 	if (address.indexOf("/"+ portfolioKeyword + "/")!=-1 && address.length > portfolioKeyword.length + 2 ) {
