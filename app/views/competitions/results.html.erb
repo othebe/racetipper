@@ -23,7 +23,7 @@
 		
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field">
-			<img src="<%=@data[:stages].first.image_url%>" alt="<%=@data[:stages].first.name%>" class="stage_img stage_data_container">
+			<img src="<%=(@data[:stages].first.image_url.nil?)?DEFAULT[:STAGE_IMG]:@data[:stages].first.image_url%>" alt="<%=@data[:stages].first.name%>" class="stage_img stage_data_container">
 			<div class="tip_data" race_id="<%=@data[:race_id]%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@data[:stages].first.id%>"></div>
 			<h3>Tip a Rider</h3>
 			<p>

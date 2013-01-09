@@ -55,7 +55,7 @@
 			<% if (@stages.length > 7) %>
 				<ul class="bxslider">
 					<% @stages.each do |stage| %>
-						<li><img src="<%=stage.image_url%>" /></li>
+						<li><img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" /></li>
 					<% end %>
 				</ul>
 			<% else %>
@@ -63,7 +63,7 @@
 				<% @stages.each do |stage| %>
 					<div class="item" style="width:140px;">
 						<div class="media-box">
-							<img src="<%=stage.image_url%>" alt="<%=stage.name%>" style="width:140px; height:100px;">
+							<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:140px; height:100px;">
 							<div class="mask" race_id="<%=stage.id%>">
 								<h3 class="title" style="margin-top:12%;">View Details</h3>
 								<a href="/#/stages/<%=stage.id%>" class="ico show-details supress" onclick=""></a>
