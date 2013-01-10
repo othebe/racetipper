@@ -22,6 +22,18 @@ function show_season_info() {
 	});
 }
 
+//Show profile section
+profile_loaded = false;
+function show_profile() {
+	var container = $('.profile_portfolio');
+	if (profile_loaded) return;
+	$.get('/dashboard/show_profile', {}, function(response) {
+		$(container).html(response);
+		$(container).height('auto');
+		profile_loaded = true;
+	});
+}
+
 
 
 //Show new competition screen
@@ -133,4 +145,5 @@ $(document).ready(function(event) {
 	
 	show_season_info();
 	show_competitions();
+	show_profile();
 });

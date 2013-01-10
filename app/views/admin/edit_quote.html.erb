@@ -1,0 +1,30 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<div style="padding:15px;">
+	<label style="font-weight:bold;">Quote:</label></br>
+	<textarea id="quote" rows="5" style="width:100%;"><%=(@quote.nil?)?'':@quote.quote%></textarea>
+
+	</br>
+	<label style="font-weight:bold;">Author:</label></br>
+	<input id="author" type="text" style="width:100%;" value="<%=(@quote.nil?)?'':@quote.author%>">
+
+	</br>
+	<button style="float:right;" onclick="submit_quote();">Save</button>
+</div>
+
+<script>
+function submit_quote() {
+	var quote_data = {};
+	quote_data['quote'] = $('#quote').val();
+	quote_data['author'] = $('#author').val();
+	<% if (!@id.nil?) %>
+		quote_data['id'] = '<%=@id%>';
+	<% end %>
+	$.post('/admin/save_quote', {quote_data:quote_data}, function(response) {
+		if (response.success) {
+			window.opener.location.reload();
+			self.close();
+		} else alert(response.msg);
+	});
+}
+</script>

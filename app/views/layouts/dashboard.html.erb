@@ -76,9 +76,8 @@
                 <ul>
                     <li><a href='#/home' onclick="show_season_info();"><span>Home</span></a></li>
                     <li><a href='#/competitions' onclick="show_competitions();"><span>Competitions</span></a></li>
-                    <!--<li><a href='#/season_info' onclick="show_season_info();"><span>Season Info</span></a></li>-->
 					<% if (!@user.nil?) %>
-						<li><a href='#/profile'><span>Profile</span></a></li>
+						<li><a href='#/profile' onclick="show_profile();"><span>Profile</span></a></li>
 					<% end %>
                 </ul>
             </nav>
@@ -174,6 +173,8 @@
         	
             <!-- PAGE TITLE -->
             <h2 class="caption"><span>SEASON INFO</span></h2>
+			
+			
             
         </section>
         <!-- PAGE : SEASON INFO -->
@@ -186,8 +187,13 @@
         	
             <!-- PAGE TITLE -->
         	<h2 class="caption"><span>PROFILE</span></h2>
-	
-        
+			
+			<div class="iscroll-wrapper">
+				<div class="scroller container">
+					<div class="profile_portfolio"></div>
+				</div>
+			</div>
+			
         </section>
         <!-- PAGE : PROFILE -->
         

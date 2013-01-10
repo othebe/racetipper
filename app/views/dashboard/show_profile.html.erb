@@ -1,0 +1,72 @@
+<div class="row">
+	<!--column 3/12-->
+	<div class="span3 profile-image">
+		
+		
+		<!-- te-wrapper -->
+		<div id="te-wrapper" class="te-wrapper">
+			
+			<!-- cover -->
+			<div class="te-cover" style="cursor:default;">
+				<img src="<%=@user_image%>" alt="profile picture" style="max-width:270px;">
+			</div>
+			<!-- cover -->
+			
+		</div>
+		<!-- te-wrapper -->
+		
+		
+	</div>
+	<!--column 3/12-->
+	
+	
+	
+	
+	<!--column 4/12-->
+	<div class="span4">
+		 
+		 <!-- about me text -->	
+		 <h2>...<%=@user_rank%></h2>
+		 <p style="font-style:italic;">
+			<%=@quote.quote%></br>
+			- <%=@quote.author%>
+		 </p>
+		 <!-- about me text -->	
+		 
+		 
+		 
+		 
+		 <h3>Let's socialize!</h3>
+		 
+		 <!-- social icons -->
+		 <ul class="social">
+			<li><a class="facebook" href="#">&#88;</a></li>
+			<li><a class="twitter" href="#">&#95;</a></li>
+			<li><a class="google" href="#">&#107;</a></li>
+		</ul>
+		<!-- social icons -->
+		 
+		 
+		 
+		 
+	</div>
+	<!--column 4/12-->
+	
+	
+	
+	
+	<!--column 5/12-->
+	<div class="span5">
+		
+		<!-- personal info -->
+		 <ul class="personal-info">
+			<li><span class="title">NAME</span><span class="value"><%=(@user.firstname.strip.capitalize+' '+@user.lastname.strip.capitalize).strip%></span></li>
+			<li><span class="title">RACES WON</span><span class="value">33</span></li>
+		 </ul>
+		 <!-- personal info -->
+	</div>
+	<!--column 5/12-->
+	
+	
+
+</div>

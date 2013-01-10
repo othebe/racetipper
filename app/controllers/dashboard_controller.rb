@@ -27,4 +27,15 @@ class DashboardController < ApplicationController
 		@races = Race.where({:season_id=>current_season.id})
 		render :layout=>false
 	end
+	
+	def show_profile		
+		@user_image = '/assets/default_user.jpg'
+		@user_rank = User.get_rank(@user.id)
+		
+		#Get quote
+		quote_count = CyclingQuote.count
+		offset = rand(quote_count)
+		@quote = CyclingQuote.first(:offset=>offset)
+		render :layout=>false
+	end
 end

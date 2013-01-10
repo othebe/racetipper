@@ -121,6 +121,19 @@ class AdminController < ApplicationController
 		end
 	end
 	
+	def manage_quotes
+		@title = 'Manage quotes'
+		@quotes = CyclingQuote.all
+	end
+	
+	def edit_quote
+		if (params.has_key?(:id))
+			@id = params[:id]
+			@quote = CyclingQuote.find_by_id(@id)
+		end
+		render :layout=>false
+	end
+	
 	#POST
 	def login
 		validated = true
@@ -246,6 +259,31 @@ class AdminController < ApplicationController
 			data.save
 		end
 		render :json=>{:success=>true}
+	end
+	
+	def save_quote
+		quote_data = params[:quote_data]
+		quote = quote_data[:quote]
+		author = quote_data[:author]
+		
+		render :json=>{:success=>false, :msg=>'Please enter a quote.'} and return if (quote.empty?)
+		render :json=>{:success=>false, :msg=>'Please enter the author.'} and return if (author.empty?)
+		
+		data_obj = CyclingQuote.find_by_id(quote_data[:id]) if (quote_data.has_key?(:id))
+		
+		data_obj ||= CyclingQuote.new
+		data_obj.quote = quote
+		data_obj.author = author
+		data_obj.save
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def delete_quote
+		id = params[:id]
+		CyclingQuote.where({:id=>id}).delete_all
+		
+		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
 	private

@@ -37,4 +37,12 @@ class User < ActiveRecord::Base
 			return nil
 		end
 	end
+	
+	#Title:			get_user_rank
+	#Description:	Gets user rank string
+	def self.get_rank(user_id)
+		rank = 'Just starting out.'
+		
+		return rank
+	end
 end

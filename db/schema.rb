@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130110074611) do
+ActiveRecord::Schema.define(:version => 20130110102505) do
 
   create_table "competition_invitations", :force => true do |t|
     t.integer  "competition_id"
@@ -57,6 +57,13 @@ ActiveRecord::Schema.define(:version => 20130110074611) do
     t.datetime "updated_at",                     :null => false
     t.integer  "status",          :default => 1
     t.string   "invitation_code"
+  end
+
+  create_table "cycling_quotes", :force => true do |t|
+    t.text     "quote"
+    t.string   "author"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "metadata", :force => true do |t|
@@ -151,6 +158,7 @@ ActiveRecord::Schema.define(:version => 20130110074611) do
     t.datetime "last_activity"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "image_url"
   end
 
 end
