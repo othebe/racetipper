@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 		
 		#Check if user exists
 		existing = User.find_by_email(data[:email])
-		render :json=>{:success=>false, :msg=>'User already exists.'} and return if (!existing.nil?)
+		render :json=>{:success=>false, :msg=>'This email has already been registered.'} and return if (!existing.nil?)
 		
 		userdata = {}
 		userdata[:firstname] = data[:firstname]

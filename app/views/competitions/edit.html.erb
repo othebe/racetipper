@@ -1,48 +1,58 @@
 <%=csrf_meta_tag%>
-<h2>CREATE A NEW COMPETITION</h2>
 
-<div class="entry">
-	<input type="text" id="competition_name" name="competition_name" placeholder="Competition name">
+<div class="close_fancybox" style="position:absolute; left:94%; cursor:pointer; padding:5px; padding-bottom:15px;">
+	<img src="/assets/close.png" style="height:15px;">
 </div>
-
-<div class="entry">
-	<textarea id="competition_description" name="competition_description" placeholder="Competition description"></textarea>
-</div>
-
-<div class="entry">
-	<input type="text" id="competition_image_url" name="competition_image_url" placeholder="Image URL">
-</div>
-
-<div class="entry">
-	<label style="float:left; min-width:200px;">Open to:</label>
 	
-	<input id="public" type="radio" name="open_to" value="public" checked="checked" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
-	<label for="public" style="float:left;">Public</label>
-	<input id="private" type="radio" name="open_to" value="private" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px; margin-left:50px;">
-	<label for="private" style="float:left;">Invitations Only</label>
-	<div style="clear:both;"></div>
-</div>
+<div style="height:500px; padding:25px;">
 
-<div class="entry">
-	<label>Choose races:</label></br>
 	
-	<% @races.each do |race| %>
-		<div class="race">
-			<input type="checkbox" name="race_choice" id="<%=race.id%>" value="<%=race.id%>" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
-			<label for="<%=race.id%>" style="float:left;"><%=race.name%></label>
-			<div style="clear:both;"></div>
-		</div>
-	<% end %>
+	<h2>CREATE A NEW COMPETITION</h2>
+
+	<div class="entry">
+		<input type="text" id="competition_name" name="competition_name" placeholder="Competition name">
+	</div>
+
+	<div class="entry">
+		<textarea id="competition_description" name="competition_description" placeholder="Competition description"></textarea>
+	</div>
+
+	<div class="entry">
+		<input type="text" id="competition_image_url" name="competition_image_url" placeholder="Image URL">
+	</div>
+
+	<div class="entry">
+		<label style="float:left; min-width:80px;">Open to:</label>
+		
+		<input id="public" type="radio" name="open_to" value="public" checked="checked" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
+		<label for="public" style="float:left;">Public</label>
+		<input id="private" type="radio" name="open_to" value="private" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px; margin-left:50px;">
+		<label for="private" style="float:left;">Invitations Only</label>
+		<div style="clear:both;"></div>
+	</div>
+
+	<div class="invitations entry" style="display:none;">
+		<label style="float:left; min-width:80px;">Invitation emails:</label>
+		<textarea id="invitation_emails" name="invitation_emails" placeholder="Enter a list of emails separated by commas."></textarea>
+	</div>
+
+	<div class="entry">
+		<label>Choose races:</label></br>
+		
+		<% @races.each do |race| %>
+			<div class="race">
+				<input type="checkbox" name="race_choice" id="<%=race.id%>" value="<%=race.id%>" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
+				<label for="<%=race.id%>" style="float:left;"><%=race.name%></label>
+				<div style="clear:both;"></div>
+			</div>
+		<% end %>
+	</div>
+
+	<div style="margin-bottom:15px;">
+		<button id="submit" onclick="submit_competition(event);">Create</button>
+		<img class="loading" src="/assets/ajax-loader.gif">
+	</div>
 </div>
-
-<div class="invitations" style="position:absolute; top:73px; left:700px; display:none;">
-	<h3>Invitation emails:</h3>
-	<textarea id="invitation_emails" name="invitation_emails" placeholder="Enter a list of emails separated by commas."></textarea>
-</div>
-
-<button id="submit" onclick="submit_competition(event);">Create</button>
-<img class="loading" src="/assets/ajax-loader.gif">
-
 <script>
 $(document).ready(function() {
 	$('#public').click(function() {
@@ -57,6 +67,10 @@ $(document).ready(function() {
 		if (s.type == "POST") {
 		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		}
+	});
+	
+	$('.close_fancybox').click(function() {
+		$.fancybox.close();
 	});
 	
 	setupScrollBars();
@@ -78,6 +92,11 @@ function submit_competition(event) {
 	});
 	
 	$.post('/competitions/save_competition', {data:data}, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+			$('.loading').hide();
+			$('#submit').show();
+		}
 	});
 	
 	event.preventDefault();

@@ -57,6 +57,10 @@ class CompetitionsController < ApplicationController
 		render :layout=>false
 	end
 	
+	def join_private_competition
+		render :text=>params.inspect
+	end
+	
 	def save_competition
 		render :json=>{:success=>false, :msg=>'An error occurred. Please refresh your browser and try again.'} and return if (!params.has_key?(:data))
 		render :json=>{:success=>false, :msg=>'You are not logged in.'} and return if (@user.nil?)
@@ -66,6 +70,10 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'This season has not been released yet.'} and return if (season_id.nil?)
 		
 		competition_data = params[:data]
+		
+		render :json=>{:success=>false, :msg=>'Please enter a name for your competition.'} and return if (!competition_data.has_key?(:competition_name) || competition_data[:competition_name].empty?)
+		render :json=>{:success=>false, :msg=>'Please enter an image URL for your competition.'} and return if (!competition_data.has_key?(:competition_image_url) || competition_data[:competition_image_url].empty?)
+		render :json=>{:success=>false, :msg=>'Please select races for your competition.'} and return if (!competition_data.has_key?(:races) || competition_data[:races].empty?)
 		
 		#Save competition
 		competition = nil
@@ -81,11 +89,19 @@ class CompetitionsController < ApplicationController
 		competition.season_id = season_id
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
-			send_competition_invitations(competition_data[:invitations])
+			#Generate competition invitation
+			base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+			competition.invitation_code  =  (0...10).map{ base[rand(base.length)] }.join
 		else
 			competition.status = STATUS[:ACTIVE]
 		end
 		competition.save
+		
+		#Generate invitations
+		if (competition_data[:open_to]=='private')
+			send_competition_invitations(competition_data[:invitations], competition)
+			CompetitionInvitation.invite_user(@user.id, competition.id)
+		end
 		
 		#Save races/stages
 		competition_data[:races].each do |race_id|
@@ -176,8 +192,13 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
+	#Title:			send_competition_invitations
+	#Description:	Send invitations for a competition
+	#Params:		emails - comma separated email recipients
+	#				competition - Competition activerecord
 	private
-	def send_competition_invitations(emails)
+	def send_competition_invitations(emails, competition)
+		AppMailer.competition_invitation(emails, competition).deliver
 	end
 	
 	private

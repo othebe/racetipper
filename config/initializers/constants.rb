@@ -1,3 +1,5 @@
+SITE_URL = 'http://racetipper.herokuapp.com/'
+
 STATUS = {
 	:DELETED => 0,
 	:ACTIVE => 1,

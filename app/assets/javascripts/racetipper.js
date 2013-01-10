@@ -126,6 +126,11 @@ $(document).ready(function(event) {
 		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		}
 	});
+	
+	$('.close_fancybox').click(function() {
+		$.fancybox.close();
+	});
+	
 	show_season_info();
 	show_competitions();
 });

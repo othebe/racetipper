@@ -4,7 +4,9 @@ class DashboardController < ApplicationController
 	end
 	
 	def show_competitions
-		competition_list = Competition.where('status=?', STATUS[:ACTIVE])
+		uid = 0
+		uid = @user.id if (!@user.nil?)
+		competition_list = Competition.get_competitions(uid)
 		@competitions = []
 		competition_list.each do |competition|
 			data = {}
