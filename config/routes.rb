@@ -45,6 +45,7 @@ Racetipper::Application.routes.draw do
 	get 'competitions/join_private_competition'
 	get 'competitions/get_more_competitions'
 	post 'competitions/save_competition'
+	post 'competitions/delete_competition'
 	post 'competitions/join'
 	post 'competitions/tip'
 	match 'competitions/edit/:id' => 'competitions#edit'

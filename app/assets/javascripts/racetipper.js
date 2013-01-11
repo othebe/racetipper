@@ -141,7 +141,9 @@ function load_more_competitions() {
 		competition_data = response.competition_data
 		$(competition_data).each(function(ndx, data) {
 			scaffold = $('.item.competition.template').first().clone().removeClass('template').removeClass('competition');
-			$(scaffold).find('img').attr('src', data.image_url);
+			$(scaffold).find('img').attr('src', data.image_url).attr('alt', data.name);
+			$(scaffold).find('a').attr('data_id', data.id).attr('href', '#/competitions/show/'+data.id);
+			$(scaffold).find('.project-title').html(data.name);
 			
 			container.append($(scaffold).fadeIn());
 		});

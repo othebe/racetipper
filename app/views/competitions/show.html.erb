@@ -17,6 +17,9 @@
 			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
 			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
 			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
+			<% if (@is_owner) %>
+				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
+			<% end %>
 			<a class="icon button back" href="#/competitions" title="Close">Â</a>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->

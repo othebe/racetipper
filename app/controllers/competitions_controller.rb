@@ -4,6 +4,9 @@ class CompetitionsController < ApplicationController
 		@data = get_competition_data(params[:id])
 		@data[:races] = Competition.get_all_races(params[:id])
 		
+		@is_owner = false
+		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
+		
 		render :layout=>false
 	end
 	
@@ -53,7 +56,21 @@ class CompetitionsController < ApplicationController
 	end
 	
 	def edit
+		redirect_to :root and return if (@user.nil?)
+		
+		@competition = Competition.find_by_id(params[:id]) if (params.has_key?(:id))
+		
+		redirect_to :root and return if (@user.id != @competition.creator_id)
+		
+		@id = params[:id] if (params.has_key?(:id))
 		@races = Race.where(:status=>STATUS[:ACTIVE])
+		@is_private = (@competition.status == STATUS[:PRIVATE])
+		
+		@competition_races = []
+		Competition.get_all_races(@competition.id).each do |race|
+			@competition_races.push(race.race_id)
+		end
+		
 		render :layout=>false
 	end
 	
@@ -77,8 +94,8 @@ class CompetitionsController < ApplicationController
 		
 		#Save competition
 		competition = nil
-		if (params.has_key?(:id))
-			competition = Competition.find_by_id(params[:id])
+		if (competition_data.has_key?(:id))
+			competition = Competition.find_by_id(competition_data[:id])
 		end
 		competition ||= Competition.new
 		
@@ -123,6 +140,20 @@ class CompetitionsController < ApplicationController
 			end
 		end
 
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def delete_competition
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		render :json=>{:success=>false, :msg=>'There was an error. Please refresh your browser and try again.'} and return if (!params.has_key?(:id))
+		
+		competition = Competition.find_by_id(params[:id])
+		render :json=>{:success=>false, :msg=>'Competition not found.'} and return if (competition.nil?)
+		render :json=>{:success=>false, :msg=>'You do not permission to edit this competition.'} and return if (@user.id != competition.creator_id)
+		
+		competition.status = STATUS[:DELETED]
+		competition.save
+		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	

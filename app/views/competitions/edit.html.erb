@@ -1,89 +1,86 @@
-<%=csrf_meta_tag%>
+﻿<%=csrf_meta_tag%>
 
-<div class="close_fancybox" style="position:absolute; left:94%; cursor:pointer; padding:5px; padding-bottom:15px;">
-	<img src="/assets/close.png" style="height:15px;">
-</div>
-	
-<div style="height:500px; padding:25px;">
-
-	
-	<h2>CREATE A NEW COMPETITION</h2>
-
-	<div class="entry">
-		<input type="text" id="competition_name" name="competition_name" placeholder="Competition name">
-	</div>
-
-	<div class="entry">
-		<textarea id="competition_description" name="competition_description" placeholder="Competition description"></textarea>
-	</div>
-
-	<div class="entry">
-		<input type="text" id="competition_image_url" name="competition_image_url" placeholder="Image URL">
-	</div>
-
-	<div class="entry">
-		<label style="float:left; min-width:80px;">Open to:</label>
+<div class="portfolio-single container">
 		
-		<input id="public" type="radio" name="open_to" value="public" checked="checked" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
-		<label for="public" style="float:left;">Public</label>
-		<input id="private" type="radio" name="open_to" value="private" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px; margin-left:50px;">
-		<label for="private" style="float:left;">Invitations Only</label>
-		<div style="clear:both;"></div>
-	</div>
-
-	<div class="invitations entry" style="display:none;">
-		<label style="float:left; min-width:80px;">Invitation emails:</label>
-		<textarea id="invitation_emails" name="invitation_emails" placeholder="Enter a list of emails separated by commas."></textarea>
-	</div>
-
-	<div class="entry">
-		<label>Choose races:</label></br>
+	<div class="row">
+	
+		<!-- InstanceBeginEditable name="Content" -->
 		
-		<% @races.each do |race| %>
-			<div class="race">
-				<input type="checkbox" name="race_choice" id="<%=race.id%>" value="<%=race.id%>" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
-				<label for="<%=race.id%>" style="float:left;"><%=race.name%></label>
-				<div style="clear:both;"></div>
-			</div>
-		<% end %>
-	</div>
+		
+		<!-- TITLE - column 8/12 -->
+		<div class="span8 portfolio-field portfolio-title">
+			<h2>Edit competition</h2>
+		</div>
+		<!-- TITLE - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		<div class="span4 portfolio-field portfolio-nav">
+			<a class="icon button back" href="#/competitions" title="Back"><</a>
+			<a class="icon button back" href="#/competitions" title="Participants">K</a>
+		</div>
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		
+		<div class="span7 portfolio-field">
+			<ul class="personal-info contact-form">
+				<li><label class="title" for="name">NAME</label><input class="text required" id="name" name="name" type="text" placeholder="Competition Name" value="<%=(@competition.nil?)?'':@competition.name%>"></li>
+				<li><label class="title" for="description">DESCRIPTION</label><textarea class="text required" id="description" name="description" placeholder="Please describe this competition."><%=(@competition.nil?)?'':@competition.description%></textarea></li>
+				<li><label class="title" for="image_url">IMAGE URL</label><input class="text required" id="image_url" name="image_url" type="text" placeholder="http://LINK HERE" value="<%=(@competition.nil?)?'':@competition.image_url%>"></li>
+				<li>
+					<label class="title" for="open_to">OPEN TO</label></br>
+					<input id="public" type="radio" name="open_to" value="public" <%=(@is_private)?'':'checked="checked"'%> style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
+					<label for="public" style="float:left;">Public</label>
+					
+					<input id="private" type="radio" name="open_to" value="private" <%=(@is_private)?'checked="checked"':''%> style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px; margin-left:50px;">
+					<label for="private" style="float:left;">Invitations Only</label>
+	
+					<div style="clear:both;"></div>
+					
+					<textarea class="text required" id="invitation_emails" name="invitation_emails" placeholder="Enter a comma separated list of emails to invite."></textarea>
+				</li>
+				
+				<li class="submit-area">
+					<button class="btn-send" onclick="submit_competition(event);">SAVE</button>
+					<% if (!@id.nil?) %>
+						<button class="btn-send" style="background:orangered;" onclick="delete_competition(<%=@id%>, event);">DELETE COMPETITION</button>
+					<% end %>
+					<img class="loading" src="/assets/ajax-loader.gif">
+				</li>
+			 </ul>
+		</div>
 
-	<div style="margin-bottom:15px;">
-		<button id="submit" onclick="submit_competition(event);">Create</button>
-		<img class="loading" src="/assets/ajax-loader.gif">
+		<div class="span5 portfolio-field">
+			<ul class="personal-info contact-form">
+				<li>
+					<label class="title">RACES</label></br>
+					<fieldset>
+						<% @races.each do |race| %>	
+							<input type="checkbox" name="race_choice" <%=(@competition_races.index(race.id).nil?)?'':'checked="checked"'%> id="<%=race.id%>" value="<%=race.id%>" style="float:left; width:auto; min-width:0px; margin-top:4px; margin-right:5px;">
+							<label for="<%=race.id%>" style="float:left;"><%=race.name%></label>
+							<div style="clear:both;"></div>
+						<% end %>
+					</fieldset>
+				</li>
+		</div>
+		
+		<!-- InstanceEndEditable -->
+		
 	</div>
+	
 </div>
+
 <script>
-$(document).ready(function() {
-	$('#public').click(function() {
-		$('.invitations').fadeOut();
-	});
-	
-	$('#private').click(function() {
-		$('.invitations').fadeIn();
-	});
-	
-	$("body").bind("ajaxSend", function(elm, xhr, s){
-		if (s.type == "POST") {
-		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
-		}
-	});
-	
-	$('.close_fancybox').click(function() {
-		$.fancybox.close();
-	});
-	
-	setupScrollBars();
-});
-
 function submit_competition(event) {
 	$('.loading').show();
-	$('#submit').hide();
+	$('.btn-send').hide();
 	
 	data = {};
-	data['competition_name'] = $('#competition_name').val();
-	data['competition_description'] = $('#competition_description').val();
-	data['competition_image_url'] = $('#competition_image_url').val();
+	<% if (!@id.nil?) %>
+		data['id'] = <%=@id%>;
+	<% end %>
+	data['competition_name'] = $('#name').val();
+	data['competition_description'] = $('#description').val();
+	data['competition_image_url'] = $('#image_url').val();
 	data['open_to'] = $('input[name=open_to]:checked').val();
 	if (data['open_to']=='private') data['invitations'] = $('#invitation_emails').val();
 	data['races'] = [];
@@ -95,23 +92,33 @@ function submit_competition(event) {
 		if (!response.success) {
 			alert(response.msg);
 			$('.loading').hide();
-			$('#submit').show();
+			$('.btn-send').show();
 		} else {
-			alert('Competition created');
+			alert('Competition saved.');
 			window.location.reload();
 		}
 	});
 	
 	event.preventDefault();
 }
+
+function delete_competition(id, event) {
+	var delete_confirm = confirm('Are you sure you want to delete this competition?')
+	if (!delete_confirm) return;
+	
+	$.post('/competitions/delete_competition', {id:id}, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+			$('.loading').hide();
+			$('.btn-send').show();
+		} else {
+			alert('Competition deleted.');
+			window.location.href = '/#/competitions'
+		}
+	});
+}
+
+$(document).ready(function() {
+	
+});
 </script>
-
-<style>
-.entry {
-	margin-bottom: 15px;
-}
-
-.entry .race {
-	margin-left: 20px;
-}
-</style>
