@@ -137,8 +137,6 @@
             <!-- PAGE TITLE -->
             <h2 class="caption"><span>COMPETITIONS</span></h2>
 			
-			
-			
 			<div id="competition-content" class="competition-content">
 				<div class="iscroll-wrapper">
 					<div class="scroller container">
@@ -159,6 +157,12 @@
 						<!-- BEGIN New competition -->
 						<div id="new_competition" style="height:auto;"></div>
 						<!-- END New competition -->
+						
+						<div style="clear:both;"></div>
+						<div style="text-align:center;">
+							<button id="more_competitions" onclick="load_more_competitions();">MORE</button>
+							<img id="more_competitions_loading" src="/assets/ajax-loader.gif" style="display:none;">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -230,5 +234,17 @@
 			});
 		});
 	</script>
+	
+	<div class="item competition template">
+		<div class="media-box">
+			<img src="" alt="" style="height:140px; width:200px;">
+			<div class="mask">
+				<h3 class="title">SEE COMPETITION DETAILS</h3>
+				<a data_id="" href="#/competitions/show/" class="ico show-details"></a>
+			</div>
+		</div>
+		<h3 class="project-title"></h3>
+		<p class="category">In Progress</p>
+	</div>
 </body>
 </html>

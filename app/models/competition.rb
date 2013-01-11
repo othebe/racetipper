@@ -7,8 +7,15 @@ class Competition < ActiveRecord::Base
 	#Description:	Gets available competitions
 	#Params:		user_id - View ID
 	#				sort_by - Sort by this
-	def self.get_competitions(user_id, sort_by='competitions.id DESC')
-		competitions = self.where('competitions.status=? OR (competitions.status=? AND competition_invitations.user_id=? AND competition_invitations.status=?)', STATUS[:ACTIVE], STATUS[:PRIVATE], user_id, STATUS[:ACTIVE]).joins('LEFT JOIN competition_invitations ON competition_invitations.competition_id=competitions.id').order(sort_by)
+	#				options (Hash):
+	#					limit
+	#					offset
+	#					sort_by
+	def self.get_competitions(user_id, options={})
+		limit = options.has_key?(:limit)?options[:limit]:10
+		offset = options.has_key?(:offset)?options[:offset]:0
+		sort_by = options.has_key?(:sort_by)?options[:sort_by]:'competitions.id DESC'
+		competitions = self.where('competitions.status=? OR (competitions.status=? AND competition_invitations.user_id=? AND competition_invitations.status=?)', STATUS[:ACTIVE], STATUS[:PRIVATE], user_id, STATUS[:ACTIVE]).joins('LEFT JOIN competition_invitations ON competition_invitations.competition_id=competitions.id').order(sort_by).limit(limit).offset(offset)
 		
 		return competitions
 	end

@@ -43,6 +43,7 @@ Racetipper::Application.routes.draw do
 	get 'competitions/leaderboard'
 	get 'competitions/get_competition_stage_info'
 	get 'competitions/join_private_competition'
+	get 'competitions/get_more_competitions'
 	post 'competitions/save_competition'
 	post 'competitions/join'
 	post 'competitions/tip'

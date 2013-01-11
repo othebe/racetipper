@@ -97,6 +97,12 @@ class CompetitionsController < ApplicationController
 		end
 		competition.save
 		
+		#Add user as participant
+		participation = CompetitionParticipant.new
+		participation.competition_id = competition.id
+		participation.user_id = @user.id
+		participation.save
+		
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
 			send_competition_invitations(competition_data[:invitations], competition)
@@ -119,6 +125,8 @@ class CompetitionsController < ApplicationController
 
 		render :json=>{:success=>true, :msg=>'success'}
 	end
+	
+	#JSON
 	
 	#Title:			get_competition_stage_info
 	#Description:	Retrieves stage info for a competition's race including selected tip.
@@ -151,6 +159,38 @@ class CompetitionsController < ApplicationController
 		}
 		
 		render :json=>{:data=>data}
+	end
+	
+	#Title:			get_more_competitions
+	#Description:	Gets next set of competitions
+	#Returns:		JSON of data array
+	def get_more_competitions
+		uid = 0
+		uid = @user.id if (!@user.nil?)
+		
+		options = {}
+		options[:limit] = params[:limit] if (params.has_key?(:limit) && !params[:limit].empty?)
+		options[:offset] = params[:offset] if (params.has_key?(:offset) && !params[:limit].empty?)
+		
+		competition_data = []
+		competitions = Competition.get_competitions(uid, options)
+		competitions.each do |competition|
+			data = {}
+			data[:id] = competition.id
+			data[:creator_id] = competition.creator_id
+			data[:name] = competition.name
+			data[:description] = competition.description
+			data[:image_url] = competition.image_url
+			if (uid==0)
+				data[:is_participant] = false
+			else
+				is_participant = CompetitionParticipant.where('competition_id=? AND user_id=?', competition.id, @user.id)
+				data[:is_participant] = !is_participant.empty?
+			end
+			competition_data.push(data)
+		end
+		
+		render :json=>{:competition_data=>competition_data}
 	end
 	
 	#POST

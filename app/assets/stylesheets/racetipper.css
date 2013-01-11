@@ -1,3 +1,7 @@
+.template {
+	display: none;
+}
+
 .regularFont {
 	font-family: Lora, Georgia, "Times New Roman", Times, serif !important;
 	font-size: 1.2em !important;

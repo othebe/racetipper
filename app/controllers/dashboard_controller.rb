@@ -5,8 +5,15 @@ class DashboardController < ApplicationController
 	
 	def show_competitions
 		uid = 0
-		uid = @user.id if (!@user.nil?)
-		competition_list = Competition.get_competitions(uid)
+		options = {}
+		if (!@user.nil?)
+			uid = @user.id
+			options[:limit] = 9
+		else
+			options[:limit] = 10
+		end
+		logger.debug(options.inspect)
+		competition_list = Competition.get_competitions(uid, options)
 		@competitions = []
 		competition_list.each do |competition|
 			data = {}
@@ -36,6 +43,10 @@ class DashboardController < ApplicationController
 		quote_count = CyclingQuote.count
 		offset = rand(quote_count)
 		@quote = CyclingQuote.first(:offset=>offset)
+		
+		#Get competitions
+		@competitions = Competition.where({:creator_id=>@user.id})
+		
 		render :layout=>false
 	end
 end

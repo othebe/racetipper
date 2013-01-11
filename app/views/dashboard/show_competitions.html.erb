@@ -1,8 +1,8 @@
 <% if (!@user.nil?) %>
 	<!-- New competition -->
-	<div class="item mine">
+	<div class="item mine new_competition">
 		<div class="media-box">
-			<img src="/assets/new_competition.jpg" alt="New Competition">
+			<img src="/assets/new_competition.jpg" alt="New Competition" style="height:140px; width:200px;">
 			<div class="mask">
 				<h3 class="title">Create a new competition</h3>
 				<a href="/competitions/edit" class="ico show-details new_competition"></a>
@@ -15,7 +15,7 @@
 <% @competitions.each do |data| %>
 	<div class="item <%=(data[:is_participant])?'mine':''%>">
 		<div class="media-box">
-			<img src="<%=(data[:competition].image_url.nil?)?DEFAULT[:COMPETITION_IMG]:data[:competition].image_url%>" alt="<%=data[:competition].name%>">
+			<img src="<%=(data[:competition].image_url.nil?)?DEFAULT[:COMPETITION_IMG]:data[:competition].image_url%>" alt="<%=data[:competition].name%>" style="height:140px; width:200px;">
 			<div class="mask">
 				<h3 class="title">SEE COMPETITION DETAILS</h3>
 				<a data_id="1" href="#/competitions/show/<%=data[:competition].id%>" class="ico show-details"></a>

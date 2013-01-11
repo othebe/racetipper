@@ -284,7 +284,7 @@ $(function() {
 			showLoader();
 		},
 		complete: function(){
-			//hideLoader();
+			hideLoader();
 		},
 		success: function() { 
 			if(!giveDetailUrl) {

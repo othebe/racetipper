@@ -123,6 +123,34 @@ function get_competition_stage_data(competition_id, stage_id) {
 	});
 }
 
+//Load more competitions
+//Params:
+//	options - Associative array:
+//		limit
+//		offset
+function load_more_competitions() {
+	container_selector = '#portfolio-items.competition_portfolio';
+	container = $(container_selector);
+	limit = 10;
+	offset = $(container).find('.item:not(.new_competition)').length;
+	
+	$('#more_competitions').hide();
+	$('#more_competitions_loading').show();
+	
+	$.get('/competitions/get_more_competitions.json', {limit:limit, offset:offset}, function(response) {
+		competition_data = response.competition_data
+		$(competition_data).each(function(ndx, data) {
+			scaffold = $('.item.competition.template').first().clone().removeClass('template').removeClass('competition');
+			$(scaffold).find('img').attr('src', data.image_url);
+			
+			container.append($(scaffold).fadeIn());
+		});
+		$('#more_competitions_loading').hide();
+		$('#more_competitions').show();
+		setupPortfolio();
+	});
+}
+
 function init_slider() {
 	console.log('init');
 	$('.bxslider').bxSlider({

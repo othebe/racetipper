@@ -36,6 +36,7 @@
 * @link http://www.teamddm.com
 * @version 1.4.0
 */
+var myScroll = '';
 (function($) {
 
 	$.fn.jScroll = function() {
@@ -135,7 +136,13 @@
 	function add_scroller(that, options) {
 		var scroll;
 		//setTimeout(function() {
-			scroll = new iScroll(that, $.extend(options, {run:false}));
+			scroll = new iScroll(that, $.extend(options, {
+				run:false, 
+				onScrollMove:function() {
+					scroll_bottom();
+				}
+			}));
+			myScroll = scroll;
 			$(that).data('iscroll',scroll);
 		//},100);
 		//if declared function run in the options, execute it after create the iScroll

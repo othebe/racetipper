@@ -1,8 +1,5 @@
 <div class="row">
-	<!--column 3/12-->
 	<div class="span3 profile-image">
-		
-		
 		<!-- te-wrapper -->
 		<div id="te-wrapper" class="te-wrapper">
 			
@@ -11,18 +8,10 @@
 				<img src="<%=@user_image%>" alt="profile picture" style="max-width:270px;">
 			</div>
 			<!-- cover -->
-			
 		</div>
 		<!-- te-wrapper -->
-		
-		
 	</div>
-	<!--column 3/12-->
 	
-	
-	
-	
-	<!--column 4/12-->
 	<div class="span4">
 		 
 		 <!-- about me text -->	
@@ -66,6 +55,24 @@
 		 <!-- personal info -->
 	</div>
 	<!--column 5/12-->
+	
+	<div class="span12 profile-image">
+		<h2>My Competitions</h2>
+		<div id="portfolio-items" class="portfolio-items" style="position: relative; overflow: hidden; height: auto;">
+			<% @competitions.each do |competition| %>
+				<div class="item" style="width:140px; height:150px;">
+					<div class="media-box">
+						<img src="<%=(competition.image_url.nil?)?DEFAULT[:COMPETITION_IMG]:competition.image_url%>" alt="<%=competition.name%>" style="width:140px; height:100px;">
+						<div class="mask" competition_id="<%=competition.id%>">
+							<h3 class="title" style="margin-top:12%;">See Details</h3>
+							<a href="#/competitions/show/<%=competition.id%>" class="ico show-details supress" onclick=""></a>
+						</div>
+					</div>
+					<h3 class="project-title"><%=competition.name%></h3>
+				</div>
+			<% end %>
+		</div>
+	</div>
 	
 	
 
