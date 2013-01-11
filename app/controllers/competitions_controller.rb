@@ -58,19 +58,26 @@ class CompetitionsController < ApplicationController
 	def edit
 		redirect_to :root and return if (@user.nil?)
 		
+		@competition = nil
 		@competition = Competition.find_by_id(params[:id]) if (params.has_key?(:id))
 		
-		redirect_to :root and return if (@user.id != @competition.creator_id)
+		redirect_to :root and return if (!@competition.nil? && @user.id != @competition.creator_id)
 		
 		@id = params[:id] if (params.has_key?(:id))
 		@races = Race.where(:status=>STATUS[:ACTIVE])
-		@is_private = (@competition.status == STATUS[:PRIVATE])
-		
-		@competition_races = []
-		Competition.get_all_races(@competition.id).each do |race|
-			@competition_races.push(race.race_id)
+		if (!@competition.nil?)
+			@is_private = (@competition.status == STATUS[:PRIVATE])
+		else
+			@is_private = false
 		end
 		
+		@competition_races = []
+		if (!@competition.nil?)
+			Competition.get_all_races(@competition.id).each do |race|
+				@competition_races.push(race.race_id)
+			end
+		end
+			
 		render :layout=>false
 	end
 	
@@ -106,12 +113,14 @@ class CompetitionsController < ApplicationController
 		competition.season_id = season_id
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
-			#Generate competition invitation
-			base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
-			competition.invitation_code  =  (0...10).map{ base[rand(base.length)] }.join
 		else
 			competition.status = STATUS[:ACTIVE]
 		end
+		
+		#Generate competition invitation code
+		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+		competition.invitation_code  =  (0...10).map{ base[rand(base.length)] }.join
+
 		competition.save
 		
 		#Add user as participant
@@ -122,9 +131,11 @@ class CompetitionsController < ApplicationController
 		
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
-			send_competition_invitations(competition_data[:invitations], competition)
 			CompetitionInvitation.invite_user(@user.id, competition.id)
 		end
+		
+		#Send emails
+		send_competition_invitations(competition_data[:invitations], competition)
 		
 		#Save races/stages
 		competition_data[:races].each do |race_id|
