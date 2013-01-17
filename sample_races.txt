@@ -1,0 +1,6 @@
+#name, description, image_url
+Pokemon Circuit, Pokemon Circuit competition 2013, http://www.pokeplace.org/images/regioni/kanto.jpg
+!name, description, image_url, profile, starts_on, start_location, end_location, distance_km
+Hometown, Your hometown, http://s3.amazonaws.com/rapgenius/300px-Pallet_Town_anime.png, Flat, 2013-03-01 00:00:00, Ash1, Ash2, 50.1
+Rival Hometown, Your rival's hometown, http://cdn.bulbagarden.net/upload/thumb/5/55/Rival_artwork.png/180px-Rival_artwork.png, Flat, 2013-04-01 00:00:00, Ash2, Ash3, 100.5
+

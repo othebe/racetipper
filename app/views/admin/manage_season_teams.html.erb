@@ -1,4 +1,12 @@
 <div style="margin-bottom:15px;">
+	<form method="POST" action="/admin/upload_season_teams" enctype="multipart/form-data">
+		<label>Upload rider file:</label>
+		<%= file_field 'upload', 'datafile' %></p>
+		<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token.to_s%>">
+		<input type="submit" value="Preview">
+	</form>
+	<hr />
+	
 	<a href="#" onclick="edit_team(null);">+ Add new team</a>
 </div>
 

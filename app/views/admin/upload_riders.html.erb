@@ -1,0 +1,65 @@
+<div style="margin-bottom:15px;">
+	<form method="POST" action="/admin/upload_riders" enctype="multipart/form-data">
+		<label>Upload rider file:</label>
+		<%= file_field 'upload', 'datafile' %></p>
+		
+		<input type="submit" value="Preview">
+	</form>
+	<hr />
+</div>
+
+<% if (!@result_data.empty?) %>
+	<table class="riders">
+		<tr>
+			<th>ID</th>
+			<th>Image</th>
+			<th>Name</th>
+		</tr>
+		
+		<%@result_data.each do |rider| %>
+			<% @rider_count += 1%>
+			<tr>
+				<td><%=@rider_count%></td>
+				<td><img class="thumbnail" src="<%=rider[1]%>"></td>
+				<td><%=rider[0]%></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<button style="margin-top:15px;" onclick="submit_upload_riders();">Submit</button>
+
+<script>
+function submit_upload_riders() {
+	var upload_confirm = confirm('Add riders? UPLOAD WILL NOT CHECK FOR DUPLICATE RIDERS.');
+	if (!upload_confirm) return;
+	
+	rider_data = [];
+	<% @result_data.each do |result| %>
+		var data = {};
+		data['rider_name'] = '<%=result[0]%>';
+		data['image_url'] = '<%=result[1]%>';
+		rider_data.push(data);
+	<% end %>
+	
+	$.post('/admin/save_riders', {rider_info:rider_data}, function(response) {
+		window.location.href = '/admin/manage_riders';
+	});
+}
+</script>
+
+<style>
+.riders {
+	border: 1px solid #C3C3C3;
+	border-collapse: collapse;
+}
+	.riders th,
+	.riders td {
+		border: 1px solid #C3C3C3;
+	}
+
+.thumbnail {
+	max-height: 65px;
+	max-width: 43px;
+}
+</style>

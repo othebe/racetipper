@@ -22,7 +22,7 @@ class AdminController < ApplicationController
 	
 	def manage_riders
 		@title = 'Manage riders'
-		@riders = Rider.all
+		@riders = Rider.where({:status=>STATUS[:ACTIVE]})
 	end
 	
 	def edit_rider
@@ -65,60 +65,6 @@ class AdminController < ApplicationController
 		@race = Race.find_by_id(params[:id]) if (params.has_key?(:id))
 		@stages = Stage.where('race_id=? AND status=?', @race.id, STATUS[:ACTIVE]) if (!@race.nil?)
 		render :layout=>false
-	end
-	
-	def upload_results
-		@title = 'Upload stage results'
-		if (params.has_key?(:upload))
-			@result_keys = []
-			@result_data = []
-			@stage = nil
-			@race = nil
-			@season = nil
-			
-			file_data = params[:upload][:datafile].read
-			ndx = 0
-			file_data.each_line do |line|
-				next if (line.strip.length==0)
-				next if (line.start_with?('#'))
-				
-				ndx += 1
-				#Read stage/race/season info
-				if (ndx==1)
-					line_arr = line.split(',')
-					@stage = Stage.find_by_id(line_arr[0].strip)
-					@race = Race.find_by_id(line_arr[1].strip)
-					@season = Season.find_by_year(line_arr[2].strip)
-					next
-				end
-				
-				#Read result keys
-				if (line.starts_with?('!'))
-					key_line = line[1..-1]
-					line_arr = key_line.split(',')
-					line_arr.each do |key|
-						@result_keys.push(key.strip)
-					end
-					next
-				end
-				
-				#Read results
-				line_arr = line.split(',')
-				data = []
-				line_arr.each do |l|
-					data.push(l.strip)
-				end
-				@result_data.push(data)
-			end
-			
-			#Sort results
-			sort_column = @result_keys.index('time')
-			@result_data = @result_data.sort_by {|data| data[sort_column]}
-			
-			#Special keys
-			@rider_column = @result_keys.index('rider_id')
-			@time_column = @result_keys.index('time')
-		end
 	end
 	
 	def manage_quotes
@@ -203,13 +149,13 @@ class AdminController < ApplicationController
 	end
 	
 	def save_season_races
+		logger.debug(session.has_key?(:season_id))
 		render :json=>{:success=>false, :msg=>'Select a season first.'} and return if (!session.has_key?(:season_id) || session[:season_id].empty?)
 		race_info = params[:race_info]
 		if (race_info.has_key?(:id))
 			race = Race.find_by_id(race_info[:id])
 		end
 		race ||= Race.new
-		
 		race.name = race_info[:race_name]
 		race.description = race_info[:race_description]
 		race.image_url = race_info[:race_image_url]
@@ -284,6 +230,209 @@ class AdminController < ApplicationController
 		CyclingQuote.where({:id=>id}).delete_all
 		
 		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def delete_rider
+		id = params[:id]
+		rider = Rider.find_by_id(id)
+		if (!rider.nil?)
+			rider.status = STATUS[:DELETED]
+			rider.save
+		end
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def delete_season_race
+		id = params[:id]
+		race = Race.find_by_id(id)
+		if (!race.nil?)
+			race.status = STATUS[:DELETED]
+			race.save
+		end
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def upload_results
+		@title = 'Upload stage results'
+		if (params.has_key?(:upload))
+			@result_keys = []
+			@result_data = []
+			@stage = nil
+			@race = nil
+			@season = nil
+			
+			file_data = params[:upload][:datafile].read
+			ndx = 0
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+				
+				ndx += 1
+				#Read stage/race/season info
+				if (ndx==1)
+					line_arr = line.split(',')
+					@stage = Stage.find_by_id(line_arr[0].strip)
+					@race = Race.find_by_id(line_arr[1].strip)
+					@season = Season.find_by_year(line_arr[2].strip)
+					next
+				end
+				
+				#Read result keys
+				if (line.starts_with?('!'))
+					key_line = line[1..-1]
+					line_arr = key_line.split(',')
+					line_arr.each do |key|
+						@result_keys.push(key.strip)
+					end
+					next
+				end
+				
+				#Read results
+				line_arr = line.split(',')
+				data = []
+				line_arr.each do |l|
+					data.push(l.strip)
+				end
+				@result_data.push(data)
+			end
+			
+			#Sort results
+			sort_column = @result_keys.index('time')
+			@result_data = @result_data.sort_by {|data| data[sort_column]}
+			
+			#Special keys
+			@rider_column = @result_keys.index('rider_id')
+			@time_column = @result_keys.index('time')
+		end
+	end
+	
+	def upload_riders
+		@title = 'Upload riders'
+		@rider_count = Rider.count
+		if (params.has_key?(:upload))
+			@result_keys = []
+			@result_data = []
+			
+			file_data = params[:upload][:datafile].read
+
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+								
+				#Read result keys
+				if (line.starts_with?('!'))
+					key_line = line[1..-1]
+					line_arr = key_line.split(',')
+					line_arr.each do |key|
+						@result_keys.push(key.strip)
+					end
+					next
+				end
+				
+				#Read results
+				line_arr = line.split(',')
+				data = []
+				line_arr.each do |l|
+					data.push(l.strip)
+				end
+				@result_data.push(data)
+			end
+		end
+	end
+	
+	def upload_season_races
+		@title = 'Upload season races'
+		if (params.has_key?(:upload))
+			@result_keys = []
+			@result_data = []
+			@race_name = ''
+			@race_description = ''
+			@race_image_url = ''
+			
+			file_data = params[:upload][:datafile].read
+			ndx = 0
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+				
+				ndx += 1
+				#Read race name/description/image_url info
+				if (ndx==1)
+					line_arr = line.split(',')
+					@race_name = line_arr[0].strip
+					@race_description = line_arr[1].strip
+					@race_image_url = line_arr[2].strip
+					next
+				end
+				
+				#Read result keys
+				if (line.starts_with?('!'))
+					key_line = line[1..-1]
+					line_arr = key_line.split(',')
+					line_arr.each do |key|
+						@result_keys.push(key.strip)
+					end
+					next
+				end
+				
+				#Read results
+				line_arr = line.split(',')
+				data = []
+				line_arr.each do |l|
+					data.push(l.strip)
+				end
+				@result_data.push(data)
+			end
+		end
+	end
+	
+	def upload_season_teams
+		@title = 'Upload season teams'
+		if (params.has_key?(:upload))
+			@result_keys = []
+			@result_data = []
+			@team_name = ''
+			@team_image_url = ''
+			@race_id = ''
+			
+			file_data = params[:upload][:datafile].read
+			ndx = 0
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+				
+				ndx += 1
+				#Read race name/description/image_url info
+				if (ndx==1)
+					line_arr = line.split(',')
+					@team_name = line_arr[0].strip
+					@team_image_url = line_arr[1].strip
+					@race_id = line_arr[2].strip
+					@race = Race.find_by_id(@race_id)
+					next
+				end
+				
+				#Read result keys
+				if (line.starts_with?('!'))
+					key_line = line[1..-1]
+					line_arr = key_line.split(',')
+					line_arr.each do |key|
+						@result_keys.push(key.strip)
+					end
+					next
+				end
+				
+				#Read results
+				line_arr = line.split(',')
+				data = []
+				line_arr.each do |l|
+					data.push(l.strip)
+				end
+				@result_data.push(data)
+			end
+		end
 	end
 	
 	private

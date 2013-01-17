@@ -12,7 +12,6 @@ class DashboardController < ApplicationController
 		else
 			options[:limit] = 10
 		end
-		logger.debug(options.inspect)
 		competition_list = Competition.get_competitions(uid, options)
 		@competitions = []
 		competition_list.each do |competition|
@@ -31,7 +30,7 @@ class DashboardController < ApplicationController
 	
 	def show_season_info
 		current_season = Season.find_by_year(Time.now.year)
-		@races = Race.where({:season_id=>current_season.id})
+		@races = Race.where({:season_id=>current_season.id, :status=>STATUS[:ACTIVE]})
 		render :layout=>false
 	end
 	

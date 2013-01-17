@@ -1,4 +1,12 @@
 <div style="margin-bottom:15px;">
+	<form method="POST" action="/admin/upload_riders" enctype="multipart/form-data">
+		<label>Upload rider file:</label>
+		<%= file_field 'upload', 'datafile' %></p>
+		
+		<input type="submit" value="Preview">
+	</form>
+	<hr />
+	
 	<a href="#" onclick="edit_rider(null);">+ Add new rider</a>
 </div>
 
@@ -18,7 +26,7 @@
 				<td><%=rider.name%></td>
 				<td>
 					<a href="#" onclick="edit_rider('<%=rider.id%>')">Edit</a>
-					<a href="#">Remove</a>
+					<a href="#" onclick="delete_rider('<%=rider.id%>');">Remove</a>
 				</td>
 			</tr>
 		<% end %>
@@ -30,6 +38,17 @@ function edit_rider(id) {
 	if (id==null)
 		window.open('/admin/edit_rider', 'Add rider(s)', 'height=400,width=400');
 	else window.open('/admin/edit_rider/'+id, 'Edit rider', 'height=400,width=400');
+}
+
+function delete_rider(id) {
+	del_confirm = confirm('Delete rider?');
+	if (!del_confirm) return;
+	
+	$.post('/admin/delete_rider', {id:id}, function(response) {
+		if (response.success)
+			window.location.reload();
+		else alert(response.alert);
+	});
 }
 </script>
 

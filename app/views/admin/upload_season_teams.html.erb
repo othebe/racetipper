@@ -1,0 +1,69 @@
+<div style="margin-bottom:15px;">
+	<form method="POST" action="/admin/upload_season_teams" enctype="multipart/form-data">
+		<label>Upload rider file:</label>
+		<%= file_field 'upload', 'datafile' %></p>
+		<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token.to_s%>">
+		<input type="submit" value="Preview">
+	</form>
+	<hr />
+	
+	<a href="#" onclick="edit_team(null);">+ Add new team</a>
+</div>
+
+<% if (!@result_data.empty?) %>
+	<label>Team name: </label><%=@team_name%></br>
+	<label>Team image: </label><a href="<%=@team_image_url%>" target="_BLANK"><%=@team_image_url%></a></br>
+	<label>Race: </label><%=@race.name%></br></br>
+	
+	<label style="text-decoration:underline;">Riders</label></br>
+	<% order = 1 %>
+	<% @result_data.each do |result| %>
+		<span style="font-weight:bold;">#<%=order%></span></br>
+		<% (0..(@result_keys.count-1)).each do |ndx| %>
+			<% if (@result_keys[ndx]=='rider_id') %>
+				<% rider = Rider.find_by_id(result[ndx]) %>
+				<% outdata = rider.name %>
+			<% else %>
+				<% outdata = result[ndx] %>
+			<% end %>
+			<label><%=@result_keys[ndx]%>: </label><%=outdata%></br>
+		<% end %>
+		<hr />
+		<% order += 1 %>
+	<% end %>
+<% end %>
+
+<button style="margin-top:15px;" onclick="submit_upload_season_teams();">Submit</button>
+
+<style>
+label {
+	font-weight: bold;
+}
+</style>
+
+<script>
+function submit_upload_season_teams() {
+	var upload_confirm = confirm('Add teams? UPLOAD WILL NOT CHECK FOR DUPLICATE TEAMS OR RIDERS.');
+	if (!upload_confirm) return;
+	
+	var team_data = {};
+	team_data['team_name'] = '<%=@team_name%>';
+	team_data['image_url'] = '<%=@team_image_url%>';
+	team_data['race_id'] = '<%=@race_id%>';
+	team_data['riders'] = [];
+	rider_data = [];
+	<% @result_data.each do |result| %>
+		tmp = {};
+		tmp['id'] = '<%=result[@result_keys.index('rider_id')]%>';
+		tmp['display_name'] = '<%=result[@result_keys.index('display_name')]%>';
+		rider_data.push(tmp);
+	<% end %>
+	team_data['riders'] = rider_data;
+	
+	team_info = [];
+	team_info.push(team_data);
+	$.post('/admin/save_season_teams', {team_info:team_info}, function(response) {
+		window.location.href = '/admin/manage_season_teams';
+	});
+}
+</script>
