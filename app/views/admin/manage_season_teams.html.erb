@@ -26,7 +26,7 @@
 				<td><img class="thumbnail" src="<%=team.image_url%>"></td>
 				<td>
 					<a href="#" onclick="edit_team('<%=team.id%>')">Edit</a>
-					<a href="#">Remove</a>
+					<a href="#" onclick="remove_team('<%=team.id%>');">Remove</a>
 				</td>
 			</tr>
 		<% end %>
@@ -38,6 +38,15 @@ function edit_team(id) {
 	if (id==null)
 		window.open('/admin/edit_season_team', 'Add team(s)', 'height=400,width=1000');
 	else window.open('/admin/edit_season_team/'+id, 'Edit team', 'height=400,width=1000');
+}
+
+function remove_team(id) {
+	var confirm_delete = confirm('Delete this team?');
+	if (!confirm_delete) return;
+	
+	$.post('/admin/delete_season_team', {id:id}, function(response) {
+		window.location.reload();
+	});
 }
 </script>
 

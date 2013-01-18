@@ -5,6 +5,10 @@
 			<img src="/assets/close.png" style="height:15px;">
 		</div>
 		
+		<% if (session.has_key?(:invited_competitions) && !session[:invited_competitions].empty?) %>
+			<h2 style="margin-left:15px;">Sign in to join the competition.</h2>
+		<% end %>
+		
 		<div style="float:left">
 			<div class="signin" style="float:left; border-right:1px solid darkGray; padding:15px;">
 				<div style="font-weight:bold;">Login to Racetipper</div>

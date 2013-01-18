@@ -17,6 +17,7 @@ Racetipper::Application.routes.draw do
 	post 'admin/delete_rider'
 	post 'admin/upload_riders'
 	post 'admin/save_season_teams'
+	post 'admin/delete_season_team'
 	post 'admin/upload_season_teams'
 	post 'admin/save_season_races'
 	post 'admin/delete_season_race'
@@ -38,6 +39,9 @@ Racetipper::Application.routes.draw do
 	get 'dashboard/show_season_info'
 	get 'dashboard/show_profile'
 	
+	match 'competition/:mode_id' => 'dashboard#index', :defaults=>{:mode=>'competition'}
+	match 'profile/:id' => 'dashboard#show_profile', :defaults=>{:public=>true}
+	
 	get 'users/logout'
 	post 'users/create'
 	post 'users/login'
@@ -47,17 +51,20 @@ Racetipper::Application.routes.draw do
 	get 'competitions/results'
 	get 'competitions/leaderboard'
 	get 'competitions/get_competition_stage_info'
-	get 'competitions/join_private_competition'
+	get 'competitions/join_by_code'
 	get 'competitions/get_more_competitions'
 	post 'competitions/save_competition'
 	post 'competitions/delete_competition'
 	post 'competitions/join'
 	post 'competitions/tip'
+	post 'competitions/send_invitation_emails'
+	match 'competitions/:id' => 'competitions#show'
 	match 'competitions/edit/:id' => 'competitions#edit'
+	match 'competitions/edit_participants/:id' => 'competitions#edit_participants'
 	match 'competitions/show/:id' => 'competitions#show'
 	match 'competitions/results/:id' => 'competitions#results'
 	match 'competitions/leaderboard/:id' => 'competitions#leaderboard'
-	match 'invitations/:competition_id/:id' => 'competitions#join_private_competition'
+	match 'invitations/:competition_id/:code' => 'competitions#join_by_code'
 	
 	get 'races/show'
 	match 'races/:id' => 'races#show'

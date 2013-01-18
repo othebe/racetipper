@@ -113,7 +113,8 @@ function submit_season_race() {
 	});
 	
 	$.post('/admin/save_season_races', {race_info:race_info}, function(response) {
-		console.log(response);
+		window.opener.location.reload();
+		self.close();
 	});
 }
 </script>

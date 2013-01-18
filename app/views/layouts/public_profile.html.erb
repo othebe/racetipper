@@ -74,11 +74,7 @@
             <!-- NAV MENU -->
             <nav>
                 <ul>
-                    <li><a href='#/home' onclick="show_season_info();"><span>Home</span></a></li>
-                    <li><a href='#/competitions' onclick="show_competitions();"><span>Competitions</span></a></li>
-					<% if (!@user.nil?) %>
-						<li><a href='#/profile' onclick="show_profile();"><span>Profile</span></a></li>
-					<% end %>
+                    <li><a href="/"><span>Home</span></a></li>
                 </ul>
             </nav>
             <!-- NAV MENU -->
@@ -89,104 +85,11 @@
                 <p>Tip to win :)</p>
             </div>
             <!-- TITLE -->
-        
         </div>
-		
-		<% if (@user.nil?) %>
-			<div style="float:right; padding:15px;">
-				<button id="inline" href="#login_form">Login</button>
-			</div>
-		<% else %>
-			<div style="float:right; padding:15px;">
-				<a href="/users/logout">
-					<button>Logout</button>
-				</a>
-			</div>
-		<% end %>
-    </header>
-    <!-- END HEADER -->
-    
-	<% if (@user.nil?) %>
-		<%= render 'users/partials/login_form' %>
-	<% end %>
-    
-    
-    
-    <!-- ************************ PAGES -->
-    <div id="pages">
-    
-    
-    	<!-- PAGE : HOME -->
-        <section id="home" class="page wrapper" data-x="-16500" data-y="-1250" data-rotate="0" data-scale="14">
-        	
-            <!-- PAGE TITLE -->
-        	<h2 class="caption"><span>HOME</span></h2>
-			
-			<!-- PORTFOLIO ITEMS -->
-			<div id="portfolio-items" class="portfolio-items season_info_portfolio"></div>
-			<!-- PORTFOLIO ITEMS -->
-        
-		</section>
-        <!-- PAGE : HOME -->
-        
-		
-        
-        <!-- PAGE : COMPETITIONS -->
-        <section id="competitions" class="page wrapper competitions" data-x="1500" data-y="250" data-rotate="-90" data-scale="16">
-			
-            <!-- PAGE TITLE -->
-            <h2 class="caption"><span>COMPETITIONS</span></h2>
-			
-			<div id="competition-content" class="competition-content">
-				<div class="iscroll-wrapper">
-					<div class="scroller container">
-					
-						<!--FILTERS-->
-						<ul id="filters">
-						  <li><a href="#" id="my_competitions" data-filter=".mine">Mine</a></li>
-						  <li class="current"><a href="#" id="all_competitions" data-filter="*">All</a></li>
-						  <li class="hide_new_competition" style="display:none;"><a href="#" onclick="hide_new_competition();">Back</a></li>
-						</ul>
-						<!--FILTERS-->
-							
-							
-						<!-- PORTFOLIO ITEMS -->
-						<div id="portfolio-items" class="portfolio-items competition_portfolio"></div>
-						<!-- PORTFOLIO ITEMS -->
-						
-						<!-- BEGIN New competition -->
-						<div id="new_competition" style="height:auto;"></div>
-						<!-- END New competition -->
-						
-						<div style="clear:both;"></div>
-						<div style="text-align:center;">
-							<button id="more_competitions" onclick="load_more_competitions();">MORE</button>
-							<img id="more_competitions_loading" src="/assets/ajax-loader.gif" style="display:none;">
-						</div>
-					</div>
-				</div>
-			</div>
-            
-        </section>
-        <!-- PAGE : COMPETITIONS -->
-        
-
-		
-        <!-- PAGE : SEASON INFO -->
-        <section id="season_info" class="page wrapper season_info" data-x="14500" data-y="1250" data-rotate="0" data-scale="4">
-        	
-            <!-- PAGE TITLE -->
-            <h2 class="caption"><span>SEASON INFO</span></h2>
-			
-			
-            
-        </section>
-        <!-- PAGE : SEASON INFO -->
-        
-        
-        
-        
-        <!-- PAGE : PROFILE -->
+	</header>
+	
+	<div id="pages">
+		<!-- PAGE : PROFILE -->
         <section id="profile" class="page wrapper" data-x="14500" data-y="5250" data-rotate="90" data-scale="2">
         	
             <!-- PAGE TITLE -->
@@ -194,63 +97,12 @@
 			
 			<div class="iscroll-wrapper">
 				<div class="scroller container">
-					<div class="profile_portfolio"></div>
+					<div class="profile_portfolio"><%= yield %></div>
 				</div>
 			</div>
 			
         </section>
         <!-- PAGE : PROFILE -->
-        
-        
-        
-    </div>
-    <!-- ************************ PAGES -->
-    
-    
-    
-    
-    <!-- ************************ PORTFOLIO OVERLAY -->
-    <div class="p-overlay">
-    	
-    </div>
-    <!-- ************************ PORTFOLIO OVERLAY -->
-    
-    <!-- ************************ PORTFOLIO OVERLAY -->
-    <div class="p-overlay">
-    	
-    </div>
-    <!-- ************************ PORTFOLIO OVERLAY -->
-    
-    
-    
-    <!-- ************************ AJAX LOADER -->
-    <div class="loader"></div>
-    <!-- ************************ AJAX LOADER -->
-	
-	<script>
-		$(document).ready(function() {
-			$("button#inline").fancybox({
-				modal: true,
-			});
-			
-			<% if (@mode=='competition') %>
-				window.location.href = '/#/competitions/show/'+<%=@mode_id%>
-			<% elsif (@mode=='profile') %>
-				window.location.href = '/#/profile/'+<%=@mode_id%>
-			<% end %>
-		});
-	</script>
-	
-	<div class="item competition template">
-		<div class="media-box">
-			<img src="" alt="" style="height:140px; width:200px;">
-			<div class="mask">
-				<h3 class="title">SEE COMPETITION DETAILS</h3>
-				<a data_id="" href="#/competitions/show/" class="ico show-details"></a>
-			</div>
-		</div>
-		<h3 class="project-title"></h3>
-		<p class="category">In Progress</p>
 	</div>
 </body>
 </html>

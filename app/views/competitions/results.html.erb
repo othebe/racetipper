@@ -15,16 +15,19 @@
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		<div class="span4 portfolio-field portfolio-nav">
 			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
-			<a class="icon button prev ajax race_results" href="portfolio-item-03.html" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
+			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
 			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
+			<% if (@is_owner) %>
+				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
+			<% end %>
 			<a class="icon button back" href="#/competitions" title="Close">Â</a>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field">
-			<img src="<%=(@data[:stages].first.image_url.nil?)?DEFAULT[:STAGE_IMG]:@data[:stages].first.image_url%>" alt="<%=@data[:stages].first.name%>" class="stage_img stage_data_container">
-			<div class="tip_data" race_id="<%=@data[:race_id]%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@data[:stages].first.id%>"></div>
+			<img src="<%=(@selected_stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:@selected_stage.image_url%>" alt="<%=@selected_stage.name%>" class="stage_img stage_data_container">
+			<div class="tip_data" race_id="<%=@data[:race_id]%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@selected_stage.id%>"></div>
 			<h3>Tip a Rider</h3>
 			<p>
 				<% @data[:teams].each do |team| %>
@@ -34,7 +37,7 @@
 							<div class="item">
 								<div class="media-box">
 									<img src="<%=rider.rider.photo_url%>" alt="<%=rider.rider.name%>" style="width:210px; height:150px;">
-									<div class="mask tip_rider <%=(@data[:first_stage_tipped_rider_id]==rider.rider_id)?'selected-mask':''%>" rider_id="<%=rider.rider_id%>">
+									<div class="mask tip_rider <%=(@data[:selected_stage_tipped_rider_id]==rider.rider_id)?'selected-mask':''%>" rider_id="<%=rider.rider_id%>">
 										<h3 class="title">Tip Rider</h3>
 										<a href="#" class="ico show-details new_competition supress" onclick="tip_rider(this);"></a>
 									</div>
@@ -56,29 +59,29 @@
 				<div class="history-unit">
 					<select onchange="get_competition_stage_data('<%=@data[:competition].id%>', this.value);">
 						<% @data[:stages].each do|stage| %>
-							<option value="<%=stage.id%>"><%=stage.name%></option>
+							<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%></option>
 						<% end %>
 					</select>
 				</div>
 				
 				<div class="history-unit description stage_data_container">
 					<h4 style="font-weight:bold;">Description</h4>
-					<p><%=@data[:stages].first.description%></p>
+					<p><%=@selected_stage.description%></p>
 				</div>
 				
 				<div class="history-unit profile stage_data_container">
 					<h4 style="font-weight:bold;">Profile</h4>
-					<p><%=@data[:stages].first.profile%></p>
+					<p><%=@selected_stage.profile%></p>
 				</div>
 				
 				<div class="history-unit starts_on stage_data_container">
 					<h4 style="font-weight:bold;">Starts on</h4>
-					<p><%=@data[:stages].first.starts_on%></p>
+					<p><%=@selected_stage.starts_on%></p>
 				</div>
 				
 				<div class="history-unit distance stage_data_container">
 					<h4 style="font-weight:bold;">Distance</h4>
-					<p><%=@data[:stages].first.start_location%> - <%=@data[:stages].first.end_location%> (<%=@data[:stages].first.distance_km%> km)</p>
+					<p><%=@selected_stage.start_location%> - <%=@selected_stage.end_location%> (<%=@selected_stage.distance_km%> km)</p>
 				</div>
 			</div>	
 		</div>

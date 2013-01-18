@@ -18,18 +18,29 @@ class CompetitionsController < ApplicationController
 		@data = get_competition_data(params[:id])
 		@data[:race_id] = race_id
 		
+		@is_owner = false
+		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
+		
 		stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order(:order_id)
 		@data[:stages] = stages
 		
-		first_stage_tip = CompetitionTip.where({
+		#Find first available stage
+		@selected_stage = nil
+		stages.each do |stage|
+			next if (!@selected_stage.nil?)
+			@selected_stage = stage if (stage.starts_on > Time.now)
+		end
+		@selected_stage = stages.first if (@selected_stage.nil?)
+		
+		selected_stage_tip = CompetitionTip.where({
 			:competition_participant_id => @user.id,
-			:stage_id => stages.first.id,
+			:stage_id => @selected_stage.id,
 			:competition_id => params[:id]
 		})
-		if (!first_stage_tip.empty?)
-			@data[:first_stage_tipped_rider_id] = first_stage_tip.first.rider_id
+		if (!selected_stage_tip.empty?)
+			@data[:selected_stage_tipped_rider_id] = selected_stage_tip.first.rider_id
 		else
-			@data[:first_stage_tipped_rider_id] = nil
+			@data[:selected_stage_tipped_rider_id] = nil
 		end
 		
 		teams = Team.where({:season_id=>@data[:competition].season_id, :status=>STATUS[:ACTIVE]})
@@ -51,6 +62,9 @@ class CompetitionsController < ApplicationController
 		@data = get_competition_data(params[:id])
 		@races = Competition.get_all_races(params[:id])
 		@leaderboard = get_leaderboard(params[:id], @races.first.race_id)
+		
+		@is_owner = false
+		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
 		
 		render :layout=>false
 	end
@@ -81,8 +95,29 @@ class CompetitionsController < ApplicationController
 		render :layout=>false
 	end
 	
-	def join_private_competition
-		render :text=>params.inspect
+	def edit_participants
+		@competition_id = params[:id]
+		@competition = Competition.find_by_id(@competition_id)
+		@participants = CompetitionParticipant.where({:competition_id=>@competition_id, :status=>STATUS[:ACTIVE]}).joins(:user)
+		render :layout=>false
+	end
+	
+	def join_by_code
+		competition_id = params[:competition_id]
+		code = params[:code]
+		
+		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
+		redirect_to :root and return if (competition.nil?)
+		
+		#If user not logged in, store invitation in session until they login.
+		if (@user.nil?)
+			session[:invited_competitions] ||= []
+			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
+			redirect_to('/#/competitions/'+competition_id) and return
+		else
+			CompetitionParticipant.add_participant(@user.id, competition.id)
+			redirect_to('/#/competitions/'+competition_id) and return
+		end
 	end
 	
 	def save_competition
@@ -90,8 +125,9 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'You are not logged in.'} and return if (@user.nil?)
 		
 		current_year = Time.now.year
-		season_id = Season.find_by_year(current_year)
-		render :json=>{:success=>false, :msg=>'This season has not been released yet.'} and return if (season_id.nil?)
+		season = Season.find_by_year(current_year)
+		render :json=>{:success=>false, :msg=>'This season has not been released yet.'} and return if (season.nil?)
+		season_id = season.id
 		
 		competition_data = params[:data]
 		
@@ -160,7 +196,7 @@ class CompetitionsController < ApplicationController
 		
 		competition = Competition.find_by_id(params[:id])
 		render :json=>{:success=>false, :msg=>'Competition not found.'} and return if (competition.nil?)
-		render :json=>{:success=>false, :msg=>'You do not permission to edit this competition.'} and return if (@user.id != competition.creator_id)
+		render :json=>{:success=>false, :msg=>'You do not have permission to edit this competition.'} and return if (@user.id != competition.creator_id)
 		
 		competition.status = STATUS[:DELETED]
 		competition.save
@@ -242,12 +278,9 @@ class CompetitionsController < ApplicationController
 		
 		competition = Competition.find_by_id(params[:competition_id])
 		if (competition.status = STATUS[:ACTIVE])
-			participation = CompetitionParticipant.where({:competition_id=>params[:competition_id], :user_id=>@user.id}).first
-			participation ||= CompetitionParticipant.new
-			participation.competition_id = params[:competition_id]
-			participation.user_id = @user.id
-			participation.save
+			CompetitionParticipant.add_participant(@user.id, params[:competition_id])
 		elsif (competition.status = STATUS[:PRIVATE])
+			#Check if invited?
 		end
 		render :json=>{:success=>true, :msg=>'success'}
 	end
@@ -257,6 +290,10 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'Competition not selected.'} and return if (!params.has_key?(:competition_id))
 		render :json=>{:success=>false, :msg=>'Stage not selected.'} and return if (!params.has_key?(:stage_id))
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		
+		#Determine if tip can be set
+		stage = Stage.find_by_id(params[:stage_id])
+		render :json=>{:success=>false, :msg=>'Tipping has ended for this stage.'} and return if (stage.starts_on < Time.now)
 		
 		tip = CompetitionTip.where({
 			:competition_participant_id => @user.id,
@@ -270,6 +307,21 @@ class CompetitionsController < ApplicationController
 		tip.rider_id = params[:rider_id]
 		tip.competition_id = params[:competition_id]
 		tip.save
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	def send_invitation_emails
+		render :json=>{:success=>false, :msg=>'Could not read competition data. Please refresh your browser and try again'} and return if (!params.has_key?(:competition_id))
+		render :json=>{:success=>false, :msg=>'Could not read invitation data. Please refresh your browser and try again'} and return if (!params.has_key?(:emails))
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		
+		competition = Competition.find_by_id(params[:competition_id])
+		render :json=>{:success=>false, :msg=>'Competition not found.'} and return if (competition.nil?)
+	
+		render :json=>{:success=>false, :msg=>'You do not have permission to do this.'} and return if (@user.id != competition.creator_id)
+		
+		send_competition_invitations(params[:emails], competition)
 		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
@@ -308,7 +360,9 @@ class CompetitionsController < ApplicationController
 		
 		user_scores = {}
 		tips.each do |tip|
+			next if (race_results.nil?)
 			rider_id = tip.rider_id
+			next if (race_results[rider_id].nil?)
 			stage_id = tip.stage_id
 			user_id = tip.competition_participant_id
 			next if (race_results[rider_id][stage_id].nil?)

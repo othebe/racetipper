@@ -1,5 +1,8 @@
 class DashboardController < ApplicationController
 	def index
+		@mode = params[:mode] if (params.has_key?(:mode))
+		@mode_id = params[:mode_id] if (params.has_key?(:mode_id))
+		
 		render :layout=>'dashboard'
 	end
 	
@@ -36,7 +39,10 @@ class DashboardController < ApplicationController
 	
 	def show_profile		
 		@user_image = '/assets/default_user.jpg'
-		@user_rank = User.get_rank(@user.id)
+		user_id = @user.id
+		user_id = params[:id] if (params.has_key?(:id))
+		@userprofile = User.find_by_id(user_id)
+		@user_rank = User.get_rank(user_id)
 		
 		#Get quote
 		quote_count = CyclingQuote.count
@@ -44,8 +50,12 @@ class DashboardController < ApplicationController
 		@quote = CyclingQuote.first(:offset=>offset)
 		
 		#Get competitions
-		@competitions = Competition.where({:creator_id=>@user.id})
+		@competitions = Competition.where({:creator_id=>user_id})
 		
-		render :layout=>false
+		if (params.has_key?(:public))
+			render :layout=>'public_profile'
+		else
+			render :layout=>false
+		end
 	end
 end

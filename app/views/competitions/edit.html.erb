@@ -17,7 +17,9 @@
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		<div class="span4 portfolio-field portfolio-nav">
 			<a class="icon button back" href="#/competitions" title="Back"><</a>
-			<a class="icon button back" href="#/competitions" title="Participants">K</a>
+			<% if (!@competition.nil?) %>
+				<a class="icon button ajax" href="#/competitions/edit_participants/<%=@competition.id%>" title="Participants">K</a>
+			<% end %>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		

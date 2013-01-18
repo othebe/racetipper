@@ -6,5 +6,13 @@ class ApplicationController < ActionController::Base
   def check_user
 	@user = nil
 	@user = session['user'] if (session.has_key?(:user))
+	
+	#Invite user to competitions if any
+	if (!@user.nil? && session.has_key?(:invited_competitions) && !session[:invited_competitions].empty?)
+		session[:invited_competitions].each do |competition_id|
+			CompetitionParticipant.add_participant(@user.id, competition_id)
+		end
+		session.delete(:invited_competitions)
+	end
   end
 end

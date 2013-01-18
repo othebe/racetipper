@@ -243,6 +243,17 @@ class AdminController < ApplicationController
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
+	def delete_season_team
+		id = params[:id]
+		team = Team.find_by_id(id)
+		if (!team.nil?)
+			team.status = STATUS[:DELETED]
+			team.save
+		end
+		
+		render :json=>{:success=>true, :msg=>'succcess'}
+	end
+	
 	def delete_season_race
 		id = params[:id]
 		race = Race.find_by_id(id)
