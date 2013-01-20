@@ -84,7 +84,7 @@ function submit_competition(event) {
 	data['competition_description'] = $('#description').val();
 	data['competition_image_url'] = $('#image_url').val();
 	data['open_to'] = $('input[name=open_to]:checked').val();
-	if (data['open_to']=='private') data['invitations'] = $('#invitation_emails').val();
+	data['invitations'] = $('#invitation_emails').val();
 	data['races'] = [];
 	$('input[name=race_choice]:checked').each(function(ndx, elt) {
 		data['races'].push($(elt).val());
