@@ -321,7 +321,7 @@ class CompetitionsController < ApplicationController
 	
 		render :json=>{:success=>false, :msg=>'You do not have permission to do this.'} and return if (@user.id != competition.creator_id)
 		
-		send_competition_invitations(params[:emails], competition)
+		send_competition_invitations(params[:emails], competition) if (params.has_key?(:emails))
 		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
