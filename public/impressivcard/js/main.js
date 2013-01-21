@@ -356,6 +356,27 @@ function showProjectDetails(url) {
 		}
 	
 	// ajax : fill data
+	console.log(url);
+	$.get(url, {}, function(response) {
+		hideLoader();
+		
+		p.html(response);
+		
+		// responsive videos
+		$(".portfolio-single").fitVids();
+		
+		if(Modernizr.csstransforms && Modernizr.csstransforms3d) { // modern browser
+		p.removeClass('animated '+ outAnimation + " " + inAnimation ).addClass('animated '+ inAnimation).show();
+		} else { //old browser
+			p.fadeIn();	
+		}
+		p.addClass('active');
+		
+		if(safeMod) {
+			$('#pages').css('max-height', p.height() - $('#header').outerHeight()).css('overflow','hidden');
+		}
+	});
+	/*
 	p.empty().load(url, function() {
 		
 		// wait for images to be loaded
@@ -379,6 +400,7 @@ function showProjectDetails(url) {
 			
 		},null,true);
 	});
+	*/
 }
 
 function hideProjectDetails(forever, safeClose) {

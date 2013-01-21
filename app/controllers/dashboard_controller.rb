@@ -28,6 +28,7 @@ class DashboardController < ApplicationController
 			end
 			@competitions.push(data)
 		end
+
 		render :layout=>false
 	end
 	
@@ -43,7 +44,6 @@ class DashboardController < ApplicationController
 		user_id = params[:id] if (params.has_key?(:id))
 		@userprofile = User.find_by_id(user_id)
 		@user_rank = User.get_rank(user_id)
-		
 		#Get quote
 		quote_count = CyclingQuote.count
 		offset = rand(quote_count)
@@ -52,10 +52,33 @@ class DashboardController < ApplicationController
 		#Get competitions
 		@competitions = Competition.where({:creator_id=>user_id})
 		
-		if (params.has_key?(:public))
-			render :layout=>'public_profile'
+		if (params.has_key?(:id))
+			render :layout=>'public'
 		else
 			render :layout=>false
 		end
+	end
+	
+	def show_public
+		@id = params[:id]
+		@mode = params[:mode]
+		
+		if (@mode=='competition')
+			competition = Competition.find_by_id(@id)
+			redirect_to :root and return if (competition.nil?)
+			@name = competition.name
+			@description = competition.description
+			@image = competition.image_url
+			@url = SITE_URL+'competition/'+@id
+		elsif (@mode=='profile')
+			user = User.find_by_id(@id)
+			redirect_to :root and return if (user.nil?)
+			@name = (user.firstname+' '+user.lastname).strip+"'s profile."
+			@description = 'My profile on Racetipper.'
+			@image = SITE_URL+'assets/default_user.jpg'
+			@url = SITE_URL+'profile/'+@id
+		end
+		
+		render :layout=>'public'
 	end
 end

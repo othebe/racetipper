@@ -28,10 +28,10 @@
 		 <h3>Let's socialize!</h3>
 		 
 		 <!-- social icons -->
-		<ul class="social">
-			<li><a class="facebook" href="#">&#88;</a></li>
-			<li><a class="twitter" href="#">&#95;</a></li>
-			<li><a class="google" href="#">&#107;</a></li>
+		<ul class="social" url="<%=SITE_URL+'profile/'+@userprofile.id.to_s%>" name="<%=(@userprofile.firstname+' '+@userprofile.lastname).strip+"'s profile."%>">
+			<li><a class="facebook share-fb">&#88;</a></li>
+			<li><a class="twitter share-tw">&#95;</a></li>
+			<li><a class="google share-googleplus">&#107;</a></li>
 		</ul>
 		<!-- social icons -->
 		 
@@ -77,3 +77,5 @@
 	
 
 </div>
+
+<%= javascript_include_tag "share" %>

@@ -232,12 +232,6 @@
 			$("button#inline").fancybox({
 				modal: true,
 			});
-			
-			<% if (@mode=='competition') %>
-				window.location.href = '/#/competitions/show/'+<%=@mode_id%>
-			<% elsif (@mode=='profile') %>
-				window.location.href = '/#/profile/'+<%=@mode_id%>
-			<% end %>
 		});
 	</script>
 	

@@ -2,6 +2,7 @@
 competitions_loaded = false;
 function show_competitions() {
 	var container = $('.competition_portfolio');
+	if ($('.competition_portfolio').length==0) return;
 	if (competitions_loaded) return;
 	$.get('/dashboard/show_competitions', {}, function(response) {
 		$(container).html(response);
@@ -14,6 +15,7 @@ function show_competitions() {
 season_info_loaded = false;
 function show_season_info() {
 	var container = $('.season_info_portfolio');
+	if ($('.season_info_portfolio').length==0) return;
 	if (season_info_loaded) return;
 	$.get('/dashboard/show_season_info', {}, function(response) {
 		$(container).html(response);
@@ -26,6 +28,8 @@ function show_season_info() {
 profile_loaded = false;
 function show_profile() {
 	var container = $('.profile_portfolio');
+	if ($('.profile_portfolio').length==0) return;
+	if ($(container).html().length>0) return;
 	if (profile_loaded) return;
 	$.get('/dashboard/show_profile', {}, function(response) {
 		$(container).html(response);
@@ -154,7 +158,6 @@ function load_more_competitions() {
 }
 
 function init_slider() {
-	console.log('init');
 	$('.bxslider').bxSlider({
 		minSlides: 7,
 		maxSlides: 7,

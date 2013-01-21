@@ -338,7 +338,7 @@ class CompetitionsController < ApplicationController
 	private
 	def get_competition_data(competition_id)
 		competition = Competition.find_by_id(competition_id)
-		redirect_to :root if (competition.nil?)
+		redirect_to :root and return if (competition.nil?)
 		
 		participant = false
 		if (!@user.nil?)

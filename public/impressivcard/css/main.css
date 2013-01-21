@@ -205,7 +205,7 @@ ul.personal-info.contact-form .title:after { top:auto; bottom:-0.5em; left:0; ri
          url('fonts/justvector/justvector-webfont.svg#webfontmuk63VQd') format('svg');
 }
 .social { padding:0; list-style:none; }
-.social li { display:inline-block; margin-bottom: -3px; }
+.social li { display:inline-block; margin-bottom: -3px; cursor:pointer;}
 .social li a { display:block; float:left; line-height:90%; font-family: 'JustVectorRegular'; font-size:3em; padding:.2em .2em .15em .2em; }
 .social li a:hover { background-color:#000; }
 .social li a.facebook:hover { background-color:#3c5fac; }

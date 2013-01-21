@@ -1,4 +1,6 @@
-﻿<div class="portfolio-single container">
+﻿<%= javascript_include_tag "share" %>
+
+<div class="portfolio-single container">
 		
 	<div class="row">
 	
@@ -30,10 +32,10 @@
 			<img src="<%=@data[:competition].image_url%>" alt="<%=@data[:competition].name%>" style="margin-bottom:-25px;">
 			
 			<h3>Share this!</h3>
-			<ul class="social">
-				<li><a class="facebook" href="#">&#88;</a></li>
-				<li><a class="twitter" href="#">&#95;</a></li>
-				<li><a class="google" href="#">&#107;</a></li>
+			<ul class="social" url="<%=SITE_URL+'competition/'+@data[:competition].id.to_s%>" name="<%=@data[:competition].name%>">
+				<li><a class="facebook share-fb">&#88;</a></li>
+				<li><a class="twitter share-tw">&#95;</a></li>
+				<li><a class="google share-googleplus">&#107;</a></li>
 			</ul>
 		</div>
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
