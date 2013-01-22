@@ -56,17 +56,39 @@ class CompetitionsController < ApplicationController
 		@selected_stage = default_stage if (@selected_stage.nil?)
 		@time_to_tip = get_remaining_time(@selected_stage.starts_on)
 		
-		teams = Team.where({:season_id=>@data[:competition].season_id, :status=>STATUS[:ACTIVE]})
+		teams = Team.where({
+					:season_id=>@data[:competition].season_id, 
+					:status=>STATUS[:ACTIVE], 
+					:race_id=>races
+				}).joins(:TeamRiders).order('team_riders.rider_number')
+				
+		team_hash = {}
 		team_arr = []
 		teams.each do |team|
+			next if (team_hash.has_key?(team.id))
 			team_data = {}
-			riders = TeamRider.where({:team_id=>team.id, :status=>STATUS[:ACTIVE]})
 			team_data[:team_id] = team.id
 			team_data[:team_name] = team.name
-			team_data[:riders] = riders
+			team_data[:riders] = team.TeamRiders
+			team_hash[team.id] = team_data
 			team_arr.push(team_data)
 		end
+		
 		@data[:teams] = team_arr
+		
+		logger.debug(@data[:teams].inspect)
+		
+		#teams = Team.where({:season_id=>@data[:competition].season_id, :status=>STATUS[:ACTIVE]})
+		#team_arr = []
+		#teams.each do |team|
+	#		team_data = {}
+	#		riders = TeamRider.where({:team_id=>team.id, :status=>STATUS[:ACTIVE]})
+	#		team_data[:team_id] = team.id
+	#		team_data[:team_name] = team.name
+	#		team_data[:riders] = riders
+	#		team_arr.push(team_data)
+	#	end
+		#@data[:teams] = team_arr
 		render :layout=>false
 	end
 	

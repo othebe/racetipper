@@ -139,6 +139,7 @@ class AdminController < ApplicationController
 				teamrider.team_id = team.id
 				teamrider.rider_id = rider_info[:id]
 				teamrider.display_name = rider_info[:display_name]
+				teamrider.rider_number = rider_info[:rider_number]
 				teamrider.save
 			end
 			

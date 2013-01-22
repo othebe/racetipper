@@ -31,6 +31,7 @@
 				<% @team_riders.each do |teamrider| %>
 					<div class="rider_selection" id="<%=teamrider.rider_id%>">
 						<div class="rider_choice"><span class="order"><%=ndx%>.</span> <span class="rider"><%=teamrider.rider.name%></span></div>
+						<input type="text" name="rider_number" placeholder="#" title="Rider number" value="<%=teamrider.rider_number%>" style="width:35px;">
 						<input type="text" name="display_name" placeholder="Display name" value="<%=teamrider.display_name%>">
 						<button onclick="remove_rider(this);">Remove</button>
 					</div>
@@ -47,6 +48,7 @@
 
 <div class="rider_selection template">
 	<div class="rider_choice"><span class="order"></span> <span class="rider"></span></div>
+	<input type="text" name="rider_number" placeholder="#" title="Rider number" style="width:35px;">
 	<input type="text" name="display_name" placeholder="Display name">
 	<button onclick="remove_riderthis);">Remove</button>
 </div>
@@ -95,6 +97,7 @@ function submit_season_team() {
 		rider = {};
 		rider['id'] = $(elt).attr('id');
 		rider['display_name'] = $(elt).find('input[name=display_name]').val();
+		rider['rider_number'] = $(elt).find('input[name=rider_number]').val();
 		riders.push(rider);
 	});
 	info['riders'] = riders;
@@ -125,7 +128,7 @@ div.label {
 
 div.rider_choice {
 	float: left;
-	min-width: 55%;
+	min-width: 50%;
 }
 
 div.col1 {

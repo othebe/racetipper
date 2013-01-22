@@ -56,6 +56,7 @@ function submit_upload_season_teams() {
 		tmp = {};
 		tmp['id'] = '<%=result[@result_keys.index('rider_id')]%>';
 		tmp['display_name'] = '<%=result[@result_keys.index('display_name')]%>';
+		tmp['rider_number'] = '<%=result[@result_keys.index('rider_number')]%>';
 		rider_data.push(tmp);
 	<% end %>
 	team_data['riders'] = rider_data;
