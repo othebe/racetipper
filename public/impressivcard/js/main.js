@@ -494,7 +494,8 @@ function setCurrentMenuItem() {
 function setupPortfolio() {
 	
 	// cache container
-	var $container = $('#portfolio-items');
+	//var $container = $('#portfolio-items');
+	var $container = $('.competition_portfolio');
 	
 	if($container.length) {
 		$container.waitForImages(function() {

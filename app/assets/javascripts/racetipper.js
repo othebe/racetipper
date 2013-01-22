@@ -6,7 +6,10 @@ function show_competitions() {
 	if (competitions_loaded) return;
 	$.get('/dashboard/show_competitions', {}, function(response) {
 		$(container).html(response);
+		$(container).isotope('reloadItems');
 		$(container).height('auto');
+		$('#filters li.current a').click();
+		setupPortfolio();
 		competitions_loaded = true;
 	});
 }
@@ -147,6 +150,7 @@ function load_more_competitions() {
 		competition_data = response.competition_data
 		$(competition_data).each(function(ndx, data) {
 			scaffold = $('.item.competition.template').first().clone().removeClass('template').removeClass('competition');
+			if (data.is_participant) $(scaffold).addClass('mine');
 			$(scaffold).find('img').attr('src', data.image_url).attr('alt', data.name);
 			$(scaffold).find('a').attr('data_id', data.id).attr('href', '#/competitions/show/'+data.id);
 			$(scaffold).find('.project-title').html(data.name);
@@ -155,6 +159,9 @@ function load_more_competitions() {
 		});
 		$('#more_competitions_loading').hide();
 		$('#more_competitions').show();
+		$(container).isotope('reloadItems');
+		$(container).height('auto');
+		$('#filters li.current a').click();
 		setupPortfolio();
 	});
 }
