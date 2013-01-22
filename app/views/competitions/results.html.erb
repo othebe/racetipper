@@ -37,7 +37,7 @@
 							<div class="item">
 								<div class="media-box">
 									<img src="<%=rider.rider.photo_url%>" alt="<%=rider.rider.name%>" style="width:210px; height:150px;">
-									<div class="mask tip_rider <%=(@data[:selected_stage_tipped_rider_id]==rider.rider_id)?'selected-mask':''%>" rider_id="<%=rider.rider_id%>">
+									<div class="mask tip_rider <%=(@selected_tip==rider.rider_id)?'selected-mask':''%>" rider_id="<%=rider.rider_id%>">
 										<h3 class="title">Tip Rider</h3>
 										<a href="#" class="ico show-details new_competition supress" onclick="tip_rider(this);"></a>
 									</div>
@@ -51,15 +51,18 @@
 		</div>
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		
-		
 		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
 		<div class="span4 portfolio-field">
 			<div class="history-group">
 				<!--<h3><span class="label black">Stages</span></h3>-->
 				<div class="history-unit">
 					<select onchange="get_competition_stage_data('<%=@data[:competition].id%>', this.value);">
-						<% @data[:stages].each do|stage| %>
-							<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%></option>
+						<% @data[:race_data].each do |ndx, race_data| %>
+							<option>-- <%=race_data[:name].upcase%> --</option>
+							<% race_data[:stages].each do |stage| %>
+								<% ended = (stage.starts_on > Time.now)?'':'[ENDED]'%>
+								<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%> <%=ended%></option>
+							<% end %>
 						<% end %>
 					</select>
 				</div>
@@ -82,6 +85,11 @@
 				<div class="history-unit distance stage_data_container">
 					<h4 style="font-weight:bold;">Distance</h4>
 					<p><%=@selected_stage.start_location%> - <%=@selected_stage.end_location%> (<%=@selected_stage.distance_km%> km)</p>
+				</div>
+				
+				<div class="history-unit time_to_tip stage_data_container">
+					<h4 style="font-weight:bold;">Time to tip</h4>
+					<p><%=@time_to_tip%></p>
 				</div>
 			</div>	
 		</div>

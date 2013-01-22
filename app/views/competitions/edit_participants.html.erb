@@ -31,12 +31,12 @@
 							</a>
 						</div>
 						<h3 class="project-title">
-							<a href="#/profile/<%=participant.user_id%>">
+							<a href="/profile/<%=participant.user_id%>">
 								<%=(participant.user.firstname+' '+participant.user.lastname).strip%>
 							</a>
 							&nbsp;
 							<% if (participant.user_id != @competition.creator_id) %>
-								<a href="#">Kick out</a>)
+								<a href="#" onclick="kick('<%=@competition.id%>', '<%=participant.user.id%>');">(Kick out</a>)
 							<% end %>
 						</h3>
 					</div>
@@ -74,6 +74,17 @@ function send_invitation_emails() {
 		
 		$('#submit').show();
 		$('.loading').hide();
+	});
+}
+
+function kick(competition_id, user_id) {
+	var confirm_kick = confirm('Kick this user out of the competition?');
+	if (!confirm_kick) return;
+	curr_url = window.location.href;
+	
+	$.post('/competitions/kick', {competition_id:competition_id, user_id:user_id}, function(response) {
+		alert(response.msg);
+		if (response.success) window.location.href = curr_url;
 	});
 }
 </script>

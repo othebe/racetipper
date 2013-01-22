@@ -39,8 +39,6 @@ Racetipper::Application.routes.draw do
 	get 'dashboard/show_season_info'
 	get 'dashboard/show_profile'
 	
-	#match 'competition/:id' => 'competitions#show', :defaults=>{:public=>true}
-	#match 'profile/:id' => 'dashboard#show_profile', :defaults=>{:public=>true}
 	match 'competition/:id' => 'dashboard#show_public', :defaults=>{:mode=>'competition'}
 	match 'profile/:id' => 'dashboard#show_public', :defaults=>{:mode=>'profile'}
 	match 'profiles/:id' => 'dashboard#show_profile'
@@ -60,6 +58,7 @@ Racetipper::Application.routes.draw do
 	post 'competitions/delete_competition'
 	post 'competitions/join'
 	post 'competitions/tip'
+	post 'competitions/kick'
 	post 'competitions/send_invitation_emails'
 	match 'competitions/:id' => 'competitions#show'
 	match 'competitions/edit/:id' => 'competitions#edit'

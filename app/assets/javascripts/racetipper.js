@@ -110,6 +110,7 @@ function tip_rider(elt) {
 function get_competition_stage_data(competition_id, stage_id) {
 	$('.stage_data_container').addClass('fade');
 	$('.tip_rider').removeClass('selected-mask');
+	$('.stage_img').attr('src', '/assets/ajax-loader.gif');
 	
 	$.get('/competitions/get_competition_stage_info.json', {competition_id:competition_id, stage_id:stage_id}, function(response) {
 		data = response.data;
@@ -120,6 +121,7 @@ function get_competition_stage_data(competition_id, stage_id) {
 		$('.profile p').html(data.stage_profile);
 		$('.starts_on p').html(data.stage_starts_on);
 		$('.distance p').html(distance_str);
+		$('.time_to_tip p').html(data.time_to_tip);
 		$('.tip_data').attr('stage_id', stage_id);
 		$('.tip_rider[rider_id='+data.tipped_rider_id+']').addClass('selected-mask');
 		

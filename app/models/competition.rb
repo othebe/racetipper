@@ -33,7 +33,7 @@ class Competition < ActiveRecord::Base
 	#Description:	Get all races in competition
 	#Params:		competition_id
 	def self.get_all_races(competition_id)
-		races = CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).select(:race_id).uniq()
+		races = CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).select(:race_id).group(:race_id)
 		return races
 	end
 end

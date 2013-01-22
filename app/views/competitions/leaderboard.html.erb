@@ -15,7 +15,7 @@
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		<div class="span4 portfolio-field portfolio-nav">
 			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
-			<a class="icon button prev ajax race_results" href="portfolio-item-03.html" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
+			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
 			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
 			<% if (@is_owner) %>
 				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
@@ -26,7 +26,7 @@
 		
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field">
-			<h3><%=@races.first.race.name%></h3>
+			<h3><%=@race_name%></h3>
 			<table class="leaderboard_table">
 				<thead>
 					<tr>
@@ -68,7 +68,7 @@
 								<img src="<%=(race.image_url.nil?)?DEFAULT[:RACE_IMG]:race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
 								<div class="mask" race_id="<%=race.id%>">
 									<h3 class="title" style="margin-top:12%;">View Points</h3>
-									<a href="#" class="ico show-details supress" onclick=""></a>
+									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=race.id%>" class="ico show-details supress" onclick=""></a>
 								</div>
 							</div>
 							<h3 class="project-title" style="margin-top:-40px;"><%=race.name%></h3>

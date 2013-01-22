@@ -50,7 +50,7 @@ class DashboardController < ApplicationController
 		@quote = CyclingQuote.first(:offset=>offset)
 		
 		#Get competitions
-		@competitions = Competition.where({:creator_id=>user_id})
+		@competitions = Competition.where({:creator_id=>user_id, :status=>STATUS[:ACTIVE]})
 		
 		if (params.has_key?(:id))
 			render :layout=>'public'
