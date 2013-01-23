@@ -23,6 +23,7 @@ function show_season_info() {
 	$.get('/dashboard/show_season_info', {}, function(response) {
 		$(container).html(response);
 		$(container).height('auto');
+		setupPortfolio();
 		season_info_loaded = true;
 	});
 }
@@ -172,6 +173,11 @@ function init_slider() {
 		maxSlides: 7,
 		slideMargin: 10
 	});
+}
+
+//Show login popup
+function show_login() {
+	$('button#login').click();
 }
 
 $(document).ready(function(event) {

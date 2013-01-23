@@ -94,7 +94,7 @@
 		
 		<% if (@user.nil?) %>
 			<div style="float:right; padding:15px;">
-				<button id="inline" href="#login_form">Login</button>
+				<button id="login" href="#login_form" class="login">Login</button>
 			</div>
 		<% else %>
 			<div style="float:right; padding:15px;">
@@ -122,9 +122,16 @@
             <!-- PAGE TITLE -->
         	<h2 class="caption"><span>HOME</span></h2>
 			
-			<!-- PORTFOLIO ITEMS -->
-			<div id="portfolio-items" class="portfolio-items season_info_portfolio"></div>
-			<!-- PORTFOLIO ITEMS -->
+			<div id="home-content" class="home-content">
+				<div class="iscroll-wrapper">
+					<div class="scroller container">
+			
+						<!-- PORTFOLIO ITEMS -->
+						<div id="portfolio-items" class="portfolio-items season_info_portfolio"></div>
+						<!-- PORTFOLIO ITEMS -->
+					</div>
+				</div>
+			</div>
         
 		</section>
         <!-- PAGE : HOME -->
@@ -231,7 +238,7 @@
 	
 	<script>
 		$(document).ready(function() {
-			$("button#inline").fancybox({
+			$("button#login").fancybox({
 				modal: true,
 			});
 		});

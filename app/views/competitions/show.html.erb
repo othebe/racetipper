@@ -59,7 +59,7 @@
 			
 			<div class="launch">
 				<% if (@user.nil?) %>
-					<a href="#" class="btn">SIGN IN TO PARTICIPATE</a>
+					<a class="btn login" onclick="show_login();">SIGN IN TO PARTICIPATE</a>
 				<% elsif (@data[:is_participant]) %>
 					<a class="btn" href="#/competitions/results/<%=@data[:competition].id%>">TIP RIDERS</a>
 				<% else %>

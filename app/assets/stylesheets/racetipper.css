@@ -32,6 +32,38 @@
 		padding: 3px 10px 3px 5px;
 	}
 
+div.article-group {
+	max-height: 235px;
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+	div.article-group .read-more {
+		float: right;
+		margin-top: 8px;
+	}
+
+	div.article-group p.article {
+		text-align: justify;
+		max-height: 115px;
+		overflow: hidden;
+	}
+
+	div.article-group img.article {
+		max-height: 20%;
+		max-width: 245px;
+		margin-bottom: 0px;
+	}
+
+		div.article-group img.article.left {
+			margin: 0px 20px 0px 0px;
+			float: left;
+		}
+		
+		div.article-group img.article.right {
+			margin: 0px 0px 0px 20px;
+			float: right;
+		}
+
 input, textarea {
 	border: 1px solid darkgray !important;
 }

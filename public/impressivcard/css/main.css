@@ -113,7 +113,7 @@ ul.personal-info.contact-form .title:after { top:auto; bottom:-0.5em; left:0; ri
    ---------------------  RESUME PAGE */
 .history-unit { padding-left:20px; margin-bottom:30px; border-width:0 0 0 1px; border-style:solid; border-color:#FFE04F; }
 .history-unit h4 { margin-bottom:0px; font-weight:400; }
-.history-unit h4 .work-time { float:right; font-size:.9em; border-width:0 0 2px 0; border-style:solid; }
+.history-unit h4 .work-time, .history-unit h5 .work-time { float:right; font-size:.9em; border-width:0 0 2px 0; border-style:solid; }
 .history-unit h5 { margin:.4em 0 1em; font-weight:normal; font-size:.9em; padding-left:9px; border-width:0 0 0 30px; border-style:solid; }
 .history-unit h5 span { padding:3px 6px; }
 /* Skills progress bars */
@@ -157,7 +157,7 @@ ul.personal-info.contact-form .title:after { top:auto; bottom:-0.5em; left:0; ri
 
 
 /* PORTFOLIO DETAILS */
-.p-overlay { display:none; position: absolute; z-index: 3000; top:0; left:0;	width: 100%; height: auto; min-height:100%; overflow: auto; }
+.p-overlay { display:none; position: absolute; z-index: 1100; top:0; left:0;	width: 100%; height: auto; min-height:100%; overflow: auto; }
 .portfolio-single { margin: 0 auto; }
 .portfolio-single > .row { padding-top:1em; }
 .portfolio-field { padding-top:2em; }
@@ -400,7 +400,7 @@ body { background-color:#fff; }
 /* TEXT COLORS */
 body { color:#333; }
 h1, h2, h3, h4, h5, h6, .portfolio-items .item h3.project-title, h2.caption span, ul.personal-info .title, .tags a, .p-overlay, .portfolio-title h2, .portfolio-field h3 { color:#222; }
-.history-unit h4 .work-time, #filters a, .portfolio-items .category, .history-unit h5 { color:#999;}
+.history-unit h4 .work-time, .history-unit h5 .work-time, #filters a, .portfolio-items .category, .history-unit h5 { color:#999;}
 
 /* MOBILE NAV */
 #header nav:after { color:#000; }
@@ -455,7 +455,7 @@ span.label.primary
 
 
 /* RESUME */
-.history-unit h5, .history-unit h4 .work-time { border-color:#eee; }
+.history-unit h5, .history-unit h5 .work-time, .history-unit h4 .work-time { border-color:#eee; }
 
 /* Skills progress bars */
 .bar { height:20px; background:#f3f3f3; }
@@ -470,7 +470,7 @@ input.error ,textarea.error { border-bottom-color:#C30; }
 /* Buttons */
 .btn:hover, button:hover , html input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover { border-color:#000; }
 .btn:active, button:active, html input[type="button"]:active, input[type="reset"]:active, input[type="submit"]:active { border-color:#333; background:#CF0; }
-.btn, a.btn:link, a.btn:visited, a.btn, a.btn:hover, a.btn:visited:hover, .btn:hover { color:#333; }
+.btn, a.btn:link, a.btn:visited, a.btn, a.btn:hover, a.btn:visited:hover, .btn:hover { color:#333; cursor:pointer; }
 
 /* Portfolio */
 .portfolio-items .item { background-color: #fff; }

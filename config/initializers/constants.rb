@@ -7,6 +7,16 @@ STATUS = {
 	:PRIVATE => 3
 }
 
+ARTICLE_TYPE = {
+	:ARTICLE => 1,
+	:GALLERY => 2
+}
+
+URL_TYPE = {
+	:IMAGE => 1,
+	:VIDEO => 2
+}
+
 DEFAULT = {
 	:RACE_IMG => '/assets/default_competition.jpg',
 	:COMPETITION_IMG => '/assets/default_competition.jpg',
