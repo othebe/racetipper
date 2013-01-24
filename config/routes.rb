@@ -80,6 +80,9 @@ Racetipper::Application.routes.draw do
 	get 'stages/show'
 	match 'stages/:id' => 'stages#show'
 	match 'stages/show/:id' => 'stages#show'
+	
+	get 'articles/read'
+	match 'articles/:id' => 'articles#read'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

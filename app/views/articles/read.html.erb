@@ -1,0 +1,43 @@
+﻿<%= javascript_include_tag "share" %>
+
+<div class="portfolio-single container">
+		
+	<div class="row">
+	
+		<!-- InstanceBeginEditable name="Content" -->
+		
+		
+		<!-- TITLE - column 8/12 -->
+		<div class="span8 portfolio-field portfolio-title">
+			<h2><%=@article.title%></h2>
+			<h5><%=@article.author%>, <span style="font-style:italic;"><%=@article.created_at.strftime('%b %d, %Y')%></span></h5>
+		</div>
+		<!-- TITLE - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		<div class="span4 portfolio-field portfolio-nav">
+			<a class="icon button back" href="#/home" title="Close"><</a>
+		</div>
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+		<div class="span8 portfolio-field">
+			<div style="text-align:justify;">
+				<%=@article.body%>
+			</div>
+			<hr />
+			
+			<% @links.each do |link| %>
+				<a href="#">
+					<img src="<%=link.url%>" class="article">
+				</a>
+			<% end %>
+		</div>
+		
+		<div class="span4 portfolio-field"></div>
+		<!-- InstanceEndEditable -->
+		
+	</div>
+	
+</div>

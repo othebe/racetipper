@@ -54,6 +54,13 @@ $(function() {
 				} else hideProjectDetails(true, false);
 			}
 			
+			//Support for articles
+			if (detailUrl<0 && address.indexOf('/articles')!=-1) {
+				if (address.length > 8) {
+					detailUrl = address;
+				} else hideProjectDetails(true, false);
+			}
+			
 			//Back to home
 			if (detailUrl<0 && address.indexOf('/home')!=-1) {
 				hideProjectDetails(true, false);

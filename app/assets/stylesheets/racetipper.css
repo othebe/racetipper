@@ -48,7 +48,8 @@ div.article-group {
 		overflow: hidden;
 	}
 
-	div.article-group img.article {
+	div.article-group img.article,
+	img.article	{
 		max-height: 20%;
 		max-width: 245px;
 		margin-bottom: 0px;
