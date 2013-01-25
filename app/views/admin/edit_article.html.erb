@@ -26,8 +26,10 @@
 		<h4 style="margin-bottom:5px;">Add Images</h4>
 		<% @image_links.each do |link| %>
 			<div class="image">
-				<input type="text" placeholder="URL" value="<%=link.url%>">
+				<input type="text" name="url" placeholder="URL" value="<%=link.url%>">
+				<input type="text" name="description" placeholder="Description" value="<%=link.description%>">
 				<a href="#" onclick="remove_link(this);">Remove</a>
+				</br></br>
 			</div>
 		<% end %>
 		<button class="add" type="image">+Add new</button>
@@ -35,6 +37,14 @@
 	
 	<div id="videos" style="width:48%; float:left;">
 		<h4 style="margin-bottom:5px;">Add Videos</h4>
+		<% @video_links.each do |link| %>
+			<div class="image">
+				<input type="text" name="url" placeholder="URL" value="<%=link.url%>">
+				<input type="text" name="description" placeholder="Description" value="<%=link.description%>">
+				<a href="#" onclick="remove_link(this);">Remove</a>
+				</br></br>
+			</div>
+		<% end %>
 		<button class="add" type="video">+Add new</button>
 	</div>
 
@@ -45,8 +55,10 @@
 </div>
 
 <div class="template">
-	<input type="text" placeholder="URL">
+	<input type="text" name="url" placeholder="URL">
+	<input type="text" name="description" placeholder="Description" value="">
 	<a href="#" onclick="remove_link(this);">Remove</a>
+	</br></br>
 </div>
 
 <style>
@@ -98,12 +110,18 @@ function submit_article() {
 		article_data['id'] = '<%=@id%>';
 	<% end %>
 	
-	$('#images').find('div.image input[type=text]').each(function(ndx, elt) {
-		article_data['image_links'].push($(elt).val());
+	$('#images').find('div.image').each(function(ndx, elt) {
+		link_data = {};
+		link_data['url'] = $(elt).find('input[name=url]').val();
+		link_data['description'] = $(elt).find('input[name=description]').val();
+		article_data['image_links'].push(link_data);
 	});
 	
-	$('#videos').find('div.video input[type=text]').each(function(ndx, elt) {
-		article_data['video_links'].push($(elt).val());
+	$('#videos').find('div.video').each(function(ndx, elt) {
+		link_data = [];
+		link_data['url'] = $(elt).find('input[name=url]').val();
+		link_data['description'] = $(elt).find('input[name=description]').val();
+		article_data['video_links'].push(link_data);
 	});
 	
 	$.post('/admin/save_article', {article_data:article_data}, function(response) {

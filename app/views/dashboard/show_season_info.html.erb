@@ -9,13 +9,17 @@
 			<% if (article.article_type==ARTICLE_TYPE[:ARTICLE]) %>
 				<% link = article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]}).first %>
 				<% if (!link.nil?) %>
-					<img src="<%=link.url%>" class="article <%=float%>">
+					<a class="article_gallery" title="<%=link.description%>" rel="<%=article.id%>" href="<%=link.url%>">
+						<img alt="<%=link.description%>" src="<%=link.url%>" class="article <%=float%>">
+					</a>
 				<% end %>
 				<p class="article"><%=article.body%></p>
 			<% else %>
 				<% links = article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]}).limit(5) %>
 				<% links.each do |link| %>
-					<img src="<%=link.url%>" class="article">
+					<a class="article_gallery" title="<%=link.description%>" rel="<%=article.id%>" href="<%=link.url%>">
+						<img alt="<%=link.description%>" src="<%=link.url%>" class="article">
+					</a>
 				<% end %>
 			<% end %>
 			

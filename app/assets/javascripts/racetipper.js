@@ -10,6 +10,7 @@ function show_competitions() {
 		$(container).height('auto');
 		$('#filters li.current a').click();
 		setupPortfolio();
+		init_page();
 		competitions_loaded = true;
 	});
 }
@@ -24,6 +25,7 @@ function show_season_info() {
 		$(container).html(response);
 		$(container).height('auto');
 		setupPortfolio();
+		init_page();
 		season_info_loaded = true;
 	});
 }
@@ -38,6 +40,7 @@ function show_profile() {
 	$.get('/dashboard/show_profile', {}, function(response) {
 		$(container).html(response);
 		$(container).height('auto');
+		init_page();
 		profile_loaded = true;
 	});
 }
@@ -172,6 +175,18 @@ function init_slider() {
 		minSlides: 7,
 		maxSlides: 7,
 		slideMargin: 10
+	});
+}
+
+function init_page() {
+	//Init fancybox
+	$("a.article_gallery").fancybox({
+		'transitionIn'		: 'none',
+		'transitionOut'		: 'none',
+		'titlePosition' 	: 'over',
+		'titleFormat'       : function(title, currentArray, currentIndex, currentOpts) {
+			return '<span id="fancybox-title-over">Image ' +  (currentIndex + 1) + ' / ' + currentArray.length + ' ' + title + '</span>';
+		}
 	});
 }
 

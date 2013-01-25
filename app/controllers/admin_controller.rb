@@ -261,20 +261,22 @@ class AdminController < ApplicationController
 		ArticleLink.where({:article_id=>article.id}).delete_all
 	
 		if (!article_data[:image_links].nil?)
-			article_data[:image_links].each do |link|
+			article_data[:image_links].each do |ndx, link|
 				article_link = ArticleLink.new
 				article_link.article_id = article.id
-				article_link.url = link
+				article_link.url = link[:url]
+				article_link.description = link[:description]
 				article_link.url_type = URL_TYPE[:IMAGE]
 				article_link.save
 			end
 		end
 
 		if (!article_data[:video_links].nil?)
-			article_data[:video_links].each do |link|
+			article_data[:video_links].each do |ndx, link|
 				article_link = ArticleLink.new
 				article_link.article_id = article.id
-				article_link.url = link
+				article_link.url = link[:url]
+				article_link.description = link[:description]
 				article_link.url_type = URL_TYPE[:VIDEO]
 				article_link.save
 			end

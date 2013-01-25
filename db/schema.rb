@@ -11,14 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123082317) do
+ActiveRecord::Schema.define(:version => 20130125074511) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
     t.string   "url"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.integer  "url_type",   :default => 1
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+    t.integer  "url_type",    :default => 1
+    t.string   "description"
   end
 
   create_table "articles", :force => true do |t|

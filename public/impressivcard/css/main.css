@@ -181,10 +181,12 @@ ul.personal-info.contact-form .title:after { top:auto; bottom:-0.5em; left:0; ri
     src: local('â˜º'), url('fonts/raphael/raphaelicons-webfont.woff') format('woff'), url('fonts/raphael/raphaelicons-webfont.ttf') format('truetype'), url('fonts/raphael/raphaelicons-webfont.svgwebfontKOf9F4sx') format('svg');
     font-weight: normal; font-style: normal;
 }
-.icon, .fancy-ico, #fancybox-close { font-weight: normal; font-style: normal; line-height: normal; font-family: 'RaphaelIcons'; font-size: 1.1em; position: relative; top: 0.1em; }
-.fancy-ico, #fancybox-close { display:inline-block; padding:0px 14px; line-height:90%; font-size:3em; cursor:pointer; border-radius:2px; opacity:1; text-shadow: 2px 2px 0 rgba(0,0,0,.2); }
-.fancy-ico:hover, #fancybox-close:hover { opacity:1; }
-#fancybox-close { border-radius:0; box-shadow: 3px 3px 0 rgba(0,0,0,.2); }
+/*.icon, .fancy-ico, #fancybox-close { font-weight: normal; font-style: normal; line-height: normal; font-family: 'RaphaelIcons'; font-size: 1.1em; position: relative; top: 0.1em; }*/
+.icon, .fancy-ico { font-weight: normal; font-style: normal; line-height: normal; font-family: 'RaphaelIcons'; font-size: 1.1em; position: relative; top: 0.1em; }
+/*.fancy-ico, #fancybox-close { display:inline-block; padding:0px 14px; line-height:90%; font-size:3em; cursor:pointer; border-radius:2px; opacity:1; text-shadow: 2px 2px 0 rgba(0,0,0,.2); }*/
+.fancy-ico { display:inline-block; padding:0px 14px; line-height:90%; font-size:3em; cursor:pointer; border-radius:2px; opacity:1; text-shadow: 2px 2px 0 rgba(0,0,0,.2); }
+/*.fancy-ico:hover, #fancybox-close:hover { opacity:1; }*/
+/*#fancybox-close { border-radius:0; box-shadow: 3px 3px 0 rgba(0,0,0,.2); }*/
 .fancy-ico { font-size:10em; }
 
 /* portfolio details nav */
@@ -496,9 +498,12 @@ input.error ,textarea.error { border-bottom-color:#C30; }
 .portfolio-nav a.button:hover { color:#000; }
 
 /* lightbox */
-.fancy-ico, #fancybox-close { color:#fff; }
+/*.fancy-ico, #fancybox-close { color:#fff; }*/
+.fancy-ico { color:#fff; }
+/*
 #fancybox-close { background:#C30; }
 #fancybox-close:hover { background:#000; }
+*/
 
 /* Ajax Loader */
 .loader { background-color:#000; background:rgba(0,0,0,.8); }
