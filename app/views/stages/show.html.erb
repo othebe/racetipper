@@ -22,33 +22,7 @@
 			
 			<% if (!@results.empty?) %>
 				<h4>Stage results</h4>
-				<table class="leaderboard_table">
-					<thead>
-						<tr>
-							<th align="left">Rank</th>
-							<th align="left">Name</th>
-							<th align="left">Time</th>
-							<th align="left">Points</th>
-							<th align="left">KOM</th>
-							<th align="left">Sprint</th>
-						</tr>
-					</thead>
-					
-					<tbody>
-						<% ndx = 1 %>
-						<% @results.each do |rider_id, result| %>
-							<tr>
-								<th align="left"><%=ndx%></th>
-								<th align="left"><%=result[:rider_name]%></th>
-								<th align="left"><%=result[:time]%></th>
-								<th align="left"><%=result[:points]%></th>
-								<th align="left"><%=result[:kom_points]%></th>
-								<th align="left"><%=result[:sprint_points]%></th>
-							</tr>
-							<% ndx += 1 %>
-						<% end %>
-					</tbody>
-				</table>
+				<%= render :partial=>'/app_partials/results_table', :locals=>{:results=>@results, :title=>''} %>
 			<% end %>
 			
 			<h4>Stages</h4>

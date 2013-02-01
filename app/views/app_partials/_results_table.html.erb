@@ -1,0 +1,37 @@
+<%
+#Display stage/result result data.
+#Params: 	results - Results table from Result.get_results()
+#			title - (Optional) - Title
+%>
+
+<% if (!title.nil? && !title.empty?) %>
+	<h3>Stage results</h3>
+<% end %>
+
+<table class="leaderboard_table">
+	<thead>
+		<tr>
+			<th align="left">Rank</th>
+			<th align="left">Name</th>
+			<th align="left">Time</th>
+			<th align="left">Gap</th>
+			<th align="left">KOM</th>
+			<th align="left">Sprint</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<% ndx = 1 %>
+		<% results.each do |rider_id, result| %>
+			<tr>
+				<th align="left"><%=ndx%></th>
+				<th align="left"><%=result[:rider_name]%></th>
+				<th align="left"><%=result[:time_formatted]%></th>
+				<th align="left"><%=result[:gap_formatted]%></th>
+				<th align="left"><%=result[:kom_points]%></th>
+				<th align="left"><%=result[:sprint_points]%></th>
+			</tr>
+			<% ndx += 1 %>
+		<% end %>
+	</tbody>
+</table>

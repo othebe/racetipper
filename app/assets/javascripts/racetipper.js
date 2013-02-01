@@ -132,6 +132,33 @@ function get_competition_stage_data(competition_id, stage_id) {
 		$('.tip_data').attr('stage_id', stage_id);
 		$('.tip_rider[rider_id='+data.tipped_rider_id+']').addClass('selected-mask');
 		
+		//Show results?
+		if (data.stage_results != null) {
+			$('.tip-rider').hide();
+			$('.stage-results').show();
+			if (data.stage_results==null || data.stage_results.length==0)
+				$('div.stage-results .empty').show();
+			else {
+				table = $('div.stage-results table');
+				$(table).find('tr.data').remove();
+				$('div.stage-results .empty').hide();
+				for (ndx in data.stage_results) {
+					result = data.stage_results[ndx];
+					row = $('<tr class="data"></tr>');
+					$(row).append('<td>'+ndx+'</td>');
+					$(row).append('<td>'+result['rider_name']+'</td>');
+					$(row).append('<td>'+result['time_formatted']+'</td>');
+					$(row).append('<td>'+result['gap_formatted']+'</td>');
+					$(row).append('<td>'+result['kom_points']+'</td>');
+					$(row).append('<td>'+result['sprint_points']+'</td>');
+					$(table).append(row);
+				}
+			}
+		} else {
+			$('.stage-results').hide();
+			$('.tip-rider').show();
+		}
+		
 		$('.stage_data_container').removeClass('fade');
 	});
 }

@@ -20,7 +20,15 @@
 			<% if (@is_owner) %>
 				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
 			<% end %>
-			<a class="icon button back" href="#/competitions" title="Close">Â</a>
+			<% if (!@stage_id.nil?) %>
+				<!-- Back to stage selection -->
+				<a class="icon button back" href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=@race_id%>" title="Back"><</a>
+			<% elsif (!@stages.nil?) %>
+				<!-- Back to race selection -->
+				<a class="icon button back" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Back"><</a>
+			<% else %>
+				<a class="icon button back" href="#/competitions" title="Close">Â</a>
+			<% end %>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		
@@ -33,22 +41,27 @@
 						<th align="left">Rank</th>
 						<th align="left">Name</th>
 						<th align="left">Time</th>
-						<th align="left">Points</th>
+						<th align="left">Gap</th>
 						<th align="left">KOM</th>
 						<th align="left">Sprint</th>
 					</tr>
 				</thead>
 				
+				<% base_time = nil %>
+				<% ndx = 1 %>
 				<tbody>	
-					<% @leaderboard.each do |ndx, data| %>
+					<% @leaderboard.each do |uid, data| %>
+						<% gap = Time.at(data[:time]-base_time).gmtime.strftime('%R:%S') if (!base_time.nil?) %>
 						<tr>
 							<td align="left"><%=ndx%></td>
 							<td align="left"><%=data[:username]%></td>
-							<td align="left"><%=data[:time]%></td>
-							<td align="left"><%=data[:points]%></td>
-							<td align="left"><%=data[:kom]%></td>
-							<td align="left"><%=data[:sprint]%></td>
+							<td align="left"><%=Time.at(data[:time]).gmtime.strftime('%R:%S')%></td>
+							<td align="left"><%=(base_time.nil?)?'':'+ '+gap.to_s%></td>
+							<td align="left"><%=data[:kom].to_i%></td>
+							<td align="left"><%=data[:sprint].to_i%></td>
 						</tr>
+						<% base_time ||= data[:time] %>
+						<% ndx += 1 %>
 					<% end %>
 				</tbody>
 			</table>
@@ -58,24 +71,44 @@
 		
 		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
 		<div class="span4 portfolio-field">
-			<div class="history-unit races">
-				<h2>Races</h2>
-				<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-				<% @races.each do |race| %>
-					<% race = race.race %>					
-					<div class="item" style="width:37%">
-						<div class="media-box">
-							<img src="<%=(race.image_url.nil?)?DEFAULT[:RACE_IMG]:race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
-							<div class="mask" race_id="<%=race.id%>">
-								<h3 class="title" style="margin-top:12%;">View Points</h3>
-								<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=race.id%>" class="ico show-details supress" onclick=""></a>
+			<% if (!@stages.nil? || !@stage_id.nil?) %>
+				<div class="history-unit stages">
+					<h2>Stages</h2>
+					<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
+					<% @stages.each do |stage| %>				
+						<div class="item" style="width:37%">
+							<div class="media-box">
+								<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:140px; height:100px;">
+								<div class="mask" race_id="<%=stage.id%>">
+									<h3 class="title" style="margin-top:12%;">View Points</h3>
+									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?stage_id=<%=stage.id%>" class="ico show-details supress" onclick=""></a>
+								</div>
 							</div>
+							<h3 class="project-title" style="margin-top:-40px;"><%=stage.name%></h3>
 						</div>
-						<h3 class="project-title" style="margin-top:-40px;"><%=race.name%></h3>
+					<% end %>
 					</div>
-				<% end %>
 				</div>
-			</div>
+			<% else %>
+				<div class="history-unit races">
+					<h2>Races</h2>
+					<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
+					<% @races.each do |race| %>
+						<% race = race.race %>					
+						<div class="item" style="width:37%">
+							<div class="media-box">
+								<img src="<%=(race.image_url.nil?)?DEFAULT[:RACE_IMG]:race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
+								<div class="mask" race_id="<%=race.id%>">
+									<h3 class="title" style="margin-top:12%;">View Points</h3>
+									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=race.id%>" class="ico show-details supress" onclick=""></a>
+								</div>
+							</div>
+							<h3 class="project-title" style="margin-top:-40px;"><%=race.name%></h3>
+						</div>
+					<% end %>
+					</div>
+				</div>
+			<% end %>
 		</div>
 		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
 			

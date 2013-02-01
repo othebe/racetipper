@@ -1,4 +1,5 @@
 SITE_URL = 'http://racetipper.herokuapp.com/'
+COMPETITION_LOAD_QTY = 10
 
 STATUS = {
 	:DELETED => 0,

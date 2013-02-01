@@ -363,7 +363,6 @@ function showProjectDetails(url) {
 		}
 	
 	// ajax : fill data
-	console.log(url);
 	$.get(url, {}, function(response) {
 		hideLoader();
 		

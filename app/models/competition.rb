@@ -13,7 +13,7 @@ class Competition < ActiveRecord::Base
 	#					offset
 	#					sort_by
 	def self.get_competitions(user_id, options={})
-		limit = options.has_key?(:limit)?options[:limit]:10
+		limit = options.has_key?(:limit)?options[:limit]:COMPETITION_LOAD_QTY
 		offset = options.has_key?(:offset)?options[:offset]:0
 		sort_by = options.has_key?(:sort_by)?options[:sort_by]:'competitions.id DESC'
 		competitions = self.where('competitions.status=? OR (competitions.status=? AND competition_participants.user_id=? AND competition_participants.status=?)', STATUS[:ACTIVE], STATUS[:PRIVATE], user_id, STATUS[:ACTIVE]).joins('LEFT JOIN competition_participants ON competition_participants.competition_id=competitions.id').group('competitions.id').order(sort_by).limit(limit).offset(offset)
