@@ -56,8 +56,9 @@ class CompetitionsController < ApplicationController
 		#If tipping is not open for any stage, show results for starting stage
 		if (@selected_stage.nil?)
 			@selected_stage = default_stage
+			@results = Result.get_results('stage', @selected_stage.id)
+			logger.debug(@results.inspect)
 		end
-		@results = Result.where({:season_stage_id=>@selected_stage.id}).order('time')
 		
 		#Grab team data
 		teams = Team.where({
