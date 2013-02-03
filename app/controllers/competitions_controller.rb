@@ -495,32 +495,34 @@ class CompetitionsController < ApplicationController
 			user_score[:user_id] = user_id
 			user_score[:username] = username
 			
-			#Cumulate times
-			if (user_score[:time].nil?)
-				user_score[:time] = race_results[rider_id][:stages][stage_id][:time]
-			else 
-				user_score[:time] += race_results[rider_id][:stages][stage_id][:time]
-			end
-			
-			#Cumulate points
-			if (user_score[:points].nil?)
-				user_score[:points] = race_results[rider_id][:stages][stage_id][:points]
-			else 
-				user_score[:points] += race_results[rider_id][:stages][stage_id][:points]
-			end
-			
-			#Cumulate KOM points
-			if (user_score[:kom].nil?)
-				user_score[:kom] = race_results[rider_id][:stages][stage_id][:kom_points]
-			else 
-				user_score[:kom] += race_results[rider_id][:stages][stage_id][:kom_points]
-			end
-			
-			#Cumulate sprint points
-			if (user_score[:sprint].nil?)
-				user_score[:sprint] = race_results[rider_id][:stages][stage_id][:sprint_points]
-			else 
-				user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
+			if (!race_results[rider_id][:stages][stage_id].nil?)
+				#Cumulate times
+				if (user_score[:time].nil?)
+					user_score[:time] = race_results[rider_id][:stages][stage_id][:time]
+				else 
+					user_score[:time] += race_results[rider_id][:stages][stage_id][:time]
+				end
+				
+				#Cumulate points
+				if (user_score[:points].nil?)
+					user_score[:points] = race_results[rider_id][:stages][stage_id][:points]
+				else 
+					user_score[:points] += race_results[rider_id][:stages][stage_id][:points]
+				end
+				
+				#Cumulate KOM points
+				if (user_score[:kom].nil?)
+					user_score[:kom] = race_results[rider_id][:stages][stage_id][:kom_points]
+				else 
+					user_score[:kom] += race_results[rider_id][:stages][stage_id][:kom_points]
+				end
+				
+				#Cumulate sprint points
+				if (user_score[:sprint].nil?)
+					user_score[:sprint] = race_results[rider_id][:stages][stage_id][:sprint_points]
+				else 
+					user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
+				end
 			end
 			
 			user_score[:tip].push({:id=>rider_id, :name=>race_results[rider_id][:rider_name]})

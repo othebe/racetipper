@@ -29,15 +29,17 @@
 			<tr>
 				<td align="left"><%=ndx%></td>
 				<td align="left"><a href="/profile/<%=data[:user_id]%>" target="_blank"><%=data[:username]%></a></td>
-				<td align="left"><%=Time.at(data[:time]).gmtime.strftime('%R:%S')%></td>
+				<td align="left"><%=(data[:time].nil?)?'TBA':Time.at(data[:time]).gmtime.strftime('%R:%S')%></td>
 				<td align="left"><%=(base_time.nil?)?'':'+ '+gap.to_s%></td>
-				<td align="left"><%=data[:kom].to_i%></td>
-				<td align="left"><%=data[:sprint].to_i%></td>
+				<td align="left"><%=(data[:time].nil?)?'':data[:kom].to_i%></td>
+				<td align="left"><%=(data[:time].nil?)?'':data[:sprint].to_i%></td>
 				<% if (group=='stage') %>
 					<td align="left"><%=data[:tip].last[:name]%></td>
 				<% elsif (group=='race') %>
 					<td align="left">
-						<a href="#/competitions/show_tips/<%=competition_id%>?uid=<%=data[:user_id]%>"><button style="padding-top:3px; padding-bottom:6px;">View tips</button></a>
+						<% if (!data[:time].nil?) %>
+							<a href="#/competitions/show_tips/<%=competition_id%>?uid=<%=data[:user_id]%>"><button style="padding-top:3px; padding-bottom:6px;">View tips</button></a>
+						<% end %>
 					</td>
 				<% end %>
 			</tr>
