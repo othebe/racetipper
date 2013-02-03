@@ -476,7 +476,6 @@ class CompetitionsController < ApplicationController
 		tip_conditions[:stage_id] = group_id if (group_type=='stage')
 		
 		race_results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
-		logger.debug(race_results)
 		tips = CompetitionTip.where(tip_conditions)
 		user_scores = {}
 		tips.each do |tip|
