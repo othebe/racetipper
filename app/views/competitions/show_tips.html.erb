@@ -1,0 +1,65 @@
+<div class="portfolio-single container">
+		
+	<div class="row">
+	
+		<!-- InstanceBeginEditable name="Content" -->
+		
+		
+		<!-- TITLE - column 8/12 -->
+		<div class="span8 portfolio-field portfolio-title">
+			<h2><%=@competition.name%></h2>
+		</div>
+		<!-- TITLE - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		<div class="span4 portfolio-field portfolio-nav">
+			<a class="icon button back" href="#/competitions/leaderboard/<%=@competition_id%>" title="Back"><</a>
+		</div>
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		
+		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+		<div class="span8 portfolio-field">
+			<% @tips.each do |tip| %>
+			<h3><%=tip[:race].name%></h3>
+				<table class="leaderboard_table">
+					<tr>
+						<th align="left">Stage</th>
+						<th align="left">Rider</th>
+						<th align="left">Time</th>
+						<th align="left">Cumulative</th>
+					</tr>
+					
+					<% cumulative_time = nil %>
+					<% tip[:tips].each do |tip_data| %>
+						<% time = 'TBA' %>
+						<% if (!tip_data[:result].nil?) %>
+							<% time = Time.at(tip_data[:result].time).gmtime.strftime('%R:%S') %>
+							<% cumulative_time ||= 0 %>
+							<% cumulative_time += tip_data[:result].time%>
+						<% end %>
+						<tr>
+							<td><%=tip_data[:stage].name%></td>
+							<td><%=tip_data[:rider].name%></td>
+							<td><%=time%></td>
+							<td><%=Time.at(cumulative_time).gmtime.strftime('%R:%S')%></td>
+						</tr>
+					<% end %>
+				</table>
+			<% end %>
+		</div>
+		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+		<div class="span4 portfolio-field">
+		</div>
+	</div>
+	
+</div>
+
+<style>
+table tr {
+	border-bottom: 1px solid black;
+}
+</style>

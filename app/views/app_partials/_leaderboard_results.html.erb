@@ -1,0 +1,48 @@
+<%=
+#Display stage/result leaderboard result data.
+#Params: 	leaderboard - Leaderboard results table from Competitions controller
+#			group - stage/race (Are these results for a race or stage?)
+%>
+
+<table class="leaderboard_table">
+	<thead>
+		<tr>
+			<th align="left">Rank</th>
+			<th align="left">Name</th>
+			<th align="left">Time</th>
+			<th align="left">Gap</th>
+			<th align="left">KOM</th>
+			<th align="left">Sprint</th>
+			<% if (group=='stage') %>
+				<th align="left">Rider</th>
+			<% elsif (group=='race') %>
+				<th align="left"></th>
+			<% end %>
+		</tr>
+	</thead>
+	
+	<% base_time = nil %>
+	<% ndx = 1 %>
+	<tbody>	
+		<% leaderboard.each do |uid, data| %>
+			<% gap = Time.at(data[:time]-base_time).gmtime.strftime('%R:%S') if (!base_time.nil?) %>
+			<tr>
+				<td align="left"><%=ndx%></td>
+				<td align="left"><a href="/profile/<%=data[:user_id]%>" target="_blank"><%=data[:username]%></a></td>
+				<td align="left"><%=Time.at(data[:time]).gmtime.strftime('%R:%S')%></td>
+				<td align="left"><%=(base_time.nil?)?'':'+ '+gap.to_s%></td>
+				<td align="left"><%=data[:kom].to_i%></td>
+				<td align="left"><%=data[:sprint].to_i%></td>
+				<% if (group=='stage') %>
+					<td align="left"><%=data[:tip].last[:name]%></td>
+				<% elsif (group=='race') %>
+					<td align="left">
+						<a href="#/competitions/show_tips/<%=competition_id%>?uid=<%=data[:user_id]%>"><button style="padding-top:3px; padding-bottom:6px;">View tips</button></a>
+					</td>
+				<% end %>
+			</tr>
+			<% base_time ||= data[:time] %>
+			<% ndx += 1 %>
+		<% end %>
+	</tbody>
+</table>

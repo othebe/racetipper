@@ -89,13 +89,18 @@ class CompetitionsController < ApplicationController
 	def leaderboard
 		@data = get_competition_data(params[:id])
 		
+		@races = []
+		@is_owner = false
+		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
+		
 		#Drill down by stage
 		if (params.has_key?(:stage_id))
 			@stage_id = params[:stage_id]
 			stage = Stage.find_by_id(@stage_id)
+			@result_name = stage.name
 			@race_id  = stage.race_id
 			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
-			group_type = 'stage'
+			@group_type = 'stage'
 			group_id = @stage_id
 		
 		#Drill down by race
@@ -104,25 +109,26 @@ class CompetitionsController < ApplicationController
 			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
 			current_race_id = @race_id
 			race = Race.find_by_id(params[:race_id])
-			@race_name = race.name
-			group_type = 'race'
+			@result_name = race.name
+			@group_type = 'race'
 			group_id = current_race_id
 		
-		#Show first race
+		#Show first race if only race, else show race list
 		else
 			@races = Competition.get_all_races(params[:id])
-			@race_name = @races.first.race.name
-			current_race_id = @races.first.race_id	
-			@race_id = current_race_id
-			group_type = 'race'
-			group_id = current_race_id
+			if (@races.length==1)
+				@result_name = @races.first.race.name
+				current_race_id = @races.first.race_id	
+				@race_id = current_race_id
+				@stages = Stage.where({:race_id=>current_race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
+				@group_type = 'race'
+				group_id = current_race_id
+			else
+				@leaderboard = nil
+			end
 		end
 		
-		#@leaderboard = get_leaderboard(params[:id], current_race_id)
-		@leaderboard = get_leaderboard(params[:id], group_type, group_id)
-		
-		@is_owner = false
-		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
+		@leaderboard ||= get_leaderboard(params[:id], @group_type, group_id) if (!@group_type.nil? && !group_id.nil?)
 		
 		render :layout=>false
 	end
@@ -157,9 +163,20 @@ class CompetitionsController < ApplicationController
 		@competition_id = params[:id]
 		@competition = Competition.find_by_id(@competition_id)
 		@participants = CompetitionParticipant.where({:competition_id=>@competition_id, :status=>STATUS[:ACTIVE]}).joins(:user).group('competition_participants.id, competition_participants.user_id')
-		logger.debug(@participants.inspect)
 		render :layout=>false
 	end
+	
+	def show_tips
+		@competition_id = params[:id]
+		@competition = Competition.find_by_id(@competition_id)
+		uid = params[:uid]
+		
+		@tips = get_user_tips(@competition_id, uid)
+		render :layout=>false
+	end
+	
+	
+	#POST
 	
 	def join_by_code
 		competition_id = params[:competition_id]
@@ -455,9 +472,12 @@ class CompetitionsController < ApplicationController
 	#				limit - How many entries in the leaderboard to show
 	private
 	def get_leaderboard(competition_id, group_type, group_id, limit=10)
+		tip_conditions = {:competition_id=>competition_id}
+		tip_conditions[:stage_id] = group_id if (group_type=='stage')
+		
 		race_results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
-		tips = CompetitionTip.where({:competition_id=>competition_id})
-
+		logger.debug(race_results)
+		tips = CompetitionTip.where(tip_conditions)
 		user_scores = {}
 		tips.each do |tip|
 			next if (race_results.nil?)
@@ -472,17 +492,45 @@ class CompetitionsController < ApplicationController
 			username = (user.firstname+' '+user.lastname).strip
 
 			user_score = user_scores[user_id] || Hash.new
+			user_score[:tip] ||= Array.new
 			user_score[:user_id] = user_id
 			user_score[:username] = username
-			user_score[:time] ||= race_results[rider_id][:time]
-			user_score[:points] ||= race_results[rider_id][:points]
-			user_score[:kom] ||= race_results[rider_id][:kom]
-			user_score[:sprint] ||= race_results[rider_id][:sprint]
+			
+			#Cumulate times
+			if (user_score[:time].nil?)
+				user_score[:time] = race_results[rider_id][:stages][stage_id][:time]
+			else 
+				user_score[:time] += race_results[rider_id][:stages][stage_id][:time]
+			end
+			
+			#Cumulate points
+			if (user_score[:points].nil?)
+				user_score[:points] = race_results[rider_id][:stages][stage_id][:points]
+			else 
+				user_score[:points] += race_results[rider_id][:stages][stage_id][:points]
+			end
+			
+			#Cumulate KOM points
+			if (user_score[:kom].nil?)
+				user_score[:kom] = race_results[rider_id][:stages][stage_id][:kom_points]
+			else 
+				user_score[:kom] += race_results[rider_id][:stages][stage_id][:kom_points]
+			end
+			
+			#Cumulate sprint points
+			if (user_score[:sprint].nil?)
+				user_score[:sprint] = race_results[rider_id][:stages][stage_id][:sprint_points]
+			else 
+				user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
+			end
+			
+			user_score[:tip].push({:id=>rider_id, :name=>race_results[rider_id][:rider_name]})
 			user_scores[user_id] = user_score
 		end
 		
 		#Sort leaderboard
 		leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
+		
 		return leaderboard
 	end
 	
@@ -508,5 +556,43 @@ class CompetitionsController < ApplicationController
 		else
 			return 'Ends on '+start_time.to_s
 		end
+	end
+	
+	#Title:			get_user_tips
+	#Description:	Gets tips for a user
+	#Params:		uid
+	private
+	def get_user_tips(competition_id, uid)
+		stages = CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+		tips = CompetitionTip.where({:competition_participant_id=>uid, :competition_id=>competition_id})
+
+		#Group tip data into race buckets
+		selection_by_races = {}
+		race_order = []
+		tips.each do |tip|
+			selection = {}
+			stage = Stage.find_by_id(tip[:stage_id])
+			next if (Time.now < stage.starts_on)
+			
+			rider = Rider.find_by_id(tip[:rider_id])
+			result = Result.where({:season_stage_id=>stage.id, :rider_id=>rider.id}).first
+			
+			selection[:stage] = stage
+			selection[:rider] = rider
+			selection[:result] = result
+			selection_by_races[stage.race_id] ||= []
+			selection_by_races[stage.race_id].push(selection)
+			
+			race_order.push(stage.race_id) if (race_order.index(stage.race_id).nil?)
+		end
+		
+		#Order race buckets
+		tips = []
+		race_order.each do |race_id|
+			race = Race.find_by_id(race_id)
+			tips.push({:race=>race, :tips=>selection_by_races[race_id]})
+		end
+		
+		return tips
 	end
 end

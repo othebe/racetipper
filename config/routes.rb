@@ -59,6 +59,7 @@ Racetipper::Application.routes.draw do
 	get 'competitions/get_competition_stage_info'
 	get 'competitions/join_by_code'
 	get 'competitions/get_more_competitions'
+	get 'competitions/show_tips'
 	post 'competitions/save_competition'
 	post 'competitions/delete_competition'
 	post 'competitions/join'
@@ -71,6 +72,7 @@ Racetipper::Application.routes.draw do
 	match 'competitions/show/:id' => 'competitions#show'
 	match 'competitions/results/:id' => 'competitions#results'
 	match 'competitions/leaderboard/:id' => 'competitions#leaderboard'
+	match 'competitions/show_tips/:id' => 'competitions#show_tips'
 	match 'invitations/:competition_id/:code' => 'competitions#join_by_code'
 	
 	get 'races/show'

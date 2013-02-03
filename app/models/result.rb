@@ -31,11 +31,21 @@ class Result < ActiveRecord::Base
 			rider_data = rider_points_unsorted[rider_id] || Hash.new
 			rider_data[:id] = rider_id
 			rider_data[:rider_name] ||= Rider.find_by_id(rider_id).name
-			rider_data[:time] = (rider_data[:time] || 0) + result.time
-			rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
-			rider_data[:kom_points] = (rider_data[:kom_points] || 0) + result.kom_points
-			rider_data[:sprint_points] = (rider_data[:sprint_points] || 0) + result.sprint_points
-			rider_data[:points] = (rider_data[:points] || 0) + result.points
+			if (options.has_key?(:index_by_rider))
+				rider_data[:stages] ||= {}
+				rider_data[:stages][result.season_stage_id] ||= {}
+				rider_data[:stages][result.season_stage_id][:time] = result.time
+				rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%R:%S')
+				rider_data[:stages][result.season_stage_id][:kom_points] = result.kom_points
+				rider_data[:stages][result.season_stage_id][:sprint_points] = result.sprint_points
+				rider_data[:stages][result.season_stage_id][:points] = result.points
+			else
+				rider_data[:time] = (rider_data[:time] || 0) + result.time
+				rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
+				rider_data[:kom_points] = (rider_data[:kom_points] || 0) + result.kom_points
+				rider_data[:sprint_points] = (rider_data[:sprint_points] || 0) + result.sprint_points
+				rider_data[:points] = (rider_data[:points] || 0) + result.points
+			end
 			rider_points_unsorted[rider_id] = rider_data
 		end
 		rider_points_sorted = rider_points_unsorted.sort_by{|k, v| v[sort_field.to_sym]}

@@ -23,13 +23,13 @@
 	<tbody>
 		<% ndx = 1 %>
 		<% results.each do |rider_id, result| %>
-			<tr>
-				<th align="left"><%=ndx%></th>
-				<th align="left"><%=result[:rider_name]%></th>
-				<th align="left"><%=result[:time_formatted]%></th>
-				<th align="left"><%=result[:gap_formatted]%></th>
-				<th align="left"><%=result[:kom_points]%></th>
-				<th align="left"><%=result[:sprint_points]%></th>
+			<tr class="data">
+				<td align="left"><%=ndx%></td>
+				<td align="left"><%=result[:rider_name]%></td>
+				<td align="left"><%=result[:time_formatted]%></td>
+				<td align="left"><%=result[:gap_formatted]%></td>
+				<td align="left"><%=result[:kom_points]%></td>
+				<td align="left"><%=result[:sprint_points]%></td>
 			</tr>
 			<% ndx += 1 %>
 		<% end %>
