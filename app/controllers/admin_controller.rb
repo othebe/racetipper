@@ -215,7 +215,12 @@ class AdminController < ApplicationController
 			data.season_stage_id = stage_id
 			data.race_id = race_id
 			data.rider_id = result[:rider_id].to_i
-			data.time = result[:time].to_f
+			if (result[:time]=='DNF' || result[:time]=='DNS')
+				data.time = 0
+				data.rider_status = RIDER_RESULT_STATUS[result[:time].to_sym]
+			else
+				data.time = result[:time].to_f
+			end
 			data.kom_points = result[:kom_points].to_f
 			data.sprint_points = result[:sprint_points].to_f
 			data.points = result[:points].to_f

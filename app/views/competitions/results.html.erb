@@ -23,35 +23,39 @@
 			<a class="icon button back" href="#/competitions" title="Close">Â</a>
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
-		
+
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field" style="margin-bottom:20px;">
 			<img src="<%=(@selected_stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:@selected_stage.image_url%>" alt="<%=@selected_stage.name%>" class="stage_img stage_data_container">
-			<div class="tip_data" race_id="<%=@data[:race_id]%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@selected_stage.id%>"></div>
+			<div class="tip_data" race_id="<%=@selected_stage.race_id%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@selected_stage.id%>" stage_name="<%=@selected_stage.name%>"></div>
 
 			<% show_results = @selected_stage.starts_on < Time.now %>
 			<!-- Tipping data-->
 			<div class="tip-rider" style="display:<%=(show_results)?'none':'block'%>;">
 				<h3>Tip a Rider</h3>
-				<p>
-					<% @data[:teams].each do |team| %>
-						<h4><%=team[:team_name]%></h4>
-						<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-							<% team[:riders].each do |rider| %>
-								<div class="item">
-									<div class="media-box">
-										<img src="<%=rider.rider.photo_url%>" alt="<%=rider.rider.name%>" style="width:210px; height:150px;">
-										<div class="mask tip_rider <%=(@selected_tip==rider.rider_id)?'selected-mask':''%>" rider_id="<%=rider.rider_id%>">
-											<h3 class="title">Tip Rider</h3>
-											<a href="#" class="ico show-details new_competition supress" onclick="tip_rider(this);"></a>
-										</div>
-									</div>
-									<h3 class="project-title" style="margin-top:-40px;"><%=rider.rider.name%></h3>
-								</div>
-							<% end %>
-						</div>
-					<% end %>
-				</p>
+				<% @data[:teams].each do |team| %>
+					<fieldset style="padding:15px; margin-bottom:25px;">
+						<legend style="font-weight:bold;"><%=team[:team_name]%></legend>
+						<% team[:riders].each do |rider| %>
+							<%
+							#Check if rider is used.
+							disabled = false
+							stage_info = @tips[rider.rider.id]
+							if (!stage_info.nil?)
+								disabled = (@selected_stage.id != stage_info[:stage].id)
+							end
+							%>
+							
+							<div selected_stage_id="<%=(!stage_info.nil?)?(stage_info[:stage].id):''%>">
+								<input type="checkbox" id="rider_<%=rider.rider.id%>" onclick="tip_rider(this);" rider_id="<%=rider.rider.id%>" <%=(rider.rider.id==@selected_tip)?'checked="checked"':''%> <%=(disabled)?'disabled="disabled"':''%>>
+								<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>"><%=rider.rider.name%>
+									<span class="selected_stage <%=(disabled)?'disabled':''%>"><%=(!stage_info.nil?)?' ('+(stage_info[:stage].name)+')':''%></span>
+								</label>
+								<div style="clear:both;"></div>
+							</div>
+						<% end %>
+					</fieldset>
+				<% end %>
 			</div>
 
 			<!-- Stage results -->

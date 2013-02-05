@@ -26,10 +26,17 @@
 			<tr class="data">
 				<td align="left"><%=ndx%></td>
 				<td align="left"><%=result[:rider_name]%></td>
-				<td align="left"><%=result[:time_formatted]%></td>
-				<td align="left"><%=result[:gap_formatted]%></td>
-				<td align="left"><%=result[:kom_points]%></td>
-				<td align="left"><%=result[:sprint_points]%></td>
+				<% if (result[:disqualified].nil?) %>
+					<td align="left"><%=result[:time_formatted]%></td>
+					<td align="left"><%=result[:gap_formatted]%></td>
+					<td align="left"><%=result[:kom_points]%></td>
+					<td align="left"><%=result[:sprint_points]%></td>
+				<% else %>
+					<td align="left"><%=result[:disqualified]%></td>
+					<td align="left"><%=result[:disqualified]%></td>
+					<td align="left"><%=result[:disqualified]%></td>
+					<td align="left"><%=result[:disqualified]%></td>
+				<% end %>
 			</tr>
 			<% ndx += 1 %>
 		<% end %>

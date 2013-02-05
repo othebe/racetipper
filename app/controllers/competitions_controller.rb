@@ -53,11 +53,20 @@ class CompetitionsController < ApplicationController
 			end
 		end
 		
+		#Grab existing tips
+		tip_data = CompetitionTip.where({
+			:competition_participant_id => @user.id,
+			:competition_id => params[:id]
+		})
+		@tips = {}
+		tip_data.each do |tip|
+			@tips[tip.rider_id] = {:stage=>Stage.find_by_id(tip.stage_id)}
+		end
+		
 		#If tipping is not open for any stage, show results for starting stage
 		if (@selected_stage.nil?)
 			@selected_stage = default_stage
 			@results = Result.get_results('stage', @selected_stage.id)
-			logger.debug(@results.inspect)
 		end
 		
 		#Grab team data
@@ -581,6 +590,7 @@ class CompetitionsController < ApplicationController
 			selection[:stage] = stage
 			selection[:rider] = rider
 			selection[:result] = result
+			selection[:disqualified] = Result.rider_status_to_str(result.rider_status)
 			selection_by_races[stage.race_id] ||= []
 			selection_by_races[stage.race_id].push(selection)
 			

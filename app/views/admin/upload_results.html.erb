@@ -35,10 +35,12 @@
 							rider = Rider.find_by_id(data)
 							data = rider.name + ' ['+data+']'
 						elsif (ndx==@time_column)
-							data = data.to_f
-							first_time = data if (row_ndx==1)
-							relative_time = (row_ndx>1)?' (+'+Time.at(data-first_time).gmtime.strftime('%R:%S')+')':''
-							data = Time.at(data).gmtime.strftime('%R:%S') + relative_time
+							if (data.to_i != 0)
+								data = data.to_f
+								first_time = data if (row_ndx==1)
+								relative_time = (row_ndx>1)?' (+'+Time.at(data-first_time).gmtime.strftime('%R:%S')+')':''
+								data = Time.at(data).gmtime.strftime('%R:%S') + relative_time
+							end
 						end
 						%>
 						<td><%= data %></td>

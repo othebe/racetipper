@@ -92,31 +92,44 @@ function join_competition(competition_id, event) {
 
 //Tip rider
 function tip_rider(elt) {
-	rider_container = $(elt).closest('.tip_rider');
-	rider_id = $(rider_container).attr('rider_id');
+	$('input[type=checkbox]').not(':disabled').removeAttr('checked');
+	$(elt).attr('checked', true);
 	
+	rider_id = $(elt).attr('rider_id');
 	tip_container = $('.tip_data');
 	competition_id = $(tip_container).attr('competition_id');
 	race_id = $(tip_container).attr('race_id');
 	stage_id = $(tip_container).attr('stage_id');
+	stage_name = $(tip_container).attr('stage_name');
 	
-	$('.tip_rider').removeClass('selected-mask');
-	$(rider_container).addClass('selected-mask');
+	//Remove selected stage info from old container
+	container = $('div[selected_stage_id='+stage_id+']');
+	$(container).removeAttr('selected_stage_id');
+	$(container).find('span.selected_stage').html('');
+	
+	//Insert selected stage info into new container
+	container = $(elt).closest('div');
+	$(container).attr('selected_stage_id', stage_id);
+	$(container).find('span.selected_stage').html(' ('+stage_name+')');
 
 	$.post('/competitions/tip', {rider_id:rider_id, race_id:race_id, competition_id:competition_id, stage_id:stage_id}, function(response) {
 		if (!response.success) {
 			alert(response.msg);
-			$('.tip_rider').removeClass('selected-mask');
 		}
 	});
-	
-	event.preventDefault();
 }
 
 //Get competition stage data
 function get_competition_stage_data(competition_id, stage_id) {
 	$('.stage_data_container').addClass('fade');
-	$('.tip_rider').removeClass('selected-mask');
+	
+	//Disable rider selection
+	$('input[type=checkbox]:checked').each(function(ndx, elt) {
+		$(elt).attr('disabled', true);
+		$(elt).attr('checked', false);
+		$('label[for='+$(elt).attr('id')+']').addClass('disabled');
+	});
+	
 	$('.stage_img').attr('src', '/assets/ajax-loader.gif');
 	
 	$.get('/competitions/get_competition_stage_info.json', {competition_id:competition_id, stage_id:stage_id}, function(response) {
@@ -130,7 +143,13 @@ function get_competition_stage_data(competition_id, stage_id) {
 		$('.distance p').html(distance_str);
 		$('.time_to_tip p').html(data.time_to_tip);
 		$('.tip_data').attr('stage_id', stage_id);
-		$('.tip_rider[rider_id='+data.tipped_rider_id+']').addClass('selected-mask');
+		$('.tip_data').attr('stage_name', data.stage_name);
+		
+		//Allow this stage selection to be selected
+		selected_stage = $('div[selected_stage_id='+stage_id+']');
+		$(selected_stage).find('input[type=checkbox]').removeAttr('disabled').attr('checked', true);
+		$(selected_stage).find('label').removeClass('disabled');
+		$(selected_stage).find('span.selected_stage').removeClass('disabled');
 		
 		//Show results?
 		if (data.stage_results != null) {

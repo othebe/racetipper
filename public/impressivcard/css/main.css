@@ -93,6 +93,7 @@ ul.personal-info .value { margin-left:15px; font-style:italic; }
 #contact-form fieldset { border:0; padding:0; }
 input,textarea { display:block; width:50%; min-width:300px; padding:10px 14px; border:1px solid darkGray; border-radius:0; outline:0; background:#f7f7f7; border-width:0 0 2px 0; border-style:solid; border-color:transparent; }
 textarea { height:100px; }
+input[type=checkbox] {width:auto; min-width:5px; margin:3px 5px; float:left;}
 
 /* buttons */
 .btn, button, html input[type="button"], input[type="reset"], input[type="submit"] { display:inline-block; outline:0; border:0; border-width:0 0 0 4px; border-style:solid; border-color: transparent; padding:10px 40px; }

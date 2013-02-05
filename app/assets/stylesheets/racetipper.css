@@ -68,3 +68,8 @@ div.article-group {
 input, textarea {
 	border: 1px solid darkgray !important;
 }
+
+label.disabled,
+span.disabled {
+	color: darkGray;
+}
