@@ -1,0 +1,70 @@
+<form method="POST" action="/admin/upload_default_riders" enctype="multipart/form-data">
+	<label>Upload results file:</label>
+	<%= file_field 'upload', 'datafile' %></p>
+	
+	<input type="submit" value="Preview">
+</form>
+
+<% if (!@riders.nil?) %>
+	<hr/>
+	<h3>Default Rider Preview</h3>
+	<span style="font-style:italic;"><%=@race.name%> (<%=@season.year%>)<span>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Rider</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<% ndx = 1 %>
+			<% @riders.each do |rider| %>
+				<tr>
+					<td><%=ndx%></td>
+					<td><%=rider.name%></td>
+				</tr>
+				<% ndx += 1 %>
+			<% end %>
+		</tbody>
+	</table>
+		
+	<form method="POST" action="/admin/save_default_riders" onsubmit="return submit_default_riders();">
+		<input type="submit" value="Save" style="margin-top:20px;">
+	</form>
+	
+<% end %>
+
+<script>
+<% if (!@riders.nil?) %>
+	function submit_default_riders() {
+		allow = confirm("Upload results?");
+		if (!allow) return false;
+		
+		var rider_data = [];
+		<% @riders.each do |rider| %>
+			rider_data.push(<%=rider.id%>);
+		<% end %>
+		
+		$.post('/admin/save_default_riders', {season_id:<%=@season.id%>, race_id:<%=@race.id%>, rider_data:rider_data}, function(response) {
+			if (response.success) {
+				alert('Results have been uploaded.');
+				window.location.reload();
+			}
+		});
+		return false;
+	}
+<% end %>
+</script>
+
+<style>
+table {
+	border-collapse: collapse;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 5px;
+}
+</style>

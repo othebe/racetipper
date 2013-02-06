@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  season_id: 
+  race_id: 
+  rider_id: 
+  order_id: 1
+
+two:
+  season_id: 
+  race_id: 
+  rider_id: 
+  order_id: 1

@@ -85,6 +85,31 @@ class Result < ActiveRecord::Base
 		return rider_points_sorted
 	end
 	
+	#Title:			check_valid_tips
+	#Description:	Check if a user's tip is valid for this result and sets  a default rider if not valid.
+	def check_valid_tips()
+		stage_id = self.season_stage_id
+		rider_id = self.rider_id
+
+		tips = CompetitionTip.where({:stage_id=>stage_id, :rider_id=>rider_id})
+		tips.each do |tip|
+			valid = true
+			
+			#Check if rider has been disqualified
+			valid = false if (self.rider_status==RIDER_RESULT_STATUS[:DNF] || self.rider_status==RIDER_RESULT_STATUS[:DNS])
+			
+			#Check if rider has already been selected as a default
+			valid = !tip.is_duplicate({:SCOPE_PAST_TIPS=>1}) if (valid)
+
+			#Set default rider if invalid tip
+			tip.default_rider_id = tip.find_default_rider() if (!valid)
+			
+			#Mark tip as finished
+			tip.status = STATUS[:INACTIVE]
+			tip.save
+		end
+	end
+	
 	#Title:			rider_status_to_str
 	#Description:	Convert a rider status to a string
 	#Params:		status (integer)

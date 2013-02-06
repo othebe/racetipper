@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130205044908) do
+ActiveRecord::Schema.define(:version => 20130206031854) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -61,9 +61,12 @@ ActiveRecord::Schema.define(:version => 20130205044908) do
     t.integer  "competition_participant_id"
     t.integer  "stage_id"
     t.integer  "rider_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.integer  "competition_id"
+    t.integer  "default_rider_id"
+    t.integer  "race_id"
+    t.integer  "status",                     :default => 1
   end
 
   create_table "competitions", :force => true do |t|
@@ -83,6 +86,16 @@ ActiveRecord::Schema.define(:version => 20130205044908) do
     t.string   "author"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "default_riders", :force => true do |t|
+    t.integer  "season_id"
+    t.integer  "race_id"
+    t.integer  "rider_id"
+    t.integer  "order_id"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "status",     :default => 1
   end
 
   create_table "metadata", :force => true do |t|
@@ -116,6 +129,7 @@ ActiveRecord::Schema.define(:version => 20130205044908) do
     t.float    "points"
     t.integer  "race_id"
     t.integer  "rider_status",    :default => 1
+    t.integer  "status",          :default => 1
   end
 
   create_table "riders", :force => true do |t|
@@ -158,6 +172,7 @@ ActiveRecord::Schema.define(:version => 20130205044908) do
     t.datetime "updated_at",                  :null => false
     t.integer  "status",       :default => 1
     t.integer  "rider_number", :default => 0
+    t.integer  "rider_status", :default => 1
   end
 
   create_table "teams", :force => true do |t|

@@ -1,0 +1,8 @@
+#stage_id, race_id, year
+9, 1, 2013
+!rider_id, time, kom_points, sprint_points, points
+4, DNF, 1, 1, 10
+3, DNS, 3, 2, 15
+1, 3600, 5, 5, 20
+2, 3750, 4, 3, 17
+

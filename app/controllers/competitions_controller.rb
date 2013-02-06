@@ -60,7 +60,8 @@ class CompetitionsController < ApplicationController
 		})
 		@tips = {}
 		tip_data.each do |tip|
-			@tips[tip.rider_id] = {:stage=>Stage.find_by_id(tip.stage_id)}
+			rider_id = tip.default_rider_id || tip.rider_id
+			@tips[rider_id] = {:stage=>Stage.find_by_id(tip.stage_id)}
 		end
 		
 		#If tipping is not open for any stage, show results for starting stage
@@ -391,21 +392,31 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'Stage not selected.'} and return if (!params.has_key?(:stage_id))
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
 		
-		#Determine if tip can be set
+		#Determine if tipping is open
 		stage = Stage.find_by_id(params[:stage_id])
 		render :json=>{:success=>false, :msg=>'Tipping has ended for this stage.'} and return if (stage.starts_on < Time.now)
+		
+		#Determine if user is trying to tip a disqualified rider
+		teamrider = TeamRider.where('rider_id=? AND race_id=? AND rider_status<>?', params[:rider_id], stage.race_id, RIDER_RESULT_STATUS[:ACTIVE]).joins(:team)
+		render :json=>{:success=>false, :msg=>'This rider has been disqualified.'} and return if (!teamrider.empty?)
 		
 		tip = CompetitionTip.where({
 			:competition_participant_id => @user.id,
 			:stage_id => params[:stage_id],
-			:competition_id => params[:competition_id]
+			:competition_id => params[:competition_id],
 		}).first
 		
 		tip ||= CompetitionTip.new
 		tip.competition_participant_id = @user.id
 		tip.stage_id = params[:stage_id]
 		tip.rider_id = params[:rider_id]
+		tip.race_id = stage.race_id
 		tip.competition_id = params[:competition_id]
+		tip.default_rider_id = nil
+		
+		#Determine if rider has already been selected
+		render :json=>{:success=>false, :msg=>'This rider has already been used.'} and return if (tip.is_duplicate())
+		
 		tip.save
 		
 		render :json=>{:success=>true, :msg=>'success'}
@@ -590,7 +601,7 @@ class CompetitionsController < ApplicationController
 			selection[:stage] = stage
 			selection[:rider] = rider
 			selection[:result] = result
-			selection[:disqualified] = Result.rider_status_to_str(result.rider_status)
+			selection[:disqualified] = Result.rider_status_to_str(result.rider_status) if (!result.nil?)
 			selection_by_races[stage.race_id] ||= []
 			selection_by_races[stage.race_id].push(selection)
 			

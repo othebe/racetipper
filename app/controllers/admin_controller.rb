@@ -210,6 +210,7 @@ class AdminController < ApplicationController
 		#Clear old result data for this stage
 		Result.where({:season_stage_id=>stage_id}).delete_all
 		
+		result_arr = []
 		result_data.each do |ndx, result|
 			data = Result.new
 			data.season_stage_id = stage_id
@@ -218,6 +219,21 @@ class AdminController < ApplicationController
 			if (result[:time]=='DNF' || result[:time]=='DNS')
 				data.time = 0
 				data.rider_status = RIDER_RESULT_STATUS[result[:time].to_sym]
+				
+				#Disqualify rider from default rider list
+				default_rider = DefaultRider.find_by_rider_id(result[:rider_id])
+				if (!default_rider.nil?)
+					default_rider.status = STATUS[:INACTIVE]
+					default_rider.save
+				end
+				
+				#Add disqualification status to team rider
+				teamrider = TeamRider.where('rider_id=? AND race_id=?', result[:rider_id], race_id).joins(:team).first
+				if (!teamrider.nil?)
+					teamrider = TeamRider.find_by_id(teamrider.id)
+					teamrider.rider_status = RIDER_RESULT_STATUS[result[:time].to_sym]
+					teamrider.save
+				end
 			else
 				data.time = result[:time].to_f
 			end
@@ -225,7 +241,37 @@ class AdminController < ApplicationController
 			data.sprint_points = result[:sprint_points].to_f
 			data.points = result[:points].to_f
 			data.save
+			
+			result_arr.push(data)
 		end
+		
+		#Check if any tips for this result need to be defaulted.
+		result_arr.each do |result|	
+			result.check_valid_tips()
+		end
+		
+		render :json=>{:success=>true}
+	end
+	
+	def save_default_riders
+		race_id = params[:race_id]
+		season_id = params[:season_id]
+		rider_data = params[:rider_data]
+		
+		ndx = 0
+		rider_data.each do |rider_id|
+			default_rider = DefaultRider.where({:season_id=>season_id, :race_id=>race_id, :rider_id=>rider_id}).first
+			
+			default_rider ||= DefaultRider.new
+			default_rider.season_id = season_id
+			default_rider.race_id = race_id
+			default_rider.order_id = ndx
+			default_rider.rider_id = rider_id
+			default_rider.save
+			
+			ndx += 1
+		end
+		
 		render :json=>{:success=>true}
 	end
 	
@@ -381,6 +427,37 @@ class AdminController < ApplicationController
 			#Special keys
 			@rider_column = @result_keys.index('rider_id')
 			@time_column = @result_keys.index('time')
+		end
+	end
+	
+	def upload_default_riders
+		@title = 'Upload default riders'
+		
+		if (params.has_key?(:upload))
+			file_data = params[:upload][:datafile].read
+			
+			@riders = []
+			ndx = 0
+			file_data.each_line do |line|
+				next if (line.strip.length==0)
+				next if (line.start_with?('#'))
+
+				ndx += 1
+				#Read race/season info
+				if (ndx==1)
+					line_arr = line.split(',')
+					@race = Race.find_by_id(line_arr[0].strip)
+					@season = Season.find_by_year(line_arr[1].strip)
+					next
+				end
+				
+				#Read key info
+				next if (line.starts_with?('!'))
+				
+				#Read rider list
+				rider_id = line.strip
+				@riders.push(Rider.find_by_id(rider_id))
+			end
 		end
 	end
 	

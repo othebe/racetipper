@@ -11,8 +11,7 @@ STATUS = {
 RIDER_RESULT_STATUS = {
 	:ACTIVE => 1,
 	:DNS => 2,
-	:DNF => 3,
-	:DEFAULT => 4
+	:DNF => 3
 }
 
 ARTICLE_TYPE = {
