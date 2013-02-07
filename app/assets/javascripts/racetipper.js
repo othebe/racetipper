@@ -163,13 +163,26 @@ function get_competition_stage_data(competition_id, stage_id) {
 				$('div.stage-results .empty').hide();
 				for (ndx in data.stage_results) {
 					result = data.stage_results[ndx];
+					//Check disqualification status
+					if (result['disqualified']!=null) {
+						time_formatted = result['disqualified'];
+						gap_formatted = result['disqualified'];
+						kom_points = result['disqualified'];
+						sprint_points = result['disqualified'];
+					} else {
+						time_formatted = result['time_formatted'];
+						gap_formatted = result['gap_formatted'];
+						kom_points = result['kom_points'];
+						sprint_points = result['sprint_points'];
+					}
+					
 					row = $('<tr class="data"></tr>');
 					$(row).append('<td>'+ndx+'</td>');
 					$(row).append('<td>'+result['rider_name']+'</td>');
-					$(row).append('<td>'+result['time_formatted']+'</td>');
-					$(row).append('<td>'+result['gap_formatted']+'</td>');
-					$(row).append('<td>'+result['kom_points']+'</td>');
-					$(row).append('<td>'+result['sprint_points']+'</td>');
+					$(row).append('<td>'+time_formatted+'</td>');
+					$(row).append('<td>'+gap_formatted+'</td>');
+					$(row).append('<td>'+kom_points+'</td>');
+					$(row).append('<td>'+sprint_points+'</td>');
 					$(table).append(row);
 				}
 			}

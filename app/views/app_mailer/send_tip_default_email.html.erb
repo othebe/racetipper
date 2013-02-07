@@ -1,0 +1,18 @@
+<p>Hi,</p>
+
+<p>Your selected rider for a competition stage has been defaulted.</p>
+
+<p>
+Competition: <a href="<%=SITE_URL%>competition/<%=@competition.id%>" target="_blank"><%=@competition.name%></a></br>
+<div><span style="font-weight:bold;">Stage:</span> <%=@stage.name%></div></br>
+<div><span style="font-weight:bold;">Selected rider:</span> <%=@selected_rider.name%> (<%=@disqualification_status%>)</div></br>
+<div><span style="font-weight:bold;">Defaulted rider:</span> <%=@default_rider.name%></div></br>
+</p>
+
+<% if (!@invalid_stage.nil?) %>
+	<p>
+	Your selection of <span style="font-weight:bold;"><%=@default_rider.name%></span> for the <span style="font-weight:bold;"><%=@invalid_stage.name%></span> stage is now invalid. Please select a new rider at <a href="<%=SITE_URL%>competition/<%=@competition.id%>" target="_blank"><%=@competition.name%></a></br>.
+	</p>
+<% end %>
+
+<p>Cheers.</p>

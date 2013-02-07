@@ -34,6 +34,9 @@ class CompetitionTip < ActiveRecord::Base
 			end
 		end
 		
+		logger.debug('NOT DUPLICATE') if (!duplicate)
+		logger.debug(self.inspect) if (!duplicate)
+	
 		return duplicate
 	end
 end

@@ -210,7 +210,6 @@ class AdminController < ApplicationController
 		#Clear old result data for this stage
 		Result.where({:season_stage_id=>stage_id}).delete_all
 		
-		result_arr = []
 		result_data.each do |ndx, result|
 			data = Result.new
 			data.season_stage_id = stage_id
@@ -241,12 +240,12 @@ class AdminController < ApplicationController
 			data.sprint_points = result[:sprint_points].to_f
 			data.points = result[:points].to_f
 			data.save
-			
-			result_arr.push(data)
 		end
 		
-		#Check if any tips for this result need to be defaulted.
-		result_arr.each do |result|	
+		#Check if any tips for this result need to be defaulted. Go in order of default riders so empty tips are filled accordingly.
+		default_riders = DefaultRider.where({:race_id=>race_id}).order('order_id')
+		default_riders.each do |default_rider|
+			result = Result.where({:season_stage_id=>stage_id, :rider_id=>default_rider.rider_id, :race_id=>race_id}).first
 			result.check_valid_tips()
 		end
 		

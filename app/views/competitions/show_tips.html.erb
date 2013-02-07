@@ -28,6 +28,7 @@
 						<th align="left">Rider</th>
 						<th align="left">Time</th>
 						<th align="left">Cumulative</th>
+						<th align="left">Default</th>
 					</tr>
 					
 					<% cumulative_time = nil %>
@@ -48,6 +49,7 @@
 								<td><%=tip_data[:disqualified]%></td>
 								<td><%=tip_data[:disqualified]%></td>
 							<% end %>
+							<td><%=(tip_data[:default_rider].nil?)?'':tip_data[:default_rider].name%></td>
 						</tr>
 					<% end %>
 				</table>

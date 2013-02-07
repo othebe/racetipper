@@ -501,7 +501,14 @@ class CompetitionsController < ApplicationController
 		tips.each do |tip|
 			next if (race_results.nil?)
 			
-			rider_id = tip.rider_id
+			#Account for default riders
+			if (tip.default_rider_id.nil?)
+				modifier = 0
+				rider_id = tip.rider_id
+			else
+				rider_id = tip.default_rider_id || tip.rider_id
+				modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
+			end
 			next if (race_results[rider_id].nil?)
 			
 			stage_id = tip.stage_id
@@ -518,9 +525,9 @@ class CompetitionsController < ApplicationController
 			if (!race_results[rider_id][:stages][stage_id].nil?)
 				#Cumulate times
 				if (user_score[:time].nil?)
-					user_score[:time] = race_results[rider_id][:stages][stage_id][:time]
+					user_score[:time] = race_results[rider_id][:stages][stage_id][:time]+modifier
 				else 
-					user_score[:time] += race_results[rider_id][:stages][stage_id][:time]
+					user_score[:time] += race_results[rider_id][:stages][stage_id][:time]+modifier
 				end
 				
 				#Cumulate points
@@ -594,13 +601,15 @@ class CompetitionsController < ApplicationController
 			selection = {}
 			stage = Stage.find_by_id(tip[:stage_id])
 			next if (Time.now < stage.starts_on)
-			
+		
 			rider = Rider.find_by_id(tip[:rider_id])
+			default_rider = Rider.find_by_id(tip[:default_rider_id])
 			result = Result.where({:season_stage_id=>stage.id, :rider_id=>rider.id}).first
 			
 			selection[:stage] = stage
 			selection[:rider] = rider
 			selection[:result] = result
+			selection[:default_rider] = default_rider
 			selection[:disqualified] = Result.rider_status_to_str(result.rider_status) if (!result.nil?)
 			selection_by_races[stage.race_id] ||= []
 			selection_by_races[stage.race_id].push(selection)

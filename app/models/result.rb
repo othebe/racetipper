@@ -91,7 +91,7 @@ class Result < ActiveRecord::Base
 		stage_id = self.season_stage_id
 		rider_id = self.rider_id
 
-		tips = CompetitionTip.where({:stage_id=>stage_id, :rider_id=>rider_id})
+		tips = CompetitionTip.where('stage_id=? AND (rider_id IS NULL OR rider_id=?)', stage_id, rider_id)
 		tips.each do |tip|
 			valid = true
 			
@@ -101,8 +101,15 @@ class Result < ActiveRecord::Base
 			#Check if rider has already been selected as a default
 			valid = !tip.is_duplicate({:SCOPE_PAST_TIPS=>1}) if (valid)
 
-			#Set default rider if invalid tip
-			tip.default_rider_id = tip.find_default_rider() if (!valid)
+			#Current tip is invalid
+			if (!valid)
+				#Set default rider
+				tip.default_rider_id = tip.find_default_rider() if (!valid)
+				#Set rider id to 0 if it was empty
+				tip.rider_id ||= 0
+				#Set notification requirement to true
+				tip.notification_required = true
+			end
 			
 			#Mark tip as finished
 			tip.status = STATUS[:INACTIVE]
