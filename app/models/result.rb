@@ -38,22 +38,33 @@ class Result < ActiveRecord::Base
 				rider_data[:stages] ||= {}
 				rider_data[:stages][result.season_stage_id] ||= {}
 				rider_data[:stages][result.season_stage_id][:time] = result.time
-				rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%R:%S')
 				rider_data[:stages][result.season_stage_id][:kom_points] = result.kom_points
 				rider_data[:stages][result.season_stage_id][:sprint_points] = result.sprint_points
 				rider_data[:stages][result.season_stage_id][:points] = result.points
 				rider_data[:stages][result.season_stage_id][:disqualified] = disqualified
 				rider_data[:stages][result.season_stage_id][:time] = 999999999 if (!disqualified.nil?)
 				rider_data[:stages][result.season_stage_id][:sort_score] = score_modifier + rider_data[:stages][result.season_stage_id][:time]
+				#Format time
+				if (result.time >= 86400)
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%-d day(s), %R:%S')
+				else
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%-d day(s), %R:%S')
+				end
+					
 			else
 				rider_data[:time] = (rider_data[:time] || 0) + result.time
-				rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
 				rider_data[:kom_points] = (rider_data[:kom_points] || 0) + result.kom_points
 				rider_data[:sprint_points] = (rider_data[:sprint_points] || 0) + result.sprint_points
 				rider_data[:points] = (rider_data[:points] || 0) + result.points
 				rider_data[:disqualified] = disqualified
 				rider_data[:time] = 999999999 if (!disqualified.nil?)
 				rider_data[:sort_score] = score_modifier + rider_data[:time]
+				#Format time
+				if (result.time >= 86400)
+					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%-d day(s), %R:%S')
+				else
+					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
+				end
 			end
 			rider_points_unsorted[rider_id] = rider_data
 		end

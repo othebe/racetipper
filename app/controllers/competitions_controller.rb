@@ -182,6 +182,7 @@ class CompetitionsController < ApplicationController
 		uid = params[:uid]
 		
 		@tips = get_user_tips(@competition_id, uid)
+		logger.debug(@tips.inspect)
 		render :layout=>false
 	end
 	
@@ -604,7 +605,8 @@ class CompetitionsController < ApplicationController
 		
 			rider = Rider.find_by_id(tip[:rider_id])
 			default_rider = Rider.find_by_id(tip[:default_rider_id])
-			result = Result.where({:season_stage_id=>stage.id, :rider_id=>rider.id}).first
+
+			result = Result.where({:season_stage_id=>stage.id, :rider_id=>(rider||default_rider).id}).first
 			
 			selection[:stage] = stage
 			selection[:rider] = rider

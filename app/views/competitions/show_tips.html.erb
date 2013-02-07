@@ -33,18 +33,33 @@
 					
 					<% cumulative_time = nil %>
 					<% tip[:tips].each do |tip_data| %>
-						<% time = 'TBA' %>
-						<% if (!tip_data[:result].nil?) %>
-							<% time = Time.at(tip_data[:result].time).gmtime.strftime('%R:%S') %>
-							<% cumulative_time ||= 0 %>
-							<% cumulative_time += tip_data[:result].time%>
-						<% end %>
+						<%
+						time = 'TBA'						
+						if (!tip_data[:result].nil?)
+							time = Time.at(tip_data[:result].time).gmtime.strftime('%R:%S')
+							cumulative_time ||= 0
+							cumulative_time += tip_data[:result].time
+							
+							if (tip_data[:result].time >= 86400)
+								time = Time.at(tip_data[:result].time).gmtime.strftime('%-d day(s), %R:%S')
+							else
+								time = Time.at(tip_data[:result].time).gmtime.strftime('%R:%S')
+							end
+							
+							if (cumulative_time >= 86400)
+								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%-d day(s), %R:%S')
+							else
+								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%R:%S')
+							end
+							
+						end 
+						%>
 						<tr>
 							<td><%=tip_data[:stage].name%></td>
-							<td><%=tip_data[:rider].name%></td>
+							<td><%=(tip_data[:rider].nil?)?'':tip_data[:rider].name%></td>
 							<% if (tip_data[:disqualified].nil?) %>
 								<td><%=time%></td>
-								<td><%=Time.at(cumulative_time).gmtime.strftime('%R:%S')%></td>
+								<td><%=formatted_cumulative_time%></td>
 							<% else %>
 								<td><%=tip_data[:disqualified]%></td>
 								<td><%=tip_data[:disqualified]%></td>

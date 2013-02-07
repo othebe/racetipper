@@ -25,11 +25,31 @@
 	<% ndx = 1 %>
 	<tbody>	
 		<% leaderboard.each do |uid, data| %>
-			<% gap = Time.at(data[:time]-base_time).gmtime.strftime('%R:%S') if (!base_time.nil?) %>
+			<% 
+			#Formatted gap
+			if (!base_time.nil?)
+				if (data[:time]-base_time >= 86400)
+					gap = Time.at(data[:time]-base_time).gmtime.strftime('%-d day(s), %R:%S') if (!base_time.nil?)
+				else
+					gap = Time.at(data[:time]-base_time).gmtime.strftime('%R:%S') if (!base_time.nil?)
+				end
+			end 
+			
+			#Formatted time
+			if (!data[:time].nil?)
+				if (data[:time] >= 86400)
+					formatted_time = Time.at(data[:time]).gmtime.strftime('%-d day(s), %R:%S')
+				else
+					formatted_time = Time.at(data[:time]).gmtime.strftime('%R:%S')
+				end
+			else
+				formatted_time = 'TBA'
+			end
+			%>
 			<tr>
 				<td align="left"><%=ndx%></td>
 				<td align="left"><a href="/profile/<%=data[:user_id]%>" target="_blank"><%=data[:username]%></a></td>
-				<td align="left"><%=(data[:time].nil?)?'TBA':Time.at(data[:time]).gmtime.strftime('%R:%S')%></td>
+				<td align="left"><%=formatted_time.to_s%></td>
 				<td align="left"><%=(base_time.nil?)?'':'+ '+gap.to_s%></td>
 				<td align="left"><%=(data[:time].nil?)?'':data[:kom].to_i%></td>
 				<td align="left"><%=(data[:time].nil?)?'':data[:sprint].to_i%></td>
