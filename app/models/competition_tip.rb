@@ -3,7 +3,7 @@ class CompetitionTip < ActiveRecord::Base
   
 	#Title:			find_default_rider
 	#Description:	Finds the next available default rider for this user in this competition's race
-	def find_default_rider
+	def find_default_rider()
 		default_riders = DefaultRider.where({:race_id=>self.race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
 		default_riders.each do |default_rider|
 			checker = self.dup

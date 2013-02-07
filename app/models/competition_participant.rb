@@ -22,6 +22,15 @@ class CompetitionParticipant < ActiveRecord::Base
 			tip.stage_id = competition_stage.stage_id
 			tip.competition_id = competition_id
 			tip.race_id = competition_stage.race_id
+			
+			#If stage has ended, give this rider a default rider
+			stage = Stage.find_by_id(competition_stage.stage_id)
+			if (stage.starts_on <= Time.now)
+				tip.default_rider_id = tip.find_default_rider()
+				tip.status = STATUS[:INACTIVE]
+				tip.rider_id = 0
+			end
+			
 			tip.save
 		end
 	end
