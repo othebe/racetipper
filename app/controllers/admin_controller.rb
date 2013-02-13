@@ -144,18 +144,26 @@ class AdminController < ApplicationController
 			team.name = info[:team_name]
 			team.image_url = info[:image_url]
 			team.season_id = session[:season_id]
-			team.race_id = info[:race_id]
+			#team.race_id = info[:race_id]
 			team.save
+			
+			#RaceTeams
+			raceteam = RaceTeam.where({:race_id=>info[:race_id], :team_id=>team.id}).first
+			raceteam ||= RaceTeam.new
+			raceteam.race_id = info[:race_id]
+			raceteam.team_id = team.id
+			raceteam.save
 			
 			rider_arr = []
 			info[:riders].each do |ndx, rider_info|
 				rider_arr.push(rider_info[:id])
-				teamrider = TeamRider.where('team_id=? AND rider_id=?', team.id, rider_info[:id]).first
+				teamrider = TeamRider.where('team_id=? AND rider_id=? AND (race_id=? OR race_id IS NULL)', team.id, rider_info[:id], info[:race_id]).first
 				teamrider ||= TeamRider.new
 				teamrider.team_id = team.id
 				teamrider.rider_id = rider_info[:id]
 				teamrider.display_name = rider_info[:display_name]
 				teamrider.rider_number = rider_info[:rider_number]
+				teamrider.race_id = info[:race_id]
 				teamrider.save
 			end
 			
@@ -556,12 +564,13 @@ class AdminController < ApplicationController
 				next if (line.start_with?('#'))
 				
 				ndx += 1
-				#Read race name/description/image_url info
+				#Read race name/description/image_url/team_id(OPT) info
 				if (ndx==1)
 					line_arr = line.split(',')
 					@team_name = line_arr[0].strip
 					@team_image_url = line_arr[1].strip
 					@race_id = line_arr[2].strip
+					@team_id = line_arr[3].strip if (!line_arr[3].nil?)
 					@race = Race.find_by_id(@race_id)
 					next
 				end

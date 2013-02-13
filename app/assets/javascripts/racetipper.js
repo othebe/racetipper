@@ -123,6 +123,9 @@ function tip_rider(elt) {
 function get_competition_stage_data(competition_id, stage_id) {
 	$('.stage_data_container').addClass('fade');
 	
+	//Hide teams
+	$('.raceteam').hide();
+	
 	//Disable rider selection
 	$('input[type=checkbox]:checked').each(function(ndx, elt) {
 		$(elt).attr('disabled', true);
@@ -150,6 +153,11 @@ function get_competition_stage_data(competition_id, stage_id) {
 		$(selected_stage).find('input[type=checkbox]').removeAttr('disabled').attr('checked', true);
 		$(selected_stage).find('label').removeClass('disabled');
 		$(selected_stage).find('span.selected_stage').removeClass('disabled');
+		
+		//Hide teams if they're not part of the race
+		race_id = data.race_id
+		$('.raceteam').not('.'+race_id).hide();
+		$('.raceteam.'+race_id).show();
 		
 		//Show results?
 		if (data.stage_results != null) {

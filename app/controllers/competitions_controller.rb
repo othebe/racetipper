@@ -61,7 +61,9 @@ class CompetitionsController < ApplicationController
 		@tips = {}
 		tip_data.each do |tip|
 			rider_id = tip.default_rider_id || tip.rider_id
-			@tips[rider_id] = {:stage=>Stage.find_by_id(tip.stage_id)}
+			stage = Stage.find_by_id(tip.stage_id)
+			@tips[rider_id] = {}
+			@tips[rider_id][stage.race_id] = {:stage=>stage}
 		end
 		
 		#If tipping is not open for any stage, show results for starting stage
@@ -71,25 +73,40 @@ class CompetitionsController < ApplicationController
 		end
 		
 		#Grab team data
+		raceteams = RaceTeam.where({
+			:status=>STATUS[:ACTIVE],
+			:race_id=>races
+		}).joins(:team)
+		
+		allowed_teams = []
+		race_team_map = {}
+		raceteams.each do |raceteam|
+			allowed_teams.push(raceteam.team_id)
+			race_team_map[raceteam.team_id] ||= []
+			race_team_map[raceteam.team_id].push(raceteam.race_id)
+		end
+		
 		teams = Team.where({
+					:id=>allowed_teams,
 					:season_id=>@data[:competition].season_id, 
-					:status=>STATUS[:ACTIVE], 
-					:race_id=>races
+					:status=>STATUS[:ACTIVE]
 				}).joins(:TeamRiders).order('team_riders.rider_number')
 				
 		team_hash = {}
-		team_arr = []
 		teams.each do |team|
-			next if (team_hash.has_key?(team.id))
 			team_data = {}
 			team_data[:team_id] = team.id
 			team_data[:team_name] = team.name
-			team_data[:riders] = team.TeamRiders
+			team_data[:riders] = []
+			race_team_map[team.id].each do |race_id|
+				rider_data = {}
+				rider_data[:race_id] = race_id
+				rider_data[:riders] = team.TeamRiders.where(:race_id=>race_id)
+				team_data[:riders].push(rider_data)
+			end
 			team_hash[team.id] = team_data
-			team_arr.push(team_data)
 		end
-		
-		@data[:teams] = team_arr
+		@data[:teams] = team_hash
 		
 		@time_to_tip = get_remaining_time(@selected_stage.starts_on)
 		
@@ -325,6 +342,7 @@ class CompetitionsController < ApplicationController
 			:stage_distance_km => stage.distance_km,
 			:tipped_rider_id => tipped_rider_id,
 			:time_to_tip => get_remaining_time(stage.starts_on),
+			:race_id => stage.race_id
 		}
 		
 		stage_results = []
@@ -396,6 +414,10 @@ class CompetitionsController < ApplicationController
 		#Determine if tipping is open
 		stage = Stage.find_by_id(params[:stage_id])
 		render :json=>{:success=>false, :msg=>'Tipping has ended for this stage.'} and return if (stage.starts_on < Time.now)
+		
+		#Determine if rider exists
+		teamrider = TeamRider.where({:rider_id=>params[:rider_id], :race_id=>stage.race_id})
+		render :json=>{:success=>false, :msg=>'This rider is not part of the race.'} and return if (teamrider.empty?)
 		
 		#Determine if user is trying to tip a disqualified rider
 		teamrider = TeamRider.where('rider_id=? AND race_id=? AND rider_status<>?', params[:rider_id], stage.race_id, RIDER_RESULT_STATUS[:ACTIVE]).joins(:team)

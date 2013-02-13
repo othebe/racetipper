@@ -33,42 +33,48 @@
 			<!-- Tipping data-->
 			<div class="tip-rider" style="display:<%=(show_results)?'none':'block'%>;">
 				<h3>Tip a Rider</h3>
-				<% @data[:teams].each do |team| %>
-					<fieldset style="padding:15px; margin-bottom:25px;">
-						<legend style="font-weight:bold;"><%=team[:team_name]%></legend>
-						<% team[:riders].each do |rider| %>
-							<%
-							disabled = false
-							reason = ''
-							
-							#Check if user is disabled
-							if (rider.rider_status != RIDER_RESULT_STATUS[:ACTIVE])
-								disabled = true
-								reason = 'DNF' if (rider.rider_status == RIDER_RESULT_STATUS[:DNF])
-								reason = 'DNS' if (rider.rider_status == RIDER_RESULT_STATUS[:DNS])
-							end
-							
-							#Check if rider is used.
-							if (!disabled)
-								stage_info = @tips[rider.rider.id]
-								if (!stage_info.nil?)
-									disabled = (@selected_stage.id != stage_info[:stage].id)
-									reason = stage_info[:stage].name
+				<% @data[:teams].each do |team_id, team| %>
+					<% team[:riders].each do |rider_data| %>
+						<% race_id = rider_data[:race_id] %>
+						<% hidden = (race_id==@selected_stage.race_id)?'':'display:none;'%>
+						<fieldset style="padding:15px; margin-bottom:25px; <%=hidden%>" class="raceteam <%=race_id%>">
+							<legend style="font-weight:bold;"><%=team[:team_name]%></legend>
+							<% rider_data[:riders].each do |rider| %>
+								<%
+								disabled = false
+								reason = ''
+								skip = (rider.race_id!=@selected_stage.race_id)
+								
+								#Check if user is disabled
+								if (rider.rider_status != RIDER_RESULT_STATUS[:ACTIVE])
+									disabled = true
+									reason = 'DNF' if (rider.rider_status == RIDER_RESULT_STATUS[:DNF])
+									reason = 'DNS' if (rider.rider_status == RIDER_RESULT_STATUS[:DNS])
 								end
-							end
-							
-							reason = ' ('+reason+')' if (!reason.empty?)
-							%>
-							
-							<div selected_stage_id="<%=(!stage_info.nil?)?(stage_info[:stage].id):''%>">
-								<input type="checkbox" id="rider_<%=rider.rider.id%>" onclick="tip_rider(this);" rider_id="<%=rider.rider.id%>" <%=(rider.rider.id==@selected_tip)?'checked="checked"':''%> <%=(disabled)?'disabled="disabled"':''%>>
-								<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>"><%=rider.rider.name%>
-									<span class="selected_stage <%=(disabled)?'disabled':''%>"><%=reason%></span>
-								</label>
-								<div style="clear:both;"></div>
-							</div>
-						<% end %>
-					</fieldset>
+								
+								#Check if rider is used.
+								if (!disabled)
+									stage_info = @tips[rider.rider.id]
+									stage_info = stage_info[race_id] if (!stage_info.nil?)
+									if (!stage_info.nil?)
+										disabled = (@selected_stage.id != stage_info[:stage].id)
+										reason = stage_info[:stage].name
+									end
+								end
+								
+								reason = ' ('+reason+')' if (!reason.empty?)
+								%>
+								
+								<div selected_stage_id="<%=(!stage_info.nil?)?(stage_info[:stage].id):''%>">
+									<input type="checkbox" id="rider_<%=rider.rider.id%>" onclick="tip_rider(this);" rider_id="<%=rider.rider.id%>" <%=(rider.rider.id==@selected_tip && race_id==@selected_stage.race_id)?'checked="checked"':''%> <%=(disabled)?'disabled="disabled"':''%>>
+									<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>"><%=rider.rider.name%>
+										<span class="selected_stage <%=(disabled)?'disabled':''%>"><%=reason%></span>
+									</label>
+									<div style="clear:both;"></div>
+								</div>
+							<% end %>
+						</fieldset>
+					<% end %>
 				<% end %>
 			</div>
 
