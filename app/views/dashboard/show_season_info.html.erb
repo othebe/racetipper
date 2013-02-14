@@ -13,7 +13,7 @@
 						<img alt="<%=link.description%>" src="<%=link.url%>" class="article <%=float%>">
 					</a>
 				<% end %>
-				<p class="article"><%=article.body%></p>
+				<p class="article"><%=strip_tags(article.body)%></p>
 			<% else %>
 				<% links = article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]}).limit(5) %>
 				<% links.each do |link| %>
