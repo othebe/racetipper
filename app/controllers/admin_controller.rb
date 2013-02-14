@@ -103,8 +103,12 @@ class AdminController < ApplicationController
 		username = params[:username]
 		password = params[:password]
 		
-		validated = validated && (username == 'admin')
-		validated = validated && (password == 'tim123456')
+		userdata = {
+			:email => username,
+			:password => password
+		}
+		user = User.check_credentials(userdata)
+		validated = (!user.nil? && user.is_admin)
 		
 		#Wrong credentials
 		if (!validated)
