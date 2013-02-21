@@ -1,4 +1,65 @@
 <%=csrf_meta_tag%>
+
+<!-- Facebook Login -->
+<div id="fb-root"></div>
+<script>
+	// Additional JS functions here
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : '<%=FACEBOOK_APP_ID%>', // App ID
+			channelUrl : '<%=SITE_URL%>channel.html', // Channel File
+			status     : true, // check login status
+			cookie     : true, // enable cookies to allow the server to access the session
+			xfbml      : true  // parse XFBML
+		});
+		
+		//Remove the Facebook loader
+		$('.fb_loading').hide();
+		$('.fb_loaded').fadeIn();
+
+		// Additional init code here
+		FB.getLoginStatus(function(response) {
+			if (response.status === 'connected') {
+				// connected
+				
+			} else if (response.status === 'not_authorized') {
+				// not_authorized
+				console.log(response);
+			} else {
+				// not_logged_in
+				
+			}
+		});
+	};
+
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+   
+	function fb_login() {
+		FB.login(function(response) {
+			if (response.authResponse) {
+				// connected
+				access_token = response.authResponse.accessToken;
+				$.get('/users/login_with_facebook', {access_token:access_token}, function(login_response) {
+					if (login_response.success)
+						window.location.reload();
+					else alert(login_response.msg);
+				});
+			} else {
+				// cancelled
+			}
+		}, {
+			scope: 'email'
+		});
+	}
+</script>
+
 <div style="display:none;">
 	<div id="login_form">
 		<div class="close_fancybox" style="float:right; cursor:pointer;">
@@ -24,7 +85,8 @@
 				
 				<div style="font-weight:bold; margin-top:25px;">Or, Login with Facebook</div>
 				<div style="text-align:center; margin-top:5px;">
-					<a href="#">
+					<img src="/assets/fb_loading.gif" class="fb_loading">
+					<a href="#" onclick="fb_login();" class="fb_loaded" style="display:none;">
 						<img src="/assets/facebook.gif">
 					</a>
 				</div>

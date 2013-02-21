@@ -57,8 +57,8 @@ Racetipper::Application.configure do
 	  :address              => "smtp.gmail.com",
 	  :port                 => 587,
 	  :domain               => 'racetipper.herokuapp.com',
-	  :user_name            => 'ozzy@gushcloud.com',
-	  :password             => 'stupify12',
+	  :user_name            => 'tim.calkins@gmail.com',
+	  :password             => 'timtipping',
 	  :authentication       => 'plain',
 	  :enable_starttls_auto => true  
 	}
@@ -77,3 +77,7 @@ Racetipper::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 end
+
+#Constants
+FACEBOOK_APP_ID = 536692469697929
+FACEBOOK_APP_SECRET = '11bb95a12ff1ef93ad0ed3e6a44226a1'

@@ -54,6 +54,7 @@ Racetipper::Application.routes.draw do
 	get 'users/logout'
 	post 'users/create'
 	post 'users/login'
+	get 'users/login_with_facebook'
 	
 	get 'competitions/edit'
 	get 'competitions/show'

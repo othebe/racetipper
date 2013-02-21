@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
 		user.salt = salt
 		user.password = enc_password
 		user.last_activity = Time.now.to_datetime
+		user.fb_id = data[:fb_id] if (!data[:fb_id].nil?)
+		user.fb_access_token = data[:fb_access_token] if (!data[:fb_access_token].nil?)
 		user.save
 		
 		return self.find_by_id(user.id)
@@ -44,5 +46,15 @@ class User < ActiveRecord::Base
 		rank = 'Just starting out.'
 		
 		return rank
+	end
+	
+	#Title:			generate_password
+	#Description:	Generate a random password
+	def self.generate_password(len=10)
+		#Generate salt
+		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+		password  =  (0...len).map{ base[rand(base.length)] }.join
+		
+		return password
 	end
 end
