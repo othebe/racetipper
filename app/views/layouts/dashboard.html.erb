@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="no-overflow" data-safeMod="false" data-mobileSafeMod="true" data-safeModPageInAnimation="fadeInLeft" data-inAnimation="fadeInLeft" data-outAnimation="fadeOutRightBig" data-lightboxInAnimation="fadeInLeftBig" data-profileImageAnimation="rotate-left" data-jmpressAnimationDuration="1000">
 <head>
 	
@@ -140,17 +140,23 @@
 				<button id="login" href="#login_form" class="login">Login</button>
 			</div>
 		<% else %>
-			<div style="float:right; padding:15px;">
-				<a href="/users/logout">
-					<button>Logout</button>
-				</a>
+			<div style="float:right; padding:15px;" class="asdf">
+				<table class="usermenu">
+					<tr>
+						<th><img src="<%=@user_img%>" style="width:25px; float:left; padding-right:3px;"></th>
+						<th style="cursor:pointer;"><%=(@user.firstname+' '+@user.lastname).strip%></th>
+						<th style="cursor:pointer;"><div class="arrow-down usermenu"></div></th>
+					</tr>
+					<tr class="choice" href="/users/settings"><td colspan="3" style="padding:6px;"><span class="icon">Ñ</span>Settings</td></tr>
+					<tr class="choice" href="/users/logout"><td colspan="3" style="padding:6px;"><span class="icon">Ï</span>Logout</td></tr>
+				</table>
 			</div>
 			
 			<% if (@user.fb_id.nil?) %>
 				<div style="float:right;">
-					<img src="/assets/fb_loading.gif" class="fb_loading" style="margin-top:20px;">
+					<img src="/assets/fb_loading.gif" class="fb_loading" style="margin-top:14px;">
 					<a href="#" class="fb_loaded" style="display:none;" onclick="link_fb();">
-						<img src="/assets/fb_connect.png" style="height:33px; margin-top:22px;">
+						<img src="/assets/fb_connect.png" style="height:33px; margin-top:18px;">
 					</a>
 				</div>
 			<% end %>
@@ -251,7 +257,9 @@
         <section id="profile" class="page wrapper" data-x="14500" data-y="5250" data-rotate="90" data-scale="2">
         	
             <!-- PAGE TITLE -->
-        	<h2 class="caption"><span>PROFILE</span></h2>
+        	<h2 class="caption">
+				<span>PROFILE</span>
+			</h2>
 			
 			<div class="iscroll-wrapper">
 				<div class="scroller container">

@@ -20,6 +20,15 @@ class User < ActiveRecord::Base
 		user.last_activity = Time.now.to_datetime
 		user.fb_id = data[:fb_id] if (!data[:fb_id].nil?)
 		user.fb_access_token = data[:fb_access_token] if (!data[:fb_access_token].nil?)
+		
+		#Send welcome emails
+		if (data[:fb_id].nil?)
+			#Manual signup
+		else
+			#Facebook signup
+			AppMailer.send_welcome_email_from_facebook(data).deliver
+		end
+		
 		user.save
 		
 		return self.find_by_id(user.id)

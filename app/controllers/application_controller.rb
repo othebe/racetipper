@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
 	@user = nil
 	@user = session['user'] if (session.has_key?(:user))
 	
+	#User picture
+	if (!@user.nil? && !@user.fb_id.nil?)
+		@user_img = 'https://graph.facebook.com/'+@user.fb_id.to_s+'/picture?type=square'
+	else
+		@user_img = '/assets/default_user.jpg'
+	end
+	
 	#Invite user to competitions if any
 	if (!@user.nil? && session.has_key?(:invited_competitions) && !session[:invited_competitions].empty?)
 		session[:invited_competitions].each do |competition_id|

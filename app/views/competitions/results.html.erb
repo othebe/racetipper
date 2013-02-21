@@ -67,7 +67,8 @@
 								
 								<div selected_stage_id="<%=(!stage_info.nil?)?(stage_info[:stage].id):''%>">
 									<input type="checkbox" id="rider_<%=rider.rider.id%>" onclick="tip_rider(this);" rider_id="<%=rider.rider.id%>" <%=(rider.rider.id==@selected_tip && race_id==@selected_stage.race_id)?'checked="checked"':''%> <%=(disabled)?'disabled="disabled"':''%>>
-									<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>"><%=rider.rider.name%>
+									<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>">
+										<%=rider.rider.name%> [<%=rider.rider_number%>]
 										<span class="selected_stage <%=(disabled)?'disabled':''%>"><%=reason%></span>
 									</label>
 									<div style="clear:both;"></div>

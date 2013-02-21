@@ -126,14 +126,14 @@ class CompetitionsController < ApplicationController
 			stage = Stage.find_by_id(@stage_id)
 			@result_name = stage.name
 			@race_id  = stage.race_id
-			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
+			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 			@group_type = 'stage'
 			group_id = @stage_id
 		
 		#Drill down by race
 		elsif (params.has_key?(:race_id))
 			@race_id = params[:race_id]
-			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
+			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 			current_race_id = @race_id
 			race = Race.find_by_id(params[:race_id])
 			@result_name = race.name

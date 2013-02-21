@@ -73,3 +73,73 @@ label.disabled,
 span.disabled {
 	color: darkGray;
 }
+
+/* User menu */
+
+
+table.usermenu tr th,
+table.usermenu tr td {
+	border: 1px solid #EEE;
+	padding: 3px; 
+	font-weight: normal;
+	cursor: pointer;
+}
+
+	table.usermenu tr th a,
+	table.usermenu tr td a {
+		text-decoration: none;
+		color: black;
+	}
+	
+	table.usermenu tr th .icon,
+	table.usermenu tr td .icon {
+		margin-right: 20px;
+	}
+	
+	table.usermenu tr.choice {
+		display: none;
+	}
+	
+	table.usermenu tr td:hover {
+		background-color: black;
+		color: white;
+	}
+		
+		table.usermenu:hover  tr.choice {
+			display: table-row;
+		}
+
+ul.usermenu {
+	margin-top: -1px;
+}
+
+	ul.usermenu li {
+		list-style-type: none;
+		border: 1px solid #EEE;
+		padding: 5px;
+		width: 95px;
+		text-align: right;
+		background-color: white;
+		cursor: pointer;
+	}
+
+/* Arrows */
+.arrow-down.usermenu {
+	width: 0; 
+	height: 0; 
+	margin-left: 3px;
+	cursor: pointer;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	
+	border-top: 8px solid black;
+}
+
+.arrow-up.usermenu {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-bottom: 5px solid black;
+}

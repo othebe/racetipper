@@ -2,7 +2,7 @@ class RacesController < ApplicationController
 	def show
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
-		@stages = Stage.where({:race_id=>race_id})
+		@stages = Stage.where({:race_id=>race_id}).order('starts_on')
 		
 		#Get current results
 		@results = Result.get_results('race', race_id)

@@ -273,6 +273,12 @@ $(document).ready(function(event) {
 		$.fancybox.close();
 	});
 	
+	//User menu links
+	$('tr.choice').click(function() {
+		href = $(this).attr('href');
+		window.location.href = href;
+	});
+	
 	show_season_info();
 	show_competitions();
 	show_profile();

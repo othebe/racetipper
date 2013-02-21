@@ -113,6 +113,11 @@ class UsersController < ApplicationController
 		end
 	end
 	
+	#Title:			settings
+	#Description:	User settings
+	def settings
+	end
+	
 	def logout
 		session.delete(:user)
 		redirect_to :root

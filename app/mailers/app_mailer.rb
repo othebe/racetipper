@@ -33,4 +33,16 @@ class AppMailer < ActionMailer::Base
 		user = User.find_by_id(tip.competition_participant_id)
 		mail(:to=>user.email, :subject=>'Competition tip defaulted.')
 	end
+	
+	#Title:			send_welcome_email_from_facebook
+	#Description:	Sends a user who signed up from Facebook a welcome email
+	#Params:		data - Array
+	def send_welcome_email_from_facebook(data)
+		email = data[:email]
+		@name = data[:firstname]
+		@password = data[:password]
+		
+		mail(:to=>email, :subject=>'Welcome to Racetipper.')
+	end
+	
 end
