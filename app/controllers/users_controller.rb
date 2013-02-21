@@ -37,17 +37,19 @@ class UsersController < ApplicationController
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
+	#Title:			login_with_facebook
+	#Description:	Logs a user in w/their Facebook account
 	def login_with_facebook
-		logger.debug(params.inspect)
 		access_token = params[:access_token]
 		
 		#url = 'https://graph.facebook.com/me?access_token='+access_token
 		begin
 			fb_user = FbGraph::User.fetch('me', :access_token=>access_token)
+			fb_id = fb_user.identifier
 			email = fb_user.email
 			
 			#Check if user exists
-			user = User.find_by_email(email)
+			user = User.find_by_fb_id(fb_id)
 				
 			#Create new user
 			if (user.nil?)
@@ -69,6 +71,40 @@ class UsersController < ApplicationController
 			
 			#Log user in
 			session['user'] = user
+			
+			render :json=>{:success=>true, :msg=>'success'} and return
+			
+		rescue
+			render :json=>{:success=>false, :msg=>'There was an error. Refresh the page and try again.'} and return
+		end
+	end
+	
+	#Title:			link_fb_to_user
+	#Description:	Links a Facebook account to a user
+	def link_fb_to_user
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if @user.nil?
+
+		access_token = params[:access_token]
+		
+		#url = 'https://graph.facebook.com/me?access_token='+access_token
+		begin
+			fb_user = FbGraph::User.fetch('me', :access_token=>access_token)
+			fb_id = fb_user.identifier
+			email = fb_user.email
+			
+			#Check if user exists by email
+			user = User.find_by_email(email)
+			render :json=>{:success=>false, :msg=>'An account already exists under your Facebook email.'} and return if (!user.nil? && user.id!=@user.id)
+			
+			#Check if user exists by Facebook ID
+			user = User.find_by_fb_id(fb_id)
+			render :json=>{:success=>false, :msg=>'An account already exists under this Facebook account.'} and return if (!user.nil? && user.id!=@user.id)
+			
+			@user.fb_id = fb_id
+			@user.fb_access_token = access_token
+			
+			@user.save
+			session['user'] = @user
 			
 			render :json=>{:success=>true, :msg=>'success'} and return
 			

@@ -41,7 +41,12 @@ class DashboardController < ApplicationController
 	end
 	
 	def show_profile		
-		@user_image = '/assets/default_user.jpg'
+		if (!@user.nil? && !@user.fb_id.nil?)
+			@user_image = 'https://graph.facebook.com/'+@user.fb_id.to_s+'/picture?type=large'
+		else
+			@user_image = '/assets/default_user.jpg'
+		end
+		
 		user_id = @user.id
 		user_id = params[:id] if (params.has_key?(:id))
 		@userprofile = User.find_by_id(user_id)

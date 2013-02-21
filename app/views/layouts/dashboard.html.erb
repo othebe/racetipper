@@ -68,6 +68,49 @@
 
 <body>
 	<%=csrf_meta_tag%>
+	
+	<!-- Facebook -->
+	<div id="fb-root"></div>
+	<script>
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId      : '<%=FACEBOOK_APP_ID%>', // App ID
+				channelUrl : '<%=SITE_URL%>channel.html', // Channel File
+				status     : true, // check login status
+				cookie     : true, // enable cookies to allow the server to access the session
+				xfbml      : true  // parse XFBML
+			});
+			
+			//Remove the Facebook loader
+			$('.fb_loading').hide();
+			$('.fb_loaded').fadeIn();
+
+			// Additional init code here
+			FB.getLoginStatus(function(response) {
+				if (response.status === 'connected') {
+					// connected
+					
+				} else if (response.status === 'not_authorized') {
+					// not_authorized
+					console.log(response);
+				} else {
+					// not_logged_in
+					
+				}
+			});
+		};
+
+		// Load the SDK Asynchronously
+		(function(d){
+			var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement('script'); js.id = id; js.async = true;
+			js.src = "//connect.facebook.net/en_US/all.js";
+			ref.parentNode.insertBefore(js, ref);
+		}(document));
+	</script>
+	<!-- End Facebook -->
+	
     <!-- BEGIN HEADER -->
     <header id="header">
         <div class="wrapper">
@@ -102,6 +145,15 @@
 					<button>Logout</button>
 				</a>
 			</div>
+			
+			<% if (@user.fb_id.nil?) %>
+				<div style="float:right;">
+					<img src="/assets/fb_loading.gif" class="fb_loading" style="margin-top:20px;">
+					<a href="#" class="fb_loaded" style="display:none;" onclick="link_fb();">
+						<img src="/assets/fb_connect.png" style="height:33px; margin-top:22px;">
+					</a>
+				</div>
+			<% end %>
 		<% end %>
     </header>
     <!-- END HEADER -->
