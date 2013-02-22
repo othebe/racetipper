@@ -1,1 +1,72 @@
-Coming Soon
+<%=csrf_meta_tag%>
+
+<div class="portfolio-single container">
+		
+	<div class="row">
+	
+		<!-- InstanceBeginEditable name="Content" -->
+		
+		
+		<!-- TITLE - column 8/12 -->
+		<div class="span8 portfolio-field portfolio-title">
+			<h2>Settings</h2>
+		</div>
+		<!-- TITLE - column 8/12 -->
+		
+		
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		<div class="span4 portfolio-field portfolio-nav">
+			<a class="icon button back" href="#/competitions" title="Back"><</a>
+		</div>
+		<!-- PORTFOLIO-NAV - column 4/12 -->
+		
+		<div class="span3 portfolio-field">
+			<table class="settings_choices">
+				<tr>
+					<td>Change password</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="span8 portfolio-field" style="border-left: 1px solid #FFE04F;">
+			<ul class="personal-info contact-form" style="padding-left: 20px;">
+				<li id="settings_data">
+					<%=render 'users/settings/change_password'%>
+				</li>
+			</ul>
+		</div>
+		
+		<!-- InstanceEndEditable -->
+		
+	</div>
+	
+</div>
+
+<style>
+table.settings_choices {
+	width: 100%;
+}
+
+	table.settings_choices td {
+		cursor: pointer
+	}
+	
+	table.settings_choices td.selected {
+		color: white;
+		background-color: black;
+	}
+</style>
+
+<script>
+
+$(document).ready(function() {
+	$('table.settings_choices td').hover(
+		function() {
+			$(this).addClass('selected');
+		},
+		function() {
+			$(this).removeClass('selected');
+		}
+	);
+});
+</script>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130221053934) do
+ActiveRecord::Schema.define(:version => 20130222034833) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(:version => 20130221053934) do
     t.boolean  "is_admin",        :default => false
     t.integer  "fb_id"
     t.string   "fb_access_token"
+    t.string   "temp_password"
   end
 
 end

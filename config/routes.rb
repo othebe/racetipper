@@ -56,7 +56,12 @@ Racetipper::Application.routes.draw do
 	post 'users/login'
 	get 'users/login_with_facebook'
 	get 'users/link_fb_to_user'
+	get 'users/change_temp_password'
+	get 'users/forgot_password'
 	get 'users/settings'
+	post 'users/change_password'
+	get 'users/reset_password'
+	post 'users/reset_password_from_email'
 	
 	get 'competitions/edit'
 	get 'competitions/show'

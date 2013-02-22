@@ -33,6 +33,39 @@ class User < ActiveRecord::Base
 		
 		return self.find_by_id(user.id)
 	end
+
+	#Title:			set_password
+	#Description:	Sets user password and salt
+	#Params:		password - User password
+	def set_password(password) 
+		#Generate salt
+		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+		salt  =  (0...50).map{ base[rand(base.length)] }.join
+		
+		enc_password = Digest::SHA1.hexdigest(salt+password)
+		
+		self.salt = salt
+		self.password = enc_password
+		self.temp_password = nil
+		self.save
+	end
+	
+	#Title:			set_temp_password
+	#Description:	Sets temporary user password using existing salt
+	#Params:		password - User password
+	def set_temp_password() 
+		#Generate new password
+		password = User.generate_password()
+		
+		salt = self.salt
+		enc_password = Digest::SHA1.hexdigest(salt+password)
+		
+		self.temp_password = enc_password
+		self.save
+		
+		#Notify user
+		AppMailer.temporary_password_created(self, password).deliver
+	end
 	
 	#Title:			check_credentials
 	#Description:	Checks to see if a username/password (unencrypted) matches any user
@@ -42,7 +75,8 @@ class User < ActiveRecord::Base
 		return nil if (user.nil?)
 		
 		enc_password = Digest::SHA1.hexdigest(user.salt+data[:password])
-		if (enc_password==user.password)
+		if (enc_password==user.password || enc_password==user.temp_password)
+			user.temp_password = nil
 			return user
 		else
 			return nil

@@ -45,4 +45,26 @@ class AppMailer < ActionMailer::Base
 		mail(:to=>email, :subject=>'Welcome to Racetipper.')
 	end
 	
+	#Title:			password_changed
+	#Description:	Notify a user that their password has changed
+	#Params:		user - User object
+	def password_changed(user)
+		email = user.email
+		@name = user.firstname
+		
+		mail(:to=>email, :subject=>'Password change notification.')
+	end
+	
+	#Title:			temporary_password_created
+	#Description:	Notify a user that they have a temporary password
+	#Params:		user - User object
+	#				password - Unencrypted password
+	def temporary_password_created(user, password)
+		email = user.email
+		@name = user.firstname
+		@password = password
+		
+		mail(:to=>email, :subject=>'Temporary password.')
+	end
+	
 end

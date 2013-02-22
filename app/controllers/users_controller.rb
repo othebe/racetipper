@@ -113,6 +113,17 @@ class UsersController < ApplicationController
 		end
 	end
 	
+	#Title:			change_temp_password
+	#Description:	Change temporary password
+	def change_temp_password
+	end
+	
+	#Title:			forgot_password
+	#Description:	Ask a user for their email to reset password
+	def forgot_password
+		
+	end
+	
 	#Title:			settings
 	#Description:	User settings
 	def settings
@@ -121,5 +132,44 @@ class UsersController < ApplicationController
 	def logout
 		session.delete(:user)
 		redirect_to :root
+	end
+	
+	#Title:			change_password
+	#Description:	Change password for current user
+	def change_password
+		#Is user logged in?
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if @user.nil?
+		
+		#Is password empty?
+		password = params[:password]
+		render :json=>{:success=>false, :msg=>'Password cannot be empty.'} and return if password.empty?
+		
+		@user.set_password(password)
+		
+		render :json=>{:success=>true, :msg=>'success'} and return
+	end
+	
+	#Title:			reset_password
+	#Description:	Generate new temporary password and mail it for current user
+	def reset_password
+		#Is user logged in?
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if @user.nil?
+		
+		@user.set_temp_password()
+		
+		render :json=>{:success=>true, :msg=>'Temporary password mailed to '+@user.email} and return
+	end
+	
+	#Title:			reset_password_from_email
+	#Description:	RGenerate new temporary password and mail it for user account belonging to email
+	def reset_password_from_email
+		email = params[:email]
+		user = User.find_by_email(email)
+		
+		render :json=>{:success=>false, :msg=>'Email was not found.'} and return if user.nil?
+		
+		user.set_temp_password()
+		
+		render :json=>{:success=>true, :msg=>'Temporary password mailed to '+user.email} and return
 	end
 end
