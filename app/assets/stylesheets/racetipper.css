@@ -30,6 +30,11 @@
 	.leaderboard_table tr td {
 		min-width: 70px;
 		padding: 3px 10px 3px 5px;
+		color: black;
+	}
+	
+	.leaderboard_table th.sort_header {
+		cursor: pointer;
 	}
 
 div.article-group {
@@ -123,7 +128,7 @@ ul.usermenu {
 		cursor: pointer;
 	}
 
-/* Arrows */
+/* Usermenu arrows */
 .arrow-down.usermenu {
 	width: 0; 
 	height: 0; 
@@ -142,4 +147,43 @@ ul.usermenu {
 	border-right: 5px solid transparent;
 	
 	border-bottom: 5px solid black;
+}
+
+/* Table sort arrows */
+.arrow.up.results {
+	width: 0; 
+	height: 0; 
+	float: left;
+	margin-left: 4px;
+	margin-top: 10px;
+	cursor: pointer;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-bottom: 5px solid black;
+	display: none;
+}
+
+.arrow.down.results {
+	width: 0; 
+	height: 0; 
+	float: left;
+	margin-left: 4px;
+	margin-top: 10px;
+	cursor: pointer;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-top: 5px solid black;
+	display: none;
+}
+
+/* Back to top */
+#back_to_top {
+	position: fixed;
+	top: 90%;
+	z-index: 4000;
+	left: 50%;
+	margin-left: -85px;
+	display: none;
 }

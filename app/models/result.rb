@@ -21,8 +21,12 @@ class Result < ActiveRecord::Base
 		
 		return [] if selector.nil?
 		
+		#Sort fields
 		sort_field = 'sort_score'
-		sort_field = options[:sort_field] if (options.has_key?(:sort_field))
+		sort_field = options[:sort_field].strip if (options.has_key?(:sort_field) && !options[:sort_field].strip.empty?)
+		#Sort direction
+		sort_dir = 'ASC'
+		sort_dir = options[:sort_dir].strip.upcase if (options.has_key?(:sort_dir) && !options[:sort_dir].strip.empty?)
 		
 		results  = Result.where({selector.to_sym=>group_id})
 		rider_points_unsorted = {}
@@ -68,7 +72,21 @@ class Result < ActiveRecord::Base
 			end
 			rider_points_unsorted[rider_id] = rider_data
 		end
+		
+		#Sort to get rank
+		riders_ranked = rider_points_unsorted.sort_by{|k, v| v[:sort_score]}
+		rank = 1
+		riders_ranked.each do |id, data|
+			rider_data = rider_points_unsorted[id]
+			rider_data[:rank] = rank
+			rider_points_unsorted[id] = rider_data
+			rank += 1
+		end
+		logger.debug(riders_ranked.inspect)
+		logger.debug(sort_field)
+		
 		rider_points_sorted = rider_points_unsorted.sort_by{|k, v| v[sort_field.to_sym]}
+		rider_points_sorted = rider_points_sorted.reverse if (sort_dir=='DESC')
 		
 		#Index by rider ID, and add gap
 		base_time = nil

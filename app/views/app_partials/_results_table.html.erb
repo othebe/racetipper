@@ -7,23 +7,39 @@
 	<h3>Stage results</h3>
 <% end %>
 
-<table class="leaderboard_table">
+<table class="leaderboard_table tablesorter">
 	<thead>
 		<tr>
-			<th align="left">Rank</th>
-			<th align="left">Name</th>
-			<th align="left">Time</th>
-			<th align="left">Gap</th>
-			<th align="left">KOM</th>
-			<th align="left">Sprint</th>
+			<th align="left" class="sort_header" sort="sort_score">
+				<div style="float:left;">Rank</div>
+			</th>
+			
+			<th align="left" class="sort_header" sort="rider_name">
+				<div style="float:left;">Name</div>
+			</th>
+			
+			<th align="left" class="sort_header" sort="time">
+				<div style="float:left;">Time</div>
+			</th>
+			
+			<th align="left">
+				<div style="float:left;">Gap</div>
+			</th>
+			
+			<th align="left" class="sort_header" sort="kom_points">
+				<div style="float:left;">KOM</div>
+			</th>
+			
+			<th align="left" class="sort_header" sort="sprint_points">
+				<div style="float:left;">Sprint</div>
+			</th>
 		</tr>
 	</thead>
 	
 	<tbody>
-		<% ndx = 1 %>
 		<% results.each do |rider_id, result| %>
 			<tr class="data">
-				<td align="left"><%=ndx%></td>
+				<td align="left"><%=result[:rank]%></td>
 				<td align="left"><%=result[:rider_name]%></td>
 				<% if (result[:disqualified].nil?) %>
 					<td align="left"><%=result[:time_formatted]%></td>
@@ -37,7 +53,12 @@
 					<td align="left"><%=result[:disqualified]%></td>
 				<% end %>
 			</tr>
-			<% ndx += 1 %>
 		<% end %>
 	</tbody>
 </table>
+
+<script>
+$(document).ready(function() {
+	$(".leaderboard_table").tablesorter(); 
+});
+</script>

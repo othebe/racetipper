@@ -4,7 +4,7 @@
 #			group - stage/race (Are these results for a race or stage?)
 %>
 
-<table class="leaderboard_table">
+<table class="leaderboard_table tablesorter">
 	<thead>
 		<tr>
 			<th align="left">Rank</th>
@@ -68,3 +68,9 @@
 		<% end %>
 	</tbody>
 </table>
+
+<script>
+$(document).ready(function() {
+	$(".leaderboard_table").tablesorter(); 
+});
+</script>

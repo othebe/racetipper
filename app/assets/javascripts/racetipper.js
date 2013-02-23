@@ -120,7 +120,9 @@ function tip_rider(elt) {
 }
 
 //Get competition stage data
-function get_competition_stage_data(competition_id, stage_id) {
+var sort_competition_id = '';
+var sort_stage_id = '';
+function get_competition_stage_data(competition_id, stage_id, sort_field, sort_dir) {
 	$('.stage_data_container').addClass('fade');
 	
 	//Hide teams
@@ -135,9 +137,12 @@ function get_competition_stage_data(competition_id, stage_id) {
 	
 	$('.stage_img').attr('src', '/assets/ajax-loader.gif');
 	
-	$.get('/competitions/get_competition_stage_info.json', {competition_id:competition_id, stage_id:stage_id}, function(response) {
+	$.get('/competitions/get_competition_stage_info.json', {competition_id:competition_id, stage_id:stage_id, sort:sort_field, dir:sort_dir}, function(response) {
 		data = response.data;
 
+		sort_competition_id = competition_id;
+		sort_stage_id = stage_id;
+		
 		distance_str = data.stage_start_location+' - '+data.stage_end_location+' ('+data.stage_distance_km+' km)';
 		$('.stage_img').attr('src', data.stage_image_url);
 		$('.description p').html(data.stage_description);
@@ -185,7 +190,7 @@ function get_competition_stage_data(competition_id, stage_id) {
 					}
 					
 					row = $('<tr class="data"></tr>');
-					$(row).append('<td>'+ndx+'</td>');
+					$(row).append('<td>'+result['rank']+'</td>');
 					$(row).append('<td>'+result['rider_name']+'</td>');
 					$(row).append('<td>'+time_formatted+'</td>');
 					$(row).append('<td>'+gap_formatted+'</td>');
@@ -193,6 +198,8 @@ function get_competition_stage_data(competition_id, stage_id) {
 					$(row).append('<td>'+sprint_points+'</td>');
 					$(table).append(row);
 				}
+				
+				$(".leaderboard_table").trigger("update"); 
 			}
 		} else {
 			$('.stage-results').hide();
@@ -262,6 +269,11 @@ function show_login() {
 	$('button#login').click();
 }
 
+//Scroll to top
+function back_to_top() {
+	$(window).scrollTop(0);
+}
+
 $(document).ready(function(event) {
 	$("body").bind("ajaxSend", function(elm, xhr, s){
 		if (s.type == "POST") {
@@ -277,6 +289,13 @@ $(document).ready(function(event) {
 	$('tr.choice').click(function() {
 		href = $(this).attr('href');
 		window.location.href = href;
+	});
+	
+	//Back to top button
+	$(window).scroll(function() {
+		if (window.scrollY > 0) 
+			$('#back_to_top').fadeIn();
+		else $('#back_to_top').fadeOut();
 	});
 	
 	show_season_info();

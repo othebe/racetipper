@@ -329,6 +329,11 @@ class CompetitionsController < ApplicationController
 		tipped_rider_id = nil
 		tipped_rider_id = tip.rider_id if (!tip.nil?)
 		
+		#Sort fields
+		sort_field = sort_dir = ''
+		sort_field = params[:sort].strip if (params.has_key?(:sort))
+		sort_dir = params[:dir] if (params.has_key?(:dir))
+		
 		data = {
 			:stage_id => stage.id,
 			:stage_name => stage.name,
@@ -341,12 +346,14 @@ class CompetitionsController < ApplicationController
 			:stage_distance_km => stage.distance_km,
 			:tipped_rider_id => tipped_rider_id,
 			:time_to_tip => get_remaining_time(stage.starts_on),
-			:race_id => stage.race_id
+			:race_id => stage.race_id,
+			:sort_field => sort_field,
+			:sort_dir => sort_dir
 		}
 		
 		stage_results = []
 		if (stage.starts_on < Time.now)
-			results = Result.get_results('stage', stage.id)
+			results = Result.get_results('stage', stage.id, {:sort_field=>sort_field, :sort_dir=>sort_dir})
 			data[:stage_results] = results
 		end
 		
