@@ -71,6 +71,7 @@ Racetipper::Application.routes.draw do
 	get 'competitions/join_by_code'
 	get 'competitions/get_more_competitions'
 	get 'competitions/show_tips'
+	get 'competitions/fill_tips'
 	post 'competitions/save_competition'
 	post 'competitions/delete_competition'
 	post 'competitions/join'

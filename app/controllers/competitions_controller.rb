@@ -202,6 +202,21 @@ class CompetitionsController < ApplicationController
 		render :layout=>false
 	end
 	
+	#Title:			fill_tips
+	#Description:	Fill default user tips for a competition
+	#Params:		competition_id
+	def fill_tips
+		competition_id = params[:competition_id]
+		
+		participants = CompetitionParticipant.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+		participants.each do|participant|
+			user_id = participant.user_id
+			CompetitionTip.fill_tips(user_id, competition_id)
+		end
+		
+		render :text=>'Tips filled. You may close this page now.'
+	end
+	
 	
 	#POST
 	
@@ -258,7 +273,7 @@ class CompetitionsController < ApplicationController
 		
 		#Generate competition invitation code
 		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
-		competition.invitation_code  =  (0...10).map{ base[rand(base.length)] }.join
+		competition.invitation_code  ||=  (0...10).map{ base[rand(base.length)] }.join
 
 		competition.save
 		
@@ -267,6 +282,13 @@ class CompetitionsController < ApplicationController
 		participation.competition_id = competition.id
 		participation.user_id = @user.id
 		participation.save
+		
+		#Set default tips (also needed if new stages were added)
+		participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
+		participants.each do|participant|
+			user_id = participant.user_id
+			CompetitionTip.fill_tips(user_id, competition.id)
+		end
 		
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
@@ -627,6 +649,7 @@ class CompetitionsController < ApplicationController
 		selection_by_races = {}
 		race_order = []
 		tips.each do |tip|
+			logger.debug(tip.inspect)
 			selection = {}
 			stage = Stage.find_by_id(tip[:stage_id])
 			next if (Time.now < stage.starts_on)

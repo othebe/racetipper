@@ -14,24 +14,6 @@ class CompetitionParticipant < ActiveRecord::Base
 		participation.user_id = user_id
 		participation.save
 		
-		#Add empty tips (Used for defauting)
-		competition_stages = CompetitionStage.where({:competition_id=>competition_id})
-		competition_stages.each do |competition_stage|
-			tip = CompetitionTip.new
-			tip.competition_participant_id = user_id
-			tip.stage_id = competition_stage.stage_id
-			tip.competition_id = competition_id
-			tip.race_id = competition_stage.race_id
-			
-			#If stage has ended, give this rider a default rider
-			stage = Stage.find_by_id(competition_stage.stage_id)
-			if (stage.starts_on <= Time.now)
-				tip.default_rider_id = tip.find_default_rider()
-				tip.status = STATUS[:INACTIVE]
-				tip.rider_id = 0
-			end
-			
-			tip.save
-		end
+		CompetitionTip.fill_tips(user_id, competition_id)
 	end
 end
