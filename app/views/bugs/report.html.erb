@@ -1,0 +1,33 @@
+<div class="span8 portfolio-field" style="border-left:1px solid #FFE04F; margin-top:20px;">
+	<h4 style="margin-left:20px;">Bug report form.</h4>
+	<ul class="personal-info contact-form" style="padding-left: 20px;">
+		<li>
+			<div>
+				<label>Title:</label>
+				<input name="title">
+				
+				<label>Description:</label>
+				<textarea name="description" placeholder="Describe the issue here. (What did you see, What did you expect, and How can this issue be reproduced?"></textarea>
+				
+				<img src="/assets/ajax-loader.gif" class="loading" style="display:none; margin-top:2em;">
+				<a class="btn loaded" href="#" onclick="submit_bug();">SUBMIT</a>
+			</div>
+		</li>
+	</ul>
+</div>
+
+<script>
+function submit_bug() {
+	var title = $('input[name=title]').val();
+	var description = $('textarea[name=description]').val();
+	
+	$('.loaded').hide();
+	$('.loading').show();
+	
+	$.post('/bugs/submit_bug', {title:title, description:description}, function(response) {
+		alert(response.msg);
+		$('.loading').hide();
+		$('.loaded').show();
+	});
+}
+</script>

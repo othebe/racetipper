@@ -35,7 +35,7 @@
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field">
 			<% if (!@leaderboard.nil?) %>
-				<h3><%=@result_name%></h3>
+				<h3><%=@result_name%> <a href="/#/races/show/<%=@race_id%>">(See results)</a></h3>
 				<%= render('app_partials/leaderboard_results', {:leaderboard=>@leaderboard, :group=>@group_type, :competition_id=>@data[:competition].id})%>
 			<% else %>
 				<div class="history-unit races">

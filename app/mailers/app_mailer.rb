@@ -67,4 +67,15 @@ class AppMailer < ActionMailer::Base
 		mail(:to=>email, :subject=>'Temporary password.')
 	end
 	
+	#Title:			submit_bug_report
+	#Description:	Submit bug report to BUG_NOTIFY_LIST
+	#Params:		title - Bug title
+	#				description - Bug body
+	def submit_bug_report(title, description)
+		@title = title
+		@description = description
+		
+		mail(:to=>BUG_NOTIFY_LIST, :subject=>@title)
+	end
+	
 end

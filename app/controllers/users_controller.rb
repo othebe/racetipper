@@ -70,6 +70,7 @@ class UsersController < ApplicationController
 			end
 			
 			#Log user in
+			user.temp_password = nil
 			session['user'] = user
 			
 			render :json=>{:success=>true, :msg=>'success'} and return

@@ -50,3 +50,6 @@ end
 #Constants
 FACEBOOK_APP_ID = 346523722129876
 FACEBOOK_APP_SECRET = '133c9fcc00af63bf177b2f92febe65ff'
+
+#Bug notification email.
+BUG_NOTIFY_LIST = 'othebe@gmail.com'

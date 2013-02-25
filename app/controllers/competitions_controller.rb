@@ -643,13 +643,12 @@ class CompetitionsController < ApplicationController
 	private
 	def get_user_tips(competition_id, uid)
 		stages = CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
-		tips = CompetitionTip.where({:competition_participant_id=>uid, :competition_id=>competition_id})
+		tips = CompetitionTip.where({:competition_participant_id=>uid, :competition_id=>competition_id}).joins(:stage).order('starts_on')
 
 		#Group tip data into race buckets
 		selection_by_races = {}
 		race_order = []
 		tips.each do |tip|
-			logger.debug(tip.inspect)
 			selection = {}
 			stage = Stage.find_by_id(tip[:stage_id])
 			next if (Time.now < stage.starts_on)

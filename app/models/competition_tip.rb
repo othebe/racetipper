@@ -1,6 +1,7 @@
 class CompetitionTip < ActiveRecord::Base
 	attr_accessible :competition_participant_id, :rider_id, :season_stage_id
-  
+	belongs_to :stage
+	
 	#Title:			find_default_rider
 	#Description:	Finds the next available default rider for this user in this competition's race
 	def find_default_rider()

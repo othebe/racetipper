@@ -288,7 +288,9 @@ $(document).ready(function(event) {
 	//User menu links
 	$('tr.choice').click(function() {
 		href = $(this).attr('href');
-		window.location.href = href;
+		if ($(this).hasClass('_blank')) {
+			window.open(href, '_blank');
+		} else window.location.href = href;
 	});
 	
 	//Back to top button

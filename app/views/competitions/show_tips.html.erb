@@ -56,7 +56,7 @@
 						end 
 						%>
 						<tr>
-							<td><%=tip_data[:stage].name%></td>
+							<td><a href="/#/stages/<%=tip_data[:stage].id%>"><%=tip_data[:stage].name%></a></td>
 							<td><%=(tip_data[:rider].nil?)?'':tip_data[:rider].name%></td>
 							<% if (tip_data[:disqualified].nil?) %>
 								<td><%=time%></td>

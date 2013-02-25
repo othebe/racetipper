@@ -98,6 +98,9 @@ Racetipper::Application.routes.draw do
 	get 'articles/read'
 	match 'articles/:id' => 'articles#read'
 	
+	get 'bugs/report'
+	post 'bugs/submit_bug'
+	
 	get 'cron/send_tip_default_emails'
 
   # The priority is based upon order of creation:
