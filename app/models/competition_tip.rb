@@ -56,7 +56,7 @@ class CompetitionTip < ActiveRecord::Base
 	#Params:		user_id - Participant user ID
 	#				competition_id - Competition ID
 	def self.fill_tips(user_id, competition_id)
-		#Add empty tips (Used for defauting)
+		#Add empty tips (Used for defaulting)
 		competition_stages = CompetitionStage.where({:competition_id=>competition_id}).select('stage_id, race_id').group('stage_id, race_id')
 		competition_stages.each do |competition_stage|
 			tip = CompetitionTip.where({:competition_participant_id=>user_id, :stage_id=>competition_stage.stage_id, :competition_id=>competition_id, :race_id=>competition_stage.race_id}).first
@@ -69,11 +69,11 @@ class CompetitionTip < ActiveRecord::Base
 			
 			#If stage has ended, give this rider a default rider
 			stage = Stage.find_by_id(competition_stage.stage_id)
-			if (stage.starts_on <= Time.now)
+			if (stage.starts_on <= Time.now && tip.rider_id.nil?)
 				default_rider_id = tip.find_default_rider()
 				tip.default_rider_id ||= default_rider_id if (!default_rider_id.nil? && !default_rider_id.to_s.empty?)
 				tip.status = STATUS[:INACTIVE]
-				tip.rider_id = 0
+				tip.rider_id ||= 0
 			end
 			
 			tip.save

@@ -82,8 +82,6 @@ class Result < ActiveRecord::Base
 			rider_points_unsorted[id] = rider_data
 			rank += 1
 		end
-		logger.debug(riders_ranked.inspect)
-		logger.debug(sort_field)
 		
 		rider_points_sorted = rider_points_unsorted.sort_by{|k, v| v[sort_field.to_sym]}
 		rider_points_sorted = rider_points_sorted.reverse if (sort_dir=='DESC')
@@ -129,7 +127,10 @@ class Result < ActiveRecord::Base
 			
 			#Check if rider has already been selected as a default
 			valid = !tip.is_duplicate({:SCOPE_PAST_TIPS=>1}) if (valid)
-
+			
+			#Check for empty tip
+			valid = !(tip.rider_id.nil?) if (valid)
+			
 			#Current tip is invalid
 			if (!valid)
 				#Set default rider
