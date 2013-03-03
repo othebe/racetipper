@@ -560,7 +560,7 @@ class CompetitionsController < ApplicationController
 				rider_id = tip.default_rider_id || tip.rider_id
 				modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
 			end
-			next if (race_results[rider_id].nil?)
+			#next if (race_results[rider_id].nil?)
 			
 			stage_id = tip.stage_id
 			user_id = tip.competition_participant_id
@@ -573,7 +573,10 @@ class CompetitionsController < ApplicationController
 			user_score[:user_id] = user_id
 			user_score[:username] = username
 			
-			if (!race_results[rider_id][:stages][stage_id].nil?)
+			rider = Rider.find_by_id(rider_id)
+			
+			#Get tip data from results
+			if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
 				#Cumulate times
 				if (user_score[:time].nil?)
 					user_score[:time] = race_results[rider_id][:stages][stage_id][:time]+modifier
@@ -603,7 +606,7 @@ class CompetitionsController < ApplicationController
 				end
 			end
 			
-			user_score[:tip].push({:id=>rider_id, :name=>race_results[rider_id][:rider_name]})
+			user_score[:tip].push({:id=>rider_id, :name=>rider.name})
 			user_scores[user_id] = user_score
 		end
 		
