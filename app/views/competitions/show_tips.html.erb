@@ -19,7 +19,7 @@
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		<div class="span8 portfolio-field">
+		<div class="span12 portfolio-field">
 			<% @tips.each do |tip| %>
 			<h3><%=tip[:race].name%></h3>
 				<table class="leaderboard_table">
@@ -42,13 +42,15 @@
 							cumulative_time += result_data.time
 							
 							if (result_data.time >= 86400)
-								time = Time.at(result_data.time).gmtime.strftime('%-d day(s), %R:%S')
+								days = (Time.at(result_data.time).gmtime.strftime('%-d').to_i - 1).to_s
+								time = Time.at(result_data.time).gmtime.strftime(days+' day(s), %R:%S')
 							else
 								time = Time.at(result_data.time).gmtime.strftime('%R:%S')
 							end
 							
 							if (cumulative_time >= 86400)
-								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%-d day(s), %R:%S')
+								days = (Time.at(result_data.time).gmtime.strftime('%-d').to_i - 1).to_s
+								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime(days+' day(s), %R:%S')
 							else
 								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%R:%S')
 							end
@@ -72,11 +74,6 @@
 			<% end %>
 		</div>
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
-		<div class="span4 portfolio-field">
-		</div>
 	</div>
 	
 </div>

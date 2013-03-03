@@ -50,9 +50,10 @@ class Result < ActiveRecord::Base
 				rider_data[:stages][result.season_stage_id][:sort_score] = score_modifier + rider_data[:stages][result.season_stage_id][:time]
 				#Format time
 				if (result.time >= 86400)
-					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%-d day(s), %R:%S')
+					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime(days+' day(s), %R:%S')
 				else
-					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%-d day(s), %R:%S')
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%R:%S')
 				end
 					
 			else
@@ -65,7 +66,8 @@ class Result < ActiveRecord::Base
 				rider_data[:sort_score] = score_modifier + rider_data[:time]
 				#Format time
 				if (result.time >= 86400)
-					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%-d day(s), %R:%S')
+					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:time_formatted] = Time.at(result.time).gmtime.strftime(days+' day(s), %R:%S')
 				else
 					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
 				end

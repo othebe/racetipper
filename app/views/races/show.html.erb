@@ -15,26 +15,26 @@
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 		
-		<div class="span7 portfolio-field">
+		<div class="span9 portfolio-field">
 			<% if (!@results.empty?) %>
 				<h3>Season points</h3>
 				<%= render :partial=>'/app_partials/results_table', :locals=>{:results=>@results, :title=>''} %>
 			<% end %>
 		</div>
 		
-		<div class="span5 portfolio-field">
+		<div class="span3 portfolio-field">
 			<h3>Stages</h3>
 			<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
 			<% @stages.each do |stage| %>				
-				<div class="item" style="width:140px;">
+				<div class="item" style="width:125px;">
 					<div class="media-box">
-						<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:140px; height:100px;">
+						<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:125px; height:100px;">
 						<div class="mask" race_id="<%=stage.id%>">
 							<h3 class="title" style="margin-top:12%;">View Details</h3>
 							<a href="/#/stages/<%=stage.id%>" class="ico show-details supress" onclick=""></a>
 						</div>
 					</div>
-					<h3 class="project-title" style="margin-top:-40px;"><%=stage.name%></h3>
+					<h3 class="project-title" style="margin-top:-40px; padding-left:5px;"><%=stage.name%></h3>
 				</div>
 			<% end %>
 			</div>

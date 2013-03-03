@@ -29,7 +29,8 @@
 			#Formatted gap
 			if (!base_time.nil?)
 				if (data[:time]-base_time >= 86400)
-					gap = Time.at(data[:time]-base_time).gmtime.strftime('%-d day(s), %R:%S') if (!base_time.nil?)
+					days = (Time.at(data[:time]-base_time).gmtime.strftime('%-d').to_i - 1).to_s
+					gap = Time.at(data[:time]-base_time).gmtime.strftime(days+' day(s), %R:%S') if (!base_time.nil?)
 				else
 					gap = Time.at(data[:time]-base_time).gmtime.strftime('%R:%S') if (!base_time.nil?)
 				end
@@ -38,7 +39,8 @@
 			#Formatted time
 			if (!data[:time].nil?)
 				if (data[:time] >= 86400)
-					formatted_time = Time.at(data[:time]).gmtime.strftime('%-d day(s), %R:%S')
+					days = (Time.at(data[:time]).gmtime.strftime('%-d').to_i - 1).to_s
+					formatted_time = Time.at(data[:time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
 					formatted_time = Time.at(data[:time]).gmtime.strftime('%R:%S')
 				end

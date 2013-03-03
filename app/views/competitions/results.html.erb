@@ -24,11 +24,56 @@
 		</div>
 		<!-- PORTFOLIO-NAV - column 4/12 -->
 
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
 		<div class="span8 portfolio-field" style="margin-bottom:20px;">
 			<img src="<%=(@selected_stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:@selected_stage.image_url%>" alt="<%=@selected_stage.name%>" class="stage_img stage_data_container">
 			<div class="tip_data" race_id="<%=@selected_stage.race_id%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@selected_stage.id%>" stage_name="<%=@selected_stage.name%>"></div>
-
+		</div>
+		
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+		<div class="span4 portfolio-field">
+			<div class="history-group">
+				<div class="history-unit">
+					<select onchange="get_competition_stage_data('<%=@data[:competition].id%>', this.value);">
+						<% @data[:race_data].each do |ndx, race_data| %>
+							<option>-- <%=race_data[:name].upcase%> --</option>
+							<% race_data[:stages].each do |stage| %>
+								<% ended = (stage.starts_on > Time.now)?'':'[ENDED]'%>
+								<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%> <%=ended%></option>
+							<% end %>
+						<% end %>
+					</select>
+				</div>
+				
+				<div class="history-unit description stage_data_container">
+					<h4 style="font-weight:bold;">Description</h4>
+					<p><%=@selected_stage.description%></p>
+				</div>
+				
+				<div class="history-unit profile stage_data_container">
+					<h4 style="font-weight:bold;">Profile</h4>
+					<p><%=@selected_stage.profile%></p>
+				</div>
+				
+				<div class="history-unit starts_on stage_data_container">
+					<h4 style="font-weight:bold;">Starts on</h4>
+					<p><%=@selected_stage.starts_on%></p>
+				</div>
+				
+				<div class="history-unit distance stage_data_container">
+					<h4 style="font-weight:bold;">Distance</h4>
+					<p><%=@selected_stage.start_location%> - <%=@selected_stage.end_location%> (<%=@selected_stage.distance_km%> km)</p>
+				</div>
+				
+				<div class="history-unit time_to_tip stage_data_container">
+					<h4 style="font-weight:bold;">Time to tip</h4>
+					<p><%=@time_to_tip%></p>
+				</div>
+			</div>	
+		</div>
+		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+		
+		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+		<div class="span12 portfolio-field" style="margin-bottom:20px;">
 			<% show_results = @selected_stage.starts_on < Time.now %>
 			<!-- Tipping data-->
 			<div class="tip-rider" style="display:<%=(show_results)?'none':'block'%>;">
@@ -91,49 +136,6 @@
 			</div>
 		</div>
 		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
-		<div class="span4 portfolio-field">
-			<div class="history-group">
-				<div class="history-unit">
-					<select onchange="get_competition_stage_data('<%=@data[:competition].id%>', this.value);">
-						<% @data[:race_data].each do |ndx, race_data| %>
-							<option>-- <%=race_data[:name].upcase%> --</option>
-							<% race_data[:stages].each do |stage| %>
-								<% ended = (stage.starts_on > Time.now)?'':'[ENDED]'%>
-								<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%> <%=ended%></option>
-							<% end %>
-						<% end %>
-					</select>
-				</div>
-				
-				<div class="history-unit description stage_data_container">
-					<h4 style="font-weight:bold;">Description</h4>
-					<p><%=@selected_stage.description%></p>
-				</div>
-				
-				<div class="history-unit profile stage_data_container">
-					<h4 style="font-weight:bold;">Profile</h4>
-					<p><%=@selected_stage.profile%></p>
-				</div>
-				
-				<div class="history-unit starts_on stage_data_container">
-					<h4 style="font-weight:bold;">Starts on</h4>
-					<p><%=@selected_stage.starts_on%></p>
-				</div>
-				
-				<div class="history-unit distance stage_data_container">
-					<h4 style="font-weight:bold;">Distance</h4>
-					<p><%=@selected_stage.start_location%> - <%=@selected_stage.end_location%> (<%=@selected_stage.distance_km%> km)</p>
-				</div>
-				
-				<div class="history-unit time_to_tip stage_data_container">
-					<h4 style="font-weight:bold;">Time to tip</h4>
-					<p><%=@time_to_tip%></p>
-				</div>
-			</div>	
-		</div>
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
 			
 		<!-- InstanceEndEditable -->
 		
