@@ -23,4 +23,18 @@ class Race < ActiveRecord::Base
 		end
 		return data
 	end
+	
+	#Title:			check_completion_status
+	#Description:	Check if all stages in a race are complete and sets status to inactive.
+	#Params:		race_id
+	def self.check_completion_status(race_id)
+		race = Race.find_by_id(race_id)
+		stages = Stage.where('race_id=? AND NOW() <= starts_on', race_id)
+		if (stages.empty?)
+			race.is_complete = true
+		else 
+			race.is_complete = false
+		end
+		race.save
+	end
 end

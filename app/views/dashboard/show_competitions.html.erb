@@ -22,7 +22,11 @@
 			</div>
 		</div>
 		<h3 class="project-title"><%=data[:competition].name%></h3>
-		<p class="category">In Progress</p>
+		<% if (!data[:competition].is_complete) %>
+			<p class="category">In Progress</p>
+		<% else %>
+			<p class="category">Completed</p>
+		<% end %>
 	</div>
 <% end %>
 

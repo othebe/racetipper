@@ -36,4 +36,33 @@ class Competition < ActiveRecord::Base
 		races = CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).select(:race_id).group(:race_id)
 		return races
 	end
+	
+	#Title:			check_completion_status
+	#Description:	Checks if all races in a competition are completed, and marks competition as inactive
+	#Params:		competition_id
+	def self.check_completion_status(competition_id)
+		races = CompetitionStage.where('competition_id=? AND races.is_complete=FALSE', competition_id).joins(:race)
+		competition = Competition.find_by_id(competition_id)
+		return if (competition.nil?)
+		if (races.empty?)
+			competition.is_complete = true
+		else
+			competition.is_complete = false
+		end
+		competition.save
+	end
+	
+	#Title:			fix_completion_status
+	#Description:	Fix completion status for all races and competitions
+	def self.fix_completion_status()
+		races = Race.all
+		races.each do |race|
+			Race.check_completion_status(race.id)
+		end
+		
+		competitions = Competition.all
+		competitions.each do |competition|
+			Competition.check_completion_status(competition.id)
+		end
+	end
 end

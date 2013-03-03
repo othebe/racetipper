@@ -232,6 +232,9 @@ function load_more_competitions() {
 			$(scaffold).find('img').attr('src', data.image_url).attr('alt', data.name);
 			$(scaffold).find('a').attr('data_id', data.id).attr('href', '#/competitions/show/'+data.id);
 			$(scaffold).find('.project-title').html(data.name);
+			if (data.is_complete) {
+				$(scaffold).find('.completion_status').html('Completed');
+			}
 			
 			container.append($(scaffold).fadeIn());
 		});

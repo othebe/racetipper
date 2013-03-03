@@ -169,7 +169,7 @@ class CompetitionsController < ApplicationController
 		redirect_to :root and return if (!@competition.nil? && @user.id != @competition.creator_id)
 		
 		@id = params[:id] if (params.has_key?(:id))
-		@races = Race.where(:status=>STATUS[:ACTIVE])
+		@races = Race.where({})
 		if (!@competition.nil?)
 			@is_private = (@competition.status == STATUS[:PRIVATE])
 		else
@@ -402,6 +402,7 @@ class CompetitionsController < ApplicationController
 			data[:name] = competition.name
 			data[:description] = competition.description
 			data[:image_url] = competition.image_url
+			data[:is_complete] = competition.is_complete
 			if (uid==0)
 				data[:is_participant] = false
 			else

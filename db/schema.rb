@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130225064207) do
+ActiveRecord::Schema.define(:version => 20130303091159) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -76,10 +76,11 @@ ActiveRecord::Schema.define(:version => 20130225064207) do
     t.text     "description"
     t.string   "image_url"
     t.integer  "season_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.integer  "status",          :default => 1
     t.string   "invitation_code"
+    t.boolean  "is_complete",     :default => false
   end
 
   create_table "cycling_quotes", :force => true do |t|
@@ -121,10 +122,11 @@ ActiveRecord::Schema.define(:version => 20130225064207) do
     t.string   "name"
     t.text     "description"
     t.string   "image_url"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.integer  "status",      :default => 1
     t.integer  "season_id"
+    t.boolean  "is_complete", :default => false
   end
 
   create_table "results", :force => true do |t|
@@ -161,8 +163,8 @@ ActiveRecord::Schema.define(:version => 20130225064207) do
     t.text     "description"
     t.string   "image_url"
     t.text     "profile"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.integer  "status",         :default => 1
     t.integer  "race_id"
     t.integer  "order_id"
@@ -171,6 +173,7 @@ ActiveRecord::Schema.define(:version => 20130225064207) do
     t.string   "start_location"
     t.string   "end_location"
     t.float    "distance_km"
+    t.boolean  "is_complete",    :default => false
   end
 
   create_table "team_riders", :force => true do |t|

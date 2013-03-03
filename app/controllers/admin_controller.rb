@@ -43,7 +43,7 @@ class AdminController < ApplicationController
 		@team = nil
 		@team_riders = []
 		@riders = Rider.where(:status=>STATUS[:ACTIVE])
-		@races = Race.where({:status=>STATUS[:ACTIVE], 'season_id'=>session[:season_id]})
+		@races = Race.where({'season_id'=>session[:season_id]})
 		@edit_mode = params.has_key?(:id)
 		if (@edit_mode)
 			@team = Team.find_by_id(params[:id])
@@ -55,7 +55,7 @@ class AdminController < ApplicationController
 		
 	def manage_season_races
 		@title = 'Manage season races'
-		@races = Race.where('season_id=? AND status=?', session[:season_id], STATUS[:ACTIVE])
+		@races = Race.where('season_id=?', session[:season_id])
 	end
 	
 	def edit_season_race
@@ -259,6 +259,20 @@ class AdminController < ApplicationController
 		default_riders.each do |default_rider|
 			result = Result.where({:season_stage_id=>stage_id, :rider_id=>default_rider.rider_id, :race_id=>race_id}).first
 			result.check_valid_tips()
+		end
+		
+		#Mark stage as done
+		stage = Stage.find_by_id(stage_id)
+		stage.is_complete = true
+		stage.save
+		
+		#Check if any races need to be marked as completed
+		Race.check_completion_status(race_id)
+		
+		#Check if any competitions need to be marked as completed
+		competitions = CompetitionStage.where('stage_id=?', stage_id).select('competition_id').group('competition_id, id')
+		competitions.each do |competition|
+			Competition.check_completion_status(competition.competition_id)
 		end
 		
 		render :json=>{:success=>true}
