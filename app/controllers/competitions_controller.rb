@@ -560,7 +560,6 @@ class CompetitionsController < ApplicationController
 				rider_id = tip.default_rider_id || tip.rider_id
 				modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
 			end
-			#next if (race_results[rider_id].nil?)
 			
 			stage_id = tip.stage_id
 			user_id = tip.competition_participant_id
@@ -574,6 +573,7 @@ class CompetitionsController < ApplicationController
 			user_score[:username] = username
 			
 			rider = Rider.find_by_id(rider_id)
+			next if (rider.nil?)
 			
 			#Get tip data from results
 			if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
