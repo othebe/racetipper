@@ -34,7 +34,7 @@ class DashboardController < ApplicationController
 	
 	def show_season_info
 		current_season = Season.find_by_year(Time.now.year)
-		@races = Race.where({:season_id=>current_season.id})
+		@races = Race.where({:season_id=>current_season.id, :status=>STATUS[:ACTIVE]})
 		@articles = Article.where({:status=>STATUS[:ACTIVE]}).order('created_at DESC').limit(5)
 
 		render :layout=>false
