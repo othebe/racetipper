@@ -3,11 +3,11 @@
 	<% @articles.each do |article| %>
 		<% float = (ndx%2==0)?'right':'left' %>
 		<% article_type = (article.article_type==ARTICLE_TYPE[:ARTICLE])?'article':'gallery' %>
-		<h3><span class="label black"><%=article.title%></span></h3>
+		<% link = article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]}).first %>
+		<h3><span class="label black"><a href="<%=(link.nil?)?'#':link.url%>" style="color:white;"><%=article.title%></a></span></h3>
 		<div class="history-unit article-group">
 			<h5><%=article.author%><span class="work-time"><%=article.created_at.strftime('%b %d, %Y')%></span></h5>
 			<% if (article.article_type==ARTICLE_TYPE[:ARTICLE]) %>
-				<% link = article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]}).first %>
 				<% if (!link.nil?) %>
 					<a class="article_gallery" title="<%=link.description%>" rel="<%=article.id%>" href="<%=link.url%>">
 						<img alt="<%=link.description%>" src="<%=link.url%>" class="article <%=float%>">
