@@ -72,7 +72,7 @@ class Result < ActiveRecord::Base
 					
 			else
 				rider_data[:time] = (rider_data[:time] || 0) + result.time
-				rider_data[:bonus_time] = (rider_data[:bonus_time] || 0) + result.bonus_time
+				rider_data[:bonus_time] = (rider_data[:bonus_time] || 0) + result.bonus_time.to_i
 				if (group_type=='stage')
 					rider_data[:rank] = result.rank
 				else
