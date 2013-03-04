@@ -42,12 +42,18 @@ class Result < ActiveRecord::Base
 				rider_data[:stages] ||= {}
 				rider_data[:stages][result.season_stage_id] ||= {}
 				rider_data[:stages][result.season_stage_id][:time] = result.time
+				rider_data[:stages][result.season_stage_id][:bonus_time] = result.bonus_time
+				if (group_type=='stage')
+					rider_data[:stages][result.season_stage_id][:rank] = result.rank
+				else
+					rider_data[:stages][result.season_stage_id][:rank] = nil
+				end
 				rider_data[:stages][result.season_stage_id][:kom_points] = result.kom_points
 				rider_data[:stages][result.season_stage_id][:sprint_points] = result.sprint_points
 				rider_data[:stages][result.season_stage_id][:points] = result.points
 				rider_data[:stages][result.season_stage_id][:disqualified] = disqualified
 				rider_data[:stages][result.season_stage_id][:time] = 999999999 if (!disqualified.nil?)
-				rider_data[:stages][result.season_stage_id][:sort_score] = score_modifier + rider_data[:stages][result.season_stage_id][:time]
+				rider_data[:stages][result.season_stage_id][:sort_score] = score_modifier + rider_data[:stages][result.season_stage_id][:time] - result.bonus_time
 				#Format time
 				if (result.time >= 86400)
 					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
@@ -55,21 +61,43 @@ class Result < ActiveRecord::Base
 				else
 					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%R:%S')
 				end
+				
+				#Format bonus time
+				if (result.bonus_time >= 86400)
+					days = (Time.at(result.bonus_time).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime(days+' day(s), %R:%S')
+				else
+					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime('%R:%S')
+				end
 					
 			else
 				rider_data[:time] = (rider_data[:time] || 0) + result.time
+				rider_data[:bonus_time] = (rider_data[:bonus_time] || 0) + result.bonus_time
+				if (group_type=='stage')
+					rider_data[:rank] = result.rank
+				else
+					rider_data[:rank] = nil
+				end
 				rider_data[:kom_points] = (rider_data[:kom_points] || 0) + result.kom_points
 				rider_data[:sprint_points] = (rider_data[:sprint_points] || 0) + result.sprint_points
 				rider_data[:points] = (rider_data[:points] || 0) + result.points
 				rider_data[:disqualified] = disqualified
 				rider_data[:time] = 999999999 if (!disqualified.nil?)
-				rider_data[:sort_score] = score_modifier + rider_data[:time]
+				rider_data[:sort_score] = score_modifier + rider_data[:time] - result.bonus_time
 				#Format time
 				if (result.time >= 86400)
 					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
 					rider_data[:time_formatted] = Time.at(result.time).gmtime.strftime(days+' day(s), %R:%S')
 				else
 					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
+				end
+				
+				#Format bonus time
+				if (result.bonus_time >= 86400)
+					days = (Time.at(result.bonus_time).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime(days+' day(s), %R:%S')
+				else
+					rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime('%R:%S')
 				end
 			end
 			rider_points_unsorted[rider_id] = rider_data
@@ -93,13 +121,19 @@ class Result < ActiveRecord::Base
 		indexed_hash = {}
 		rank = 1
 		rider_points_sorted.each do |rider_id, data|
-			gap = Time.at(data[:time] - base_time) if (!base_time.nil?)
+			gap = (data[:time] - base_time - data[:bonus_time]) if (!base_time.nil?)
+			gap ||= 0
 			
 			data[:gap] = ''
 			data[:gap] = gap if (!base_time.nil?)
 			
 			data[:gap_formatted] = ''
-			data[:gap_formatted] = '+ '+Time.at(gap).gmtime.strftime('%R:%S') if (!base_time.nil?)
+			if (gap >= 86400)
+				days = (Time.at(gap).gmtime.strftime('%-d').to_i - 1).to_s
+				data[:gap_formatted] = '+ '+Time.at(gap).gmtime.strftime(days+'day(s), %R:%S') if (!base_time.nil?)
+			else
+				data[:gap_formatted] = '+ '+Time.at(gap).gmtime.strftime('%R:%S') if (!base_time.nil?)
+			end
 			
 			key = rank
 			key = rider_id if (options.has_key?(:index_by_rider))

@@ -182,17 +182,20 @@ function get_competition_stage_data(competition_id, stage_id, sort_field, sort_d
 						gap_formatted = result['disqualified'];
 						kom_points = result['disqualified'];
 						sprint_points = result['disqualified'];
+						bonus_time_formatted = result['disqualified'];
 					} else {
 						time_formatted = result['time_formatted'];
 						gap_formatted = result['gap_formatted'];
 						kom_points = result['kom_points'];
 						sprint_points = result['sprint_points'];
+						bonus_time_formatted = result['bonus_time_formatted'];
 					}
 					
 					row = $('<tr class="data"></tr>');
 					$(row).append('<td>'+result['rank']+'</td>');
 					$(row).append('<td>'+result['rider_name']+'</td>');
 					$(row).append('<td>'+time_formatted+'</td>');
+					$(row).append('<td>'+bonus_time_formatted+'</td>');
 					$(row).append('<td>'+gap_formatted+'</td>');
 					$(row).append('<td>'+kom_points+'</td>');
 					$(row).append('<td>'+sprint_points+'</td>');

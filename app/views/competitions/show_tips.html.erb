@@ -37,19 +37,20 @@
 						time = 'TBA'				
 						result_data = tip_data[:default_result]||tip_data[:result]
 						if (!result_data.nil?)
-							time = Time.at(result_data.time).gmtime.strftime('%R:%S')
+							#time = Time.at(result_data.time - result_data.bonus_time).gmtime.strftime('%R:%S')
+							net_time = result_data.time - result_data.bonus_time
 							cumulative_time ||= 0
-							cumulative_time += result_data.time
+							cumulative_time += net_time
 							
-							if (result_data.time >= 86400)
-								days = (Time.at(result_data.time).gmtime.strftime('%-d').to_i - 1).to_s
-								time = Time.at(result_data.time).gmtime.strftime(days+' day(s), %R:%S')
+							if (net_time >= 86400)
+								days = (Time.at(net_time).gmtime.strftime('%-d').to_i - 1).to_s
+								time = Time.at(net_time).gmtime.strftime(days+' day(s), %R:%S')
 							else
-								time = Time.at(result_data.time).gmtime.strftime('%R:%S')
+								time = Time.at(net_time).gmtime.strftime('%R:%S')
 							end
 							
 							if (cumulative_time >= 86400)
-								days = (Time.at(result_data.time).gmtime.strftime('%-d').to_i - 1).to_s
+								days = (Time.at(cumulative_time).gmtime.strftime('%-d').to_i - 1).to_s
 								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime(days+' day(s), %R:%S')
 							else
 								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%R:%S')

@@ -580,9 +580,9 @@ class CompetitionsController < ApplicationController
 			if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
 				#Cumulate times
 				if (user_score[:time].nil?)
-					user_score[:time] = race_results[rider_id][:stages][stage_id][:time]+modifier
+					user_score[:time] = race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
 				else 
-					user_score[:time] += race_results[rider_id][:stages][stage_id][:time]+modifier
+					user_score[:time] += race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
 				end
 				
 				#Cumulate points

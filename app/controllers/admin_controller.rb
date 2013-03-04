@@ -251,6 +251,8 @@ class AdminController < ApplicationController
 			data.kom_points = result[:kom_points].to_f
 			data.sprint_points = result[:sprint_points].to_f
 			data.points = result[:points].to_f
+			data.bonus_time = result[:bonus_time].to_i
+			data.rank = result[:rank].to_i
 			data.save
 		end
 		

@@ -23,6 +23,10 @@
 			</th>
 			
 			<th align="left">
+				<div style="float:left;">Bonus</div>
+			</th>
+			
+			<th align="left">
 				<div style="float:left;">Gap</div>
 			</th>
 			
@@ -43,10 +47,16 @@
 				<td align="left"><%=result[:rider_name]%></td>
 				<% if (result[:disqualified].nil?) %>
 					<td align="left"><%=result[:time_formatted]%></td>
+					<% if (result[:bonus_time] > 0) %>
+						<td align="left"><%=result[:bonus_time_formatted]%></td>
+					<% else %>
+						<td></td>
+					<% end %>
 					<td align="left"><%=result[:gap_formatted]%></td>
 					<td align="left"><%=result[:kom_points]%></td>
 					<td align="left"><%=result[:sprint_points]%></td>
 				<% else %>
+					<td align="left"><%=result[:disqualified]%></td>
 					<td align="left"><%=result[:disqualified]%></td>
 					<td align="left"><%=result[:disqualified]%></td>
 					<td align="left"><%=result[:disqualified]%></td>

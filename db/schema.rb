@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130303091159) do
+ActiveRecord::Schema.define(:version => 20130303165818) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -141,6 +141,8 @@ ActiveRecord::Schema.define(:version => 20130303091159) do
     t.integer  "race_id"
     t.integer  "rider_status",    :default => 1
     t.integer  "status",          :default => 1
+    t.integer  "rank",            :default => 0
+    t.integer  "bonus_time",      :default => 0
   end
 
   create_table "riders", :force => true do |t|
