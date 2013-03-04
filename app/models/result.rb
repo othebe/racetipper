@@ -108,7 +108,7 @@ class Result < ActiveRecord::Base
 		rank = 1
 		riders_ranked.each do |id, data|
 			rider_data = rider_points_unsorted[id]
-			rider_data[:rank] ||= rank
+			rider_data[:rank] = rank if (rider_data[:rank].nil? || rider_data[:rank]==0)
 			rider_points_unsorted[id] = rider_data
 			rank += 1
 		end
