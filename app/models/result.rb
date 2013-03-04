@@ -22,7 +22,7 @@ class Result < ActiveRecord::Base
 		return [] if selector.nil?
 		
 		#Sort fields
-		sort_field = 'sort_score'
+		sort_field = 'rank'
 		sort_field = options[:sort_field].strip if (options.has_key?(:sort_field) && !options[:sort_field].strip.empty?)
 		#Sort direction
 		sort_dir = 'ASC'
@@ -108,7 +108,7 @@ class Result < ActiveRecord::Base
 		rank = 1
 		riders_ranked.each do |id, data|
 			rider_data = rider_points_unsorted[id]
-			rider_data[:rank] = rank
+			rider_data[:rank] ||= rank
 			rider_points_unsorted[id] = rider_data
 			rank += 1
 		end
