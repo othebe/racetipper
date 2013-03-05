@@ -101,7 +101,7 @@ class CompetitionsController < ApplicationController
 			race_team_map[team.id].each do |race_id|
 				rider_data = {}
 				rider_data[:race_id] = race_id
-				rider_data[:riders] = team.TeamRiders.where(:race_id=>race_id)
+				rider_data[:riders] = team.TeamRiders.where(:race_id=>race_id).order('team_riders.rider_number')
 				team_data[:riders].push(rider_data)
 			end
 			team_hash[team.id] = team_data
