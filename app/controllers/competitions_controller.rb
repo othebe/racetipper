@@ -33,7 +33,7 @@ class CompetitionsController < ApplicationController
 			race = Race.find_by_id(race_id)
 			@data[:race_data][race_id] = {}
 			@data[:race_data][race_id][:name] = race.name
-			stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order(:order_id)
+			stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 			@data[:race_data][race_id][:stages] = stages
 			next if (!@selected_stage.nil?)
 			
