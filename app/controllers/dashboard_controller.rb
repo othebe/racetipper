@@ -41,16 +41,19 @@ class DashboardController < ApplicationController
 	end
 	
 	def show_profile		
-		if (!@user.nil? && !@user.fb_id.nil?)
-			@user_image = 'https://graph.facebook.com/'+@user.fb_id.to_s+'/picture?type=large'
-		else
-			@user_image = '/assets/default_user.jpg'
-		end
-		
 		user_id = @user.id
 		user_id = params[:id] if (params.has_key?(:id))
 		@userprofile = User.find_by_id(user_id)
 		@user_rank = User.get_rank(user_id)
+		
+		#Get profile picture
+		profile_user = User.find_by_id(user_id)
+		if (!profile_user.nil? && !profile_user.fb_id.nil?)
+			@user_image = 'https://graph.facebook.com/'+profile_user.fb_id.to_s+'/picture?type=large'
+		else
+			@user_image = '/assets/default_user.jpg'
+		end
+		
 		#Get quote
 		quote_count = CyclingQuote.count
 		offset = rand(quote_count)
