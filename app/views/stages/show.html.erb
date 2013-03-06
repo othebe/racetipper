@@ -28,7 +28,8 @@
 			<% end %>
 			
 			<h4>Stages</h4>
-			<% if (@stages.length > 7) %>
+			<% if (@stages.length < 1) %>
+				<!-- Ignore this part -->
 				<ul class="bxslider">
 					<% @stages.each do |stage| %>
 						<li><img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" /></li>
