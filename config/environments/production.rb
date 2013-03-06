@@ -57,8 +57,8 @@ Racetipper::Application.configure do
 	  :address              => "smtp.gmail.com",
 	  :port                 => 587,
 	  :domain               => 'racetipper.herokuapp.com',
-	  :user_name            => 'tim.calkins@gmail.com',
-	  :password             => 'timtipping',
+	  :user_name            => 'cyclingtipping@gmail.com',
+	  :password             => 'tipletour',
 	  :authentication       => 'plain',
 	  :enable_starttls_auto => true  
 	}
