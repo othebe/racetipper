@@ -61,6 +61,11 @@ $(function() {
 				} else hideProjectDetails(true, false);
 			}
 			
+			//Support for profile
+			if (address.indexOf('/profile')!=-1) {
+				hideProjectDetails(true, false);
+			}
+			
 			//Back to home
 			if (detailUrl<0 && address.indexOf('/home')!=-1) {
 				hideProjectDetails(true, false);

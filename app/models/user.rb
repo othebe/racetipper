@@ -63,6 +63,9 @@ class User < ActiveRecord::Base
 		self.temp_password = enc_password
 		self.save
 		
+		#Ignore temp password if user is already logged in
+		self.temp_password = nil
+		
 		#Notify user
 		AppMailer.temporary_password_created(self, password).deliver
 	end

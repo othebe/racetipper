@@ -187,3 +187,25 @@ ul.usermenu {
 	margin-left: -85px;
 	display: none;
 }
+
+/* Portfolio header */
+div.portfolio-header {
+	background: black;
+	color: white;
+}
+	
+	div.portfolio-header table tr td {
+		padding: 0 10px 0 5px;
+	}
+		
+		div.portfolio-header table tr td:hover {
+			background: #FFE04F;
+		}
+	
+		div.portfolio-header table tr td a {
+			color: white;
+		}
+		
+			div.portfolio-header table tr td a:hover {
+				color: black;
+			}
