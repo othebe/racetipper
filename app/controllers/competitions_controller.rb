@@ -147,7 +147,7 @@ class CompetitionsController < ApplicationController
 				@result_name = @races.first.race.name
 				current_race_id = @races.first.race_id	
 				@race_id = current_race_id
-				@stages = Stage.where({:race_id=>current_race_id, :status=>STATUS[:ACTIVE]}).order('order_id')
+				@stages = Stage.where({:race_id=>current_race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 				@group_type = 'race'
 				group_id = current_race_id
 			else
