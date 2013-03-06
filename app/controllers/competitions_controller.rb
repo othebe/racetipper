@@ -7,7 +7,7 @@ class CompetitionsController < ApplicationController
 		@is_owner = false
 		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
 		
-		render :layout=>false
+		render :layout=>'blank'
 	end
 	
 	def results

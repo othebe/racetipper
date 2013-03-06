@@ -5,6 +5,6 @@ class ArticlesController < ApplicationController
 		@article = Article.find_by_id(params[:id])
 		@links = @article.ArticleLinks
 		
-		render :layout=>false
+		render :layout=>'blank'
 	end
 end

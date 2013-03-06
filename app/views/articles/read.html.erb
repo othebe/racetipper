@@ -33,6 +33,10 @@
 					<img alt="<%=link.description%>" src="<%=link.url%>" class="article">
 				</a>
 			<% end %>
+			
+			<div style="clear:both;"></div>
+			
+			<div class="fb-comments" data-href="<%=SITE_URL+'#/articles/'+@article.id.to_s%>" data-width="770" data-num-posts="10"></div>
 		</div>
 		
 		<div class="span4 portfolio-field"></div>
