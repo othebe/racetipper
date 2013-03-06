@@ -549,9 +549,16 @@ class CompetitionsController < ApplicationController
 		
 		race_results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
 		tips = CompetitionTip.where(tip_conditions)
+
 		user_scores = {}
 		tips.each do |tip|
 			next if (race_results.nil?)
+			
+			#Fill tip if user has not tipped anyone and the leaderboard is open
+			if (tip.rider_id.nil? && tip.default_rider_id.nil?)
+				CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
+				tip = CompetitionTip.find_by_id(tip.id)
+			end
 			
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
@@ -574,7 +581,13 @@ class CompetitionsController < ApplicationController
 			user_score[:username] = username
 			
 			rider = Rider.find_by_id(rider_id)
-			next if (rider.nil?)
+			
+			#User has not tipped for a stage that does not have results
+			if (rider.nil?)
+				user_score[:tip].push({:id=>nil, :name=>'TBA'})
+				user_scores[user_id] = user_score
+				next
+			end
 			
 			#Get tip data from results
 			if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
@@ -613,7 +626,7 @@ class CompetitionsController < ApplicationController
 		
 		#Sort leaderboard
 		leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
-		
+
 		return leaderboard
 	end
 	
@@ -659,8 +672,9 @@ class CompetitionsController < ApplicationController
 		
 			rider = Rider.find_by_id(tip[:rider_id])
 			default_rider = Rider.find_by_id(tip[:default_rider_id])
-
-			result = Result.where({:season_stage_id=>stage.id, :rider_id=>(rider||default_rider).id}).first
+			
+			rider_used = (rider ||default_rider)
+			result = Result.where({:season_stage_id=>stage.id, :rider_id=>(rider_used).id}).first if (!rider_used.nil?)
 			default_result = nil
 			if (!default_rider.nil?)
 				default_result = Result.where({:season_stage_id=>stage.id, :rider_id=>(default_rider).id}).first
