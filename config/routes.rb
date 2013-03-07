@@ -62,6 +62,7 @@ Racetipper::Application.routes.draw do
 	post 'users/change_password'
 	get 'users/reset_password'
 	post 'users/reset_password_from_email'
+	post 'users/change_time_zone'
 	
 	get 'competitions/edit'
 	get 'competitions/show'

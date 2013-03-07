@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130303165818) do
+ActiveRecord::Schema.define(:version => 20130307160447) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -206,13 +206,14 @@ ActiveRecord::Schema.define(:version => 20130303165818) do
     t.string   "password"
     t.string   "salt"
     t.datetime "last_activity"
-    t.datetime "created_at",                                      :null => false
-    t.datetime "updated_at",                                      :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
     t.string   "image_url"
     t.boolean  "is_admin",                     :default => false
     t.integer  "fb_id",           :limit => 8
     t.string   "fb_access_token"
     t.string   "temp_password"
+    t.string   "time_zone",                    :default => "+00:00"
   end
 
 end

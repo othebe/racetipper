@@ -23,6 +23,9 @@
 	opacity: 0.3 !important;
 }
 
+/* Facebook comments */
+.fb-comments, .fb-comments iframe[style] {width: 100% !important;}
+
 .leaderboard_table tr {
 	border-bottom: 3px solid gray;
 }

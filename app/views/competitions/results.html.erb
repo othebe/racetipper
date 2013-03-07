@@ -57,7 +57,14 @@
 				
 				<div class="history-unit starts_on stage_data_container">
 					<h4 style="font-weight:bold;">Starts on</h4>
-					<p><%=@selected_stage.starts_on%></p>
+					<p>
+						<% begin %>
+							<%=@selected_stage.starts_on.gmtime.localtime(@user.time_zone)%><br>
+						<% rescue %>
+							<%=@selected_stage.starts_on%><br>
+						<% end %>
+						<%=render 'app_partials/change_time_zone'%>
+					</p>
 				</div>
 				
 				<div class="history-unit distance stage_data_container">
@@ -66,8 +73,11 @@
 				</div>
 				
 				<div class="history-unit time_to_tip stage_data_container">
-					<h4 style="font-weight:bold;">Time to tip</h4>
-					<p><%=@time_to_tip%></p>
+					<h4 style="font-weight:bold;">Time to tip </h4>
+					<p>
+						<%=@time_to_tip%></br>
+						<%=render 'app_partials/change_time_zone'%>
+					</p>
 				</div>
 			</div>	
 		</div>

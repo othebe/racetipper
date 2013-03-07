@@ -635,6 +635,13 @@ class CompetitionsController < ApplicationController
 	#Params:		start_time - Check remaining time for this
 	private
 	def get_remaining_time(start_time)
+		#Timezone
+		if (@user.nil?)
+			timezone = "+00:00"
+		else
+			timezone = @user.time_zone
+		end
+		
 		#Time left to tip
 		remaining = start_time - Time.now()
 		
@@ -650,7 +657,11 @@ class CompetitionsController < ApplicationController
 		elsif (remaining < 86400)
 			return Time.at(remaining).gmtime.strftime('%R hours, %S seconds left.')
 		else
-			return 'Ends on '+start_time.to_s
+			begin
+				return 'Ends on '+start_time.gmtime.localtime(timezone).to_s
+			rescue
+				return 'Ends on '+start_time.gmtime.to_s
+			end
 		end
 	end
 	

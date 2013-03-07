@@ -173,4 +173,16 @@ class UsersController < ApplicationController
 		
 		render :json=>{:success=>true, :msg=>'Temporary password mailed to '+user.email} and return
 	end
+	
+	#Title:			change_time_zone
+	#Description:	Change a user's time zone
+	def change_time_zone
+		#Is user logged in?
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if @user.nil?
+		
+		@user.time_zone = params[:time_zone]
+		@user.save
+		
+		render :json=>{:success=>true, :msg=>'success'} and return
+	end
 end
