@@ -639,7 +639,12 @@ class CompetitionsController < ApplicationController
 		if (@user.nil?)
 			timezone = "+00:00"
 		else
-			timezone = @user.time_zone
+			begin
+				timezone = @user.time_zone
+			rescue
+				@user = User.find_by_id(@user.id)
+				timezone = @user.time_zone
+			end
 		end
 		
 		#Time left to tip
