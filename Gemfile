@@ -7,6 +7,15 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 
+#Use thin for production
+group :production do
+  gem 'thin'
+end
+
+group :development do
+	gem 'thin'
+end
+
 gem 'json'
 
 # Gems used only for assets and not required
