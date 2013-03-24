@@ -2,7 +2,7 @@ class RacesController < ApplicationController
 	#Title:			index
 	#Description:	Show competition grid
 	def index
-		@races = Race.all()
+		@races = Race.where({:status=>STATUS[:ACTIVE]})
 		
 		render :layout => nil
 	end
