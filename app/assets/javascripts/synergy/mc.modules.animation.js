@@ -6,7 +6,7 @@
  **/
   
  /* start GENERAL CUSTOMIZATION PROPERTIES */
-var templateBaseURL         = "http://localhost:3000/";/*"http://themes.mediacreed.com/html/synergy/"*/ 
+var templateBaseURL         = "http://racetipper.herokuapp.com/";/*"http://themes.mediacreed.com/html/synergy/"*/ 
 var themeColor              = "#d00355";
 var menuActive              = true;
 var menuHoverActive         = true; /* it will change to false if menuActive == true. If 'menuActive' 
