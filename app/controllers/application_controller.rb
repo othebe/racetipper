@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :check_user
+  before_filter :init_vars
   
   private
   def check_user
@@ -33,4 +34,20 @@ class ApplicationController < ActionController::Base
 		session.delete(:invited_competitions)
 	end
   end
+  
+	#Title:		init_vars
+	#Description:	Initialize variables
+	def init_vars
+		current_season = Season.find_by_year(Time.now.year)
+		@sidebar_races ||= Race.where({:status=>STATUS[:ACTIVE], :season_id=>current_season.id}).order('id DESC').limit(10)
+		
+		if (@user.nil?)
+			@sidebar_competitions ||= Competition.where({:status=>STATUS[:ACTIVE], :is_complete=>false}).order('created_at DESC').limit(5)
+		else
+			@sidebar_competitions ||= Competition.get_competitions(@user.id, {:limit=>5})
+		end
+		#@sidebar_races ||= Rails.cache.fetch('races') do
+		#	Race.where({:status=>STATUS[:ACTIVE], :season_id=>current_season.id}).order('id DESC').limit(10)
+		#end
+	end
 end

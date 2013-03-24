@@ -1,3 +1,4 @@
+<!--
 <div class="portfolio-header">
 	<table>
 		<tr>
@@ -7,3 +8,55 @@
 		</tr>
 	</table>
 </div>
+-->
+
+<div class="portfolio-header">
+	<ul class="header-menu">
+		<li class="menu-item-title" href="/"><a href="/" class="menu-item">HOME</a>
+		</li>
+		
+		<li class="menu-item-title"><a class="menu-item">COMPETITIONS</a>
+			<ul class="header-submenu competitions"	>
+				<% if (!@user.nil?) %>
+					<li class="menu-item">
+						<a href="#" class="menu-item">My Competitions</a>
+						<ul class="header-submenu my-competitions">
+							<% @my_competitions.each do |competition| %>
+								<li class="menu-item" href="/competition/<%=competition.id%>">
+									<a class="menu-item"><%=limit_text(competition.name, 31)%></a>
+								</li>
+							<% end %>
+							<li class="menu-item"><a class="menu-item">Show More...</a></li>
+						</ul>
+					</li>
+				<% end %>
+				
+				<li>
+					<a href="#" class="menu-item">All Competitions</a>
+					<ul class="header-submenu all-competitions"	>
+						<% @all_competitions.each do |competition| %>
+							<li class="menu-item" href="/competition/<%=competition.id%>">
+								<a class="menu-item"><%=limit_text(competition.name, 31)%></a>
+							</li>
+						<% end %>
+						<li class="menu-item"><a class="menu-item">Show More...</a></li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		
+		<% if (!@user.nil?) %>
+			<li class="menu-item-title" href="/#/profile"><a href="/#/profile" class="menu-item">PROFILE</a></li>
+		<% end %>
+	</ul>
+</div>
+
+<script>
+$(document).ready(function(event) {
+	$('li').click(function(event) {
+		var href = $(this).attr('href');
+		if (href!=null) window.location.href = href;
+		event.preventDefault();
+	});
+});
+</script>

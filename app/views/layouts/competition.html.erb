@@ -1,0 +1,62 @@
+<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal"><%=@data[:competition].name%></span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="media-holder">
+						<img src="<%=cl_image_path @data[:competition].image_url, {:width=>515, :height=>167, :crop=>:fill} %>" class="opacity_0" onload="animateThumb(this)"/>
+					</div>
+					
+					<div class="competition-buttons">
+						<% if (@user.nil?) %>
+							<div class="button" onclick="load_page('#pages/login');">
+								<span>Login to Tip</span>
+							</div>
+						<% elsif (@data[:is_participant]) %>
+							<div class="button" onclick="load_page('#competitions/tip/<%=@data[:competition].id %>');">
+								<span>Tip Rider</span>
+							</div>
+						<% else %>
+							<div class="button" onclick="join_competition('<%=@data[:competition].id%>', this);">
+								<span>Join</span>
+							</div>
+							<div class="load_container competition" style="height:38px;">
+								<%=image_tag 'ajax-loader.gif' %>
+							</div>
+						<% end %>
+						
+						<div class="button" onclick="load_page('#competitions/results/<%=@data[:competition].id %>');">
+							<span>Race Results</span>
+						</div>
+						
+						<div class="button" onclick="load_page('#competitions/leaderboard/<%=@data[:competition].id %>');">
+							<span>Leaderboard</span>
+						</div>
+						
+						<div class="button" onclick="load_page('#competitions/<%=@data[:competition].id %>');">
+							<span>Info</span>
+						</div>
+					</div>
+
+					<div style="clear:both;"></div>
+					<div class="custom-separator"></div>
+					
+					<%=yield %>
+				</div>
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

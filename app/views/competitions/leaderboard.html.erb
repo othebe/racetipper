@@ -1,118 +1,36 @@
-﻿<div class="portfolio-single container">
-	<%= render :partial=>'/app_partials/portfolio_header', :locals=>{} %>
-	
-	<div class="row">
-	
-		<!-- InstanceBeginEditable name="Content" -->
-		
-		
-		<!-- TITLE - column 8/12 -->
-		<div class="span8 portfolio-field portfolio-title">
-			<h2><%=@data[:competition].name%></h2>
-		</div>
-		<!-- TITLE - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		<div class="span4 portfolio-field portfolio-nav">
-			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
-			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
-			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
-			<% if (@is_owner) %>
-				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
-			<% end %>
-			<% if (!@stage_id.nil?) %>
-				<!-- Back to stage selection -->
-				<a class="icon button back" href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=@race_id%>" title="Back"><</a>
-			<% elsif (!@stages.nil? && @races.length>1) %>
-				<!-- Back to race selection -->
-				<a class="icon button back" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Back"><</a>
-			<% else %>
-				<a class="icon button back" href="#/competitions" title="Close">Â</a>
-			<% end %>
-		</div>
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		<div class="span9 portfolio-field">
-			<% if (!@leaderboard.nil?) %>
-				<h3><%=@result_name%> <a href="/#/races/show/<%=@race_id%>">(See results)</a></h3>
-				<%= render('app_partials/leaderboard_results', {:leaderboard=>@leaderboard, :group=>@group_type, :competition_id=>@data[:competition].id})%>
-			<% else %>
-				<div class="history-unit races">
-					<h2>Select a Race</h2>
-					<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-					<% @races.each do |race| %>
-						<% race = race.race %>					
-						<div class="item" style="width:16%">
-							<div class="media-box">
-								<img src="<%=(race.image_url.nil?)?DEFAULT[:RACE_IMG]:race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
-								<div class="mask" race_id="<%=race.id%>">
-									<h3 class="title" style="margin-top:12%;">View Points</h3>
-									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=race.id%>" class="ico show-details supress" onclick=""></a>
-								</div>
-							</div>
-							<h3 class="project-title" style="margin-top:-40px;"><%=race.name%></h3>
-						</div>
-					<% end %>
-					</div>
-				</div>
-			<% end %>
-		</div>
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
-		<div class="span3 portfolio-field" style="margin-left:2px;">
-			<% if (!@stages.nil? || !@stage_id.nil?) %>
-				<div class="history-unit stages">
-					<h2>Stages</h2>
-					<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-					<% @stages.each do |stage| %>				
-						<div class="item" style="width:41%">
-							<div class="media-box">
-								<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:100%; height:100px;">
-								<div class="mask" race_id="<%=stage.id%>">
-									<h3 class="title" style="margin-top:12%;">View Points</h3>
-									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?stage_id=<%=stage.id%>" class="ico show-details supress" onclick=""></a>
-								</div>
-							</div>
-							<h3 class="project-title" style="margin-top:-40px; padding-left:5px; font-size:1em;"><%=stage.name%></h3>
-						</div>
-					<% end %>
-					</div>
-				</div>
-			<% elsif !@leaderboard.nil? %>
-				<div class="history-unit races">
-					<h2>Races</h2>
-					<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-					<% @races.each do |race| %>
-						<% race = race.race %>					
-						<div class="item" style="width:37%">
-							<div class="media-box">
-								<img src="<%=(race.image_url.nil?)?DEFAULT[:RACE_IMG]:race.image_url%>" alt="<%=race.name%>" style="width:140px; height:100px;">
-								<div class="mask" race_id="<%=race.id%>">
-									<h3 class="title" style="margin-top:12%;">View Points</h3>
-									<a href="#/competitions/leaderboard/<%=@data[:competition].id%>?race_id=<%=race.id%>" class="ico show-details supress" onclick=""></a>
-								</div>
-							</div>
-							<h3 class="project-title" style="margin-top:-40px;"><%=race.name%></h3>
-						</div>
-					<% end %>
-					</div>
-				</div>
-			<% end %>
-		</div>
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
+<% @races.each do |race| %>
+	<div class="main-text-holder">
+		<p>
+			<span><%=race[:race_data].name%></span>
 			
-		<!-- InstanceEndEditable -->
-		
+			<div class="competition_results">
+				<input id="competition_id" value="<%=@data[:competition].id%>" type="hidden">
+				<select onchange="load_leaderboard(this);">
+					<option value="<%=race[:race_data].id%>" data-type="race">Results Summary</option>
+					<% race[:stages].each do |stage| %>
+						<option value="<%=stage.id%>" data-type="stage"><%=stage.name%></option>
+					<% end %>
+				</select>
+				
+				<%=image_tag 'ajax-loader.gif', {:onload=>'load_leaderboard(this);', :class=>'loading'} %>
+				<table style="display:none;">
+					<thead>
+						<tr>
+							<th>Rank</th>
+							<th>Name</th>
+							<th>Time</th>
+							<th>Gap</th>
+							<th>KOM</th>
+							<th>Sprint</th>
+							<th>Rider</th>
+						</tr>
+					</thead>
+					
+					<tbody></tbody>
+				</table>
+			</div>
+		</p>
 	</div>
-	
-</div>
 
-<style>
-table tr {
-	border-bottom: 1px solid black;
-}
-</style>
+	<div class="custom-separator"></div>
+<% end %>

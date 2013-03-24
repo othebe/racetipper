@@ -1,16 +1,17 @@
 /* Facebook connect */
    
-//Title:		fb_login
+//Title:		facebook_login
 //Description:	Logs a user in via Facebook
-function fb_login() {
+function facebook_login() {
 	FB.login(function(response) {
 		if (response.authResponse) {
 			// connected
 			access_token = response.authResponse.accessToken;
 			$.get('/users/login_with_facebook', {access_token:access_token}, function(login_response) {
-				if (login_response.success)
+				if (login_response.success) {
+					window.location.hash = '#competitions/index';
 					window.location.reload();
-				else alert(login_response.msg);
+				} else alert(login_response.msg);
 			});
 		} else {
 			// cancelled

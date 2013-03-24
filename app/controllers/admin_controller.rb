@@ -177,6 +177,37 @@ class AdminController < ApplicationController
 		render :json => {:success=>true, :msg=>'success'} and return
 	end
 	
+	#Title:			save_race_image
+	#Description:	Save the image for a race
+	def save_race_image
+		race_id = params[:race_id]
+		race = Race.find_by_id(race_id)
+		
+		#Check that competition exists and user is allowed to save
+		#redirect_to :root if (competition.creator_id != @user.id)
+		
+		#Save competition image path
+		race.image_url = 'race_'+race_id.to_s+'.jpg'
+		race.save
+		
+		if (!params[:image].nil?)
+			options = {
+				:public_id => "race_"+race_id.to_s,
+				:format => 'jpg',
+				:transformation => {
+					:x => params[:crop_x].to_i,
+					:y => params[:crop_y].to_i,
+					:width => params[:crop_w].to_i,
+					:height => params[:crop_h].to_i,
+					:crop => :crop
+				}
+			}
+			Cloudinary::Uploader.upload(params[:image].tempfile.path, options)
+		end
+		
+		render :text=>params.inspect
+	end
+	
 	def save_season_races
 		logger.debug(session.has_key?(:season_id))
 		render :json=>{:success=>false, :msg=>'Select a season first.'} and return if (!session.has_key?(:season_id) || session[:season_id].empty?)

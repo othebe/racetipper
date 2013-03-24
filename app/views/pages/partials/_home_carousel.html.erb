@@ -1,0 +1,41 @@
+<div id="home-layout2-banner" data-auto-play="true" data-time="4">
+	<div id='standard-banner'  class="shadow-side-all">
+		<!-- First slide -->
+		<a href="#" target="_blank" class="selected">
+			<img src="<%=cl_image_path carousel_slides[0][:image], {:width=>515, :height=>167, :crop=>:fill} %>" onload="animateThumb(this);" class="opacity_0">
+			<div class="banner-desc box-sizing banner-desc-cl">
+				<div class="desc-background opacity_6"></div>
+				<span>
+					<h1><%=carousel_slides[0][:title]%></h1>
+					<p><%=carousel_slides[0][:description]%></p>
+				</span>
+			</div>                        		
+		</a>
+		
+		<!-- Following slides -->
+		<% ndx = 0 %>
+		<% carousel_slides.each do |slide| %>
+			<% ndx += 1 %>
+			<% next if (ndx==1) %>
+			<a href="#" target="_blank">
+				<div id="dataSrc" data-src="<%=cl_image_path slide[:image], {:width=>515, :crop=>:fill}%>"></div>                                
+				<div class="banner-desc box-sizing banner-desc-cr">
+					<div class="desc-background opacity_6"></div>
+					<span>
+						<h1><%=slide[:title]%></h1>
+						<p><%=slide[:description]%></p>
+					</span>
+				</div>
+			</a>
+		<% end %>
+		
+		
+	</div>
+	<div class="banner-timer-graphic opacity_4"></div>
+	<div id="standard-banner-controls">
+		<div id="control-pin" class="control-pin selected"><div class="control-pin-hover opacity_1"></div></div>
+		<div id="control-pin" class="control-pin"><div class="control-pin-hover opacity_0"></div></div>
+		<div id="control-pin" class="control-pin"><div class="control-pin-hover opacity_0"></div></div>
+		<div id="control-pin" class="control-pin last"><div class="control-pin-hover opacity_0"></div></div>                            
+	</div>
+</div>

@@ -1,28 +1,29 @@
 class BugsController < ApplicationController
-	#Title:			report
-	#Description:	Report a bug
-	def report
+	#Title:			reedback
+	#Description:	Leave feedback
+	def feedback
+		render :layout=>nil
 	end
 	
 	
 	
 	######## POST ###########
 	
-	#Title:			submit_bug
-	#Description:	Save bug and send email
-	#Params:		title - Bug title
-	#				description - Bug description
-	def submit_bug
+	#Title:			submit_feedback
+	#Description:	Submit feedback and send email
+	#Params:		title - Title
+	#				description - Description
+	def submit_feedback
 		title = ''
 		title = params[:title] if (params.has_key?(:title))
-		render :json=>{:success=>false, :msg=>'Please enter a title for this bug.'} and return if (title.empty?)
+		render :json=>{:success=>false, :msg=>'Please enter a title.'} and return if (title.empty?)
 		
 		description = ''
 		description = params[:description] if (params.has_key?(:description))
-		render :json=>{:success=>false, :msg=>'Please enter a description for this bug.'} and return if (description.empty?)
+		render :json=>{:success=>false, :msg=>'Please enter a description.'} and return if (description.empty?)
 		
 		AppMailer.submit_bug_report(title, description).deliver
 		
-		render :json=>{:success=>true, :msg=>'Bug submitted. You may close this page now.'}
+		render :json=>{:success=>true, :msg=>'Thank you for your feedback.'}
 	end
 end

@@ -1,312 +1,543 @@
-//Show competition section
-competitions_loaded = false;
-function show_competitions() {
-	var container = $('.competition_portfolio');
-	if ($('.competition_portfolio').length==0) return;
-	if (competitions_loaded) return;
-	$.get('/dashboard/show_competitions', {}, function(response) {
-		$(container).html(response);
-		$(container).isotope('reloadItems');
-		$(container).height('auto');
-		$('#filters li.current a').click();
-		setupPortfolio();
-		init_page();
-		competitions_loaded = true;
-	});
-}
-
-//Show season info section
-season_info_loaded = false;
-function show_season_info() {
-	var container = $('.season_info_portfolio');
-	if ($('.season_info_portfolio').length==0) return;
-	if (season_info_loaded) return;
-	$.get('/dashboard/show_season_info', {}, function(response) {
-		$(container).html(response);
-		$(container).height('auto');
-		setupPortfolio();
-		init_page();
-		season_info_loaded = true;
-	});
-}
-
-//Show profile section
-profile_loaded = false;
-function show_profile() {
-	var container = $('.profile_portfolio');
-	if ($('.profile_portfolio').length==0) return;
-	if ($(container).html().length>0) return;
-	if (profile_loaded) return;
-	$.get('/dashboard/show_profile', {}, function(response) {
-		$(container).html(response);
-		$(container).height('auto');
-		init_page();
-		profile_loaded = true;
-	});
-}
-
-
-
-//Show new competition screen
-function new_competition() {
-	var container = $('#new_competition');
-	$.get('/competitions/edit', {}, function(response) {
-		$(container).html(response);
-		$('#portfolio-items').hide();
-		$('#competitions .caption').hide();
-		$('#filters .hide_new_competition').show();
-		$('#filters').find('li').not('.hide_new_competition').hide();
-		$(container).fadeIn();
-		$(".iscroll-wrapper").jScroll('refresh');
-	});
-}
-
-//Hide new competition screen
-function hide_new_competition() {
-	$('#new_competition').hide();
-	$('#portfolio-items').show();
-	$('#competitions .caption').show();
-	$('#filters .hide_new_competition').hide();
-	$('#filters').find('li').not('.hide_new_competition').show();
-	$('#portfolio-items').height('auto');
-	$(".iscroll-wrapper").jScroll('refresh');
-}
-
-//Join a competition
-function join_competition(competition_id, event) {
-	$('.join_competition_button').hide();
-	$('.join_competition_loading').show();	
+$(document).ready(function(event) {
 	
-	$.post('/competitions/join', {competition_id:competition_id}, function(response) {
-		$('.join_competition_loading').hide();	
+});
+
+//Title:		login
+//Description:	Log a user in
+function login(elt) {
+	var container = $('.signin');
+	data = {};
+	data['email'] = $(container).find('input[name=email]').val();
+	data['password'] = $(container).find('input[name=password]').val();
+	
+	$(elt).hide();
+	load_img = $(container).find('img.loading').show();
+	
+	$.post('/users/login', {data:data}, function(response) {
 		if (response.success) {
-			$('.race_results').fadeIn();
-			$('.tip_rider_button').show();
-		} else {
-			alert(response.msg);
-			$('.join_competition_button').show();
-		}
+			window.location.hash = '#competitions/index';
+			window.location.reload();
+		} else alert(response.msg);
+		$(load_img).hide();
+		$(elt).show();
 	});
-	event.preventDefault();
+	
+	return false;
 }
 
-//Tip rider
-function tip_rider(elt) {
-	$('input[type=checkbox]').not(':disabled').removeAttr('checked');
-	$(elt).attr('checked', true);
-	
-	rider_id = $(elt).attr('rider_id');
-	tip_container = $('.tip_data');
-	competition_id = $(tip_container).attr('competition_id');
-	race_id = $(tip_container).attr('race_id');
-	stage_id = $(tip_container).attr('stage_id');
-	stage_name = $(tip_container).attr('stage_name');
-	
-	//Remove selected stage info from old container
-	container = $('div[selected_stage_id='+stage_id+']');
-	$(container).removeAttr('selected_stage_id');
-	$(container).find('span.selected_stage').html('');
-	
-	//Insert selected stage info into new container
-	container = $(elt).closest('div');
-	$(container).attr('selected_stage_id', stage_id);
-	$(container).find('span.selected_stage').html(' ('+stage_name+')');
+//Title:		logout
+//Description:	Log out user
+function logout() {
+	window.location.href = '/users/logout';
+}
 
-	$.post('/competitions/tip', {rider_id:rider_id, race_id:race_id, competition_id:competition_id, stage_id:stage_id}, function(response) {
-		if (!response.success) {
-			alert(response.msg);
-		}
+//Title:		signup
+//Description:	Sign a new user up
+function signup(elt) {
+	var container = $('.signup');
+	data = {};
+	data['firstname'] = $(container).find('input[name=firstname]').val();
+	data['lastname'] = $(container).find('input[name=lastname]').val();
+	data['email'] = $(container).find('input[name=email]').val();
+	data['password'] = $(container).find('input[name=password]').val();
+	
+	$(elt).hide();
+	load_img = $(container).find('img.loading').show();
+	
+	$.post('/users/create', {data:data}, function(response) {
+		if (response.success) {
+			window.location.hash = '#competitions/index';
+			window.location.reload();
+		} else alert (response.msg);
+		$(load_img).hide();
+		$(elt).show();
 	});
 }
 
-//Get competition stage data
-var sort_competition_id = '';
-var sort_stage_id = '';
-function get_competition_stage_data(competition_id, stage_id, sort_field, sort_dir) {
-	$('.stage_data_container').addClass('fade');
+//Title:		load_results
+//Description:	Load race results
+//Params:		elt - Object that triggers a results load
+function load_results(elt) {
+	var parent = $(elt).parent();
+	var load_img = $(parent).find('img.loading');
+	var load_option = $(parent).find('select option:selected');
+	var results_table = $(parent).find('table');
 	
-	//Hide teams
-	$('.raceteam').hide();
+	var url = '';
+	var load_data_id = $(load_option).val();
+	var load_data_type = $(load_option).attr('data-type');
+	if (load_data_type == 'race') url = '/races/get_results/'+load_data_id;
+	if (load_data_type == 'stage') url = '/stages/get_results/'+load_data_id;
 	
-	//Disable rider selection
-	$('input[type=checkbox]:checked').each(function(ndx, elt) {
-		$(elt).attr('disabled', true);
-		$(elt).attr('checked', false);
-		$('label[for='+$(elt).attr('id')+']').addClass('disabled');
+	$(load_img).show();
+	$.get(url, {}, function(response) {
+		$(results_table).find('tbody').empty();
+		if (response.results.length > 0) {
+			for (i=0; i< response.results.length; i++) {
+				result = response.results[i];
+				
+				var time_formatted = (result.disqualified==null)?result.time_formatted:result.disqualified;
+				var bonus_time_formatted = (result.disqualified==null)?result.bonus_time_formatted:'---';
+				var gap_formatted = (result.disqualified==null)?result.gap_formatted:'---';
+				var kom_points = (result.disqualified==null)?result.kom_points:'---';
+				var sprint_points = (result.disqualified==null)?result.sprint_points:'---';
+				
+				var row = $('<tr></tr>');
+				$(row).append(['<td>',result.rank,'</td>'].join(''));
+				$(row).append(['<td>',result.rider_name,'</td>'].join(''));
+				$(row).append(['<td>',time_formatted,'</td>'].join(''));
+				$(row).append(['<td>',bonus_time_formatted,'</td>'].join(''));
+				$(row).append(['<td>',gap_formatted,'</td>'].join(''));
+				$(row).append(['<td>',kom_points,'</td>'].join(''));
+				$(row).append(['<td>',sprint_points,'</td>'].join(''));
+				
+				$(results_table).find('tbody').append(row);
+			}
+		}
+		
+		$(load_img).hide();
+		$(results_table).show();
 	});
-	
-	$('.stage_img').attr('src', '/assets/ajax-loader.gif');
-	
-	$.get('/competitions/get_competition_stage_info.json', {competition_id:competition_id, stage_id:stage_id, sort:sort_field, dir:sort_dir}, function(response) {
-		data = response.data;
+}
 
-		sort_competition_id = competition_id;
-		sort_stage_id = stage_id;
+//Title:		load_leaderboard
+//Description:	Load leaderboard
+//Params:		elt - Object that triggers a results load
+function load_leaderboard(elt) {
+	var parent = $(elt).parent();
+	var load_img = $(parent).find('img.loading');
+	var load_option = $(parent).find('select option:selected');
+	var results_table = $(parent).find('table');
+	
+	var competition_id = $(parent).find('#competition_id').val();
+	var url = '/competitions/get_competition_leaderboard/'+competition_id;
+	var load_data_id = $(load_option).val();
+	var load_data_type = $(load_option).attr('data-type');
+	
+	$(load_img).show();
+	$.get(url, {id:load_data_id, group_type:load_data_type, group_id:load_data_id}, function(response) {
+		$(results_table).find('tbody').empty();
+		if (response.leaderboard.length > 0) {
+			for (i=0; i< response.leaderboard.length; i++) {
+				result = response.leaderboard[i];
+				if (load_data_type == 'race') {
+					var click_scr = "load_page('#competitions/show_tips/"+competition_id+"?uid=1')";
+					selection = '<div class="button" onclick="'+click_scr+'"><span>VIEW TIPS</span></div>';
+				}
+				else selection = result.tip[0].name
+				
+				var row = $('<tr></tr>');
+				$(row).append(['<td>',(i+1),'</td>'].join(''));
+				$(row).append(['<td>',result.username,'</td>'].join(''));
+				$(row).append(['<td>',result.time_formatted,'</td>'].join(''));
+				$(row).append(['<td>',result.gap_formatted,'</td>'].join(''));
+				$(row).append(['<td>',result.kom,'</td>'].join(''));
+				$(row).append(['<td>',result.sprint,'</td>'].join(''));
+				$(row).append(['<td>',selection,'</td>'].join(''));
+				
+				$(results_table).find('tbody').append(row);
+			}
+		}
 		
-		distance_str = data.stage_start_location+' - '+data.stage_end_location+' ('+data.stage_distance_km+' km)';
-		$('.stage_img').attr('src', data.stage_image_url);
-		$('.description p').html(data.stage_description);
-		$('.profile p').html(data.stage_profile);
-		$('.starts_on p').html(data.stage_starts_on);
-		$('.distance p').html(distance_str);
-		$('.time_to_tip p').html(data.time_to_tip);
-		$('.tip_data').attr('stage_id', stage_id);
-		$('.tip_data').attr('stage_name', data.stage_name);
-		
-		//Allow this stage selection to be selected
-		selected_stage = $('div[selected_stage_id='+stage_id+']');
-		$(selected_stage).find('input[type=checkbox]').removeAttr('disabled').attr('checked', true);
-		$(selected_stage).find('label').removeClass('disabled');
-		$(selected_stage).find('span.selected_stage').removeClass('disabled');
-		
-		//Hide teams if they're not part of the race
-		race_id = data.race_id
-		$('.raceteam').not('.'+race_id).hide();
-		$('.raceteam.'+race_id).show();
-		
-		//Show results?
-		if (data.stage_results != null) {
-			$('.tip-rider').hide();
-			$('.stage-results').show();
-			if (data.stage_results==null || data.stage_results.length==0)
-				$('div.stage-results .empty').show();
-			else {
-				table = $('div.stage-results table');
-				$(table).find('tr.data').remove();
-				$('div.stage-results .empty').hide();
-				for (ndx in data.stage_results) {
-					result = data.stage_results[ndx];
-					//Check disqualification status
-					if (result['disqualified']!=null) {
-						time_formatted = result['disqualified'];
-						gap_formatted = result['disqualified'];
-						kom_points = result['disqualified'];
-						sprint_points = result['disqualified'];
-						bonus_time_formatted = result['disqualified'];
-					} else {
-						time_formatted = result['time_formatted'];
-						gap_formatted = result['gap_formatted'];
-						kom_points = result['kom_points'];
-						sprint_points = result['sprint_points'];
-						bonus_time_formatted = result['bonus_time_formatted'];
+		$(load_img).hide();
+		$(results_table).show();
+	});
+}
+
+//Title:		show_tip_sheet
+//Description:	Show tip sheet for a competition stage
+//Params:		elt - Object that triggers a tip sheet load
+function show_tip_sheet(elt) {
+	var parent = $(elt).parent();
+	var load_img = $(parent).find('img.loading');
+	var load_option = $(parent).find('select option:selected');
+	var data_elt = $(parent).find('div.data').empty();
+	
+	var competition_id = $(load_option).attr('competition_id');
+	var stage_id = $(parent).find('select').val();
+	var url = '/competitions/get_tip_sheet/'+competition_id;
+	
+	$(load_img).show();
+	$.get(url, {stage_id:stage_id}, function(response) {
+		if (response.tipsheet.length > 0) {
+			$(response.tipsheet).each(function(ndx, data) {
+				var container = $('<fieldset></fieldset>');
+				$(container).append('<legend>'+data.team_name+'</legend>');
+				
+				//Riders
+				for(i=0; i<data.riders.length; i++) {
+					var rider = data.riders[i];
+					var not_allowed = '';
+					var cb_allow = '';
+					var label_allow = '';
+					var cb_checked = '';
+
+					//Allowed?
+					if (!rider.allowed.allowed) {
+						cb_allow = ' disabled="disabled" ';
+						label_allow = 'color:lightgray;';
+						not_allowed = ' ('+rider.allowed.reason+')';
 					}
 					
-					row = $('<tr class="data"></tr>');
-					$(row).append('<td>'+result['rank']+'</td>');
-					$(row).append('<td>'+result['rider_name']+'</td>');
-					$(row).append('<td>'+time_formatted+'</td>');
-					$(row).append('<td>'+bonus_time_formatted+'</td>');
-					$(row).append('<td>'+gap_formatted+'</td>');
-					$(row).append('<td>'+kom_points+'</td>');
-					$(row).append('<td>'+sprint_points+'</td>');
-					$(table).append(row);
+					//Current selection?
+					if (rider.selected) cb_checked = ' checked="checked" ';
+					
+					var line = $(['<input type="checkbox" id="',rider.rider_id,'" val="',rider.rider_id,'"',cb_allow,cb_checked,'><label for="',rider.rider_id,'" style="',label_allow,'">',rider.rider_name,' [',rider.rider_number,']',not_allowed,'</label></br>'].join(''));
+					$(container).append(line);
 				}
 				
-				$(".leaderboard_table").trigger("update"); 
-			}
-		} else {
-			$('.stage-results').hide();
-			$('.tip-rider').show();
+				$(data_elt).append(container);
+			})
 		}
 		
-		$('.stage_data_container').removeClass('fade');
-	});
-}
-
-//Load more competitions
-//Params:
-//	options - Associative array:
-//		limit
-//		offset
-function load_more_competitions() {
-	container_selector = '#portfolio-items.competition_portfolio';
-	container = $(container_selector);
-	limit = 10;
-	offset = $(container).find('.item:not(.new_competition)').length;
-	
-	$('#more_competitions').hide();
-	$('#more_competitions_loading').show();
-	
-	$.get('/competitions/get_more_competitions.json', {limit:limit, offset:offset}, function(response) {
-		competition_data = response.competition_data
-		$(competition_data).each(function(ndx, data) {
-			scaffold = $('.item.competition.template').first().clone().removeClass('template').removeClass('competition');
-			if (data.is_participant) $(scaffold).addClass('mine');
-			$(scaffold).find('img').attr('src', data.image_url).attr('alt', data.name);
-			$(scaffold).find('a').attr('data_id', data.id).attr('href', '#/competitions/show/'+data.id);
-			$(scaffold).find('.project-title').html(data.name);
-			if (data.is_complete) {
-				$(scaffold).find('.completion_status').html('Completed');
-			}
-			
-			container.append($(scaffold).fadeIn());
+		$(data_elt).find('input[type=checkbox]').click(function(event) {
+			$('input[type=checkbox]').removeAttr('checked');
+			$(this).attr('checked', true);
+			rider_id = $(this).attr('id');
+			save_tip(competition_id, stage_id, rider_id);
 		});
-		$('#more_competitions_loading').hide();
-		$('#more_competitions').show();
-		$(container).isotope('reloadItems');
-		$(container).height('auto');
-		$('#filters li.current a').click();
-		setupPortfolio();
+		
+		$(load_img).hide();
 	});
 }
 
-function init_slider() {
-	$('.bxslider').bxSlider({
-		minSlides: 7,
-		maxSlides: 7,
-		slideMargin: 10
+//Title:		save_tip
+//Description:	Save a tip
+function save_tip(competition_id, stage_id, rider_id) {
+	$.post('/competitions/save_tip/'+competition_id, {stage_id:stage_id, rider_id:rider_id}, function(response) {
+		if (!response.success) alert(response.msg);
 	});
 }
 
-function init_page() {
-	//Init fancybox
-	$("a.article_gallery").fancybox({
-		'transitionIn'		: 'none',
-		'transitionOut'		: 'none',
-		'titlePosition' 	: 'over',
-		'titleFormat'       : function(title, currentArray, currentIndex, currentOpts) {
-			return '<span id="fancybox-title-over">Image ' +  (currentIndex + 1) + ' / ' + currentArray.length + ' ' + title + '</span>';
+//Title:		Join a competition
+//Description:	Join a competition
+function join_competition(competition_id, elt) {
+	$(elt).hide();
+	var loader = $(elt).parent().find('div.load_container.competition').show();
+	var url = '/competitions/join/'+competition_id
+	
+	$.post(url, {}, function(response) {
+		if (response.success) {
+			window.location.hash = '#competitions/tip/'+competition_id;
+		} else alert(response.msg);
+		
+		$(elt).show();
+		$(loader).hide();
+	});
+}
+
+//Title:		load_race_results
+//Description:	Load race results on race page
+//Params:		elt - Object that triggers a results load
+function load_race_results(elt) {
+	var parent = $(elt).parent();
+	var load_img = $(parent).find('img.loading');
+	var load_option = $(parent).find('select option:selected');
+	var info_table = $(parent).find('div.info table');
+	var results_table = $('div.competition_results table');
+
+	var url = '';
+	var load_data_id = $(load_option).val();
+	var load_data_type = $(load_option).attr('data-type');
+	if (load_data_type == 'race') url = '/races/get_results/'+load_data_id;
+	if (load_data_type == 'stage') url = '/stages/get_results/'+load_data_id;
+	
+	$(load_img).show();
+	$.get(url, {}, function(response) {
+		//General info
+		$(info_table).find('td.data').empty();
+		$(info_table).find('td.label').hide();
+		//Race
+		if (load_data_type=='race') {
+			$(info_table).find('tr.season td.data').html(response.race.season);
+			$(info_table).find('tr.season td.label').show();
+			$(parent).find('div.description').empty().html(response.race.description);
+		}
+		//Stage
+		if (load_data_type=='stage') {
+			$(info_table).find('tr.profile td.data').html(['<a href="',response.stage.profile,'" target="_blank">View</a>'].join(''));
+			$(info_table).find('tr.profile td.label').show();
+			
+			$(info_table).find('tr.starts_on td.data').html(response.stage.starts_on);
+			$(info_table).find('tr.starts_on td.label').show();
+			
+			$(info_table).find('tr.start_location td.data').html(response.stage.start_location);
+			$(info_table).find('tr.start_location td.label').show();
+			
+			$(info_table).find('tr.end_location td.data').html(response.stage.end_location);
+			$(info_table).find('tr.end_location td.label').show();
+			
+			$(info_table).find('tr.distance td.data').html(response.stage.distance);
+			$(info_table).find('tr.distance td.label').show();
+			
+			$(parent).find('div.description').empty().html(response.stage.description);
+		}
+		
+		
+		//Results table
+		$(results_table).find('tbody').empty();
+		if (response.results.length > 0) {
+			for (i=0; i< response.results.length; i++) {
+				result = response.results[i];
+				
+				var time_formatted = (result.disqualified==null)?result.time_formatted:result.disqualified;
+				var bonus_time_formatted = (result.disqualified==null)?result.bonus_time_formatted:'---';
+				var gap_formatted = (result.disqualified==null)?result.gap_formatted:'---';
+				var kom_points = (result.disqualified==null)?result.kom_points:'---';
+				var sprint_points = (result.disqualified==null)?result.sprint_points:'---';
+				var rider_name = result.rider_name
+				
+				var row = $('<tr></tr>');
+				$(row).append(['<td>',result.rank,'</td>'].join(''));
+				$(row).append(['<td>',rider_name,'</td>'].join(''));
+				$(row).append(['<td>',time_formatted,'</td>'].join(''));
+				$(row).append(['<td>',bonus_time_formatted,'</td>'].join(''));
+				$(row).append(['<td>',gap_formatted,'</td>'].join(''));
+				$(row).append(['<td>',kom_points,'</td>'].join(''));
+				$(row).append(['<td>',sprint_points,'</td>'].join(''));
+				
+				$(results_table).find('tbody').append(row);
+			}
+		}
+		
+		$(load_img).hide();
+		$(info_table).show();
+		$(results_table).show();
+	});
+}
+
+//Title:		load_home_race_results
+//Description:	Load race results on the home page
+//Params:		elt - Object that triggered the load
+//				id - Race ID
+function load_home_race_results(elt, id) {
+	var url = '/races/get_results/'+id;
+	var results_container = $(elt).parent().find('div.results').empty();
+	var max_results = 4;
+	$.get(url, {}, function(response) {
+		results_container.empty();
+		results = response.results;
+		for (i=0; i<results.length; i++) {
+			if (i >= max_results) break;
+			var result = results[i];
+			var time_formatted = (result.disqualified==null)?result.time_formatted:result.disqualified;
+			var div_elt = $('<div></div>');
+			$(div_elt).append('<span>'+result.rider_name+'</span>');
+			$(div_elt).append('<span>'+time_formatted+'</span>');
+			
+			$(results_container).append(div_elt);
+		}
+		
+		$(elt).hide();
+	});
+}
+
+//Title:		setup_crop
+//Description:	Setup image cropping
+var scrollbar_set = false;
+var orig_width = 0;
+var orig_height = 0;
+var aspect_w = 516;
+var aspect_h = 167;
+var jcrop_obj = '';
+function setup_crop(evt, elt) {
+	aspect_w = $(elt).attr('width');
+	aspect_h = $(elt).attr('height');
+	
+	// Check for the various File API support.
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		// Great success! All the File APIs are supported.
+		var files = evt.target.files; // FileList object
+
+		// Loop through the FileList and render image files as thumbnails.
+		for (var i = 0, f; f = files[i]; i++) {
+
+			// Only process image files.
+			if (!f.type.match('image.*')) {
+			continue;
+			}
+
+			reader = new FileReader();
+
+			// Closure to capture the file information.
+			reader.onload = (function(theFile) {
+				$('#image_name').val(theFile.name);
+				return function(e) {
+					// Get original dimensions
+					var orig_img = new Image();
+					orig_img.src = e.target.result;
+					orig_img.onload = function() {
+						orig_width = orig_img.width;
+						orig_height = orig_img.height;
+					};
+					
+					//JCrop
+					if (jcrop_obj != '') jcrop_obj.destroy();
+					var img = ['<img class="thumb" id="jcrop_target" src="', e.target.result, '"/>'].join('');
+					$('.image_upload #jcrop_target').remove();
+					$('.image_upload').append(img);
+					$('#jcrop_target').Jcrop({
+						onChange: show_preview,
+						onSelect: show_preview,
+						aspectRatio: (aspect_w/aspect_h)
+					}, function() {
+						jcrop_obj = this;
+					});
+					
+					//Preview
+					$('#preview_label').show();
+					$('.image_preview').empty().html($(img).attr('id', 'jcrop_preview'));
+				};
+			})(f);
+
+			// Read in the image file as a data URL.
+			reader.readAsDataURL(f);
+		}
+	} else {
+	  alert('The File APIs are not fully supported in this browser.');
+	}
+}
+
+//Title:		show_preview
+//Description:	Show crop preview
+function show_preview(coords) {
+	if (!scrollbar_set && typeof window.moduleUpdate_text_page == 'function') moduleUpdate_text_page();
+	scrollbar_set = true;
+	
+	var jcrop_img_width = $('#jcrop_target').width();
+	var jcrop_img_height = $('#jcrop_target').height();
+	
+	//Save coords for server
+	$('#crop_w').val(orig_width / jcrop_img_width * coords.w);
+	$('#crop_h').val(orig_height / jcrop_img_height * coords.h);
+	$('#crop_x').val(orig_width / jcrop_img_width * coords.x);
+	$('#crop_y').val(orig_height / jcrop_img_height * coords.y);
+	
+	//Setup coords for preview
+	var rx = jcrop_img_width / coords.w;
+	var ry = jcrop_img_height / coords.h;
+	var width = Math.round(rx * aspect_w);
+	var height = Math.round(ry * aspect_h);
+	var marginLeft =  Math.round(rx * coords.x);
+	var marginTop = Math.round(ry * coords.y);
+
+	$('.image_preview img').css({
+		width: width + 'px',
+		height: height + 'px',
+		marginLeft: '-' + marginLeft + 'px',
+		marginTop: '-' + marginTop + 'px'
+	});
+}
+
+//Title:		save_competition
+//Description:	Save a competition
+function save_competition() {
+	var form = $('#competition_form');
+	var data = {};
+	data['competition_name'] = $(form).find('#name').val();
+	data['competition_description'] = $(form).find('#description').val();
+	data['open_to'] = $(form).find('input[name=open_to]:checked').val();
+	data['invitations'] = $(form).find('#invitations').val();
+	data['image_name'] = $(form).find('#image_name').val();
+	data['races'] = [];
+	$(form).find('input[name=race]:checked').each(function(ndx, elt) {
+		data['races'].push($(elt).val());
+	});
+	$.post('/competitions/save_competition', {data:data}, function(response) {
+		if (!response.success)
+			alert(response.msg);
+		else {
+			$('#competition_id').val(response.id);
+			form = document.getElementById('image_upload');
+			form.submit();
 		}
 	});
+	return false;
 }
 
-//Show login popup
-function show_login() {
-	$('button#login').click();
-}
-
-//Scroll to top
-function back_to_top() {
-	$(window).scrollTop(0);
-}
-
-$(document).ready(function(event) {
-	$("body").bind("ajaxSend", function(elm, xhr, s){
-		if (s.type == "POST") {
-		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+//Title:		load_more_competitions
+//Description:	Loads more competitions
+function load_more__competitions(elt) {
+	var limit = 8;
+	var container = $('#module-columns-holder');
+	var num_loaded = $(container).find('div.competition').length;
+	var template = $(container).find('div.competition').first();
+	
+	$(elt).hide();
+	$(elt).parent().find('img.loading').show();
+	
+	$.get('/competitions/get_more_competitions.json', {limit:limit, offset:num_loaded}, function(response) {
+		competitions = response.competition_data;
+		for (i=0; i<competitions.length; i++) {
+			var competition = competitions[i];
+			var completion = (competition.is_complete)?'Completed':'Open';
+			var copy = template.clone();
+			
+			$(copy).attr('data-url', '#competitions/'+competition.id);
+			$(copy).find('img').attr('src', competition.image_url);
+			$(copy).find('div.thumb-tag h1').html(competition.name);
+			$(copy).find('div.thumb-tag h2').html(completion);
+			$(container).append($(copy).fadeIn());
+			animateThumb($(copy).find('img'));
 		}
+		$(elt).show();
+		$(elt).parent().find('img.loading').hide();
+		modulePageColumns();
 	});
+}
+
+//Title:		change_password
+//Description:	Change password
+function change_password(elt) {
+	var password = $('input[name=new_password]').val();
+	var verify_password = $('input[name=verify_password]').val();
 	
-	$('.close_fancybox').click(function() {
-		$.fancybox.close();
+	//Passwords dont match
+	if (password != verify_password) {
+		alert('Your passwords do not match.');
+		return false;
+	}
+	
+	$(elt).hide();
+	$('img.loading.change_password').show();
+	
+	$.post('/users/change_password', {password:password}, function(response) {
+		alert(response.msg);
+			
+		$(elt).show();
+		$('img.loading.change_password').hide();
 	});
+}
+
+//Title:		generate_temp_password
+//Description:	Generate temporary password
+function generate_temp_password(elt) {
+	$(elt).hide();
+	$('img.loading.forgot_password').show();
 	
-	//User menu links
-	$('tr.choice').click(function() {
-		href = $(this).attr('href');
-		if ($(this).hasClass('_blank')) {
-			window.open(href, '_blank');
-		} else window.location.href = href;
+	$.get('/users/reset_password', {}, function(response) {
+		$('.forgot_password_loaded').show();
+		$('.forgot_password_loading').hide();
+		alert(response.msg);
+		
+		$(elt).show();
+		$('img.loading.forgot_password').hide();
 	});
+}
+
+//Title:		submit_feedback
+//Description:	Submit feedback
+function submit_feedback(elt) {
+	var title = $('input[name=title]').val();
+	var description = $('textarea[name=description]').val();
 	
-	//Back to top button
-	$(window).scroll(function() {
-		if (window.scrollY > 0) 
-			$('#back_to_top').fadeIn();
-		else $('#back_to_top').fadeOut();
+	$(elt).hide();
+	$('.loading').show();
+	
+	$.post('/bugs/submit_feedback', {title:title, description:description}, function(response) {
+		alert(response.msg);
+		
+		$(elt).show();
+		$('.loading').hide();
 	});
-	
-	show_season_info();
-	show_competitions();
-	show_profile();
-});
+}

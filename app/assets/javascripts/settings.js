@@ -21,7 +21,7 @@ function change_password_from_temporary() {
 
 //Title:		change_password
 //Description:	Checks for matching passwords, and makes call to change password
-function change_password() {
+function change_password_OLD() {
 	var password = $('input[name=new_password]').val();
 	var verify_password = $('input[name=verify_password]').val();
 	

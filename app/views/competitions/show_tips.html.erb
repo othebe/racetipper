@@ -1,87 +1,36 @@
-<div class="portfolio-single container">
-	<%= render :partial=>'/app_partials/portfolio_header', :locals=>{} %>
+<% @tips.each do |tip_data| %>
 
-	<div class="row">
-	
-		<!-- InstanceBeginEditable name="Content" -->
-		
-		
-		<!-- TITLE - column 8/12 -->
-		<div class="span8 portfolio-field portfolio-title">
-			<h2><%=@competition.name%></h2>
-		</div>
-		<!-- TITLE - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		<div class="span4 portfolio-field portfolio-nav">
-			<a class="icon button back" href="#/competitions/leaderboard/<%=@competition_id%>" title="Back"><</a>
-		</div>
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		<div class="span12 portfolio-field">
-			<% @tips.each do |tip| %>
-			<h3><%=tip[:race].name%></h3>
-				<table class="leaderboard_table">
-					<tr>
-						<th align="left">Stage</th>
-						<th align="left">Rider</th>
-						<th align="left">Time</th>
-						<th align="left">Cumulative</th>
-						<th align="left">Default</th>
-					</tr>
-					
-					<% cumulative_time = nil %>
-					<% tip[:tips].each do |tip_data| %>
-						<%
-						time = 'TBA'				
-						result_data = tip_data[:default_result]||tip_data[:result]
-						if (!result_data.nil?)
-							#time = Time.at(result_data.time - result_data.bonus_time).gmtime.strftime('%R:%S')
-							net_time = result_data.time - result_data.bonus_time
-							cumulative_time ||= 0
-							cumulative_time += net_time
-							
-							if (net_time >= 86400)
-								days = (Time.at(net_time).gmtime.strftime('%-d').to_i - 1).to_s
-								time = Time.at(net_time).gmtime.strftime(days+' day(s), %R:%S')
-							else
-								time = Time.at(net_time).gmtime.strftime('%R:%S')
-							end
-							
-							if (cumulative_time >= 86400)
-								days = (Time.at(cumulative_time).gmtime.strftime('%-d').to_i - 1).to_s
-								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime(days+' day(s), %R:%S')
-							else
-								formatted_cumulative_time = Time.at(cumulative_time).gmtime.strftime('%R:%S')
-							end
-							
-						end 
-						%>
+	<div class="main-text-holder">
+		<p>
+			<span><%=tip_data[:race].name%></span>
+			
+			<div class="competition_results">
+				<table>
+					<thead>
 						<tr>
-							<td><a href="/#/stages/<%=tip_data[:stage].id%>"><%=tip_data[:stage].name%></a></td>
-							<td><%=(tip_data[:rider].nil?)?'':tip_data[:rider].name%></td>
-							<% if (tip_data[:disqualified].nil?) %>
-								<td><%=time%></td>
-								
-							<% else %>
-								<td><%=tip_data[:disqualified]%></td>
-							<% end %>
-							<td><%=formatted_cumulative_time%></td>
-							<td><%=(tip_data[:default_rider].nil?)?'':tip_data[:default_rider].name%></td>
+							<th>Stage</th>
+							<th>Rider</th>
+							<th>Time</th>
+							<th>Cumulative</th>
+							<th>Default</th>
 						</tr>
-					<% end %>
+					</thead>
+					
+					<tbody>
+						<% tip_data[:tips].each do |tip| %>
+							<tr>
+								<td><%=tip[:stage].name%></td>
+								<td><%=tip[:rider].name if (!tip[:rider].nil?)%></td>
+								<td><%=tip[:time_formatted]%></td>
+								<td><%=tip[:cumulative_formatted_time]%></td>
+								<td><%=tip[:default_rider].name if (!tip[:default_rider].nil?)%> <%='('+tip[:disqualified]+')' if (!tip[:disqualified].nil?)%></td>
+							</tr>
+						<% end %>
+					</tbody>
 				</table>
-			<% end %>
-		</div>
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+			</div>
+		</p>
 	</div>
-	
-</div>
 
-<style>
-table tr {
-	border-bottom: 1px solid black;
-}
-</style>
+	<div class="custom-separator"></div>
+<% end %>

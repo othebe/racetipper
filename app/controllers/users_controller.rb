@@ -128,6 +128,7 @@ class UsersController < ApplicationController
 	#Title:			settings
 	#Description:	User settings
 	def settings
+		render :layout=>nil
 	end
 	
 	def logout
@@ -145,9 +146,13 @@ class UsersController < ApplicationController
 		password = params[:password]
 		render :json=>{:success=>false, :msg=>'Password cannot be empty.'} and return if password.empty?
 		
+		#Check old password
+		user = User.check_credentials({:email=>@user.email, :password=>password})
+		render :json=>{:success=>false, :msg=>'Your old password does not match.'} and return if user.nil?
+		
 		@user.set_password(password)
 		
-		render :json=>{:success=>true, :msg=>'success'} and return
+		render :json=>{:success=>true, :msg=>'Password changed.'} and return
 	end
 	
 	#Title:			reset_password

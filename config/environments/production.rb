@@ -84,3 +84,12 @@ FACEBOOK_APP_SECRET = '11bb95a12ff1ef93ad0ed3e6a44226a1'
 
 #Bug notification email.
 BUG_NOTIFY_LIST = 'othebe@gmail.com, tim.calkins@gmail.com'
+
+#Cloudinary
+Cloudinary.config do |config|
+	config.cloud_name = 'racetipper'
+	config.api_key = '354521382215813'
+	config.api_secret = 'rWbmYgLsHoOGXJvgJT9WiHNpvf4'
+	config.cdn_subdomain = true
+end
+CLOUDINARY_URL = 'cloudinary://354521382215813:rWbmYgLsHoOGXJvgJT9WiHNpvf4@racetipper'

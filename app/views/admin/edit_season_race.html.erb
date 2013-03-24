@@ -1,5 +1,9 @@
-<%=csrf_meta_tag%>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<%= javascript_include_tag 'application' %>
+<%= javascript_include_tag "jcrop/jquery.Jcrop.min" %>
+<%= stylesheet_link_tag 'jcrop/jquery.Jcrop' %>
+<%= csrf_meta_tags %>
+	
+<%= stylesheet_link_tag "racetipper.css", :media => "all" %>
 
 <div class="info">
 	<div class="label"><label style="margin-right:34px;">Name:</label></div>
@@ -10,6 +14,31 @@
 	
 	<div class="label"><label>Image URL:</label></div>
 	<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=(@race.nil?)?'':@race.image_url%>"></br>
+	
+	<!-- Image upload -->
+	<form id="image_upload" action="/admin/save_race_image" method="POST" enctype="multipart/form-data">
+		<% if (!@race.nil?) %>
+			<input type="text" name="race_id" value="<%=@race.id%>"></br>
+		<% end %>
+		<div>Competition image:</div>
+		<input type="hidden" id="competition_id" name="competition_id">
+		<input type="hidden" id="crop_h" name="crop_h">
+		<input type="hidden" id="crop_w" name="crop_w">
+		<input type="hidden" id="crop_x" name="crop_x">
+		<input type="hidden" id="crop_x2" name="crop_x2">
+		<input type="hidden" id="crop_y" name="crop_y">
+		<input type="hidden" id="crop_y2" name="crop_y2">
+		<div class="image_upload" style="max-width:516px;">
+			<input type="hidden" name="image_name" id="image_name">
+			<input type="file" name="image" onchange="setup_crop(event, this);" width="220" height="180">
+		</div>
+		<button style="margin-top:50px;">Save Image</button>
+	</form>
+	
+	<div id="preview_label" style="margin:50px 0 5px 0; display:none;">Preview: </div>
+	<div class="image_preview" style="width:220px; height:180px; overflow:hidden; margin-left:5px;">
+	</div>
+	<!-- End image upload -->
 	
 	<div style="font-weight:bold; text-decoration:underline;">Stages:</div>
 	<div class="stage_list">

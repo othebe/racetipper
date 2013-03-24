@@ -1,0 +1,25 @@
+<div class="main-text-holder" style="width:90%;">
+	<p>
+		<div class="tipsheet">
+			<span>Choose a stage:</span>
+			<select id="" onchange="show_tip_sheet(this);" style="display:block;">
+				<% @races.each do |race| %>
+					<% race[:stages].each do |stage| %>
+						<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>
+					<% end %>
+				<% end %>
+			</select>
+		
+			<div class="custom-separator" style="margin-bottom:15px;"></div>
+			
+			<%=image_tag 'ajax-loader.gif', {:onload=>'show_tip_sheet(this);', :class=>'loading'} %>
+			<div class="data">
+				<fieldset>
+					<legend>Team Pokemon</legend>
+					<input type="checkbox" id="0"><label for="0">Ash the Trainer</label>
+					
+				</fieldset>
+			</div>
+		</div>
+	</p>
+</div>

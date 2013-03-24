@@ -1,3 +1,7 @@
+body {
+	font-family: 'PT Sans Caption';
+}
+
 .template {
 	display: none;
 }
@@ -11,9 +15,13 @@
 	overflow: auto !important;
 }
 
-.loading {
+div.load_container {
+	text-align: center;
 	display: none;
 }
+	.loading {
+		display: none;
+	}
 
 .selected-mask {
 	opacity: 1 !important;
@@ -191,24 +199,232 @@ ul.usermenu {
 	display: none;
 }
 
-/* Portfolio header */
 div.portfolio-header {
-	background: black;
-	color: white;
 }
+	div.portfolio-header li.menu-item {
+		cursor: pointer;
+	}
 	
-	div.portfolio-header table tr td {
-		padding: 0 10px 0 5px;
+	div.portfolio-header ul.header-menu {
+		background-color: black;
+		color: white;
+		list-style: none;
 	}
 		
-		div.portfolio-header table tr td:hover {
-			background: #FFE04F;
-		}
-	
-		div.portfolio-header table tr td a {
+		div.portfolio-header ul.header-menu a {
 			color: white;
 		}
+	
+		div.portfolio-header ul.header-menu li.menu-item-title {
+			display: inline;
+			padding: 5px 8px 5px 8px;
+		}
 		
-			div.portfolio-header table tr td a:hover {
-				color: black;
+		div.portfolio-header ul.header-menu li.menu-item-title:hover,
+		div.portfolio-header ul.header-menu li.menu-item-title:hover > a {
+			background-color: #FFFF66;
+			color: black;
+		}
+		
+		div.portfolio-header ul.header-menu li.menu-item-title:hover > ul.header-submenu {
+			display: block;
+			background-color: black;
+		}
+		
+			div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu {
+				display: none;
+				color: white;
+				position: absolute;
+				padding: 0;
+				top: 46px;
 			}
+			
+			/* Competitions submenu */
+			div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu.competitions {
+				left: 194px;
+			}
+			
+				div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li {
+					display: block;
+					padding: 8px 15px;
+				}
+				
+				div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li:hover {
+					background-color: #E3E3E3;
+					color: black;
+				}
+				
+				div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li:hover > ul.header-submenu {
+					display: block;
+					background-color: black;
+					color: white;
+				}
+				
+					/* Submenu level 2 */
+					div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li ul.header-submenu {
+						position: absolute;
+					}
+					
+						div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li ul.header-submenu li{
+							width: 200px;
+						}
+						
+					/* My competitions submenu */
+					div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li ul.header-submenu.my-competitions {
+						top: -11px;
+						left: 126px;
+					}
+					
+					/* All competitions submenu */
+					div.portfolio-header ul.header-menu li.menu-item-title ul.header-submenu li ul.header-submenu.all-competitions {
+						top: 24px;
+						left: 126px;
+					}
+					
+/** NEW DESIGN **/
+
+/* Competition results table */
+div.competition_results table {
+	border-collapse: collapse;
+	border-bottom: 1px solid;
+}
+	
+	div.competition_results table tr {
+		border-bottom: 1px solid black;
+	}
+	
+		div.competition_results table tr th {
+			font-weight: bold;
+		}
+		
+		div.competition_results table tr th:first-child,
+		div.competition_results table tr td:first-child {
+			padding-left: 0;
+		}
+
+		div.competition_results table tr th,
+		div.competition_results table tr td{
+			padding: 5px;
+			text-align: left;
+		}
+			
+			div.competition_results table tr th div.button,
+			div.competition_results table tr td div.button{
+				margin: 0px;
+				height: auto;
+			}
+			
+				div.competition_results table tr th div.button span,
+				div.competition_results table tr td div.button span{
+					padding: 5px 5px;
+				}
+			
+/* Tip sheet */			
+div.tipsheet {
+}
+
+	div.tipsheet div.data{
+	}
+	
+		div.tipsheet div.data fieldset{
+			border: 2px groove threedface;
+			padding: 8px;
+			margin-top: 15px;
+		}
+
+/* Style forms with labels and inputs */		
+div.form-field {
+	font-family: 'PT Sans Caption';
+	font-size: 15px;
+}
+	div.form-field table tr td.label {
+		padding-right: 15px;
+		vertical-align: middle;
+	}
+	
+	div.form-field table tr td textarea {
+		resize: none;
+	}
+	
+/* Image upload */
+div.image_upload {
+	max-height: 300px; 
+	max-width: 450px;
+}
+	div.image_upload img {
+		max-height: inherit;
+		max-width: inherit;
+	}
+	
+/* Race information */
+div.race_info {
+	margin-top: 22px;
+	margin-left: 20px;
+	float: left;
+	font-family: 'PT Sans Caption';
+	width: 70%;
+}
+	div.race_info span.selector {
+		padding-left: 15px;
+		border-left: 3px solid #e3e3e3;
+	}
+	div.race_info div.info {
+		padding-left: 15px;
+		border-left: 3px solid #e3e3e3;
+		margin-top: 15px;
+	}
+		div.race_info div.info table td.label {
+			padding-right: 10px;
+		}
+		div.race_info div.info div.description {
+			margin-top: 15px;
+			font-style: italic;
+		}
+
+/* Race results on home screen */
+div.home_panel ul li {
+	margin: 20px 0 20px 0;
+	padding: 20px;
+}
+div.home_panel ul li:hover {
+	background: lightgray;
+	cursor: pointer;
+}
+div.home_race_result {
+}
+	div.home_race_result div {
+		clear: both; 
+		margin-top: 0px;
+	}
+	div.home_race_result div.results div{
+		border-bottom: 1px solid #C3C3C3;
+	}
+		div.home_race_result div span {
+			width: auto; 
+			max-width: 40%;
+			margin-top: 0px;
+			float: right;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+		div.home_race_result div span:first-child {
+			float: left;
+		}
+	div.home_race_result div.button {
+		margin: 20px 0 0 0;
+		cursor: pointer;
+	}
+		div.home_race_result div.button span {
+			float: none;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		
+/* Profile settings */
+div.profile_settings {
+	padding: 20px 30px 20px 0;
+	float: left;
+}
+	div.profile_settings div.button {
+		margin-bottom: 0;
+	}

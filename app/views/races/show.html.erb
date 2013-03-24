@@ -1,45 +1,94 @@
-﻿<div class="portfolio-single container">
-	<%= render :partial=>'/app_partials/portfolio_header', :locals=>{} %>
-	
-	<div class="row">
-		<!-- TITLE - column 8/12 -->
-		<div class="span8 portfolio-field portfolio-title">
-			<h2><%=@race.name%></h2>
-		</div>
-		<!-- TITLE - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		<div class="span4 portfolio-field portfolio-nav">
-			<a class="icon button ajax" href="#/races/show/<%=@race.id%>" onclick="return false;" title="Races">5</a>
-			<a class="icon button ajax" href="/#" title="Riders">K</a>
-			<a class="icon button back" href="/#/home" title="Close">Â</a>
-		</div>
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		
-		<div class="span9 portfolio-field">
-			<% if (!@results.empty?) %>
-				<h3>Season points</h3>
-				<%= render :partial=>'/app_partials/results_table', :locals=>{:results=>@results, :title=>''} %>
-			<% end %>
-		</div>
-		
-		<div class="span3 portfolio-field">
-			<h3>Stages</h3>
-			<div id="portfolio-items" class="portfolio-items stage_data_container" style="position: relative; overflow: hidden; height: auto;">
-			<% @stages.each do |stage| %>				
-				<div class="item" style="width:125px;">
-					<div class="media-box">
-						<img src="<%=(stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:stage.image_url%>" alt="<%=stage.name%>" style="width:125px; height:100px;">
-						<div class="mask" race_id="<%=stage.id%>">
-							<h3 class="title" style="margin-top:12%;">View Details</h3>
-							<a href="/#/stages/<%=stage.id%>" class="ico show-details supress" onclick=""></a>
+﻿<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal"><%=@race.name%></span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="media-holder" style="width:220px; height: 180px;">
+						<img src="<%=cl_image_path @race.image_url, {:width=>220, :height=>180, :crop=>:fill} %>" class="opacity_0" onload="animateThumb(this)" />
+					</div>
+					
+					<div class="race_info">
+						<span class="selector" style="margin-right:72px;">Stage: </span>
+						<select onchange="load_race_results(this);">
+							<option value="<%=@race.id%>" data-type="race">Results Summary</option>
+							<% @stages.each do |stage| %>
+								<option value="<%=stage.id%>" data-type="stage"><%=stage.name%></option>
+							<% end %>
+						</select>
+						<%=image_tag 'ajax-loader.gif', {:onload=>'load_race_results(this);', :class=>'loading'} %>
+				
+						<div class="info">
+							<table style="display:none;">
+								<tr class="season">
+									<td class="label">Season: </td>
+									<td class="data"></td>
+								</tr>
+								<tr class="profile">
+									<td class="label">Profile: </td>
+									<td class="data"><a href="" target="_blank">View here</a></td>
+								</tr>
+								<tr class="starts_on">
+									<td class="label">Starts on: </td>
+									<td class="data"></td>
+								</tr>
+								<tr class="start_location">
+									<td class="label">Starts location: </td>
+									<td class="data"></td>
+								</tr>
+								<tr class="end_location">
+									<td class="label">End location: </td>
+									<td class="data"></td>
+								</tr>
+								<tr class="distance">
+									<td class="label">Distance: </td>
+									<td class="data"></td>
+								</tr>
+							</table>
+							
+							<div class="description"></div>
 						</div>
 					</div>
-					<h3 class="project-title" style="margin-top:-40px; padding-left:5px;"><%=stage.name%></h3>
+					
+					<div style="clear:both;"></div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder">
+						<p>
+							<div class="competition_results">
+								<table>
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Name</th>
+											<th>Time</th>
+											<th>Bonus</th>
+											<th>Gap</th>
+											<th>KOM</th>
+											<th>Sprint</th>
+										</tr>
+									</thead>
+									
+									<tbody></tbody>
+								</table>
+							</div>
+						</p>
+					</div>
+					
 				</div>
-			<% end %>
-			</div>
+			</div>                	 
 		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
 	</div>
-</div>
+		
+</div><!-- end #module-container -->

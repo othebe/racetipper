@@ -1,0 +1,34 @@
+<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Articles</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="media-holder">
+						<img src="<%=image_path 'mobile.jpg'%>" class="opacity_0" onload="animateThumb(this)"/>
+					</div>
+
+					<div style="clear:both;"></div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder">
+						<p>This page is coming soon!</p>
+					</div>
+					
+				</div>
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

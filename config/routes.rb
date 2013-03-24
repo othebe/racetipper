@@ -1,4 +1,28 @@
 Racetipper::Application.routes.draw do
+	match '/home' => 'pages#home'
+	match '/login' => 'pages#login'
+	match '/news' => 'articles#index'
+	match '/contact_us' => 'bugs#feedback'
+	
+	match '/competitions/index' => 'competitions#index'
+	match '/competitions/edit' => 'competitions#edit'
+	match '/competitions/get_more_competitions'
+	match '/competitions/save_competition'
+	match '/competitions/save_image'
+	match '/competitions/:id' => 'competitions#show'
+	
+	match '/races/index' => 'races#index'
+	match '/races/:id' => 'races#show'
+	
+	match '/articles/index' => 'articles#index'
+	
+	match '/profile/settings' => 'users#settings'
+	
+	match '/:controller/:action'
+	match '/:controller/:action/:id'
+	
+	root :to => 'pages#index'
+	
 	match '/admin' => 'admin#index'
 	get 'admin/index'
 	get 'admin/dashboard'

@@ -1,155 +1,36 @@
-﻿<div class="portfolio-single container">
-	<%= render :partial=>'/app_partials/portfolio_header', :locals=>{} %>	
-		
-	<div class="row">
-	
-		<!-- InstanceBeginEditable name="Content" -->
-		
-		
-		<!-- TITLE - column 8/12 -->
-		<div class="span8 portfolio-field portfolio-title">
-			<h2><%=@data[:competition].name%></h2>
-		</div>
-		<!-- TITLE - column 8/12 -->
-		
-		
-		<!-- PORTFOLIO-NAV - column 4/12 -->
-		<div class="span4 portfolio-field portfolio-nav">
-			<a class="icon button prev ajax" href="#/competitions/show/<%=@data[:competition].id%>" title="Summary">"</a>
-			<a class="icon button prev ajax race_results" href="#/competitions/results/<%=@data[:competition].id%>" title="Race Results" style="<%=(@data[:is_participant])?'':'display:none;'%>">x</a>
-			<a class="icon button prev ajax" href="#/competitions/leaderboard/<%=@data[:competition].id%>" title="Leaderboard">K</a>
-			<% if (@is_owner) %>
-				<a class="icon button ajax" href="#/competitions/edit/<%=@data[:competition].id%>" title="Edit">></a>
-			<% end %>
-			<a class="icon button back" href="#/competitions" title="Close">Â</a>
-		</div>
-		<!-- PORTFOLIO-NAV - column 4/12 -->
+<% @races.each do |race| %>
 
-		<div class="span8 portfolio-field" style="margin-bottom:20px;">
-			<img src="<%=(@selected_stage.image_url.nil?)?DEFAULT[:STAGE_IMG]:@selected_stage.image_url%>" alt="<%=@selected_stage.name%>" class="stage_img stage_data_container">
-			<div class="tip_data" race_id="<%=@selected_stage.race_id%>" competition_id="<%=@data[:competition].id%>" stage_id="<%=@selected_stage.id%>" stage_name="<%=@selected_stage.name%>"></div>
-		</div>
-		
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
-		<div class="span4 portfolio-field">
-			<div class="history-group">
-				<div class="history-unit">
-					<select onchange="get_competition_stage_data('<%=@data[:competition].id%>', this.value);">
-						<% @data[:race_data].each do |ndx, race_data| %>
-							<option>-- <%=race_data[:name].upcase%> --</option>
-							<% race_data[:stages].each do |stage| %>
-								<% ended = (stage.starts_on > Time.now)?'':'[ENDED]'%>
-								<option value="<%=stage.id%>" <%=(stage.id==@selected_stage.id)?'selected="selected"':''%>><%=stage.name%> <%=ended%></option>
-							<% end %>
-						<% end %>
-					</select>
-				</div>
-				
-				<div class="history-unit description stage_data_container">
-					<h4 style="font-weight:bold;">Description</h4>
-					<p><%=@selected_stage.description%></p>
-				</div>
-				
-				<div class="history-unit profile stage_data_container">
-					<h4 style="font-weight:bold;">Profile</h4>
-					<a href="<%=@selected_stage.profile%>" target="_blank" style="color:black;"><button class="btn" style="margin:5px auto;">View</button></a>
-				</div>
-				
-				<div class="history-unit starts_on stage_data_container">
-					<h4 style="font-weight:bold;">Starts on</h4>
-					<p>
-						<% begin %>
-							<%=@selected_stage.starts_on.gmtime.localtime(@user.time_zone)%><br>
-						<% rescue %>
-							<%=@selected_stage.starts_on%><br>
-						<% end %>
-						<%=render 'app_partials/change_time_zone'%>
-					</p>
-				</div>
-				
-				<div class="history-unit distance stage_data_container">
-					<h4 style="font-weight:bold;">Distance</h4>
-					<p><%=@selected_stage.start_location%> - <%=@selected_stage.end_location%> (<%=@selected_stage.distance_km%> km)</p>
-				</div>
-				
-				<div class="history-unit time_to_tip stage_data_container">
-					<h4 style="font-weight:bold;">Time to tip </h4>
-					<p>
-						<%=@time_to_tip%></br>
-						<%=render 'app_partials/change_time_zone'%>
-					</p>
-				</div>
-			</div>	
-		</div>
-		<!-- PORTFOLIO SIDEBAR - column 4/12 -->
-		
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
-		<div class="span12 portfolio-field" style="margin-bottom:20px;">
-			<% show_results = @selected_stage.starts_on < Time.now %>
-			<!-- Tipping data-->
-			<div class="tip-rider" style="display:<%=(show_results)?'none':'block'%>;">
-				<h3>Tip a Rider</h3>
-				<% @data[:teams].each do |team_id, team| %>
-					<% team[:riders].each do |rider_data| %>
-						<% race_id = rider_data[:race_id] %>
-						<% hidden = (race_id==@selected_stage.race_id)?'':'display:none;'%>
-						<fieldset style="padding:15px; margin-bottom:25px; <%=hidden%>" class="raceteam <%=race_id%>">
-							<legend style="font-weight:bold;"><%=team[:team_name]%></legend>
-							<% rider_data[:riders].each do |rider| %>
-								<%
-								disabled = false
-								reason = ''
-								skip = (rider.race_id!=@selected_stage.race_id)
-								
-								#Check if user is disabled
-								if (rider.rider_status != RIDER_RESULT_STATUS[:ACTIVE])
-									disabled = true
-									reason = 'DNF' if (rider.rider_status == RIDER_RESULT_STATUS[:DNF])
-									reason = 'DNS' if (rider.rider_status == RIDER_RESULT_STATUS[:DNS])
-								end
-								
-								#Check if rider is used.
-								if (!disabled)
-									stage_info = @tips[rider.rider.id]
-									stage_info = stage_info[race_id] if (!stage_info.nil?)
-									if (!stage_info.nil?)
-										disabled = (@selected_stage.id != stage_info[:stage].id)
-										reason = stage_info[:stage].name
-									end
-								end
-								
-								reason = ' ('+reason+')' if (!reason.empty?)
-								%>
-								
-								<div selected_stage_id="<%=(!stage_info.nil?)?(stage_info[:stage].id):''%>">
-									<input type="checkbox" id="rider_<%=rider.rider.id%>" onclick="tip_rider(this);" rider_id="<%=rider.rider.id%>" <%=(rider.rider.id==@selected_tip && race_id==@selected_stage.race_id)?'checked="checked"':''%> <%=(disabled)?'disabled="disabled"':''%>>
-									<label for="rider_<%=rider.rider.id%>" class="<%=(disabled)?'disabled':''%>">
-										<%=rider.rider.name%> [<%=rider.rider_number%>]
-										<span class="selected_stage <%=(disabled)?'disabled':''%>"><%=reason%></span>
-									</label>
-									<div style="clear:both;"></div>
-								</div>
-							<% end %>
-						</fieldset>
-					<% end %>
-				<% end %>
-			</div>
-
-			<!-- Stage results -->
-			<div class="stage-results" style="display:<%=(show_results)?'block':'none'%>;">
-				<% if (!@results.nil? && @results.empty?) %>
-					<hr />
-					<div class="empty" style="font-style:italic; font-weight:bold; font-size:1.9em;">
-						Stage results will be uploaded. Check back again later :)
-					</div>
-				<% end %>
-				<%= render :partial=>'/app_partials/results_table', :locals=>{:results=>@results, :title=>'Stage Results'} %>
-			</div>
-		</div>
-		<!-- PORTFOLIO-IMAGES - column 8/12 -->
+	<div class="main-text-holder">
+		<p>
+			<span><%=race[:race_data].name%></span>
 			
-		<!-- InstanceEndEditable -->
-		
+			<div class="competition_results">
+				<select onchange="load_results(this);">
+					<option value="<%=race[:race_data].id%>" data-type="race">Results Summary</option>
+					<% race[:stages].each do |stage| %>
+						<option value="<%=stage.id%>" data-type="stage"><%=stage.name%></option>
+					<% end %>
+				</select>
+				
+				<%=image_tag 'ajax-loader.gif', {:onload=>'load_results(this);', :class=>'loading'} %>
+				<table style="display:none;">
+					<thead>
+						<tr>
+							<th>Rank</th>
+							<th>Name</th>
+							<th>Time</th>
+							<th>Bonus</th>
+							<th>Gap</th>
+							<th>KOM</th>
+							<th>Sprint</th>
+						</tr>
+					</thead>
+					
+					<tbody></tbody>
+				</table>
+			</div>
+		</p>
 	</div>
-	
-</div>
+
+	<div class="custom-separator"></div>
+<% end %>

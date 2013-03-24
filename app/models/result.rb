@@ -54,20 +54,21 @@ class Result < ActiveRecord::Base
 				rider_data[:stages][result.season_stage_id][:disqualified] = disqualified
 				rider_data[:stages][result.season_stage_id][:time] = 999999999 if (!disqualified.nil?)
 				rider_data[:stages][result.season_stage_id][:sort_score] = score_modifier + rider_data[:stages][result.season_stage_id][:time] - result.bonus_time
+				
 				#Format time
 				if (result.time >= 86400)
-					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
-					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime(days+' day(s), %R:%S')
+					days = (Time.at(rider_data[:stages][result.season_stage_id][:time]).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
-					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(result.time).gmtime.strftime('%R:%S')
+					rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:time]).gmtime.strftime('%R:%S')
 				end
 				
 				#Format bonus time
 				if (result.bonus_time >= 86400)
-					days = (Time.at(result.bonus_time).gmtime.strftime('%-d').to_i - 1).to_s
-					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime(days+' day(s), %R:%S')
+					days = (Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
-					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime('%R:%S')
+					rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime('%R:%S')
 				end
 					
 			else
@@ -86,16 +87,16 @@ class Result < ActiveRecord::Base
 				rider_data[:sort_score] = score_modifier + rider_data[:time] - result.bonus_time
 				#Format time
 				if (result.time >= 86400)
-					days = (Time.at(result.time).gmtime.strftime('%-d').to_i - 1).to_s
-					rider_data[:time_formatted] = Time.at(result.time).gmtime.strftime(days+' day(s), %R:%S')
+					days = (Time.at(rider_data[:time]).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
 					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime('%R:%S')
 				end
 				
 				#Format bonus time
 				if (result.bonus_time >= 86400)
-					days = (Time.at(result.bonus_time).gmtime.strftime('%-d').to_i - 1).to_s
-					rider_data[:bonus_time_formatted] = Time.at(result.bonus_time).gmtime.strftime(days+' day(s), %R:%S')
+					days = (Time.at(rider_data[:bonus_time]).gmtime.strftime('%-d').to_i - 1).to_s
+					rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
 					rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime('%R:%S')
 				end

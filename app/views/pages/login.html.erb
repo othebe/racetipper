@@ -1,0 +1,60 @@
+<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<% image_tag 'synergy/media/about_us/philosophy/backgroundPhilosophy.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-cc"  data-id="module-position-cc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				
+				<!-- Sign in -->
+				<div id="module-text-page-holder-philosophy" style="width:32%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Login to Racetipper</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder signin" style="width:100%;">
+						<input type="text" name="email" placeholder="Email"></br>
+						<input type="password" name="password" placeholder="Password">
+						<div style="text-align:center;">
+							<div class="button" style="margin-left:0; padding-right:12px;" onclick="login(this);">
+								<span>Login</span>
+							</div>
+							<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
+						</div>
+						
+						<p><h3>Or, Login with Facebook</h3></p>
+						<a onclick="facebook_login();" style="cursor:pointer;"><%=image_tag 'facebook.gif'%></a>
+					</div>
+				</div>
+				
+				<!-- Sign up -->
+				<div id="module-text-page-holder-philosophy" style="border-left:1px solid #C3C3C3; padding-left:30px; width:32%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Create an account</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder signup" style="width:100%;">
+						<input type="text" name="firstname" placeholder="First name"></br>
+						<input type="text" name="lastname" placeholder="Last name"></br>
+						<input type="text" name="email" placeholder="Email"></br>
+						<input type="password" name="password" placeholder="Password">
+						<div class="button" style="margin-left:0; padding-right:12px;" onclick="signup(this);">
+							<span>Create</span>
+						</div>
+						<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
+					</div>
+				</div>
+				
+				
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

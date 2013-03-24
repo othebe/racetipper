@@ -11,7 +11,7 @@ Racetipper::Application.configure do
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+  config.action_controller.perform_caching = true
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -53,3 +53,12 @@ FACEBOOK_APP_SECRET = '133c9fcc00af63bf177b2f92febe65ff'
 
 #Bug notification email.
 BUG_NOTIFY_LIST = 'othebe@gmail.com'
+
+#Cloudinary
+Cloudinary.config do |config|
+	config.cloud_name = 'dmlhr4mky'
+	config.api_key = '189312664843342'
+	config.api_secret = 'G8jADd0bciw0VSqzh5Y2FE7OPh4'
+	config.cdn_subdomain = true
+end
+CLOUDINARY_URL = 'cloudinary://189312664843342:G8jADd0bciw0VSqzh5Y2FE7OPh4@dmlhr4mky'

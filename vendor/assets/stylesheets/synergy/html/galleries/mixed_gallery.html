@@ -1,0 +1,664 @@
+﻿<!doctype html>
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--[if ie]><meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1" /><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    
+	<title>Mixed Gallery | Synergy - Responsive and Interactive HTML Portfolio </title>
+    
+	<meta name="description" content="" />
+	<meta name="author" content="MEDIACREED.COM" />
+        
+        <link rel="stylesheet" href="css/style.css" />
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption:400,700' rel='stylesheet' type='text/css' />        
+        
+        <!-- SCRIPT IE FIXES -->  
+        <!--[if lt IE 9]>
+        <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]--> 
+        <!-- END SCRIPT IE FIXES-->
+      
+      
+        <!-- START TEMPLATE JavaScript load -->
+    	<script type="text/javascript" src="js/libs/jquery-1.7.2.min.js"></script>    
+        <script type="text/javascript" src="js/libs/modernizr.custom.min.js"></script> 
+        <script type="text/javascript" src="js/libs/jquery.wipetouch.js"></script>   
+             
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBttxrYoBq8srteD7evmDqnaK6V2Uun42o&amp;sensor=true"></script>
+        
+        <script type="text/javascript" src="js/libs/jquery.gmap.min.js"></script>
+        <script type="text/javascript" src="js/greensock/minified/TweenMax.min.js"></script>    
+        <script type="text/javascript" src="js/libs/jquery.timer.js"></script>
+        <script type="text/javascript" src="js/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery.mousewheel.min.js"></script>
+        <script type="text/javascript" src="js/mediacreed/scrollbar/mc.custom.list.js"></script>
+        <script type="text/javascript" src="js/mc.modules.animation.js"></script> 
+        <link rel="stylesheet" href="js/video-js/video-js.min.css" media="screen" />
+        <script type="text/javascript" src="js/video-js/video.min.js"></script>
+        <!-- END TEMPLATE JavaScript load -->
+        
+        <!--<script src="http://vjs.zencdn.net/c/video.js"></script>    
+        Careful when using the online version because the destroy method throws an error.    
+        Our version has the fix on destroy method. Until it updates we recommend using the JS file from the template.    
+        -->
+        <script>
+            _V_.options.flash.swf = "js/video-js/video-js.swf";
+            _V_.options.techOrder = ["html5", "flash", "links"];
+            var params = {};
+            params.bgcolor = "#000000";
+            params.allowFullScreen = "true";       
+            _V_.options.flash.params = params;
+    
+        </script>    
+</head>
+
+<body>
+<div class="main-template-loader"></div>
+
+<div id="template-wrapper">
+    <div id="menu-container"><!-- start #menu-container -->        
+        <div class="menu-content-holder"><!-- start .menu-content-holder -->
+            <div class="menu-background"></div>
+            <div id="template-logo" class="template-logo" data-href="#portfolio.html"></div> 
+            <div id="template-menu" class="template-menu" data-current-module-type="gallery" data-side="none" data-href="#mixed_gallery.html"><!-- start #template-menu -->
+                <div class="menu-option-holder">
+                    <div class="menu-option-background"> </div>
+                    <div class="menu-option-text">
+                        <a href="#">HOME</a>
+                        <div class="menu-option-sign">+</div>
+                    </div>                
+                    <div class="sub-menu-holder">
+                        <div class="sub-menu-option-holder" data-module-type="slideshow" data-side="none">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#home_layout_1.html" data-path-href="html/home/">Home Layout 1</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="home2" data-side="none">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#home_layout_2.html" data-path-href="html/home/">Home Layout 2</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="home3" data-side="none">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#home_layout_3.html" data-path-href="html/home/">Home Layout 3</a></div>
+                        </div>
+                        
+                    </div>         
+                </div>
+                <div class="menu-option-holder">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text">
+                        <a href="#">ABOUT US</a>
+                        <div class="menu-option-sign">+</div>
+                    </div>
+                    <div class="sub-menu-holder">
+                        <div class="sub-menu-option-holder" data-module-type="text_page" data-side="height">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#about_us.html" data-path-href="html/about_us/">About us</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="text_page" data-side="none">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#philosophy.html" data-path-href="html/about_us/">Philosophy</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="text_page" data-side="height">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#ethics.html" data-path-href="html/about_us/">Ethics</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="text_page" data-side="none">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#careers.html" data-path-href="html/about_us/">Careers</a></div>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="menu-option-holder" data-module-type="news" data-side="height">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#news.html" data-path-href="html/news/">NEWS</a></div>
+                </div>  
+                <div class="menu-option-holder" data-module-type="full_width_gallery" data-side="none">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#portfolio.html" data-path-href="html/portfolio/">PORTFOLIO</a></div>
+                </div> 
+                <div class="menu-option-holder">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#">OUR PROJECTS</a><div class="menu-option-sign">+</div></div>
+                    <div class="sub-menu-holder">
+                        <div class="sub-menu-option-holder" data-module-type="page_columns" data-side="custom">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#4_columns_projects.html" data-path-href="html/our_projects/">4 Columns Projects</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="page_columns" data-side="custom">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#3_columns_projects.html" data-path-href="html/our_projects/">3 Columns Projects</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="page_columns" data-side="custom">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#2_columns_projects.html" data-path-href="html/our_projects/">2 Columns Projects</a></div>
+                        </div>
+                    </div>
+                </div>               
+                <div class="menu-option-holder" data-module-type="showreel" data-side="none">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#showreel.html" data-path-href="html/showreel/">SHOWREEL</a></div>
+                </div>                               
+                <div class="menu-option-holder">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#">GALLERIES</a><div class="menu-option-sign">+</div></div>
+                    <div class="sub-menu-holder">
+                        <div class="sub-menu-option-holder" data-module-type="gallery" data-side="none">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#image_gallery.html" data-path-href="html/galleries/">Image Gallery</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="gallery" data-side="none">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#mixed_gallery.html" data-path-href="html/galleries/">Mixed Gallery</a></div>
+                        </div>                        
+                    </div>
+                </div>                
+                <div class="menu-option-holder">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#">FEATURES</a><div class="menu-option-sign">+</div></div>
+                    <div class="sub-menu-holder">
+                        <div class="sub-menu-option-holder" data-module-type="full_width" data-side="custom">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#full_width_text_and_image.html" data-path-href="html/features/">Fullwidth Text + Image</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="full_width" data-side="custom">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#full_width_text_and_video.html" data-path-href="html/features/">Fullwidth Text + Video</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="fullscreen_video" data-side="none">
+                            <div class="sub-menu-option-background"></div>
+                            <div class="sub-menu-option-text"><a href="#fullscreen_video.html" data-path-href="html/features/">Fullscreen Video</a></div>
+                        </div>
+                        <div class="sub-menu-option-holder" data-module-type="pricing_tables" data-side="none">
+                            <div class="sub-menu-option-background"> </div>
+                            <div class="sub-menu-option-text"><a href="#pricing_tables.html" data-path-href="html/features/">Pricing Table</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-option-holder" data-module-type="contact" data-side="custom">
+                    <div class="menu-option-background"> </div>
+                    <div  class="menu-option-text"><a href="#contact.html" data-path-href="html/contact/">CONTACT US</a></div>
+                </div>            
+            </div><!-- end #template-menu -->  
+            <div id="template-smpartphone-menu">
+                <select>
+                    <option value="#">Navigate to...</option>
+                    <option value="#"> HOME +</option>
+                        <option value="#home_layout_1.html">  - Home Layout 1</option>
+                        <option value="#home_layout_2.html">  - Home Layout 2</option>
+                        <option value="#home_layout_3.html">  - Home Layout 3</option>
+                    <option value="#"> ABOUT US +</option>
+                        <option value="#about_us.html">  - About us</option>
+                        <option value="#philosophy.html">  - Philosophy</option>
+                        <option value="#ethics.html">  - Ethics</option>
+                        <option value="#careers.html">  - Careers</option>
+                    <option value="#news.html"> NEWS</option>
+                    <option value="#portfolio.html"> PORTFOLIO</option>
+                    <option value="#"> OUR PROJECTS +</option>
+                        <option value="#4_columns_projects.html">  - 4 Columns Projects</option>
+                        <option value="#3_columns_projects.html">  - 3 Columns Projects</option>
+                        <option value="#2_columns_projects.html">  - 2 Columns Projects</option>
+                    <option value="#showreel.html"> SHOWREEL</option>    
+                    <option value="#"> GALLERIES +</option>
+                        <option value="#image_gallery.html">  - Image Gallery</option>
+                        <option value="#mixed_gallery.html">  - Mixed Gallery</option>
+                    <option value="#"> FEATURES +</option>
+                        <option value="#full_width_text_and_image.html">  - Full Width Text + Image</option>
+                        <option value="#full_width_text_and_video.html">  - Full Width Text + Video</option>
+                        <option value="#fullscreen_video.html">  - Fullscreen Video</option>
+                        <option value="#pricing_tables.html">  - Pricing Table</option>  
+                    <option value="#contact.html"> CONTACT</option>
+                </select>
+            </div>
+            <footer>    
+                <div id="footer-social">            
+                    <div id="footer-social-holder">
+                        <ul>
+                            <li class="twitter"><a href="http://www.twitter.com" target="_blank"></a></li>
+                            <li class="facebook"><a href="http://www.facebook.com" target="_blank"></a></li>
+                            <li class="google"><a href="http://www.google.com" target="_blank"></a></li>
+                            <li class="dribbble"><a href="http://www.dribbble.com" target="_blank"></a></li>
+                            <li class="flickr"><a href="http://www.flickr.com" target="_blank"></a></li>
+                        </ul>
+                    </div>                   
+                </div>    
+                <div id="footer-text"><!-- start #footer-text -->
+                    <div id="footer-copyright"><a href="#">&copy;2012 YOUR-COMPANY.COM</a></div>           
+                </div><!-- end #footer -->    
+            </footer>
+        </div><!-- end .menu-content-holder-->
+        
+        <div id="menu-hider">
+            <div id="menu-hider-background"></div>
+            <div id="menu-hider-icon"></div>
+        </div>
+    </div><!-- end #menu-container -->
+    
+    <div id="module-container"><!-- start #module-container -->
+        <div id="module-background-holder">        
+            <!--<div id="module-background-solid1" class="opacity_0"></div> --> 
+        	<img src="assets/backg/bck-04.jpg" onload="animateModuleBackground(this)" class="module-background" id="module-background" alt="" />
+        </div>
+        <div id="module-container-holder" class="module-position-cc"  data-id="module-position-cc">
+            <div id="module-galleries"  class="module-galleries " > <!-- .shadow-side-all-->           
+            	<div id="module-galleries-holder"> 
+                	<div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb1.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Giuseppe</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video3.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Beat</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb2.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Baseball Illustration</p>
+                        </div>                                                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video6.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Frames</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb3.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>  
+                        <div class="thumb-tag">
+                        	<p>Caricature Dr. House</p>
+                        </div>                                                    
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video1.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>The Node</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb4.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Carousel Bike</p>
+                        </div>                                                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video4.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Cee-Ee</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb5.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Late Days Of A Legend</p>
+                        </div>                                                                                   
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video5.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Proteigon</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb6.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Planet Of The Apes</p>
+                        </div>                                                    
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb-video2.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="play-gallery"></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Opening Sequence | BUNRAKU</p>
+                        </div>                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb7.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Shopping Spree</p>
+                        </div>                                                    
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb8.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Oh My Gosh</p>
+                        </div>                                                     
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb9.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Media Overdose</p>
+                        </div>                                                                                 
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb10.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                           <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Qubsik Project</p>
+                        </div>                                                       
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb11.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>  
+                        <div class="thumb-tag">
+                        	<p>Modern House</p>
+                        </div>                                                      
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb12.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>       
+                        <div class="thumb-tag">
+                        	<p>Red Passion</p>
+                        </div>                                                 
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb13.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>  
+                        <div class="thumb-tag">
+                        	<p>Sleep Deprivation</p>
+                        </div>                                                       
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb14.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div> 
+                        <div class="thumb-tag">
+                        	<p>Streetbot</p>
+                        </div>                                                       
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb15.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>     
+                        <div class="thumb-tag">
+                        	<p>Missed Relic</p>
+                        </div>                                                  
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb16.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Nothing To Lose</p>
+                        </div>                                                    
+                    </div> 
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb17.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Violen</p>
+                        </div>                                                    
+                    </div>
+                    <div class="thumb-holder">
+                    	<div class="thumb-image">
+                        	<img src="assets/media/galleries/mixed_gallery/thumbs/thumb18.jpg" width="220" height="180" class="opacity_0" onload="animateThumb(this)" alt=""  />
+                            <div id="thumb-image-hover" class="hover-default">
+                                <div class="background opacity_6"></div>
+                                <div class="zoom-gallery"></div>
+                            </div>
+                        </div>   
+                        <div class="thumb-tag">
+                        	<p>Sunset Background</p>
+                        </div>                                                    
+                    </div>     		
+                </div> 
+                <!--<div id="galleries-background" class="opacity_8"></div>-->  
+            </div>
+            
+        </div>	
+        <div id="module-scrollbar-holder_v2">
+            <div id="module-scrollbar-background" class="opacity_8"></div>
+            <div id="module-scrollbar-dragger"></div>
+        </div>
+        <div id="module-galleries-preview">
+            <div id="module-galleries-preview-background" class="opacity_9"></div>
+            <div class="gallery-preview-media-loader"></div>
+            <div id="preview-media-holder">            
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image1.jpg" data-title="Custom Title 1" data-alt="Custom Alt 1">
+                    <div class="module-galleries-preview-description-text">1. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/31423544?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">2. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div>            
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image2.jpg" data-title="Custom Title 2" data-alt="Custom Alt 2">
+                    <div class="module-galleries-preview-description-text">3. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/32487239?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">4. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image3.jpg" data-title="Custom Title 3" data-alt="Custom Alt 3">
+                    <div class="module-galleries-preview-description-text">5. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/23106251?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">6. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div> 
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image4.jpg" data-title="Custom Title 4" data-alt="Custom Alt 4">
+                    <div class="module-galleries-preview-description-text">7. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/33690353?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">8. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div> 
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image5.jpg" data-title="Custom Title 6" data-alt="Custom Alt 6">
+                    <div class="module-galleries-preview-description-text">9. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/33480080?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">6. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image6.jpg" data-title="Custom Title 7" data-alt="Custom Alt 7">
+                    <div class="module-galleries-preview-description-text">11. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="video-wrapper" data-video-type="vimeo" data-width="640" data-height="390"
+                      data-url="http://player.vimeo.com/video/28693387?portrait=0&color=ffffff">  
+                      <div class="module-galleries-preview-description-text">6. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>               
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image7.jpg" data-title="Custom Title 8" data-alt="Custom Alt 8">
+                    <div class="module-galleries-preview-description-text">13. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image8.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">14. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image9.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">15. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image10.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">16. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image11.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">17. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image12.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">18. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image13.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">19. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image14.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">20. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image15.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">21. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image16.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">22. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image17.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">23. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+                <div id="preview-media-image" data-url="assets/media/galleries/image_gallery/images/image18.jpg" data-title="Custom Title 10" data-alt="Custom Alt 10">
+                    <div class="module-galleries-preview-description-text">24. Aliquam sed nibh congue ipsum lobortis fermentum vel cursus elit.</div>
+                </div>
+            </div>
+            <div class="module-galleries-preview-arrow-close">
+                <div class="module-galleries-preview-arrow-backg opacity_2"></div>
+                <div class="module-galleries-preview-arrow-close-sign"></div>
+            </div>
+            <div class="module-galleries-preview-arrow-backward">
+                <div class="module-galleries-preview-arrow-backg opacity_2"></div>
+                <div class="module-galleries-preview-arrow-backward-sign"></div>
+            </div>
+            <div class="module-galleries-preview-arrow-forward">
+                <div class="module-galleries-preview-arrow-backg opacity_2"></div>
+                <div class="module-galleries-preview-arrow-forward-sign"></div>
+            </div>
+            <div id="module-galleries-preview-description-holder">
+                <div id="module-galleries-preview-description-background"></div>
+            </div>        
+        </div>
+    </div><!-- end #module-container -->
+</div>
+
+<!-- START LOADING CONTAINER AND ANIMATION-->
+<div id="load-container"></div>
+<div id="loading-animation">
+	<img src="assets/loaders/loader.gif" width="16" height="11" alt="Synergy - loading animation"/>
+</div>
+<!-- END LOADING CONTAINER AND ANIMATION--> 
+    
+</body>
+</html>
