@@ -8,8 +8,6 @@ class PagesController < ApplicationController
 	#Title:			home
 	#Description:	Home page
 	def home
-		require 'Image'
-		
 		carousel_stages = Stage.order('starts_on DESC').limit(2)
 		carousel_competitions = Competition.order('creator_id, created_at DESC').limit(1)
 		carousel_races = Race.order('created_at DESC').limit(1)
