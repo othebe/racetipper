@@ -97,7 +97,10 @@ class CompetitionsController < ApplicationController
 				:kom => entry[:kom],
 				:sprint => entry[:sprint]
 			}
-			line[:tip] = entry[:tip] if (group_type == 'stage')
+			if (group_type == 'stage')
+				line[:tip] = entry[:tip]
+				line[:is_default] = entry[:is_default]
+			end
 			@data.push(line)
 		end
 		
@@ -207,9 +210,12 @@ class CompetitionsController < ApplicationController
 			seen[team_id] = 1
 		end
 		
-		render :json => {:tipsheet=>tipsheet}
+		stage = Stage.find_by_id(stage_id)
+		render :json => {:tipsheet=>tipsheet, :stage=>{:name=>stage.name}}
 	end
 	
+	#Title:			edit
+	#Description:	Edit or create a new competition
 	def edit
 		redirect_to :root and return if (@user.nil?)
 		
@@ -233,6 +239,7 @@ class CompetitionsController < ApplicationController
 			end
 		end
 			
+		@competition ||= Competition.new
 		render :layout=>false
 	end
 	
@@ -294,15 +301,20 @@ class CompetitionsController < ApplicationController
 		
 		competition_data = params[:data]
 		
-		render :json=>{:success=>false, :msg=>'Please enter a name for your competition.'} and return if (!competition_data.has_key?(:competition_name) || competition_data[:competition_name].empty?)
-		render :json=>{:success=>false, :msg=>'Please select an image for your competition.'} and return if (!competition_data.has_key?(:image_name) || competition_data[:image_name].empty?)
-		render :json=>{:success=>false, :msg=>'Please select races for your competition.'} and return if (!competition_data.has_key?(:races) || competition_data[:races].empty?)
-		
-		#Save competition
+		#Load competition if any
 		competition = nil
 		if (competition_data.has_key?(:id))
 			competition = Competition.find_by_id(competition_data[:id])
 		end
+		
+		render :json=>{:success=>false, :msg=>'Please enter a name for your competition.'} and return if (!competition_data.has_key?(:competition_name) || competition_data[:competition_name].empty?)
+		render :json=>{:success=>false, :msg=>'Please select races for your competition.'} and return if (!competition_data.has_key?(:races) || competition_data[:races].empty?)
+		#Only check images for new competitions
+		if (competition.nil?)
+			render :json=>{:success=>false, :msg=>'Please select an image for your competition.'} and return if (!competition_data.has_key?(:image_name) || competition_data[:image_name].empty?)
+		end
+		
+		#Save competition
 		competition ||= Competition.new
 		
 		competition.creator_id = @user.id
@@ -356,7 +368,6 @@ class CompetitionsController < ApplicationController
 		participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
 		participants.each do|participant|
 			user_id = participant.user_id
-			logger.debug('Filling '+user_id.to_s+', '+competition.id.to_s)
 			CompetitionTip.fill_tips(user_id, competition.id)
 		end
 
@@ -371,6 +382,8 @@ class CompetitionsController < ApplicationController
 		
 		#Check that competition exists and user is allowed to save
 		redirect_to :root if (competition.creator_id != @user.id)
+		
+		redirect_to '/competition/'+competition_id.to_s and return if (params[:image_name].nil? || params[:image_name].empty?)
 		
 		#Save competition image path
 		competition.image_url = 'competition_'+competition_id.to_s+'.jpg'
@@ -388,7 +401,6 @@ class CompetitionsController < ApplicationController
 					:crop => :crop
 				}
 			}
-			logger.debug(options.inspect)
 			Cloudinary::Uploader.upload(params[:image].tempfile.path, options)
 		end
 		
@@ -557,7 +569,7 @@ class CompetitionsController < ApplicationController
 		
 		tip.save
 		
-		render :json=>{:success=>true, :msg=>'success'}
+		render :json=>{:success=>true, :msg=>stage.name}
 	end
 	
 	def kick
@@ -617,6 +629,7 @@ class CompetitionsController < ApplicationController
 		data = {}
 		data[:competition] = competition
 		data[:creator] = User.find_by_id(competition.creator_id)
+		data[:is_creator] = (@user.nil?)?false:(data[:creator].id == @user.id)
 		data[:is_participant] = participant
 		
 		return data
@@ -665,6 +678,7 @@ class CompetitionsController < ApplicationController
 			user_score[:tip] ||= Array.new
 			user_score[:user_id] = user_id
 			user_score[:username] = username
+			user_score[:is_default] = !tip.default_rider_id.nil?
 			
 			rider = Rider.find_by_id(rider_id)
 			
@@ -714,7 +728,6 @@ class CompetitionsController < ApplicationController
 		end
 		
 		#Sort leaderboard
-		logger.debug(user_scores.inspect)
 		leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
 		
 		#Get gap times

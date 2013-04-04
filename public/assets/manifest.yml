@@ -1,6 +1,8 @@
 ---
 admin/home.png: admin/home-888509d06709be256dbcf0b4fd4432e9.png
 admin/home/index.png: admin/home-888509d06709be256dbcf0b4fd4432e9.png
+ajax-loader-circle.gif: ajax-loader-circle-f63bd02ed8dd66b805c921125ed5b604.gif
+ajax-loader-circle/index.gif: ajax-loader-circle-f63bd02ed8dd66b805c921125ed5b604.gif
 ajax-loader.gif: ajax-loader-9ef69c7230cf0255d5f5895a34f07286.gif
 ajax-loader/index.gif: ajax-loader-9ef69c7230cf0255d5f5895a34f07286.gif
 backgrounds/dirt.jpg: backgrounds/dirt-10dd38bede480cc3e0cadcd636119fa1.jpg
@@ -9,6 +11,8 @@ backgrounds/offroad.jpg: backgrounds/offroad-321592ca6efec18de5f72518c08027a9.jp
 backgrounds/offroad/index.jpg: backgrounds/offroad-321592ca6efec18de5f72518c08027a9.jpg
 backgrounds/race.jpg: backgrounds/race-de86ffbd28c22209e7123a074c6479eb.jpg
 backgrounds/race/index.jpg: backgrounds/race-de86ffbd28c22209e7123a074c6479eb.jpg
+blank.jpg: blank-8e588dff227a5d10789c710c6f2463c5.jpg
+blank/index.jpg: blank-8e588dff227a5d10789c710c6f2463c5.jpg
 close.png: close-16aca31e118ded22881bb575b559d195.png
 close/index.png: close-16aca31e118ded22881bb575b559d195.png
 default_competition.jpg: default_competition-dfd4c434d43f50215a75055a66f40ee0.jpg
@@ -763,8 +767,8 @@ synergy/patterns/pattern/tasky_pattern.png: synergy/patterns/pattern/tasky_patte
 synergy/patterns/pattern/tasky_pattern/index.png: synergy/patterns/pattern/tasky_pattern-e845debe324324dff707a48efa778f2d.png
 synergy/synergy_sprite.png: synergy/synergy_sprite-a42efb8b9a51d32af3e4badd90144850.png
 synergy/synergy_sprite/index.png: synergy/synergy_sprite-a42efb8b9a51d32af3e4badd90144850.png
-application.js: application-1330248c892f818775b2aa9e3ab4846a.js
-application/index.js: application-1330248c892f818775b2aa9e3ab4846a.js
+application.js: application-1582a34d8e704a87bbb3372707fea7c7.js
+application/index.js: application-1582a34d8e704a87bbb3372707fea7c7.js
 synergy/audio-js/Jplayer.swf: synergy/audio-js/Jplayer-2b0bbe99aeadfe7f711452c6441f6649.swf
 synergy/audio-js/Jplayer/index.swf: synergy/audio-js/Jplayer-2b0bbe99aeadfe7f711452c6441f6649.swf
 synergy/greensock/uncompressed/changelog.txt: synergy/greensock/uncompressed/changelog-2c7b5101e50c3c70dea51fa6d87bed3d.txt
@@ -779,8 +783,8 @@ synergy/video-js/video-js.png: synergy/video-js/video-js-a4e882b3c27b7d6a6db6577
 synergy/video-js/video-js/index.png: synergy/video-js/video-js-a4e882b3c27b7d6a6db65779704f0d6e.png
 synergy/video-js/video-js.swf: synergy/video-js/video-js-6e518d1400bea4ce1a96767e3d705b88.swf
 synergy/video-js/video-js/index.swf: synergy/video-js/video-js-6e518d1400bea4ce1a96767e3d705b88.swf
-application.css: application-91e6dd5b3f68c04919014c108da4122d.css
-application/index.css: application-91e6dd5b3f68c04919014c108da4122d.css
+application.css: application-8ce013bf5e8ac002b497d3a3b7340ef3.css
+application/index.css: application-8ce013bf5e8ac002b497d3a3b7340ef3.css
 jcrop/Jcrop.gif: jcrop/Jcrop-aededb5593856fed1e870874c80c2064.gif
 jcrop/Jcrop/index.gif: jcrop/Jcrop-aededb5593856fed1e870874c80c2064.gif
 synergy/assets/backg/bck-01.jpg: synergy/assets/backg/bck-01-2316b00a45e261e986d12afc3a33555f.jpg

@@ -15,14 +15,17 @@
 					<div class="custom-separator"></div>
 					
 					<div class="main-text-holder signin" style="width:100%;">
-						<input type="text" name="email" placeholder="Email"></br>
-						<input type="password" name="password" placeholder="Password">
-						<div style="text-align:center;">
-							<div class="button" style="margin-left:0; padding-right:12px;" onclick="login(this);">
-								<span>Login</span>
+						<form onsubmit="$('.login.button').click(); return false;">
+							<input type="text" name="email" placeholder="Email"></br>
+							<input type="password" name="password" placeholder="Password">
+							<input type="submit" value="" style="width:0px; height:0px; opacity:0;"></button>
+							<div style="text-align:center;">
+								<div class="login button" style="margin-left:0; padding-right:12px;" onclick="login(this);">
+									<span>Login</span>
+								</div>
+								<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
 							</div>
-							<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
-						</div>
+						</form>
 						
 						<p><h3>Or, Login with Facebook</h3></p>
 						<a onclick="facebook_login();" style="cursor:pointer;"><%=image_tag 'facebook.gif'%></a>

@@ -97,6 +97,7 @@ function load_results(elt) {
 		
 		$(load_img).hide();
 		$(results_table).show();
+		moduleTextPage(true);
 	});
 }
 
@@ -124,7 +125,10 @@ function load_leaderboard(elt) {
 					var click_scr = "load_page('#competitions/show_tips/"+competition_id+"?uid=1')";
 					selection = '<div class="button" onclick="'+click_scr+'"><span>VIEW TIPS</span></div>';
 				}
-				else selection = result.tip[0].name
+				else {
+					selection = result.tip[0].name
+					if (result.is_default) selection = selection + ' <span style="font-style:italic;">(Default)<span>';
+				}
 				
 				var row = $('<tr></tr>');
 				$(row).append(['<td>',(i+1),'</td>'].join(''));
@@ -154,7 +158,7 @@ function show_tip_sheet(elt) {
 	var data_elt = $(parent).find('div.data').empty();
 	
 	var competition_id = $(load_option).attr('competition_id');
-	var stage_id = $(parent).find('select').val();
+	var stage_id = $('#tip_sheet_stages').val();
 	var url = '/competitions/get_tip_sheet/'+competition_id;
 	
 	$(load_img).show();
@@ -180,9 +184,13 @@ function show_tip_sheet(elt) {
 					}
 					
 					//Current selection?
-					if (rider.selected) cb_checked = ' checked="checked" ';
+					selected_stage = '';
+					if (rider.selected) {
+						cb_checked = ' checked="checked" ';
+						selected_stage = ' ('+response.stage.name+')';
+					}
 					
-					var line = $(['<input type="checkbox" id="',rider.rider_id,'" val="',rider.rider_id,'"',cb_allow,cb_checked,'><label for="',rider.rider_id,'" style="',label_allow,'">',rider.rider_name,' [',rider.rider_number,']',not_allowed,'</label></br>'].join(''));
+					var line = $(['<input type="checkbox" id="',rider.rider_id,'" val="',rider.rider_id,'"',cb_allow,cb_checked,'><label for="',rider.rider_id,'" style="',label_allow,'">',rider.rider_name,' [',rider.rider_number,']',not_allowed,'</label><span class="selection_verify" id="',rider.rider_id,'">',selected_stage,'</span></br>'].join(''));
 					$(container).append(line);
 				}
 				
@@ -204,8 +212,20 @@ function show_tip_sheet(elt) {
 //Title:		save_tip
 //Description:	Save a tip
 function save_tip(competition_id, stage_id, rider_id) {
+	//Clear all verification messages
+	$('span.selection_verify').html('');
+	
+	//Loader image
+	var loader = $('img.saving_tip_loader.template').clone().removeClass('template');
+	
+	//Append loader for selection
+	var selection = $('span#'+rider_id+'.selection_verify');
+	$(selection).html(loader);
+	
 	$.post('/competitions/save_tip/'+competition_id, {stage_id:stage_id, rider_id:rider_id}, function(response) {
-		if (!response.success) alert(response.msg);
+		if (!response.success) 
+			alert(response.msg);
+		else $(selection).html([' (',response.msg,')'].join(''));
 	});
 }
 
@@ -255,8 +275,10 @@ function load_race_results(elt) {
 		}
 		//Stage
 		if (load_data_type=='stage') {
-			$(info_table).find('tr.profile td.data').html(['<a href="',response.stage.profile,'" target="_blank">View</a>'].join(''));
-			$(info_table).find('tr.profile td.label').show();
+			if (response.stage.profile != null) {
+				$(info_table).find('tr.profile td.data').html(['<a href="',response.stage.profile,'" target="_blank">View</a>'].join(''));
+				$(info_table).find('tr.profile td.label').show();
+			}
 			
 			$(info_table).find('tr.starts_on td.data').html(response.stage.starts_on);
 			$(info_table).find('tr.starts_on td.label').show();
@@ -303,6 +325,7 @@ function load_race_results(elt) {
 		$(load_img).hide();
 		$(info_table).show();
 		$(results_table).show();
+		moduleTextPage(true);
 	});
 }
 
@@ -434,6 +457,7 @@ function show_preview(coords) {
 function save_competition() {
 	var form = $('#competition_form');
 	var data = {};
+	data['id'] = $(form).find('#competition_id').val();
 	data['competition_name'] = $(form).find('#name').val();
 	data['competition_description'] = $(form).find('#description').val();
 	data['open_to'] = $(form).find('input[name=open_to]:checked').val();
@@ -540,4 +564,12 @@ function submit_feedback(elt) {
 		$(elt).show();
 		$('.loading').hide();
 	});
+}
+
+//Title:		load_comments
+//Description:	Loads Facebook comments and fixes scrollbars
+function load_comments() {
+	$('.fb-comments').attr('data-width', document.width * 0.6);
+	FB.XFBML.parse();
+	moduleTextPage(true);
 }

@@ -41,7 +41,6 @@
     // Helpers
 	translateZ = has3d ? ' translateZ(0)' : '';
 
-
     $.fn.McCustomList = function( options ) {
         if( options == null )
             console.log('NO OPTIONS PROVIDED for ' + $(this).attr("id") );
@@ -179,7 +178,7 @@
            if( $scrollContainer == null )return;
            if( $scrollDirection == "horizontal" )
            {
-    		   $horizFixHolder.css( "width", 999999 );		   
+    		   $horizFixHolder.css( "width", 999999 );			   
                $maxScrollingValue = ($scrollContainer.width() + $offsetSize ) - ($mainContainer.width() - $totalMinusSize);    		   
     		   $scrollContainer.css("width",  $scrollContainer.width() );
     		   $horizFixHolder.css("width", '');
@@ -205,9 +204,9 @@
         	   		  if( $draggerContainer.length > 0 )
                       {
 							//Ozzy: Disable until further notice
-							console.log($draggerContainer);
+							//console.log($draggerContainer);
 							return;
-							console.log(draggerSet);
+							//console.log(draggerSet);
                            if( draggerSet == true )
                                 $draggerContainer.draggable( "destroy" );
                            setupDragger();  

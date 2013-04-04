@@ -2,4 +2,9 @@
 	<p><span><%=@data[:competition].description %></span></p>
 	
 	<p>Created by <%=(@data[:creator].firstname+' '+@data[:creator].lastname).strip%></p>
+	
+	<p>
+		<%= image_tag 'blank.jpg', {:onload=>'load_comments();'} %>
+		<div class="fb-comments" data-href="<%=SITE_URL%>competition/<%=@data[:competition].id%>" data-width="700" data-num-posts="10"></div>
+	</p>
 </div>

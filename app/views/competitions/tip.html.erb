@@ -1,8 +1,9 @@
 <div class="main-text-holder" style="width:90%;">
+	<%=image_tag 'ajax-loader-circle.gif', {:class=>'saving_tip_loader template'} %>
 	<p>
 		<div class="tipsheet">
 			<span>Choose a stage:</span>
-			<select id="" onchange="show_tip_sheet(this);" style="display:block;">
+			<select id="tip_sheet_stages" onchange="show_tip_sheet(this);" style="display:block;">
 				<% @races.each do |race| %>
 					<% race[:stages].each do |stage| %>
 						<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>

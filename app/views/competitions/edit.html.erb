@@ -26,19 +26,19 @@
 								<table>
 									<tr>
 										<td class="label">Name:</td>
-										<td><input type="text" id="name" name="name" placeholder="Race name"></td>
+										<td><input type="text" id="name" name="name" placeholder="Race name" value="<%=@competition.name%>"></td>
 									</tr>
 									
 									<tr>
 										<td class="label">Description:</td>
-										<td><textarea id="description" name="description" placeholder="Briefly describe your competition here."></textarea></td>
+										<td><textarea id="description" name="description" placeholder="Briefly describe your competition here."><%=@competition.description%></textarea></td>
 									</tr>
 									
 									<tr>
 										<td class="label">Open to:</td>
 										<td>
-											<input type="radio" name="open_to" value="public" id="public" checked="true"><label for="public">Public</label>
-											<input type="radio" name="open_to" value="private" id="private"><label for="private">Private</label>
+											<input type="radio" name="open_to" value="public" id="public" <%=(@competition.status==STATUS[:ACTIVE])?'checked="true"':''%> ><label for="public">Public</label>
+											<input type="radio" name="open_to" value="private" id="private" <%=(@competition.status==STATUS[:PRIVATE])?'checked="true"':''%> ><label for="private">Private</label>
 										</td>
 									</tr>
 									
@@ -52,7 +52,7 @@
 										<td>
 											<% ndx = 0 %>
 											<% @races.each do |race| %>
-												<input type="checkbox" name="race" id="<%=ndx%>" value="<%=race.id%>">
+												<input type="checkbox" name="race" id="<%=ndx%>" value="<%=race.id%>" <%=(@competition_races.index(race.id).nil?)?'':'checked="checked"'%>>
 												<label for="<%=ndx%>"><%=race.name%></label></br>
 											<% end %>
 										</td>
@@ -66,7 +66,7 @@
 							<p>
 								<form id="image_upload" action="/competitions/save_image" method="POST" enctype="multipart/form-data">
 									<div>Competition image:</div>
-									<input type="hidden" id="competition_id" name="competition_id">
+									<input type="hidden" id="competition_id" name="competition_id" value="<%=@competition.id%>">
 									<input type="hidden" id="crop_h" name="crop_h">
 									<input type="hidden" id="crop_w" name="crop_w">
 									<input type="hidden" id="crop_x" name="crop_x">

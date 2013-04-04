@@ -1380,7 +1380,7 @@ $(window).load(function(){
         var winW = $(window).width();
         var menH = getMenuHeight();
         var menuHiderH = ( menuActive == true ) ?  parseInt( $("#menu-container").height(), 10 ) : parseInt( $("#menu-container #menu-hider").height(), 10 );
-        
+
         if( touchDevice == 0 || touchDevice == 1 ){           
             var totalMinusSize = 0;
             var activScrollbar = availScrollbar.length;
@@ -1431,7 +1431,7 @@ $(window).load(function(){
                     TweenMax.killTweensOf(availScrollbar);
                     if( availScrollbar.css("display") == "none" ){ availScrollbar.css("opacity", "0").css("display", "inline"); }                    
                     TweenMax.to( availScrollbar, .6, { css:{opacity:"1"}, ease:Quad.easeOut });
-                }               
+                }				
                 if( moduleList == null ){
                     moduleList = pMod.McCustomList({ scrollDirection: "vertical", scrollType: "linear", isTouchDevice: touchDevice });
                     moduleList.setupList({
@@ -1464,9 +1464,12 @@ $(window).load(function(){
     }
     
 	/*================= TEXT PAGE =============================*/
-	function moduleTextPage(){		
+	//Ozzy: Added skip_tween to skip the transition
+	function moduleTextPage(skip_tween){		
 		var textPageInstanceHolder    = $( txt_modCont);
-        var textPageInstance          = $( "#module-text-page", textPageInstanceHolder);
+		//Ozzy: Ignore module-text-page
+        //var textPageInstance          = $( "#module-text-page", textPageInstanceHolder);
+		var textPageInstance          = $(textPageInstanceHolder);
         var modWrapper                = $( "#module-wrapper", textPageInstanceHolder);
 		var modulePositionType        = textPageInstanceHolder.attr("data-id");		
 		var moduleWidth               = textPageInstanceHolder.width();
@@ -1475,36 +1478,42 @@ $(window).load(function(){
         moduleEnd                     = true;
         if( textPageInstance.length <= 0 ) return;
         endModuleFunction             = endModuleTextPage;
-        
-		switch( modulePositionType ){
-			case "module-position-lb":				
-				break;
-			case "module-position-lc":	  			
-				var val = ( - moduleWidth) + "px";		
-				moduleUpdate( textPageInstance, modWrapper, $("div:first", modWrapper), sideType );
-                textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) +  " left:" + val + "; visibility: visible;");
-                TweenMax.to(  textPageInstanceHolder, .6, { css:{left: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   });/*get_OffsetWidth() +*/                 
-				break;	
-			case "module-position-bc":
-                moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );				
-                var val = parseInt(textPageInstance.css("top"), 10) + "px";                
-				textPageInstanceHolder.css("top", moduleHeight).css("visibility", "visible");
-				TweenMax.to(  textPageInstanceHolder, .6, { css:{ top: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   }); 
-				break;
-			case "module-position-rc":	
-                textPageInstanceHolder.css("position", "fixed");               
-				moduleUpdate( textPageInstance, modWrapper, $("div:first", modWrapper), sideType );
-                var val = (- moduleWidth) + "px";
-                textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) +  " position: fixed; right:" + val + "; visibility: visible;");
-				TweenMax.to(  textPageInstanceHolder, .6, { css:{ right: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   }); 
-				break;	
-			case "module-position-cc":	
-                moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );                          
-				var val = parseInt( textPageInstanceHolder.css("left"), 10);                
-                textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) + " left: 100%; visibility: visible;");			
-				
-                TweenMax.to(  textPageInstanceHolder, .6, { css:{ left: val },  ease:Circ.easeOut, onComplete: moduleUpdate_text_page   }); 
-				break;				
+		
+		if (skip_tween == null) skip_tween = false;
+       
+		if (!skip_tween) {
+			switch( modulePositionType ){
+				case "module-position-lb":				
+					break;
+				case "module-position-lc":	  			
+					var val = ( - moduleWidth) + "px";		
+					moduleUpdate( textPageInstance, modWrapper, $("div:first", modWrapper), sideType );
+					textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) +  " left:" + val + "; visibility: visible;");
+					TweenMax.to(  textPageInstanceHolder, .6, { css:{left: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   });/*get_OffsetWidth() +*/                 
+					break;	
+				case "module-position-bc":
+					moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );				
+					var val = parseInt(textPageInstance.css("top"), 10) + "px";                
+					textPageInstanceHolder.css("top", moduleHeight).css("visibility", "visible");
+					TweenMax.to(  textPageInstanceHolder, .6, { css:{ top: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   }); 
+					break;
+				case "module-position-rc":	
+					textPageInstanceHolder.css("position", "fixed");               
+					moduleUpdate( textPageInstance, modWrapper, $("div:first", modWrapper), sideType );
+					var val = (- moduleWidth) + "px";
+					textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) +  " position: fixed; right:" + val + "; visibility: visible;");
+					TweenMax.to(  textPageInstanceHolder, .6, { css:{ right: "0px" },  ease:Circ.easeInOut, onComplete: moduleUpdate_text_page   }); 
+					break;	
+				case "module-position-cc":	
+					moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );                          
+					var val = parseInt( textPageInstanceHolder.css("left"), 10);                
+					textPageInstanceHolder.attr("style", getElementStyle( textPageInstanceHolder ) + " left: 100%; visibility: visible;");			
+					
+					TweenMax.to(  textPageInstanceHolder, .6, { css:{ left: val },  ease:Circ.easeOut, onComplete: moduleUpdate_text_page   }); 
+					break;				
+			}
+		} else {
+			moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );  
 		}
 	}
     function endModuleTextPage(){        

@@ -37,11 +37,11 @@
 							<% @competitions.each do |competition| %>
 								<% selector = (competition[:is_participant])?'participating ':'' %>
 								<% selector += (competition[:is_creator])?'created':'' %>
-								<% is_open = (competition[:competition][:is_complete])?'Open':'Completed' %>
+								<% is_open = (competition[:competition][:is_complete])?'Completed':'Open' %>
 								
-								<div class="fourth-thumb-holder competition" data-id="<%=selector%>" data-url="#competitions/<%=competition[:competition].id%>">
+								<div class="fourth-thumb-holder" data-id="<%=selector%>" data-url="#competitions/<%=competition[:competition].id%>">
 									<div class="fourth-thumb-image">
-										<img src="<%=cl_image_path competition[:competition][:image_url], {:width=>220, :height=>180, :crop=>:crop} %>" class="opacity_0" onload="animateThumb(this)" width="220" height="180" alt="" />
+										<img src="<%=cl_image_path competition[:competition][:image_url], {:width=>220, :height=>180, :crop=>:crop} %>" onload="animateThumb(this);" class="opacity_0" width="220" height="180" alt="" />
 										<div id="thumb-image-hover" class="hover-default">
 											<div class="background opacity_6"></div>
 											<div class="zoom-gallery"></div>

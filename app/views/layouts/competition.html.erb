@@ -7,7 +7,12 @@
 			<div id="module-wrapper">
 				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
 					<div class="title-holder">
-						<span class="title-text_normal"><%=@data[:competition].name%></span>
+						<span class="title-text_normal">
+							<%=@data[:competition].name%>
+							<% if (@data[:is_creator]) %>
+								<a href="#competitions/edit/<%=@data[:competition].id%>">(Edit)</a>
+							<% end %>
+						</span>
 					</div>
 					<div class="custom-separator"></div>
 					
