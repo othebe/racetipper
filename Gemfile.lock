@@ -44,6 +44,7 @@ GEM
     coffee-script-source (1.4.0)
     daemons (1.1.9)
     erubis (2.7.0)
+    eventmachine (1.0.0)
     eventmachine (1.0.0-x86-mingw32)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -66,6 +67,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.19)
     multi_json (1.5.0)
+    newrelic_rpm (3.6.0.78)
+    pg (0.14.1)
     pg (0.14.1-x86-mingw32)
     polyglot (0.3.3)
     rack (1.4.3)
@@ -135,6 +138,7 @@ DEPENDENCIES
   fb_graph
   jquery-rails (~> 2.1.4)
   json
+  newrelic_rpm
   pg
   rails (= 3.2.11)
   sass-rails (~> 3.2.3)
