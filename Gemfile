@@ -53,5 +53,5 @@ gem 'fb_graph'
 #Cloudinary
 gem 'cloudinary'
 
-#New Relic
-gem 'newrelic_rpm'
+#Librato
+gem 'librato-rails'
