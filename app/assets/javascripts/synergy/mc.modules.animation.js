@@ -4809,7 +4809,7 @@ $(window).load(function(){
             sideType         = sType;
             hrefPath         = (hrefPath == undefined) ? "" : hrefPath;
             setMobileMenuOption(val);
-			url              = templateBaseURL + hrefPath + val.replace(urlCharDeeplink,'');
+			//url              = templateBaseURL + hrefPath + val.replace(urlCharDeeplink,'');
 			
 			/* Ozzy */
 			url = templateBaseURL + window.location.hash.replace(urlCharDeeplink, '');
