@@ -3,6 +3,7 @@ Racetipper::Application.routes.draw do
 	match '/login' => 'pages#login'
 	match '/news' => 'articles#index'
 	match '/contact_us' => 'bugs#feedback'
+	match '/articles' => 'articles#index'
 	
 	match '/competitions/index' => 'competitions#index'
 	match '/competitions/edit' => 'competitions#edit'

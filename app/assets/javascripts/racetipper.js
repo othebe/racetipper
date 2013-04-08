@@ -209,6 +209,55 @@ function show_tip_sheet(elt) {
 	});
 }
 
+//Title:		show_selection_sheet
+//Description:	Show selection sheet for a competition stage. Only selections, no tipping.
+//Params:		elt - Object that triggers a selection sheet load
+function show_selection_sheet(elt) {
+	var parent = $(elt).parent();
+	var load_img = $(parent).find('img.loading');
+	var load_option = $(parent).find('select option:selected');
+	var data_elt = $(parent).find('div.data').empty();
+	
+	var competition_id = $(load_option).attr('competition_id');
+	var race_id = $('#selection_sheet_races').val();
+	var url = '/competitions/get_selection_sheet/'+competition_id;
+	
+	$(load_img).show();
+	$.get(url, {race_id:race_id}, function(response) {
+		if (response.selection_sheet.length > 0) {
+			$(response.selection_sheet).each(function(ndx, data) {
+				var container = $('<fieldset></fieldset>');
+				$(container).append('<legend>'+data.team_name+'</legend>');
+				
+				//Riders
+				for(i=0; i<data.riders.length; i++) {
+					var rider = data.riders[i];
+					var cb_checked = '';
+					var status = '';
+					
+					//Disqualified
+					if (rider.disqualified != null) {
+						status = ' ('+rider.disqualified+')';
+					}
+					//Selected for stage
+					else if (rider.stage != null) {
+						cb_checked = 'checked="checked"';
+						status = ' ('+rider.stage+')';
+					}
+					
+					var line = $(['<input type="checkbox" ',cb_checked,' disabled="disabled"></input><label style="color:lightgray;">',rider.rider_name,' [',rider.rider_number,']',status,'</label></br>'].join(''));
+					$(container).append(line);
+				}
+				
+				$(data_elt).append(container);
+			})
+		}
+		
+		$(load_img).hide();
+		moduleTextPage(true);
+	});
+}
+
 //Title:		save_tip
 //Description:	Save a tip
 function save_tip(competition_id, stage_id, rider_id) {

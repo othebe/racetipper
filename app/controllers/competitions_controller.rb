@@ -125,6 +125,7 @@ class CompetitionsController < ApplicationController
 		redirect_to :root if (@user.nil?)
 		competition_id = params[:id]
 		@data = get_competition_data(competition_id)
+		@tipping_allowed = false
 		
 		@races = []
 		CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).select(:race_id).group(:race_id).each do |competition_stage|
@@ -132,6 +133,8 @@ class CompetitionsController < ApplicationController
 			race_data = Race.find_by_id(race_id)
 			stages = Stage.where('race_id=? AND status=? AND starts_on >?', race_id, STATUS[:ACTIVE], Time.now).order('starts_on')
 			@races.push({:race_data=>race_data, :stages=>stages})
+			
+			@tipping_allowed = true if (!stages.empty?)
 		end
 		
 		render :layout => 'competition'
@@ -212,6 +215,74 @@ class CompetitionsController < ApplicationController
 		
 		stage = Stage.find_by_id(stage_id)
 		render :json => {:tipsheet=>tipsheet, :stage=>{:name=>stage.name}}
+	end
+	
+	#Title:			get_selection_sheet
+	#Description:	Get selection sheet for a user
+	def get_selection_sheet
+		redirect_to :root and return if (@user.nil?)
+
+		competition_id = params[:id]
+		race_id = params[:race_id]
+		uid = @user.id
+		
+		#Check if stage is in competition
+		competition_stage = CompetitionStage.where({:competition_id=>competition_id, :race_id=>race_id}).first
+		redirect_to :root and return if (competition_stage.nil?)
+
+		#Get all tips
+		tips = CompetitionTip.where({:competition_participant_id=>uid, :competition_id=>competition_id, :race_id=>race_id})
+		tips_by_rider = {}
+		tips.each do |tip|
+			rider_id = tip.rider_id
+			rider_id = tip.default_rider_id if (rider_id==0 && !tip.default_rider_id.nil?)
+			tips_by_rider[rider_id] = tip.stage_id
+		end
+		
+		#Get all rider teams
+		teamriders = TeamRider.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).joins(:team).joins(:rider).order('rider_number')
+
+		#Index riders by team
+		teams = {}
+		teamriders.each do |teamrider|
+			team = teamrider.team
+			rider = teamrider.rider
+			
+			#Check is rider is disqualified, or already selected
+			stage = nil
+			disqualified = nil
+			if (teamrider.rider_status != RIDER_RESULT_STATUS[:ACTIVE])
+				disqualified = Result.rider_status_to_str(teamrider.rider_status)
+			elsif (!tips_by_rider[rider.id].nil?)
+				stage = Stage.find_by_id(tips_by_rider[rider.id])
+				stage = stage.name
+			end
+				#Add selected field to differentiate between selected and DQ -> Can populate input box on selection sheet
+			team_data = teams[team.id] || {:team=>team, :riders=>[]}
+			team_data[:riders].push({
+				:rider_id => rider.id,
+				:rider_name => rider.name,
+				:rider_number => teamrider.rider_number,
+				:disqualified => disqualified,
+				:stage => stage
+			})
+			teams[team.id] = team_data
+		end
+		
+		#Generate selection_sheet
+		seen = {}
+		selection_sheet = []
+		teamriders.each do |teamrider|
+			team_id = teamrider.team_id
+			next if (!seen[team_id].nil?)
+			selection_sheet.push({
+				:team_name => teams[team_id][:team].name,
+				:riders => teams[team_id][:riders]
+			})
+			seen[team_id] = 1
+		end
+		
+		render :json => {:selection_sheet=>selection_sheet}
 	end
 	
 	#Title:			edit
@@ -778,9 +849,9 @@ class CompetitionsController < ApplicationController
 			return Time.at(remaining).gmtime.strftime('%R hours, %S seconds left.')
 		else
 			begin
-				return 'Ends on '+start_time.gmtime.localtime(timezone).to_s
+				return 'Ends on '+Time.at(start_time).gmtime.localtime(timezone).to_s
 			rescue
-				return 'Ends on '+start_time.gmtime.to_s
+				return 'Ends on '+Time.at(start_time).gmtime.to_s
 			end
 		end
 	end
@@ -847,7 +918,7 @@ class CompetitionsController < ApplicationController
 	#Description:	Format time by days/HMS
 	def format_time(time_in_sec)
 		if (time_in_sec >= 86400)
-			days = ((time_in_sec).gmtime.strftime('%-d').to_i - 1).to_s
+			days = (Time.at(time_in_sec).gmtime.strftime('%-d').to_i - 1).to_s
 			return Time.at(time_in_sec).gmtime.strftime(days+' day(s), %R:%S')
 		else
 			return Time.at(time_in_sec).gmtime.strftime('%R:%S')

@@ -1541,6 +1541,7 @@ footer
 	clear:both;
 	position:relative;
 	float:left;
+	padding-right: 25px;
 }
 .main-text-holder p
 {

@@ -2,25 +2,47 @@
 	<%=image_tag 'ajax-loader-circle.gif', {:class=>'saving_tip_loader template'} %>
 	<p>
 		<div class="tipsheet">
-			<span>Choose a stage:</span>
-			<select id="tip_sheet_stages" onchange="show_tip_sheet(this);" style="display:block;">
-				<% @races.each do |race| %>
-					<% race[:stages].each do |stage| %>
-						<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>
+			<% if (@tipping_allowed) %>
+				<!-- Show stages allowing tips -->
+				<span>Choose a stage:</span>
+				<select id="tip_sheet_stages" onchange="show_tip_sheet(this);" style="display:block;">
+					<% @races.each do |race| %>
+						<% race[:stages].each do |stage| %>
+							<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>
+						<% end %>
 					<% end %>
-				<% end %>
-			</select>
-		
-			<div class="custom-separator" style="margin-bottom:15px;"></div>
-			
-			<%=image_tag 'ajax-loader.gif', {:onload=>'show_tip_sheet(this);', :class=>'loading'} %>
-			<div class="data">
-				<fieldset>
-					<legend>Team Pokemon</legend>
-					<input type="checkbox" id="0"><label for="0">Ash the Trainer</label>
-					
-				</fieldset>
-			</div>
+				</select>
+				
+				<div class="custom-separator" style="margin-bottom:15px;"></div>
+				
+				<%=image_tag 'ajax-loader.gif', {:onload=>'show_tip_sheet(this);', :class=>'loading'} %>
+				<div class="data">
+					<fieldset>
+						<legend>Team Pokemon</legend>
+						<input type="checkbox" id="0"><label for="0">Ash the Trainer</label>
+						
+					</fieldset>
+				</div>
+			<% else %>
+				<!-- Show summary -->
+				<p>Tipping has ended for this competition.</p>
+				<span>Choose a race:</span>
+				<select id="selection_sheet_races" onchange="show_selection_sheet(this);" style="display:block;">
+					<% @races.each do |race| %>
+						<option value="<%=race[:race_data].id%>" competition_id="<%=@data[:competition].id%>"><%=race[:race_data].name%></option>
+					<% end %>
+				</select>
+				
+				<div class="custom-separator" style="margin-bottom:15px;"></div>
+				
+				<%=image_tag 'ajax-loader.gif', {:onload=>'show_selection_sheet(this);', :class=>'loading'} %>
+				<div class="data">
+					<fieldset>
+						<legend></legend>
+						<label></label>
+					</fieldset>
+				</div>
+			<% end %>
 		</div>
 	</p>
 </div>

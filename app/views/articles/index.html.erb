@@ -11,16 +11,24 @@
 					</div>
 					<div class="custom-separator"></div>
 					
-					<div class="media-holder">
-						<img src="<%=image_path 'mobile.jpg'%>" class="opacity_0" onload="animateThumb(this)"/>
-					</div>
-
-					<div style="clear:both;"></div>
-					<div class="custom-separator"></div>
-					
-					<div class="main-text-holder">
-						<p>This page is coming soon!</p>
-					</div>
+					<% @articles.each do |article| %>
+						<div class="news-item-vertical">
+							<div class="news-item-vertical-title" style="cursor:default;"><%=article.title%></div>
+							
+							<div class="main-text-holder" style="margin-bottom:20px;">
+								<p style="margin-top:0px;">Published on <%=article.created_at.strftime('%B %e, %Y')%> by <%=article.author%></p>
+								<%=raw(article.body)%>
+							</div>
+							
+							<% article.ArticleLinks.each do |link| %>
+								<a href="<%=link.url%>" target="_blank"><img src="<%=link.url%>" style="max-width:128px; max-height:96px;"></a>
+							<% end %>
+							<!--<div class="news-item-vertical-read-more"><span>Read More</span></div>-->
+						</div>
+						
+						<div style="clear:both;"></div>
+						<div class="custom-separator"></div>
+					<% end %>
 					
 				</div>
 			</div>                	 
