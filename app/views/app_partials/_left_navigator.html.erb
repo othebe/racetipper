@@ -13,6 +13,7 @@
 			</div>  
 			
 			<!-- Races -->
+			<!--
 			<div class="menu-option-holder">
 				<div id="menu-option-background" class="menu-option-background"> </div>
 				<div id="menu-option-text" class="menu-option-text">
@@ -32,6 +33,7 @@
 					</div>
 				</div>         
 			</div>
+			-->
 			
 			<!-- Competitions -->
 			<div class="menu-option-holder">
@@ -99,12 +101,14 @@
 				<option value="#">Navigate to...</option>
 				<option value="#pages/home"> HOME </option>
 
+				<!--
 				<option value="#"> RACES +</option>
 					<% @sidebar_races.each do |race| %>
 						<option value="#races/<%=race.id%>">  - <%=race.name%></option>
 					<% end %>
 					<option value="#races/index">  - See all</option>
-
+				-->
+					
 				<option value="#"> COMPETITIONS +</option>
 					<% @sidebar_competitions.each do |competition| %>
 						<option value="#competitions/<%=competition.id%>">  - <%=competition.name%></option>

@@ -1,7 +1,7 @@
 <div class="main-text-holder">
 	<p><span><%=@data[:competition].description %></span></p>
 	
-	<p>Created by <%=(@data[:creator].firstname+' '+@data[:creator].lastname).strip%></p>
+	<p>Created by <%=(@data[:creator].display_name).strip%></p>
 	
 	<p>
 		<%= image_tag 'blank.jpg', {:onload=>'load_comments();'} %>

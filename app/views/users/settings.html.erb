@@ -15,7 +15,10 @@
 					
 					<div class="main-text-holder">
 						<div class="profile_settings">
-							<div class="button" onclick="">
+							<div class="button" onclick="$('.settings').hide(); $('.settings#general').show();">
+								<span>General</span>
+							</div>
+							<div class="button" onclick="$('.settings').hide(); $('.settings#change_password').show();">
 								<span>Change Password</span>
 							</div>
 							<% if (@user.fb_id.nil?) %>
@@ -26,6 +29,7 @@
 						</div>
 						
 						<div class="data" style="float:left; padding:10px 0px 20px 20px; border-left:1px solid #E3E3E3;">
+							<%=render 'users/settings/general'%>
 							<%=render 'users/settings/change_password'%>
 						</div>
 						

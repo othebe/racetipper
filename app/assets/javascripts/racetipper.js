@@ -582,6 +582,27 @@ function load_more__competitions(elt) {
 	});
 }
 
+//Title:		save_general_settings
+//Description:	Save general settings
+function save_general_settings(elt) {
+	var data = {};
+	
+	//Display name
+	data['display_name'] = $('#display_name').val();
+	//Participate in grand competitions
+	data['in_grand_competition'] = $('#grand_participation').val();
+	
+	$(elt).hide();
+	$('img.loading.general_settings').show();
+	
+	$.post('/users/save_general_settings', {data:data}, function(response) {
+		alert(response.msg);
+			
+		$(elt).show();
+		$('img.loading.general_settings').hide();
+	});
+}
+
 //Title:		change_password
 //Description:	Change password
 function change_password(elt) {

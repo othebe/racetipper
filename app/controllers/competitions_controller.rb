@@ -355,12 +355,7 @@ class CompetitionsController < ApplicationController
 			@is_private = false
 		end
 		
-		@competition_races = []
-		if (!@competition.nil?)
-			Competition.get_all_races(@competition.id).each do |race|
-				@competition_races.push(race.race_id)
-			end
-		end
+		@competition_race = Competition.get_all_races(@competition.id).first.race if (!@competition.nil?)
 			
 		@competition ||= Competition.new
 		render :layout=>false
@@ -752,6 +747,7 @@ class CompetitionsController < ApplicationController
 		data = {}
 		data[:competition] = competition
 		data[:creator] = User.find_by_id(competition.creator_id)
+		data[:creator].display_name = (data[:creator].firstname+' '+data[:creator].lastname).strip if (data[:creator].display_name.nil? || data[:creator].display_name.empty?)
 		data[:is_creator] = (@user.nil?)?false:(data[:creator].id == @user.id)
 		data[:is_participant] = participant
 		
@@ -795,7 +791,8 @@ class CompetitionsController < ApplicationController
 			user_id = tip.competition_participant_id
 			
 			user = User.find_by_id(user_id)
-			username = (user.firstname+' '+user.lastname).strip
+			username = user.display_name
+			username = (user.firstname+' '+user.lastname).strip if (username.nil? || username.empty?)
 
 			user_score = user_scores[user_id] || Hash.new
 			user_score[:tip] ||= Array.new

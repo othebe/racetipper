@@ -48,14 +48,20 @@
 									</tr>
 									
 									<tr>
-										<td class="label">Races:</td>
-										<td>
-											<% ndx = 0 %>
-											<% @races.each do |race| %>
-												<input type="checkbox" name="race" id="<%=ndx%>" value="<%=race.id%>" <%=(@competition_races.index(race.id).nil?)?'':'checked="checked"'%>>
-												<label for="<%=ndx%>"><%=race.name%></label></br>
-											<% end %>
-										</td>
+										<% if (!@competition.id.nil?) %>
+											<td class="label">Race:</td>
+											<td><%=@competition_race.name%></td>
+										<% else %>
+											<td class="label">Races:</td>
+											<td>
+												<% ndx = 0 %>
+												<select name="race">
+													<% @races.each do |race| %>
+														<option value="<%=race.id%>"><%=race.name%></option>
+													<% end %>
+												</select>
+											</td>
+										<% end %>
 									</tr>
 								</table>
 							</p>

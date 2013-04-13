@@ -26,6 +26,11 @@ class ApplicationController < ActionController::Base
 		@user_img = '/assets/default_user.jpg'
 	end
 	
+	#User display name
+	if (!@user.nil? && (@user.display_name.nil? || @user.display_name.empty?))
+		@user[:display_name] = (@user.firstname+' '+@user.lastname).strip
+	end
+	
 	#Invite user to competitions if any
 	if (!@user.nil? && session.has_key?(:invited_competitions) && !session[:invited_competitions].empty?)
 		session[:invited_competitions].each do |competition_id|

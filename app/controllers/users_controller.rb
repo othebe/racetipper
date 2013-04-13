@@ -136,6 +136,24 @@ class UsersController < ApplicationController
 		redirect_to :root
 	end
 	
+	#Title:			save_general_settings
+	#Description:	Save
+	#				- Display name
+	#				- Participation in grand competitions
+	def save_general_settings
+		data = params[:data]
+		
+		#Display name
+		@user.display_name = data[:display_name]
+		
+		#In grand participation
+		@user.in_grand_competition = data[:in_grand_competition]
+		
+		@user.save
+		
+		render :json=>{:success=>true, :msg=>'Profile information saved.'}
+	end
+	
 	#Title:			change_password
 	#Description:	Change password for current user
 	def change_password

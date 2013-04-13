@@ -6,41 +6,6 @@
 	<div id="module-container-holder" class="module-position-cc"  data-id="module-position-cc">
 		<div id="module-home-layout2"  class="module-home-layout2" ><!-- .shadow-side-all -->
 			<div id="module-home-layout2-holder">
-				<% render :partial=>'pages/partials/home_carousel', :locals=>{:carousel_slides=>@carousel_slides}%>
-				
-				<div class="home-layout2-content shadow-side-all home_panel">
-					<div class="home-layout2-title">Recent Races</div>
-					<ul>
-						<% for i in 0..3 %>
-							<% race = @sidebar_races[i] %>
-							<% next if (race.nil?) %>
-							<li>
-								<div style="width:190px; height:101px;">
-									<img src="<%=cl_image_path race.image_url, {:width=>190, :height=>101, :crop=>:crop} %>" style="width:100%; height:100%;">
-								</div>
-								<div class="layout2-description home_race_result">
-									<p><%=race.name%></p>
-									<%=image_tag 'ajax-loader.gif', {:onload=>'load_home_race_results(this, '+race.id.to_s+');'} %>
-									<div class="results">
-										<div style="clear:both; margin-top:0px;">
-											<span style="width:auto; margin-top:0px;">Rider 1</span> 
-											<span style="width:auto; margin-top:0px; float:right;">... 4:04:12</span>
-										</div>
-										<div style="clear:both; margin-top:0px;">
-											<span style="width:auto; margin-top:0px;">Rider 1</span> 
-											<span style="width:auto; margin-top:0px; float:right;">... 4:04:12</span>
-										</div>
-									</div>
-									<div class="button" onclick="load_page('#races/<%=race.id%>');">
-										<span>Show More</span>
-									</div>
-								
-								</div>
-							</li>
-						<% end %>
-					</ul>
-				</div>
-				
 				<%= render :partial=>'pages/partials/home_featured_articles', :locals=>{:articles=>@articles} %>
 		</div>
 		
