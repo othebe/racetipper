@@ -38,7 +38,7 @@ class StagesController < ApplicationController
 		stage_data = {
 			:name => stage.name,
 			:description => stage.description,
-			:profile => stage.profile,
+			:profile => (stage.profile.nil? || stage.profile.empty?)?nil:stage.profile,
 			:starts_on => stage_starts_on.strftime('%b %e, %Y, %H:%M'),
 			:start_location => stage.start_location,
 			:end_location => stage.end_location,

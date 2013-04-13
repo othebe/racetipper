@@ -119,6 +119,58 @@ class CompetitionsController < ApplicationController
 		render :layout=>'competition'
 	end
 	
+	#Title:			default_riders
+	#Description:	Show the default riders for races in this competitions
+	def default_riders
+		competition_id = params[:id]
+		@data = get_competition_data(competition_id)
+		
+		#Race list
+		@races = []
+		CompetitionStage.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).select(:race_id).group(:race_id).each do |competition_stage|
+			race_id = competition_stage.race_id
+			race_data = Race.find_by_id(race_id)
+			@races.push(race_data)
+		end
+		
+		render :layout=>'competition'
+	end
+	
+	#Title:			get_default_riders
+	#Description:	Gets list of default riders for a race
+	def get_default_riders
+		race_id = params[:race_id]
+		competition_id = (params.has_key?(:id))?params[:id]:0
+		uid = (@user.nil?)?nil:@user.id
+		
+		default_riders = DefaultRider.where({:race_id=>race_id}).order(:order_id)
+		@data = []
+		default_riders.each do |default_rider|
+			#Get rider info
+			rider = Rider.find_by_id(default_rider.rider_id)
+			#Get tip info
+			selected = nil
+			if (!competition_id.nil? && !uid.nil?)
+				#Chosen by default?
+				stage_id = CompetitionTip.select(:stage_id).where({:competition_participant_id=>uid, :race_id=>race_id, :competition_id=>competition_id, :default_rider_id=>rider.id})
+				#Chosen as tip?
+				stage_id = CompetitionTip.select(:stage_id).where({:competition_participant_id=>uid, :race_id=>race_id, :competition_id=>competition_id, :rider_id=>rider.id}) if (stage_id.nil?)
+				
+				stage = Stage.find_by_id(stage_id)
+				selected = stage.name if (!stage.nil?)
+			end
+			
+			rider_data = {
+				:name => rider.name,
+				:disqualified => Result.rider_status_to_str(default_rider.status),
+				:selected => selected
+			}
+			@data.push(rider_data)
+		end
+		
+		render :json=>{:default_riders => @data}
+	end
+	
 	#Title:			tip
 	#Description:	Leave a tip
 	def tip

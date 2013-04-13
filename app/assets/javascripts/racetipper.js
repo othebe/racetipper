@@ -404,6 +404,29 @@ function load_home_race_results(elt, id) {
 	});
 }
 
+//Title:		show_default_riders
+//Description:	Show default riders for a race in a competition
+//Params:		elt - Object that triggered the load
+//				id - Competition ID
+function show_default_riders(elt, id) {
+	var url = '/competitions/get_default_riders/'+id;
+	var race_id = $('#default_rider_races').val();
+	var rider_container = $('#default_rider_data');
+	
+	$.get(url, {race_id:race_id}, function(response) {
+		$(response.default_riders).each(function(ndx, default_rider) {
+			var row = $('<div></div>');
+			note = default_rider.disqualified || default_rider.selected;
+			if (note != null) {	
+				$(row).css('color', 'lightgray');
+				$(row).html(['<span style="text-decoration:line-through;">',default_rider.name,'</span>',' (',note,')'].join(''));
+			} else $(row).html(['<span>',default_rider.name,'</span>'].join(''));
+			
+			$(rider_container).append(row);
+		});
+	});
+}
+
 //Title:		setup_crop
 //Description:	Setup image cropping
 var scrollbar_set = false;

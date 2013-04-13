@@ -6,7 +6,7 @@
  **/
   
  /* start GENERAL CUSTOMIZATION PROPERTIES */
-var templateBaseURL         = "http://racetipper.herokuapp.com/";/*"http://themes.mediacreed.com/html/synergy/"*/ 
+var templateBaseURL         = "http://racetipper.herokuapp.com/";
 var themeColor              = "#d00355";
 var menuActive              = true;
 var menuHoverActive         = true; /* it will change to false if menuActive == true. If 'menuActive' 
@@ -4917,6 +4917,7 @@ $(window).load(function(){
         var loadContainer = $("#load-container");
 		if( loadContainer.length > 0 ){
             prevURL = url;
+			$('#module-scrollbar-holder').remove();
             loadContainer.empty().load( url + ' title, #module-container > *', moduleLoaded );
         }
 	}

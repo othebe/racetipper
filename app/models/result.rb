@@ -37,7 +37,6 @@ class Result < ActiveRecord::Base
 			rider_data[:rider_name] ||= Rider.find_by_id(rider_id).name
 			disqualified = rider_status_to_str(result.rider_status)
 			score_modifier = get_score_modifier(result.rider_status)
-			
 			if (options.has_key?(:index_by_rider))
 				rider_data[:stages] ||= {}
 				rider_data[:stages][result.season_stage_id] ||= {}
@@ -90,7 +89,7 @@ class Result < ActiveRecord::Base
 				rider_data[:time] = 999999999 if (!disqualified.nil?)
 				rider_data[:sort_score] = score_modifier + rider_data[:time] - result.bonus_time
 				#Format time
-				if (result.time >= 86400)
+				if (rider_data[:time] >= 86400)
 					days = (Time.at(rider_data[:time]).gmtime.strftime('%-d').to_i - 1).to_s
 					rider_data[:time_formatted] = Time.at(rider_data[:time]).gmtime.strftime(days+' day(s), %R:%S')
 				else
@@ -98,13 +97,13 @@ class Result < ActiveRecord::Base
 				end
 				
 				#Format bonus time
-				if (result.bonus_time >= 86400)
+				if (rider_data[:bonus_time] >= 86400)
 					days = (Time.at(rider_data[:bonus_time]).gmtime.strftime('%-d').to_i - 1).to_s
 					rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime(days+' day(s), %R:%S')
-				elsif (result.bonus_time.nil? || result.bonus_time == 0)
+				elsif (rider_data[:bonus_time].nil? || rider_data[:bonus_time] == 0)
 					rider_data[:bonus_time_formatted] = nil
-				elsif (result.bonus_time <= 60)
-					rider_data[:bonus_time_formatted] = result.bonus_time.to_s + '"'
+				elsif (rider_data[:bonus_time] <= 60)
+					rider_data[:bonus_time_formatted] = rider_data[:bonus_time].to_s + '"'
 				else
 					rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime('%R:%S')
 				end
