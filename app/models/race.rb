@@ -62,5 +62,18 @@ class Race < ActiveRecord::Base
 			})
 			competition_stage.save
 		end
+		
+		#Call Ironworker to queue job
+		require 'net/http'
+
+		url = "https://worker-aws-us-east-1.iron.io/2/projects/#{IRONWORKER_PROJECT_ID}/tasks/webhook?code_name=add_participants_to_global_competition&oauth=#{IRONWORKER_TOKEN}"
+		uri = URI.parse(url)
+		req = Net::HTTP::Post.new(url)
+		res = Net::HTTP.start(
+			uri.host, uri.port, 
+			:use_ssl => true,
+			:verify_mode => OpenSSL::SSL::VERIFY_PEER,
+			:ca_file => File.join('..', "cacert.pem")) {|http| http.request(req)}
+		puts res.body
 	end
 end

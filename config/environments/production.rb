@@ -93,3 +93,7 @@ Cloudinary.config do |config|
 	config.cdn_subdomain = true
 end
 CLOUDINARY_URL = 'cloudinary://354521382215813:rWbmYgLsHoOGXJvgJT9WiHNpvf4@racetipper'
+
+#Ironworker
+IRONWORKER_PROJECT_ID = '516968bc2267d85351001a8d'
+IRONWORKER_TOKEN = 'sDMGz4n9RX85PZoi27Y4CuCHcNk'
