@@ -10,6 +10,7 @@ Racetipper::Application.routes.draw do
 	match '/competitions/get_more_competitions'
 	match '/competitions/save_competition'
 	match '/competitions/save_image'
+	match '/competitions/add_participants_to_global_competition'
 	match '/competitions/:id' => 'competitions#show'
 	
 	match '/races/index' => 'races#index'

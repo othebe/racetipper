@@ -10,8 +10,11 @@
                     <div id="module-columns-container">
                         <div class="columns-filter-holder">
                             <div id="filter-buttons-holder">
-                                <div class="filter-button" data-filter="created">Created</div>
-                                <div class="filter-button" data-filter="participating">Participating</div>
+								<% if (!@user.nil?) %>
+									<div class="filter-button" data-filter="created">Created</div>
+									<div class="filter-button" data-filter="participating">Participating</div>
+									<div class="filter-button" data-filter="official">Official</div>
+								<% end %>
                                 <div class="filter-button selected" data-filter="*">Show All</div>
                             </div>
                         </div>  
@@ -36,7 +39,8 @@
 						
 							<% @competitions.each do |competition| %>
 								<% selector = (competition[:is_participant])?'participating ':'' %>
-								<% selector += (competition[:is_creator])?'created':'' %>
+								<% selector += (competition[:is_creator])?'created ':'' %>
+								<% selector += (competition[:competition][:competition_type] == COMPETITION_TYPE[:GLOBAL])?'official':'' %>
 								<% is_open = (competition[:competition][:is_complete])?'Completed':'Open' %>
 								
 								<div class="fourth-thumb-holder" data-id="<%=selector%>" data-url="#competitions/<%=competition[:competition].id%>">

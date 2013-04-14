@@ -78,4 +78,19 @@ class AppMailer < ActionMailer::Base
 		mail(:to=>BUG_NOTIFY_LIST, :subject=>@title)
 	end
 	
+	#Title:			global_race_admin_notify
+	#Description:	Notify administrators that a global race has been created
+	#Params:		competition_id - Competition ID
+	#				user_count - Count of users that qualify for invitations
+	#				invitation_count - Count of users actually invited
+	def global_race_admin_notify(competition_id, user_count, invitation_count)
+		competition = Competition.find_by_id(competition_id)
+		@competition_url = SITE_URL+'#competitions/'+competition_id.to_s
+		@competition_name = competition.name
+		@user_count = user_count
+		@invitation_count = invitation_count
+		
+		mail(:to=>BUG_NOTIFY_LIST, :subject=>'Global competition created')
+	end
+	
 end

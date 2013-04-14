@@ -596,7 +596,7 @@ $(window).load(function(){
 		          
                }
 		}
-		else{		  
+		else{	
 			$showModuleBackground = $("#module-container #module-background-holder #module-background");
             $showModuleBackgroundSolid = $("#module-container #module-background-holder div");
             showDone = true;
@@ -1465,7 +1465,7 @@ $(window).load(function(){
     
 	/*================= TEXT PAGE =============================*/
 	//Ozzy: Added skip_tween to skip the transition
-	function moduleTextPage(skip_tween){		
+	function moduleTextPage(skip_tween){	
 		var textPageInstanceHolder    = $( txt_modCont);
 		//Ozzy: Ignore module-text-page
         //var textPageInstance          = $( "#module-text-page", textPageInstanceHolder);
@@ -1476,12 +1476,11 @@ $(window).load(function(){
 		var moduleHeight              = textPageInstanceHolder.height();
        
         moduleEnd                     = true;
-        if( textPageInstance.length <= 0 ) return;
+		if( textPageInstance.length <= 0 ) return;
         endModuleFunction             = endModuleTextPage;
-		
 		if (skip_tween == null) skip_tween = false;
-       
 		if (!skip_tween) {
+			$('#module-container-holder').css('visibility', 'visible');
 			switch( modulePositionType ){
 				case "module-position-lb":				
 					break;
@@ -1514,6 +1513,7 @@ $(window).load(function(){
 			}
 		} else {
 			moduleUpdate( textPageInstanceHolder, modWrapper, $("div:first", modWrapper), sideType );  
+			$('.module-position-lc.wide').css('visibility', 'visible'); /*Ozzy: Show pages that are not menu items*/
 		}
 	}
     function endModuleTextPage(){        

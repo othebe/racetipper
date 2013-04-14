@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
 		user.last_activity = Time.now.to_datetime
 		user.fb_id = data[:fb_id] if (!data[:fb_id].nil?)
 		user.fb_access_token = data[:fb_access_token] if (!data[:fb_access_token].nil?)
+		user.display_name = (data[:firstname]+' '+data[:lastname]).strip
 		
 		#Send welcome emails
 		if (data[:fb_id].nil?)
@@ -30,6 +31,9 @@ class User < ActiveRecord::Base
 		end
 		
 		user.save
+		
+		#Add user to any global competitions
+		user.add_to_global_competition
 		
 		return self.find_by_id(user.id)
 	end
@@ -102,5 +106,16 @@ class User < ActiveRecord::Base
 		password  =  (0...len).map{ base[rand(base.length)] }.join
 		
 		return password
+	end
+	
+	#Title:			add_to_global_competition
+	#Description:	Adds a user to open global competitions
+	def add_to_global_competition
+		return if (!self.in_grand_competition)
+		
+		competitions = Competition.where({:status=>STATUS[:ACTIVE], :is_complete=>false, :competition_type=>COMPETITION_TYPE[:GLOBAL]})
+		competitions.each do |competition|
+			CompetitionParticipant.add_participant(self.id, competition.id)
+		end
 	end
 end

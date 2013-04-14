@@ -1,5 +1,5 @@
 class Competition < ActiveRecord::Base
-	attr_accessible :creator_id, :description, :image_url, :name, :season_id
+	attr_accessible :creator_id, :description, :image_url, :name, :season_id, :competition_type
 	
 	has_many :CompetitionInvitation
 	has_many :CompetitionParticipation
@@ -64,5 +64,21 @@ class Competition < ActiveRecord::Base
 		competitions.each do |competition|
 			Competition.check_completion_status(competition.id)
 		end
+	end
+	
+	#Title:			add_participants_to_global_competition
+	#Description:	Adds participants to a global competition. Called as cron / worker.
+	#Returns:		status message
+	def add_participants_to_global_competition
+		users = User.where({:in_grand_competition=>true})
+		
+		invitation_count = 0
+		users.each do |user|
+			CompetitionParticipant.add_participant(user.id, self.id)
+			invitation_count += 1
+		end
+		AppMailer.global_race_admin_notify(self.id, users.length, invitation_count).deliver
+		
+		return "#{self.name} created. #{invitation_count}/#{users.length} users invited."
 	end
 end

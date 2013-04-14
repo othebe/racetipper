@@ -37,4 +37,30 @@ class Race < ActiveRecord::Base
 		end
 		race.save
 	end
+	
+	#Title:			create_competition_from_race
+	#Description:	Creates global competition for a race
+	def create_competition_from_race
+		#Create competition
+		competition = Competition.new({
+			:creator_id => ADMIN_ID,
+			:name => self.name,
+			:description => self.description,
+			:image_url => self.image_url,
+			:season_id => self.season_id,
+			:competition_type => COMPETITION_TYPE[:GLOBAL]
+		})
+		competition.save
+		
+		#Create competition stages
+		stages = Stage.where({:race_id=>self.id, :status=>STATUS[:ACTIVE]}).order(:order_id)
+		stages.each do |stage|
+			competition_stage = CompetitionStage.new({
+				:competition_id => competition.id,
+				:stage_id => stage.id,
+				:race_id => self.id
+			})
+			competition_stage.save
+		end
+	end
 end

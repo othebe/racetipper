@@ -539,6 +539,15 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
+	#Title:			add_participants_to_global_competition
+	#Description:	Calls a worker process to add participants to a global competition
+	def add_participants_to_global_competition
+		competition = Competition.where({:competition_type=>COMPETITION_TYPE[:GLOBAL]}).order('id DESC').limit(1).first
+		msg = competition.add_participants_to_global_competition
+		
+		render :json => {:response=>{:sucess=>true, :msg=>msg}}
+	end
+	
 	#JSON
 	
 	#Title:			get_competition_stage_info
@@ -690,15 +699,23 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>true, :msg=>stage.name}
 	end
 	
+	#Title:			kick
+	#Description:	Remove a user from competition
 	def kick
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
 		
-		competition_id = params[:competition_id]
-		user_id = params[:user_id]
+		competition_id = params[:id]
+		if (params.has_key?(:user_id) && !params[:user_id].empty?)
+			msg = 'User has been kicked from the competition.'
+			user_id = params[:user_id]
+		else
+			msg = 'You have left the competition.'
+			user_id = @user.id
+		end
 		
 		#Check if user has authority
 		competition = Competition.find_by_id(competition_id)
-		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id)
+		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (!(@user.id != user_id || competition.creator_id != @user.id))
 		render :json=>{:success=>false, :msg=>'Cannot kick creator.'} and return if (competition.creator_id == user_id)
 		
 		#Find participant and kick
@@ -707,7 +724,7 @@ class CompetitionsController < ApplicationController
 			participant.status = STATUS[:DELETED]
 			participant.save
 		end
-		render :json=>{:success=>true, :msg=>'User has been kicked from the competition.'}
+		render :json=>{:success=>true, :msg=>msg}
 	end
 	
 	def send_invitation_emails
@@ -770,6 +787,10 @@ class CompetitionsController < ApplicationController
 
 		user_scores = {}
 		tips.each do |tip|
+			#Skip non participants
+			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>competition_id}).first
+			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
+			
 			next if (race_results.nil?)
 			
 			#Fill tip if user has not tipped anyone and the leaderboard is open

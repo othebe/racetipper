@@ -209,8 +209,11 @@ class AdminController < ApplicationController
 	end
 	
 	def save_season_races
-		logger.debug(session.has_key?(:season_id))
 		render :json=>{:success=>false, :msg=>'Select a season first.'} and return if (!session.has_key?(:season_id) || session[:season_id].empty?)
+		
+		#Determine if a new global competition needs to be created
+		create_global_competition = false
+		
 		race_info = params[:race_info]
 		if (race_info.has_key?(:id))
 			race = Race.find_by_id(race_info[:id])
@@ -220,6 +223,7 @@ class AdminController < ApplicationController
 		race.description = race_info[:race_description]
 		race.image_url = race_info[:race_image_url]
 		race.season_id = session[:season_id]
+		create_global_competition = race.id.nil?
 		race.save
 		
 		stage_arr = []
@@ -241,6 +245,9 @@ class AdminController < ApplicationController
 			stage_arr.push(stage.id)
 		end
 		Stage.where('race_id=? AND season_id=? AND id NOT IN (?)', race.id, session[:season_id], stage_arr).delete_all
+		
+		#Create a global competition and add participants
+		Race.create_competition_from_race if (create_global_competition)
 		
 		render :json=>{:success=>true, :msg=>'success'} and return
 	end

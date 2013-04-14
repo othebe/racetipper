@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130413080534) do
+ActiveRecord::Schema.define(:version => 20130413125625) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -76,11 +76,12 @@ ActiveRecord::Schema.define(:version => 20130413080534) do
     t.text     "description"
     t.string   "image_url"
     t.integer  "season_id"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
-    t.integer  "status",          :default => 1
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.integer  "status",           :default => 1
     t.string   "invitation_code"
-    t.boolean  "is_complete",     :default => false
+    t.boolean  "is_complete",      :default => false
+    t.integer  "competition_type", :default => 1
   end
 
   create_table "cycling_quotes", :force => true do |t|

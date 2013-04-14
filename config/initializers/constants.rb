@@ -1,5 +1,6 @@
 SITE_URL = 'http://racetipper.herokuapp.com/'
 COMPETITION_LOAD_QTY = 10
+ADMIN_ID = 2
 
 STATUS = {
 	:DELETED => 0,
@@ -38,4 +39,12 @@ SCORE_MODIFIER = {
 	:DNS => 100,
 	:DNF => 100,
 	:DEFAULT => 90
+}
+
+#Competition types
+#USER - User created competitions (Default)
+#GLOBAL - Site wide competition created for every race
+COMPETITION_TYPE = {
+	:USER => 1,
+	:GLOBAL => 2
 }

@@ -295,6 +295,20 @@ function join_competition(competition_id, elt) {
 	});
 }
 
+//Title:		leave_competition
+//Description:	User leaves a competition
+//Params:		competition_id - Competition ID
+//				user_id - User to kick. Null for current user.
+function leave_competition(competition_id, user_id) {
+	if (!confirm("Are you sure you want to leave this competition? Update your profile settings to stop automatic registrations for official competitions.")) return;
+	
+	var url = '/competitions/kick/'+competition_id;
+	$.post(url, {user_id:user_id}, function(response) {
+		alert(response.msg);
+		if (response.success) window.location.reload();
+	});
+}
+
 //Title:		load_race_results
 //Description:	Load race results on race page
 //Params:		elt - Object that triggers a results load

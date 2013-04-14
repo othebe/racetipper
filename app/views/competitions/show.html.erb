@@ -2,9 +2,19 @@
 	<p><span><%=@data[:competition].description %></span></p>
 	
 	<p>Created by <%=(@data[:creator].display_name).strip%></p>
+
+	<% if (!@user.nil? && !@data[:competition].is_complete && @data[:is_participant] && !@data[:is_creator]) %>
+		<p style="float:right;">
+			<a style="color:blue; cursor:pointer;" onclick="leave_competition('<%=@data[:competition].id%>');">(Leave competition)</a>
+		</p>
+	<% end %>
+	
+	<div class="custom-separator" style="margin-bottom:15px;"></div>
+	<div style="clear:both;"></div>
 	
 	<p>
 		<%= image_tag 'blank.jpg', {:onload=>'load_comments();'} %>
 		<div class="fb-comments" data-href="<%=SITE_URL%>competition/<%=@data[:competition].id%>" data-width="700" data-num-posts="10"></div>
 	</p>
+	
 </div>
