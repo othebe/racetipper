@@ -73,7 +73,7 @@ class Race < ActiveRecord::Base
 			uri.host, uri.port, 
 			:use_ssl => true,
 			:verify_mode => OpenSSL::SSL::VERIFY_PEER,
-			:ca_file => File.join('..', "cacert.pem")) {|http| http.request(req)}
+			:ca_file => File.join("cacert.pem")) {|http| http.request(req)}
 		puts res.body
 	end
 end
