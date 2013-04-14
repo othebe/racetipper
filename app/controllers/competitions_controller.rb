@@ -174,7 +174,7 @@ class CompetitionsController < ApplicationController
 	#Title:			tip
 	#Description:	Leave a tip
 	def tip
-		redirect_to :root if (@user.nil?)
+		redirect_to :root and return if (@user.nil?)
 		competition_id = params[:id]
 		@data = get_competition_data(competition_id)
 		@tipping_allowed = false

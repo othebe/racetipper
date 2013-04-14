@@ -145,6 +145,7 @@ function load_leaderboard(elt) {
 		
 		$(load_img).hide();
 		$(results_table).show();
+		moduleTextPage(true);
 	});
 }
 
@@ -206,6 +207,7 @@ function show_tip_sheet(elt) {
 		});
 		
 		$(load_img).hide();
+		moduleTextPage(true);
 	});
 }
 
@@ -438,6 +440,7 @@ function show_default_riders(elt, id) {
 			
 			$(rider_container).append(row);
 		});
+		moduleTextPage(true);
 	});
 }
 
