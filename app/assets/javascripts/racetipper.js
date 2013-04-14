@@ -552,10 +552,8 @@ function save_competition() {
 	data['open_to'] = $(form).find('input[name=open_to]:checked').val();
 	data['invitations'] = $(form).find('#invitations').val();
 	data['image_name'] = $(form).find('#image_name').val();
-	data['races'] = [];
-	$(form).find('input[name=race]:checked').each(function(ndx, elt) {
-		data['races'].push($(elt).val());
-	});
+	data['races'] = $(form).find('select[name=race]').val();
+	
 	$.post('/competitions/save_competition', {data:data}, function(response) {
 		if (!response.success)
 			alert(response.msg);
