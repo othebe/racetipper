@@ -330,6 +330,7 @@ div.tipsheet {
 			border: 2px groove threedface;
 			padding: 8px;
 			margin-top: 15px;
+			clear: both;
 		}
 
 /* Style forms with labels and inputs */		
