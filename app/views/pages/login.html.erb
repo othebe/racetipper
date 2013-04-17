@@ -26,8 +26,8 @@
 								<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
 							</div>
 						</form>
-						
-						<p><h3>Or, Login with Facebook</h3></p>
+						<p></p>
+						<h3>Or, Login with Facebook</h3>
 						<a onclick="facebook_login();" style="cursor:pointer;"><%=image_tag 'facebook.gif'%></a>
 					</div>
 				</div>
@@ -44,10 +44,36 @@
 						<input type="text" name="lastname" placeholder="Last name"></br>
 						<input type="text" name="email" placeholder="Email"></br>
 						<input type="password" name="password" placeholder="Password">
-						<div class="button" style="margin-left:0; padding-right:12px;" onclick="signup(this);">
+						<div class="button" style="margin-left:0; margin-top:15px; padding-right:12px;" onclick="signup(this);">
 							<span>Create</span>
 						</div>
 						<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
+					</div>
+				</div>
+				
+				<!-- Password reset option -->
+				<div style="clear:both;"></div>
+				<div style="text-align:center; margin-top:-30px;">
+					<p>
+						<a style="color:darkmagneta; text-decoration:none; cursor:pointer;" onclick="$(this).hide(); $('div.password_reset').slideDown();">Forgot your password?</a>
+					</p>
+				</div>
+				
+				<!-- Password reset -->
+				<div id="module-text-page-holder-philosophy" class="password_reset" style="margin-top:0px; width:83%; display:none;">  
+					<div class="custom-separator"></div>
+					<div class="title-holder">
+						<span class="title-text_normal">Password Reset</span>
+					</div>
+					
+					<h3>Type in your email and we'll send you a temporary password.</3>
+					
+					<div class="main-text-holder signup" style="width:100%; margin-top:5px;">
+						<input type="text" name="reset_email" placeholder="Email" style="width:auto; float:left;">
+						<div class="button" style="margin:0 0 0 15px; padding-right:12px; width:30%; float:left;" onclick="forgot_password(this);">
+							<span>Send</span>
+						</div>
+						<%=image_tag 'ajax-loader.gif', {:class=>'loading password_reset', :style=>'margin:10px 10px;'} %>
 					</div>
 				</div>
 				

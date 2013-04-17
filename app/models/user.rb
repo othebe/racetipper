@@ -82,9 +82,15 @@ class User < ActiveRecord::Base
 		return nil if (user.nil?)
 		
 		enc_password = Digest::SHA1.hexdigest(user.salt+data[:password])
-		if (enc_password==user.password || enc_password==user.temp_password)
-			user.temp_password = nil
+		
+		#Logged in with regular password
+		if (enc_password == user.password)
 			return user
+		#Logged in with temporary password
+		elsif (enc_password == user.temp_password)
+			user.set_password(data[:password])
+			return user
+		#No user found
 		else
 			return nil
 		end

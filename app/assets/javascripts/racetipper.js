@@ -621,6 +621,7 @@ function save_general_settings(elt) {
 //Title:		change_password
 //Description:	Change password
 function change_password(elt) {
+	var old_password = $('input[name=old_password]').val();
 	var password = $('input[name=new_password]').val();
 	var verify_password = $('input[name=verify_password]').val();
 	
@@ -633,7 +634,7 @@ function change_password(elt) {
 	$(elt).hide();
 	$('img.loading.change_password').show();
 	
-	$.post('/users/change_password', {password:password}, function(response) {
+	$.post('/users/change_password', {old_password:old_password, password:password}, function(response) {
 		alert(response.msg);
 			
 		$(elt).show();
@@ -671,6 +672,21 @@ function submit_feedback(elt) {
 		
 		$(elt).show();
 		$('.loading').hide();
+	});
+}
+
+//Title:		forgot_password
+//Description:	User forgot password. Mail them one.
+function forgot_password(elt) {
+	var email = $('input[name=reset_email]').val();
+	
+	$(elt).hide();
+	$('.loading.password_reset').show();
+	
+	$.post('/users/reset_password_from_email', {email:email}, function(response) {
+		alert(response.msg);
+		$(elt).show();
+		$('.loading.password_reset').hide();
 	});
 }
 
