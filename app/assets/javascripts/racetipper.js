@@ -690,15 +690,6 @@ function forgot_password(elt) {
 	});
 }
 
-//Title:		fix_module_text_page
-//Description:	Fix scrollbar issues
-function fix_module_text_page(elt) {
-	var parent = $(elt).parent();
-	$(parent).find('img').each(function(ndx, elt) {
-		elt.setAttribute('onload', 'moduleTextPage(true);');
-	});
-}
-
 //Title:		load_comments
 //Description:	Loads Facebook comments and fixes scrollbars
 function load_comments() {
