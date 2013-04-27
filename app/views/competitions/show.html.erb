@@ -13,8 +13,8 @@
 	<div style="clear:both;"></div>
 	
 	<% @articles.each do |article| %>
-		<%= image_tag 'blank.jpg', {:onload=>'fix_module_text_page();'} %>
 		<div class="news-item-vertical">
+			<%= image_tag 'blank.jpg', {:onload=>'fix_module_text_page(this);'} %>
 			<div class="news-item-vertical-title" style="cursor:default;"><%=article.title%></div>
 			
 			<div class="main-text-holder" style="margin-bottom:20px;">
