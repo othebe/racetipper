@@ -38,6 +38,8 @@ class CompetitionsController < ApplicationController
 		@data = get_competition_data(params[:id])
 		@data[:races] = Competition.get_all_races(params[:id])
 		
+		@articles = Article.get_articles_for_competition(params[:id])
+		
 		@is_owner = false
 		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
 		

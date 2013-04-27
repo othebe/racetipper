@@ -12,6 +12,22 @@
 	<div class="custom-separator" style="margin-bottom:15px;"></div>
 	<div style="clear:both;"></div>
 	
+	<% @articles.each do |article| %>
+		<div class="news-item-vertical">
+			<div class="news-item-vertical-title" style="cursor:default;"><%=article.title%></div>
+			
+			<div class="main-text-holder" style="margin-bottom:20px;">
+				<p style="margin-top:0px; font-style:italic;">Published on <%=article.created_at.strftime('%B %e, %Y')%> by <%=article.author%></p>
+
+				<%=raw(article.body)%>
+
+			</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		<div class="custom-separator"></div>
+	<% end %>
+	
 	<p>
 		<%= image_tag 'blank.jpg', {:onload=>'load_comments();'} %>
 		<div class="fb-comments" data-href="<%=SITE_URL%>competition/<%=@data[:competition].id%>" data-width="700" data-num-posts="10"></div>
