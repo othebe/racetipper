@@ -90,8 +90,6 @@ class AdminController < ApplicationController
 		@id = params[:id] if (params.has_key?(:id))
 		@article = Article.find_by_id(params[:id]) if (params.has_key?(:id))
 		@article ||= Article.new
-		@image_links = @article.ArticleLinks.where({:url_type=>URL_TYPE[:IMAGE]})
-		@video_links = @article.ArticleLinks.where({:url_type=>URL_TYPE[:VIDEO]})
 		
 		render :layout=>false
 	end
@@ -361,42 +359,22 @@ class AdminController < ApplicationController
 	def save_article
 		article_data = params[:article_data]
 		
+		render :json=>{:success=>false, :msg=>'Please enter a stage ID.'} and return if (article_data[:stage_id].empty?)
 		render :json=>{:success=>false, :msg=>'Please enter a title.'} and return if (article_data[:title].empty?)
 		render :json=>{:success=>false, :msg=>'Please enter a author.'} and return if (article_data[:author].empty?)
 		render :json=>{:success=>false, :msg=>'Please enter a body.'} and return if (article_data[:body].empty?)
 		
+		stage = Stage.find_by_id(article_data[:stage_id])
+		render :json=>{:success=>false, :msg=>'Please enter a valid stage ID.'} and return if (stage.nil?)
+		
 		article = Article.find_by_id(article_data[:id]) if (article_data.has_key?(:id))
 		article ||= Article.new
 		
+		article.stage_id = article_data[:stage_id]
 		article.title = article_data[:title]
 		article.author = article_data[:author]
 		article.body = article_data[:body]
-		article.article_type = ARTICLE_TYPE[article_data[:type].to_sym]
 		article.save
-		
-		ArticleLink.where({:article_id=>article.id}).delete_all
-	
-		if (!article_data[:image_links].nil?)
-			article_data[:image_links].each do |ndx, link|
-				article_link = ArticleLink.new
-				article_link.article_id = article.id
-				article_link.url = link[:url]
-				article_link.description = link[:description]
-				article_link.url_type = URL_TYPE[:IMAGE]
-				article_link.save
-			end
-		end
-
-		if (!article_data[:video_links].nil?)
-			article_data[:video_links].each do |ndx, link|
-				article_link = ArticleLink.new
-				article_link.article_id = article.id
-				article_link.url = link[:url]
-				article_link.description = link[:description]
-				article_link.url_type = URL_TYPE[:VIDEO]
-				article_link.save
-			end
-		end
 		
 		render :json=>{:success=>true, :msg=>'success'}
 	end

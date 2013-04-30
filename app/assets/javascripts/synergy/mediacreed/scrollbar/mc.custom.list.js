@@ -456,10 +456,16 @@
                     $draggerScrollLimit = $draggerContainer.height() - draggerNewH; 
                     
                 }
+			
 				$draggerScroll.draggable({ 
 					axis: "y", 
 					containment: "parent", 
 					drag: function(event, ui) {
+						/* Ozzy: Fix scroll bugs */
+						if ($draggerScroll == null) {
+							moduleTextPage(true);
+							return;
+						}
 					    if( $scrollType == "linear")
                         {                            
                             if( $draggerScroll.position().top > $draggerScrollLimit )

@@ -1554,7 +1554,7 @@ footer
 }
 .main-text-holder p span
 {
-	font-weight: bold;	
+	/*font-weight: bold;	*/
 	font-size:14px;
 }
 .custom-separator, .custom-separator-preview-news

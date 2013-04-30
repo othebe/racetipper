@@ -165,7 +165,7 @@ class UsersController < ApplicationController
 		render :json=>{:success=>false, :msg=>'Password cannot be empty.'} and return if password.empty?
 		
 		#Check old password
-		user = User.check_credentials({:email=>@user.email, :password=>password})
+		user = User.check_credentials({:email=>@user.email, :password=>params[:old_password]})
 		render :json=>{:success=>false, :msg=>'Your old password does not match.'} and return if user.nil?
 		
 		@user.set_password(password)

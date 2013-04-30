@@ -429,3 +429,28 @@ div.profile_settings {
 	div.profile_settings div.button {
 		margin-bottom: 0;
 	}
+	
+/* Articles */
+.bold {
+	font-weight: bold;
+}
+.italic {
+	font-style: italic;
+}
+img.article_para_pic {
+	float: left;
+	max-height: 115px;
+	margin: 0 15px 10px 0;
+}
+div.gallery {
+}
+	div.gallery div.gallery-item {
+		float: left;
+		padding: 5px;
+		border: 2px solid #E3E3E3;
+		margin: 15px 15px 0 0;
+	}
+		div.gallery div.gallery-item img {
+			height: 145px;
+			width: 250px;
+		}
