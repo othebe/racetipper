@@ -9,11 +9,11 @@ gem 'pg'
 
 #Use thin for production
 group :production do
-	gem 'thin'
+	#gem 'thin'
 end
 
 group :development do
-	gem 'thin'
+	#gem 'thin'
 end
 
 gem 'json'
