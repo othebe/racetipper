@@ -4,6 +4,7 @@ Racetipper::Application.routes.draw do
 	match '/news' => 'articles#index'
 	match '/contact_us' => 'bugs#feedback'
 	match '/articles' => 'articles#index'
+	match '/articles/articles' => 'articles#index'
 	
 	match '/competitions/index' => 'competitions#index'
 	match '/competitions/edit' => 'competitions#edit'

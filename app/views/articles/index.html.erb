@@ -7,28 +7,94 @@
 			<div id="module-wrapper">
 				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
 					<div class="title-holder">
-						<span class="title-text_normal">Articles</span>
+						<span class="title-text_normal">About Us</span>
 					</div>
 					<div class="custom-separator"></div>
 					
-					<% @articles.each do |article| %>
-						<div class="news-item-vertical">
-							<div class="news-item-vertical-title" style="cursor:default;"><%=article.title%></div>
-							
+						<div class="news-item-vertical">					
 							<div class="main-text-holder" style="margin-bottom:20px;">
-								<p style="margin-top:0px;">Published on <%=article.created_at.strftime('%B %e, %Y')%> by <%=article.author%></p>
-								<%=raw(article.body)%>
+								<p style="margin-top:0px;">Cycling tipping is like footy tipping but for the major cycling races. If you’re not from Australia, think of it as fantasy cycling as in fantasy football rather than your cycling club meets your society for creative anachronism friends. The premise is simple: you pick a unique rider for each stage of a race and you get that rider’s time, sprint points and KOM points. At the end of the race the person with the lowest cumulative total time wins the GC, the person with the most sprint points wins the sprint competition and the person with the most KOM points wins the KOM competition. There are some additional rules designed to keep it competitive, mostly making sure that people who tip a rider who DNF don’t lose too much time.</p>
+								<p>Cyclingtipping.com provides the tipping platform and (usually) daily posts about the race and about the tipping competition. Like footy tipping or fantasy football, you will enjoy this most if you set up a league with your mates. There are site-wide competitions for every race, but it’s much more exciting to beat your mates and berate them for terrible tips.</p>
+								<p>Cyclingtipping.com is completely free – we do not charge fees for anything. We cannot guarantee that you will not waste an inordinate amount of time trying to pick a rider who will get into the only successful break during the Le Tour. We also won’t be held responsible for you breaking your foot or your coffee table when you’ve picked Moncoutie on one of the days when he loses 35 minutes.</p>
+								<p>If you have any questions, contact us.</p>
+								<p>Otherwise, sign up, invite your friends and start tipping.</p>
+								<p>Otherwise, sign up, invite your friends and start tipping.</p>
+								<p>Woody + Goon.</p>
+								
+								<div class="custom-separator" style="margin-bottom:20px;"></div>
+								<div class="news-item-vertical-title" style="cursor:default; float:none;">OFFICIAL RULES</div>
+								<p>These are the official rules of the tipping competitions. We have tried to write them in legalese so that nobody can actually understand them. Please email us at _____ if you have any questions. Any questions you submit might end up on an FAQ.</p>
+								<p>A <span style="font-weight:bold;">Competition</span> is a tipping competition.</p>
+								<p>A <span style="font-weight:bold;">Race</span> is a cycling race on which a tipping competition is based. A Race consists of one or more <span style="font-weight:bold;">Stages</span>. For example, Milan San Remo would be a one-Stage Race. Giro del Trentino is a five-Stage Race.</p>
+								<p><span style="font-weight:bold;">Riders</span> participate in Races. They are (usually) professional cyclists.</p>
+								<p><span style="font-weight:bold;">Tippers</span> participate in tipping competitions. There are no rules preventing Riders from becoming Tippers. There are rules of nature that probably prevent most Tippers from becoming Riders (we know this because we’re not Riders).</p>
+								<div style="padding-left:20px;">
+									<p>1. Each Competition mirrors the timing and results of the underlying Race. Each Tipper nominates a Rider for each Stage of the Race. The Tipper gains the selected Rider’s time (including any bonus seconds), sprint points and KOM points. After any given Stage, the Tipper with the lowest cumulative time is the GC leader. The Tipper with the most sprint/KOM points is the sprint/KOM leader.</p>
+									<p>2. Each Tipper may only select each Rider once during the Competition. So if you use Richard Virenque on the Prologue TT, you will not have him in the hills. Conversely, if you wait to use Stu O’Grady until after he crashes, you will not get to use him. Unsurprisingly, this is the hardest part of the competition.</p>
+									<p>3. Many Tippers can select the same Rider for a given Stage.</p>
+									<p>4. There is a Default List of riders for each Race. The Default list provides a default Rider for Tippers who</p>
+									<div style="padding-left:40px;">
+										<p>a. fail to enter a tip before the deadline;</p>
+										<p>b. tip a Rider who DNS; or</p>
+										<p>c. tip a Rider who DNF.</p>
+									</div>
+								</div>	
+								<p>Note that the Default List is set at the beginning of a Race and does not change.</p>
+								<div style="padding-left:20px;">
+									<p>5. The Default Tipping Mechanism works as follows:</p>
+									<div style="padding-left:40px;">
+										<p>a. When the stage starts, any Tipper who has failed to enter a tip is flagged as requiring a default.</p>
+										<p>b. When results are uploaded, any DNS or DNF Riders are removed from the Race (and from the Default List). Any Tipper who had selected a DNS or a DNF is flagged as requiring a Default.</p>
+										<p>c. Each Tipper who has been flagged is given the Rider on the top of his/her Default List.</p>
+										<p>Note that each Tipper’s Default List is unique as it does not contain Riders that have been tipped on earlier Stages.</p>
+										<p>The Default Tipping Mechanism does not respect that you might have tipped a Rider on a future Stage. It does, however, realise the damage it is doing and will email you to tell you have used a Default Rider. In fact, the DTM will actually remove your future tip if it brings it forward.</p>
+										<p>Default tipping is much easier to understand using examples. For all of these examples, we will be tipping a three Stage Race.</p>
+										<p>Default List:</p>
+										<p>
+											1. Hinault</br>
+											2. Merckx</br>
+											3. Virenque</br>
+											4. Fignon</br>
+											5. Sean Kelly
+										</p>
+										
+										<p>
+											<span style="font-weight:bold;">Default Tipping Example 1</span></br>
+											- On Stage 1, Woody tips Hinault.</br>
+											- On Stage 2, Woody forgets to tip. He is assigned Merckx as his default since he has used Hinault.
+										<p>
+										
+										<p>
+											<span style="font-weight:bold;">Default Tipping Example 2</span></br>
+											- On Stage 1, Woody tips Hinault. During the Stage, Merckx crashes out of the Race.</br>
+											- On Stage 2, Woody forgets to tip. He is now assigned Virenque as his default since he has used Hinault and Merckx is no longer racing.
+										</p>
+										
+										<p>
+											<span style="font-weight:bold;">Default Tipping Example 3</span></br>
+											- Before the start of Stage 1, Woody enters tips Hinault, Sean Kelly and Merckx for Stage 1, 2 and 3 respectively.</br>
+											- Sean Kelly crashes out on Stage 1.</br>
+											- On Stage 2, Woody forgets to update his tip (recall, Sean Kelly has crashed out). He is assigned Merckx as his default since he has used Hinault. Even though he has entered Merckx for Stage 3, Merckx is still the top rider on his Default List. Merckx is removed as his tip for Stage 3.</br>
+											- On Stage 3, Woody again forgets to update his tip (recall, his set-and-forget Merckx tip was deleted after Stage 2). Now he is given Virenque who is the top rider on his Default List.
+										</p>
+									</div>
+									<p>6. Results are uploaded by hand. Occasionally we make mistakes. Please forgive us. We source results from the Race’s official site whenever possible. For a TTT, the Rider time is calculated by subtracting GC before the TTT from GC after the TTT. YOU DO NOT GET THE TEAM TIME. YOU GET THE RIDER TIME.</p>
+									<p>7. No more rules</p>
+								</div>
+								
+								<div class="custom-separator" style="margin-bottom:20px;"></div>
+								<div class="news-item-vertical-title" style="cursor:default; float:none;">SUGGESTIONS FOR ENJOYING THE COMPETITION</div>
+								<p>We would encourage you to add some additional rules to your own competitions in order to make it more interesting.</p>
+								<div style="padding-left:20px;"></div>
+									<p>1. Missing five or more tips results in instant disqualification (note that the organiser of a Competition is able to remove people from the Competition).</p>
+								</div>
 							</div>
 							
-							<% article.ArticleLinks.each do |link| %>
-								<a href="<%=link.url%>" target="_blank"><img src="<%=link.url%>" style="max-width:128px; max-height:96px;"></a>
-							<% end %>
-							<!--<div class="news-item-vertical-read-more"><span>Read More</span></div>-->
+							
 						</div>
 						
 						<div style="clear:both;"></div>
 						<div class="custom-separator"></div>
-					<% end %>
 					
 				</div>
 			</div>                	 
