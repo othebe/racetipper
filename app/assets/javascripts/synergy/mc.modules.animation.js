@@ -7,7 +7,7 @@
   
  /* start GENERAL CUSTOMIZATION PROPERTIES */
 var templateBaseURL         = "http://racetipper.herokuapp.com/";
-var themeColor              = "#d00355";
+var themeColor              = "#008751"; //"#d00355";
 var menuActive              = true;
 var menuHoverActive         = true; /* it will change to false if menuActive == true. If 'menuActive' 
                                         is false and this true than on hover it will show the menu */ 
@@ -2241,14 +2241,7 @@ $(window).load(function(){
             function(){ TweenMax.to(  $(this), .4, { css:{ backgroundColor: "#3F3F3F"},  ease:Sine.easeOut   }); }
         );        
     }
-    function customHoverAnimation( type, event, parent, child ){
-        var directionCSS = getDirectionCSS( parent, { x : event.pageX, y : event.pageY } );
-        if( type == "over" ){
-            child.removeClass(); child.css("left", directionCSS.from.val1); child.css("top", directionCSS.from.val2);
-            TweenMax.to( child, .3, { css:{ left:directionCSS.to.val1, top: directionCSS.to.val2},  ease:Sine.easeInOut });
-        }
-        else if( type == "out" ){ TweenMax.to( child, .3, { css:{ left:directionCSS.from.val1, top: directionCSS.from.val2},  ease:Sine.easeInOut }); }
-    }
+    
     /*================= FULL WIDTH =============================*/
     function moduleFullWidth(){
         var textPageInstanceHolder    = $( txt_modCont);
@@ -5466,6 +5459,15 @@ $(window).load(function(){
         }
     }
 	/*----------------- end Utils Methods ---------------------*/
+	
+	function customHoverAnimation( type, event, parent, child ){
+        var directionCSS = getDirectionCSS( parent, { x : event.pageX, y : event.pageY } );
+        if( type == "over" ){
+            child.removeClass(); child.css("left", directionCSS.from.val1); child.css("top", directionCSS.from.val2);
+            TweenMax.to( child, .3, { css:{ left:directionCSS.to.val1, top: directionCSS.to.val2},  ease:Sine.easeInOut });
+        }
+        else if( type == "out" ){ TweenMax.to( child, .3, { css:{ left:directionCSS.from.val1, top: directionCSS.from.val2},  ease:Sine.easeInOut }); }
+    }
     	
 	function load_page(hash_url) {
 		url = templateBaseURL + hash_url.replace(urlCharDeeplink, '');
