@@ -18,4 +18,10 @@ class PagesController < ApplicationController
 	def login
 		render :layout => nil
 	end
+	
+	#Title:			about
+	#Description:	About us
+	def about
+		render :layout => nil
+	end
 end
