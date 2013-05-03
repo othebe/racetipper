@@ -49,8 +49,6 @@ ActiveRecord::Schema.define(:version => 20130427071750) do
     t.integer  "status",         :default => 1
   end
 
-  add_index "competition_participants", ["user_id", "competition_id"], :name => "competition_participants_uid_compid_ndx"
-
   create_table "competition_stages", :force => true do |t|
     t.integer  "competition_id"
     t.integer  "stage_id"
