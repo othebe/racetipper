@@ -792,11 +792,11 @@ class CompetitionsController < ApplicationController
 			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
 			
 			next if (race_results.nil?)
-			
 			#Fill tip if user has not tipped anyone and the leaderboard is open
 			if (tip.rider_id.nil? && tip.default_rider_id.nil?)
-				CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
-				tip = CompetitionTip.find_by_id(tip.id)
+				#logger.info(tip.inspect)
+				#CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
+				#tip = CompetitionTip.find_by_id(tip.id)
 			end
 			
 			#Account for default riders

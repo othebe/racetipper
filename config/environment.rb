@@ -5,4 +5,4 @@ require File.expand_path('../application', __FILE__)
 Racetipper::Application.initialize!
 
 #Set debug levels to info
-Rails.logger.level = 0
+Rails.logger.level = 1
