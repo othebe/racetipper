@@ -956,15 +956,22 @@ class CompetitionsController < ApplicationController
 			result_used = result || default_result
 			if (result_used.nil?)
 				formatted_time = 'TBA'
+				formatted_bonus_time = ''
 			else
 				formatted_time = format_time(result_used.time)
-				cumulative_time += result_used.time
+				if (result_used.bonus_time.nil? || result_used.bonus_time == 0)
+					formatted_bonus_time = ''
+				else
+					formatted_bonus_time = format_time(result_used.bonus_time)
+				end
+				cumulative_time += (result_used.time-result_used.bonus_time)
 			end
 
 			selection[:stage] = stage
 			selection[:rider] = rider
 			selection[:time_formatted] = formatted_time
 			selection[:cumulative_formatted_time] = format_time(cumulative_time)
+			selection[:bonus_time_formatted] = formatted_bonus_time
 			selection[:default_rider] = default_rider
 			selection[:disqualified] = Result.rider_status_to_str(result.rider_status) if (!result.nil?)
 			selection_by_races[stage.race_id] ||= []

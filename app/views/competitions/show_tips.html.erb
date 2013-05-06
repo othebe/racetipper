@@ -11,6 +11,7 @@
 							<th>Stage</th>
 							<th>Rider</th>
 							<th>Time</th>
+							<th>Bonus</th>
 							<th>Cumulative</th>
 							<th>Default</th>
 						</tr>
@@ -22,6 +23,7 @@
 								<td><%=tip[:stage].name%></td>
 								<td><%=tip[:rider].name if (!tip[:rider].nil?)%></td>
 								<td><%=tip[:time_formatted]%></td>
+								<td><%=tip[:bonus_time_formatted]%></td>
 								<td><%=tip[:cumulative_formatted_time]%></td>
 								<td><%=tip[:default_rider].name if (!tip[:default_rider].nil?)%> <%='('+tip[:disqualified]+')' if (!tip[:disqualified].nil?)%></td>
 							</tr>

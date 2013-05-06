@@ -122,7 +122,7 @@ function load_leaderboard(elt) {
 			for (i=0; i< response.leaderboard.length; i++) {
 				result = response.leaderboard[i];
 				if (load_data_type == 'race') {
-					var click_scr = "load_page('#competitions/show_tips/"+competition_id+"?uid=1')";
+					var click_scr = "load_page('#competitions/show_tips/"+competition_id+"?uid="+result.user_id+"')";
 					selection = '<div class="button" onclick="'+click_scr+'"><span>VIEW TIPS</span></div>';
 				}
 				else {
