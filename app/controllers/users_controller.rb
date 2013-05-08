@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 		render :json=>{:success=>false, :msg=>'Password is required.'} and return if (!data.has_key?(:password) || data[:password].empty?)
 		
 		#Check if user exists
-		existing = User.find_by_email(data[:email])
+		existing = User.find_by_email(data[:email].downcase)
 		render :json=>{:success=>false, :msg=>'This email has already been registered.'} and return if (!existing.nil?)
 		
 		userdata = {}

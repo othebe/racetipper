@@ -292,11 +292,10 @@ class AdminController < ApplicationController
 			data.save
 		end
 		
-		#Check if any tips for this result need to be defaulted. Go in order of default riders so empty tips are filled accordingly.
-		default_riders = DefaultRider.where({:race_id=>race_id}).order('order_id')
-		default_riders.each do |default_rider|
-			result = Result.where({:season_stage_id=>stage_id, :rider_id=>default_rider.rider_id, :race_id=>race_id}).first
-			result.check_valid_tips()
+		#Check if any tips for this result need to be defaulted.
+		results = Result.where({:season_stage_id=>stage_id})
+		results.each do |result|
+			result.check_valid_tips
 		end
 		
 		#Mark stage as done
