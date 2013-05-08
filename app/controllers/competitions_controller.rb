@@ -946,7 +946,7 @@ class CompetitionsController < ApplicationController
 			rider = Rider.find_by_id(tip[:rider_id])
 			default_rider = Rider.find_by_id(tip[:default_rider_id])
 			
-			rider_used = (rider ||default_rider)
+			rider_used = (default_rider || rider)
 			result = Result.where({:season_stage_id=>stage.id, :rider_id=>(rider_used).id}).first if (!rider_used.nil?)
 			default_result = nil
 			if (!default_rider.nil?)
