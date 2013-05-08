@@ -2,6 +2,11 @@ body {
 	font-family: 'PT Sans Caption';
 }
 
+@font-face {
+	font-family: digital;
+	src: url('/DS-DIGIT.ttf');
+}
+
 .template {
 	display: none;
 }
@@ -420,6 +425,13 @@ div.home_race_result {
 			margin-left: auto;
 			margin-right: auto;
 		}
+
+/* Tip countdown  */
+div.countdown {
+	font-size: 35px;
+	margin-right: 20px;
+	font-family: 'digital';
+}
 		
 /* Profile settings */
 div.profile_settings {

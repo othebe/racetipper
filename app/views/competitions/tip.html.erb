@@ -4,15 +4,21 @@
 		<div class="tipsheet">
 			<% if (@tipping_allowed) %>
 				<!-- Show stages allowing tips -->
-				<span>Choose a stage:</span>
-				<select id="tip_sheet_stages" onchange="show_tip_sheet(this);" style="display:block;">
-					<% @races.each do |race| %>
-						<% race[:stages].each do |stage| %>
-							<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>
+				<div style="float:left;">
+					<span>Choose a stage:</span>
+					<select id="tip_sheet_stages" onchange="show_tip_sheet(this);" style="display:block;">
+						<% @races.each do |race| %>
+							<% race[:stages].each do |stage| %>
+								<option value="<%=stage.id%>" competition_id="<%=@data[:competition].id%>"><%=stage.name%></option>
+							<% end %>
 						<% end %>
-					<% end %>
-				</select>
+					</select>
+				</div>
 				
+				<!-- Tip countdown -->
+				<div class="countdown" style="float:right;"></div>
+				
+				<div style="clear:both;"></div>
 				<div class="custom-separator" style="margin-bottom:15px;"></div>
 				
 				<%=image_tag 'ajax-loader.gif', {:onload=>'show_tip_sheet(this);', :class=>'loading'} %>

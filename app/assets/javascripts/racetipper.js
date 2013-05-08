@@ -206,6 +206,11 @@ function show_tip_sheet(elt) {
 			save_tip(competition_id, stage_id, rider_id);
 		});
 		
+		//Set timer
+		if (response.stage.remaining > 0) {
+			new CountdownTimer('div.countdown', response.stage.remaining);
+		}
+
 		$(load_img).hide();
 		moduleTextPage(true);
 	});

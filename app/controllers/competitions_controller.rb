@@ -268,7 +268,7 @@ class CompetitionsController < ApplicationController
 		end
 		
 		stage = Stage.find_by_id(stage_id)
-		render :json => {:tipsheet=>tipsheet, :stage=>{:name=>stage.name}}
+		render :json => {:tipsheet=>tipsheet, :stage=>{:name=>stage.name, :remaining=>(stage.starts_on-Time.now).to_i}}
 	end
 	
 	#Title:			get_selection_sheet
