@@ -948,23 +948,29 @@ class CompetitionsController < ApplicationController
 			
 			rider_used = (default_rider || rider)
 			result = Result.where({:season_stage_id=>stage.id, :rider_id=>(rider_used).id}).first if (!rider_used.nil?)
+			
+			#Also load the disqualification status of original rider if using a default
+			disqualification_reason = ''
+			if (!default_rider.nil? && !rider.nil?)
+				original_result = Result.where({:season_stage_id=>stage.id, :rider_id=>rider.id}).first
+				disqualification_reason = Result.rider_status_to_str(original_result.rider_status)
+			end
 			default_result = nil
 			if (!default_rider.nil?)
 				default_result = Result.where({:season_stage_id=>stage.id, :rider_id=>(default_rider).id}).first
 			end
 			
-			result_used = result || default_result
-			if (result_used.nil?)
+			if (result.nil?)
 				formatted_time = 'TBA'
 				formatted_bonus_time = ''
 			else
-				formatted_time = format_time(result_used.time)
-				if (result_used.bonus_time.nil? || result_used.bonus_time == 0)
+				formatted_time = format_time(result.time)
+				if (result.bonus_time.nil? || result.bonus_time == 0)
 					formatted_bonus_time = ''
 				else
-					formatted_bonus_time = format_time(result_used.bonus_time)
+					formatted_bonus_time = format_time(result.bonus_time)
 				end
-				cumulative_time += (result_used.time-result_used.bonus_time)
+				cumulative_time += (result.time-result.bonus_time)
 			end
 
 			selection[:stage] = stage
@@ -973,7 +979,7 @@ class CompetitionsController < ApplicationController
 			selection[:cumulative_formatted_time] = format_time(cumulative_time)
 			selection[:bonus_time_formatted] = formatted_bonus_time
 			selection[:default_rider] = default_rider
-			selection[:disqualified] = Result.rider_status_to_str(result.rider_status) if (!result.nil?)
+			selection[:disqualified] = disqualification_reason if (!disqualification_reason.empty?)
 			selection_by_races[stage.race_id] ||= []
 			selection_by_races[stage.race_id].push(selection)
 			
