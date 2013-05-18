@@ -268,7 +268,7 @@ class AdminController < ApplicationController
 				data.rider_status = RIDER_RESULT_STATUS[result[:time].to_sym]
 				
 				#Disqualify rider from default rider list
-				default_rider = DefaultRider.find_by_rider_id(result[:rider_id])
+				default_rider = DefaultRider.where('rider_id=? AND race_id=?', result[:rider_id], race_id).first
 				if (!default_rider.nil?)
 					default_rider.status = STATUS[:INACTIVE]
 					default_rider.save
