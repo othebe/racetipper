@@ -275,9 +275,8 @@ class AdminController < ApplicationController
 				end
 				
 				#Add disqualification status to team rider
-				teamrider = TeamRider.where('rider_id=? AND race_id=?', result[:rider_id], race_id).joins(:team).first
+				teamrider = TeamRider.where('rider_id=? AND race_id=?', result[:rider_id], race_id).first
 				if (!teamrider.nil?)
-					teamrider = TeamRider.find_by_id(teamrider.id)
 					teamrider.rider_status = RIDER_RESULT_STATUS[result[:time].to_sym]
 					teamrider.save
 				end

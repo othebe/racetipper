@@ -153,7 +153,7 @@ function load_leaderboard(elt) {
 //Description:	Show tip sheet for a competition stage
 //Params:		elt - Object that triggers a tip sheet load
 function show_tip_sheet(elt) {
-	var parent = $(elt).parent();
+	var parent = $(elt).parent().parent();
 	var load_img = $(parent).find('img.loading');
 	var load_option = $(parent).find('select option:selected');
 	var data_elt = $(parent).find('div.data').empty();
@@ -199,6 +199,7 @@ function show_tip_sheet(elt) {
 			})
 		}
 		
+		$(data_elt).find('input[type=checkbox]').unbind('click');
 		$(data_elt).find('input[type=checkbox]').click(function(event) {
 			$('input[type=checkbox]').removeAttr('checked');
 			$(this).attr('checked', true);
