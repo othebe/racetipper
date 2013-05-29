@@ -1,0 +1,9 @@
+<div id="profile-header">
+	<img src="<%=@user_img%>" style="width:100px;">
+	<div class="data">
+		<div class="name"><%=@user[:display_name]%></div>
+		<p class="italic" style="color:white;"><%=@user[:about_me]%></p>
+		<a href="/users/settings"><div class="btn red"><%=image_tag 'pencil-white.png'%>Edit Profile</div></a>
+	</div>
+	<div style="clear:both;"></div>
+</div>

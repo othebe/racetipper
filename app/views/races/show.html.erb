@@ -1,94 +1,136 @@
-﻿<div id="module-container"><!-- start #module-container -->
-	<div id="module-background-holder">
-		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
-	</div>	
-	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
-		<div id="module-text-page"  class="module-philosophy shadow-side-all">
-			<div id="module-wrapper">
-				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
-					<div class="title-holder">
-						<span class="title-text_normal"><%=@race.name%></span>
-					</div>
-					<div class="custom-separator"></div>
-					
-					<div class="media-holder" style="width:220px; height: 180px;">
-						<img src="<%=cl_image_path @race.image_url, {:width=>220, :height=>180, :crop=>:fill} %>" class="opacity_0" onload="animateThumb(this)" />
-					</div>
-					
-					<div class="race_info">
-						<span class="selector" style="margin-right:72px;">Stage: </span>
-						<select onchange="load_race_results(this);">
-							<option value="<%=@race.id%>" data-type="race">Results Summary</option>
-							<% @stages.each do |stage| %>
-								<option value="<%=stage.id%>" data-type="stage"><%=stage.name%></option>
-							<% end %>
-						</select>
-						<%=image_tag 'ajax-loader.gif', {:onload=>'load_race_results(this);', :class=>'loading'} %>
-				
-						<div class="info">
-							<table style="display:none;">
-								<tr class="season">
-									<td class="label">Season: </td>
-									<td class="data"></td>
-								</tr>
-								<tr class="profile">
-									<td class="label">Profile: </td>
-									<td class="data"><a href="" target="_blank">View here</a></td>
-								</tr>
-								<tr class="starts_on">
-									<td class="label">Starts on: </td>
-									<td class="data"></td>
-								</tr>
-								<tr class="start_location">
-									<td class="label">Starts location: </td>
-									<td class="data"></td>
-								</tr>
-								<tr class="end_location">
-									<td class="label">End location: </td>
-									<td class="data"></td>
-								</tr>
-								<tr class="distance">
-									<td class="label">Distance: </td>
-									<td class="data"></td>
-								</tr>
-							</table>
-							
-							<div class="description"></div>
-						</div>
-					</div>
-					
-					<div style="clear:both;"></div>
-					<div class="custom-separator"></div>
-					
-					<div class="main-text-holder">
-						<p>
-							<div class="competition_results">
-								<table>
-									<thead>
-										<tr>
-											<th>Rank</th>
-											<th>Name</th>
-											<th>Time</th>
-											<th>Bonus</th>
-											<th>Gap</th>
-											<th>KOM</th>
-											<th>Sprint</th>
-										</tr>
-									</thead>
-									
-									<tbody></tbody>
-								</table>
-							</div>
-						</p>
-					</div>
-					
+﻿<div class="content">
+	<div id="race-information">
+		<div class="race-competitions">
+			<div class="header">
+				<div class="race-name bold">
+					<div class="title"><%=@race.name%></div>
 				</div>
-			</div>                	 
+				
+				<div class="race-header">
+					<div class="timer race_<%=@race.id%>" style="margin-top:-20px;">
+						<% if (@next_stage_data[:next_stage_remaining] > 0) %>
+							<div class="title">
+								<span class="bold"><%=@next_stage_data[:next_stage_name]%></span> STARTING IN
+							</div>
+							<div class="countdown">
+								<div class="col">
+									<div class="value days">--</div>
+									<div class="unit">DAYS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value hours">--</div>
+									<div class="unit">HOURS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value minutes">--</div>
+									<div class="unit">MINS</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<script>
+								$(document).ready(function() {
+									new CountdownTimer($('#race-information div.timer.race_<%=@race.id%>'), <%=@next_stage_data[:next_stage_remaining]%>);
+								});
+							</script>
+						<% else %>
+							<div class="completed"><span class="bold">Race</span> completed</div>
+						<% end %>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+			
+			<div class="race-stats blue stacked-cols">
+				<div class="col big bold">
+					<%=@race[:first_stage].starts_on.day%>
+				</div>
+				
+				<div class="col bold stacked" style="margin-right:10px;">
+					<%=Date::MONTHNAMES[@race[:first_stage].starts_on.month]%></br><%=@race[:first_stage].starts_on.year%>
+				</div>
+				
+				<div class="col big bold">
+					-
+				</div>
+				
+				<div class="col big bold">
+					<%=@race[:last_stage].starts_on.day%>
+				</div>
+				
+				<div class="col bold stacked">
+					<%=Date::MONTHNAMES[@race[:last_stage].starts_on.month]%></br><%=@race[:last_stage].starts_on.year%>
+				</div>
+				
+				<div class="col big bold">
+					<%=@stages.count%>
+				</div>
+				
+				<div class="col bold stacked">
+					TOTAL</br>STAGES
+				</div>
+				
+				<div class="col big bold">
+					<%=@num_riders%>
+				</div>
+				
+				<div class="col bold stacked">
+					TOTAL</br>RIDERS
+				</div>
+				
+				<div style="clear:both;"></div>
+			</div>
+			
+			<div class="gray italic race-description">
+				<p><%=@race[:description]%></p>
+			</div>
+			
+			<table class="data blue tipping tablesorter" style="margin-top:30px;">
+				<thead style="text-align:left;">
+					<th>Stages</th>
+					<th>Type</th>
+					<th>Distance</th>
+					<th colspan="2">Location</th>
+					<th>Date</th>
+				</thead>
+				
+				<tbody>
+					<% @stages.each do |stage| %>
+						<tr class="tipping">
+							<td class="blue"><%=stage.name%></td>
+							<td class="gray italic">Individual time trial</td>
+							<td class="gray2 italic"><span class="bold"><%=stage.distance_km%></span> Kilometers</td>
+							<td class="gray italic">Starts at <span class="bold"><%=stage.start_location%></span></td>
+							<td class="gray italic">Ends at <span class="bold"><%=stage.end_location%></span></td>
+							<td class="gray2">
+								<span class="bold"><%=stage.starts_on.day%></span> 
+								<span><%=Date::MONTHNAMES[stage.starts_on.month]%></span>, 
+								<span><%=stage.starts_on.year%></span>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+			
+			<div class="race-teams" style="margin-top:40px;">
+				<div class="title black">
+					Riders
+				</div>
+				
+				<div class="teams">
+					<% @riders.each do |rider_data| %>
+						<div class="team">
+							<div class="bar"></div>
+							<div class="team-name bold"><%=rider_data[:team_name]%></div>
+							<% rider_data[:riders].each do |rider| %>
+								<div class="rider italic"><%=rider[:rider_number]%>. <%=rider[:rider_name]%></div>
+							<% end %>
+						</div>
+					<% end %>
+				</div>
+			</div>
 		</div>
-		<div id="module-scrollbar-holder">
-			<div id="module-scrollbar-background" class="opacity_4"></div>
-			<div id="module-scrollbar-dragger"></div>
-		</div>    
 	</div>
-		
-</div><!-- end #module-container -->
+</div>

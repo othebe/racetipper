@@ -1,36 +1,45 @@
-<div class="main-text-holder">
-	<p><span><%=raw(@data[:competition].description) %></span></p>
-	
-	<p>Created by <%=(@data[:creator].display_name).strip%></p>
+<%=render 'competitions/partials/competition_header'%>
+<%=render 'competitions/partials/stage_header'%>
+<%=render 'competitions/partials/tip_sheet_template'%>
+<%=render 'competitions/partials/stage_leaderboard_template'%>
+<%=render 'competitions/partials/other_info_template'%>
 
-	<% if (!@user.nil? && !@data[:competition].is_complete && @data[:is_participant] && !@data[:is_creator]) %>
-		<p style="float:right;">
-			<a style="color:blue; cursor:pointer;" onclick="leave_competition('<%=@data[:competition].id%>');">(Leave competition)</a>
-		</p>
-	<% end %>
+<div class="content">
+	<%=render 'competitions/partials/left_navigator'%>
 	
-	<div class="custom-separator" style="margin-bottom:15px;"></div>
-	<div style="clear:both;"></div>
-	
-	<% @articles.each do |article| %>
-		<div class="news-item-vertical">
-			<div class="news-item-vertical-title" style="cursor:default;"><%=article.title%></div>
+	<div id="content-with-nav">
+		<!-- Overview -->
+		<div id="overview">
+			<div class="name">
+				OVERVIEW
+				<div class="title black"><%=@competition.name%></div>
+			</div>
 			
-			<div class="main-text-holder" style="margin-bottom:20px;">
-				<p style="margin-top:0px; font-style:italic;">Published on <%=article.created_at.strftime('%B %e, %Y')%> by <%=article.author%></p>
-
-				<%=raw(article.body)%>
-
+			<div class="info">
+				<div class="col big bold" style="margin-right:10px;">
+					<%=@completed_stages%>/<%=@total_stages%>
+				</div>
+				
+				<div class="col bold stacked" style="margin-right:50px;">
+					STAGES</br>COMPLETED
+				</div>
+				
+				<div class="col big bold" style="margin-right:10px;">
+					<%=@num_participants%>
+				</div>
+				
+				<div class="col bold stacked">
+					TIPPERS</br>JOINED
+				</div>
+				
+				<div class="col bold" style="float:right; padding-right:20px;">
+					CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
+				</div>
+				
+				<div style="clear:both;"></div>
 			</div>
 		</div>
 		
-		<div style="clear:both;"></div>
-		<div class="custom-separator"></div>
-	<% end %>
-	
-	<p>
-		<%= image_tag 'blank.jpg', {:onload=>'load_comments();'} %>
-		<div class="fb-comments" data-href="<%=SITE_URL%>competition/<%=@data[:competition].id%>" data-width="700" data-num-posts="10"></div>
-	</p>
-	
+		<%=render 'competitions/partials/competition_leaderboard'%>
+	</div>
 </div>

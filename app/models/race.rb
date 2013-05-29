@@ -24,6 +24,44 @@ class Race < ActiveRecord::Base
 		return data
 	end
 	
+	#Title:			get_riders_for_race
+	#Description:	Gets riders for a race indexed by team
+	#Params:		race_id
+	def self.get_riders_for_race(race_id)
+		#Get all rider teams
+		teamriders = TeamRider.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).joins(:team).joins(:rider).order('rider_number')
+
+		#Index riders by team
+		teams = {}
+		teamriders.each do |teamrider|
+			team = teamrider.team
+			rider = teamrider.rider
+			
+			team_data = teams[team.id] || {:team=>team, :riders=>[]}
+			team_data[:riders].push({
+				:rider_id => rider.id,
+				:rider_name => rider.name,
+				:rider_number => teamrider.rider_number,
+			})
+			teams[team.id] = team_data
+		end
+		
+		#Generate list
+		seen = {}
+		rider_list = []
+		teamriders.each do |teamrider|
+			team_id = teamrider.team_id
+			next if (!seen[team_id].nil?)
+			rider_list.push({
+				:team_name => teams[team_id][:team].name,
+				:riders => teams[team_id][:riders]
+			})
+			seen[team_id] = 1
+		end
+		
+		return rider_list
+	end
+	
 	#Title:			check_completion_status
 	#Description:	Check if all stages in a race are complete and sets status to inactive.
 	#Params:		race_id

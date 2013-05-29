@@ -1,0 +1,78 @@
+<script id="stage-header-template" type="text/x-handlebars-template">
+	<!-- Stage overview -->
+	<div id="stage-overview" class="grayblack">
+		<div class="name" style="float:left;">
+			<div class="title black">{{stage_name}}</div>
+		</div>
+		{{#if countdown}}
+			<div class="timer" style="margin:20px;">
+				<div class="title">
+					<span class="bold">STAGE 7</span> STARTING IN
+				</div>
+				<div class="countdown">
+					<div class="col">
+						<div class="value days">--</div>
+						<div class="unit">DAYS</div>
+					</div>
+					
+					<div class="col">
+						<div class="value hours">--</div>
+						<div class="unit">HOURS</div>
+					</div>
+					
+					<div class="col">
+						<div class="value minutes">--</div>
+						<div class="unit">MINS</div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+		{{else}}
+			<div class="status">
+				<span class="bold">STAGE</span> {{status}}
+			</div>
+		{{/if}}
+		<div style="clear:both;"></div>
+		
+		<div class="info">
+			<div class="col big bold" style="margin-right:10px;">
+				<%=image_tag 'type-flat-mountain.jpg'%>
+			</div>
+			
+			<div class="col bold stacked" style="margin-right:50px;">
+				TYPE</br>FLAT MOUNTAIN
+			</div>
+			
+			<div class="col big bold" style="margin-right:10px;">
+				{{distance_km}}
+			</div>
+			
+			<div class="col bold stacked" style="margin-right:50px;">
+				DISTANCE</br>KILOMETERS
+			</div>
+			
+			<div class="col bold stacked" style="max-width:25%;">
+				START-FINISH</br>{{start_location}}-{{end_location}}
+			</div>
+			
+			<div class="col add-tip bold" style="float:right; max-width:25%;">
+				{{#if rider_id}}
+					<%=image_tag 'tick.png', {:style=>'float:left; margin-right:5px; margin-top:10px;'}%>
+					<div class="text">
+						You've tipped {{rider_name}}
+					</div>
+				{{else}}
+					<div class="text red">
+						You have not tipped anybody.
+					</div>
+				{{/if}}
+			</div>
+			
+			<div style="clear:both;"></div>
+		</div>
+		
+		<div class="description gray italic">
+			{{description}}
+		</div>
+	</div>
+</script>

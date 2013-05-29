@@ -128,7 +128,7 @@ class UsersController < ApplicationController
 	#Title:			settings
 	#Description:	User settings
 	def settings
-		render :layout=>nil
+		redirect_to :root if (@user.nil?)
 	end
 	
 	def logout
@@ -136,41 +136,35 @@ class UsersController < ApplicationController
 		redirect_to :root
 	end
 	
-	#Title:			save_general_settings
-	#Description:	Save
-	#				- Display name
-	#				- Participation in grand competitions
-	def save_general_settings
-		data = params[:data]
-		
-		#Display name
-		@user.display_name = data[:display_name]
-		
-		#In grand participation
-		@user.in_grand_competition = data[:in_grand_competition]
-		
-		@user.save
-		
-		render :json=>{:success=>true, :msg=>'Profile information saved.'}
-	end
-	
-	#Title:			change_password
-	#Description:	Change password for current user
-	def change_password
+	#Title:			save_information
+	#Description:	Saves information about a user
+	def save_information
 		#Is user logged in?
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if @user.nil?
 		
-		#Is password empty?
-		password = params[:password]
-		render :json=>{:success=>false, :msg=>'Password cannot be empty.'} and return if password.empty?
+		#Check information
+		render :json=>{:success=>false, :msg=>'Data error. Please refresh the page and try again.'} and return if (!params.has_key?(:information))
 		
-		#Check old password
-		user = User.check_credentials({:email=>@user.email, :password=>params[:old_password]})
-		render :json=>{:success=>false, :msg=>'Your old password does not match.'} and return if user.nil?
+		#Set user information
+		params[:information].each do |keyval|
+			@user[(keyval[0].to_sym)] = keyval[1]
+		end
+		@user.save
 		
-		@user.set_password(password)
+		#Change password?
+		if (params.has_key?(:password))
+			if (!params[:password][:old_password].empty? || !params[:password][:new_password].empty?)
+				#Check old password
+				user = User.check_credentials({:email=>@user.email, :password=>params[:password][:old_password]})
+				render :json=>{:success=>false, :msg=>'Your old password does not match.'} and return if user.nil?
+				
+				@user.set_password(params[:password][:new_password])
+				
+				render :json=>{:success=>true, :msg=>'Password changed.'} and return
+			end
+		end
 		
-		render :json=>{:success=>true, :msg=>'Password changed.'} and return
+		render :json=>{:success=>true, :msg=>'Information saved.'}
 	end
 	
 	#Title:			reset_password
@@ -207,5 +201,37 @@ class UsersController < ApplicationController
 		@user.save
 		
 		render :json=>{:success=>true, :msg=>'success'} and return
+	end
+	
+	#Title:			picture
+	#Description:	Get profile picture
+	def picture
+		id = params.has_key?(:id)?params[:id]:nil
+		
+		redirect_to '/assets/default_user.jpg' and return if id.nil?
+		
+		user = User.find_by_id(id)
+		
+		#User picture
+		if (!user.nil? && !user.fb_id.nil?)
+			redirect_to 'https://graph.facebook.com/'+user.fb_id.to_s+'/picture?type=square' and return
+		else
+			redirect_to '/assets/default_user.jpg' and return
+		end
+	
+		render :text=>id
+	end
+	
+	#Title:			change_password
+	#Description:	Change password for current user
+	private
+	def change_password(old_password, new_password)
+		#Check old password
+		user = User.check_credentials({:email=>@user.email, :password=>old_password})
+		render :json=>{:success=>false, :msg=>'Your old password does not match.'} and return if user.nil?
+		
+		@user.set_password(password)
+		
+		render :json=>{:success=>true, :msg=>'Password changed.'} and return
 	end
 end

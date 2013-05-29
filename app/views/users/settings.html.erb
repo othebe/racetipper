@@ -1,47 +1,85 @@
-<div id="module-container"><!-- start #module-container -->
-	<div id="module-background-holder">
-		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
-	</div>	
-	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
-		<div id="module-text-page"  class="module-philosophy shadow-side-all">
-			<div id="module-wrapper">
-				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
-					<div class="title-holder">
-						<span class="title-text_normal">Profile Settings</span>
-					</div>
-					<div class="custom-separator"></div>
-					
-					<div style="clear:both;"></div>
-					
-					<div class="main-text-holder">
-						<div class="profile_settings">
-							<div class="button" onclick="$('.settings').hide(); $('.settings#general').show();">
-								<span>General</span>
-							</div>
-							<div class="button" onclick="$('.settings').hide(); $('.settings#change_password').show();">
-								<span>Change Password</span>
-							</div>
-							<% if (@user.fb_id.nil?) %>
-								<div class="button" onclick="link_fb();">
-									<span>Link to Facebook</span>
-								</div>
-							<% end %>
-						</div>
-						
-						<div class="data" style="float:left; padding:10px 0px 20px 20px; border-left:1px solid #E3E3E3;">
-							<%=render 'users/settings/general'%>
-							<%=render 'users/settings/change_password'%>
-						</div>
-						
-						<div style="clear:both;"></div>
-					</div>
+<div class="content">
+	<div id="user-settings">
+		<div class="title bold">Edit your profile and settings</div>	
+	
+		<div class="col" style="margin-right:10%;">
+			<div class="row basic-information">
+				<div class="title bold">Basic information</div>
+				
+				<table>
+					<thead></thead>
+					<tbody>
+						<tr>
+							<td class="blue bold name">First name</td>
+							<td class="gray" colspan="3"><input type="text" name="firstname" value="<%=@user.firstname%>"></td>
+						</tr>
+						<tr>
+							<td class="blue bold name">Last name</td>
+							<td class="gray" colspan="3"><input type="text" name="lastname" value="<%=@user.lastname%>"></td>
+						</tr>
+						<tr>
+							<td class="blue bold name">Handle</td>
+							<td class="gray" colspan="3"><input type="text" name="display_name" value="<%=@user.display_name%>"></td>
+						</tr>
+						<tr>
+							<td class="blue bold name">Email address</td>
+							<td class="gray" colspan="3"><input type="text" disabled readonly value="<%=@user.email%>"></td>
+						</tr>
+						<tr>
+							<td class="blue bold name">Old password</td>
+							<td class="gray"><input type="password" name="old_password" style="width:88%;"></td>
+							<td class="blue bold name">New password</td>
+							<td class="gray"><input type="password" name="new_password" style="width:88%;"></td>
+						</tr>
+						<tr>
+							<td class="blue bold name">About you</td>
+							<td class="gray" colspan="3"><textarea style="height:50px;" name="about_me"><%=@user.about_me%></textarea></td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="btn yellow" onclick="save_user_basic_information();">Save settings</div>
+				
+				<div class="loading">
+					<%=image_tag 'ajax-spinner.gif'%>
 				</div>
-			</div>                	 
+				
+				<div class="success">
+					<%=image_tag 'tick-green.png'%>
+				</div>
+			</div>
 		</div>
-		<div id="module-scrollbar-holder">
-			<div id="module-scrollbar-background" class="opacity_4"></div>
-			<div id="module-scrollbar-dragger"></div>
-		</div>    
-	</div>
 		
-</div><!-- end #module-container -->
+		<div class="col" style="width:40%;">
+			<div class="row email-notifications">
+				<div class="title bold">Email notifications</div>
+				<table style="width:auto;">
+					<thead></thead>
+					<tbody>
+						<tr class="blue bold">
+							<td colspan="2" style="padding:24.5px;">Get an email when someone</td>
+						</tr>
+						<tr class="gray">
+							<td>Invites you to a competition</td>
+							<td>
+								<div class="btn blue">
+									Yes
+								</div>
+								<div class="btn white">
+									No
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="row">
+				<div class="title bold">Deactivate account</div>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+				
+				<a href="#" style="color:red;">Deactivate account.</a>
+			</div>
+		</div>
+	</div>
+</div>

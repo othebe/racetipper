@@ -13,12 +13,3 @@
 //= require jquery
 //= require jquery_ujs
 //= require_directory .
-//= require synergy/libs/modernizr.custom.min
-//= require synergy/libs/jquery.wipetouch
-//= require synergy/greensock/minified/TweenMax.min
-//= require synergy/libs/jquery.timer
-//= require synergy/libs/jqueryui/1.9.2/jquery-ui-1.9.2.custom.min
-//= require synergy/libs/jquery.mousewheel.min
-//= require jcrop/jquery.Jcrop.min
-//= require synergy/mediacreed/scrollbar/mc.custom.list
-//= require synergy/mc.modules.animation

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130427071750) do
+ActiveRecord::Schema.define(:version => 20130528045242) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -44,9 +44,11 @@ ActiveRecord::Schema.define(:version => 20130427071750) do
   create_table "competition_participants", :force => true do |t|
     t.integer  "competition_id"
     t.integer  "user_id"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "status",         :default => 1
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.integer  "status",             :default => 1
+    t.integer  "tie_break_rider_id"
+    t.integer  "tie_break_time"
   end
 
   create_table "competition_stages", :force => true do |t|
@@ -83,6 +85,7 @@ ActiveRecord::Schema.define(:version => 20130427071750) do
     t.string   "invitation_code"
     t.boolean  "is_complete",      :default => false
     t.integer  "competition_type", :default => 1
+    t.integer  "race_id"
   end
 
   create_table "cycling_quotes", :force => true do |t|
@@ -218,6 +221,7 @@ ActiveRecord::Schema.define(:version => 20130427071750) do
     t.string   "time_zone",                         :default => "+00:00"
     t.string   "display_name"
     t.boolean  "in_grand_competition",              :default => true
+    t.text     "about_me"
   end
 
 end

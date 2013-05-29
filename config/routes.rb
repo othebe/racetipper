@@ -14,7 +14,9 @@ Racetipper::Application.routes.draw do
 	match '/competitions/add_participants_to_global_competition'
 	match '/competitions/:id' => 'competitions#show'
 	
-	match '/races/index' => 'races#index'
+	match '/stages/:id' => 'stages#show'
+	
+	match '/races' => 'races#index'
 	match '/races/:id' => 'races#show'
 	
 	match '/articles/index' => 'articles#index'

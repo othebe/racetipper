@@ -66,6 +66,20 @@ class Competition < ActiveRecord::Base
 		end
 	end
 	
+	#Title:			fix_competition_races
+	#Description:	Adds race_id to competition
+	def self.fix_competition_races
+		competitions = Competition.all
+		
+		competitions.each do |competition|
+			competition_stage = CompetitionStage.where({:competition_id=>competition.id}).limit(1).first
+			next if (competition_stage.nil?)
+			
+			competition.race_id = competition_stage.race_id
+			competition.save
+		end
+	end
+	
 	#Title:			add_participants_to_global_competition
 	#Description:	Adds participants to a global competition. Called as cron / worker.
 	#Returns:		status message

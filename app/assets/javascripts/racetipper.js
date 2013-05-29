@@ -4,25 +4,30 @@ $(document).ready(function(event) {
 
 //Title:		login
 //Description:	Log a user in
+var logging_in = false;
 function login(elt) {
-	var container = $('.signin');
-	data = {};
-	data['email'] = $(container).find('input[name=email]').val();
-	data['password'] = $(container).find('input[name=password]').val();
+	if (logging_in) return;
 	
-	$(elt).hide();
-	load_img = $(container).find('img.loading').show();
+	var parent = $(elt).parent();
+	if ($(parent).find('input[name=email]').length==0) parent = $(parent).parent();
+	$(elt).removeClass('yellow').addClass('gray');
+	$(parent).find('div.loading').show();
+	
+	data = {};
+	data['email'] = $(parent).find('input[name=email]').val();
+	data['password'] = $(parent).find('input[name=password]').val();
 	
 	$.post('/users/login', {data:data}, function(response) {
 		if (response.success) {
-			window.location.hash = '#competitions/index';
 			window.location.reload();
 		} else alert(response.msg);
-		$(load_img).hide();
-		$(elt).show();
+		
+		logging_in = false;
+		$(elt).removeClass('gray').addClass('yellow');
+		$(parent).find('div.loading').hide();
 	});
 	
-	return false;
+	return;
 }
 
 //Title:		logout
@@ -33,25 +38,32 @@ function logout() {
 
 //Title:		signup
 //Description:	Sign a new user up
+var signing_up = false;
 function signup(elt) {
-	var container = $('.signup');
-	data = {};
-	data['firstname'] = $(container).find('input[name=firstname]').val();
-	data['lastname'] = $(container).find('input[name=lastname]').val();
-	data['email'] = $(container).find('input[name=email]').val();
-	data['password'] = $(container).find('input[name=password]').val();
+	if (signing_up) return;
 	
-	$(elt).hide();
-	load_img = $(container).find('img.loading').show();
+	var parent = $(elt).parent();
+	if ($(parent).find('input[name=email]').length==0) parent = $(parent).parent();
+	$(elt).removeClass('yellow').addClass('gray');
+	$(parent).find('div.loading').show();
+	
+	var data = {};
+	data['firstname'] = $(parent).find('input[name=firstname]').val();
+	data['lastname'] = $(parent).find('input[name=lastname]').val();
+	data['email'] = $(parent).find('input[name=email]').val();
+	data['password'] = $(parent).find('input[name=password]').val();
 	
 	$.post('/users/create', {data:data}, function(response) {
 		if (response.success) {
-			window.location.hash = '#competitions/index';
 			window.location.reload();
 		} else alert (response.msg);
-		$(load_img).hide();
-		$(elt).show();
+		
+		signing_up = false;
+		$(elt).removeClass('gray').addClass('yellow');
+		$(parent).find('div.loading').hide();
 	});
+	
+	return;
 }
 
 //Title:		load_results
@@ -268,38 +280,50 @@ function show_selection_sheet(elt) {
 
 //Title:		save_tip
 //Description:	Save a tip
-function save_tip(competition_id, stage_id, rider_id) {
-	//Clear all verification messages
-	$('span.selection_verify').html('');
+function save_tip(competition_id, stage_id, rider_id, elt) {
+	//Loader
+	var loader_source   = $('#tip-sheet-loader-template').html();
+	var loader_template = Handlebars.compile(loader_source);
+	var loader_html = loader_template();
 	
-	//Loader image
-	var loader = $('img.saving_tip_loader.template').clone().removeClass('template');
+	//Success
+	var success_source   = $('#tip-sheet-success-template').html();
+	var success_template = Handlebars.compile(success_source);
+	var success_html = success_template();
 	
-	//Append loader for selection
-	var selection = $('span#'+rider_id+'.selection_verify');
-	$(selection).html(loader);
+	$(elt).append(loader_html);
 	
 	$.post('/competitions/save_tip/'+competition_id, {stage_id:stage_id, rider_id:rider_id}, function(response) {
 		if (!response.success) 
 			alert(response.msg);
-		else $(selection).html([' (',response.msg,')'].join(''));
+		else {
+			$('div#tip-sheet div.rider.selected').removeClass('selected');
+			$(elt).find('img.loader').remove();
+			$(elt).append(success_html);
+			$(elt).addClass('selected');
+		}
 	});
 }
 
 //Title:		Join a competition
 //Description:	Join a competition
+var joining_competition = false;
 function join_competition(competition_id, elt) {
-	$(elt).hide();
-	var loader = $(elt).parent().find('div.load_container.competition').show();
-	var url = '/competitions/join/'+competition_id
+	if (joining_competition) return;
+	
+	joining_competition = true;
+	$(elt).removeClass('yellow').addClass('gray');
+	
+	var url = '/competitions/join/'+competition_id;
 	
 	$.post(url, {}, function(response) {
 		if (response.success) {
-			window.location.hash = '#competitions/tip/'+competition_id;
-		} else alert(response.msg);
-		
-		$(elt).show();
-		$(loader).hide();
+			location.reload();
+		} else {
+			alert(response.msg);
+			$(elt).removeClass('gray').addClass('yellow');
+			joining_competition = false;
+		}
 	});
 }
 
@@ -308,12 +332,13 @@ function join_competition(competition_id, elt) {
 //Params:		competition_id - Competition ID
 //				user_id - User to kick. Null for current user.
 function leave_competition(competition_id, user_id) {
-	if (!confirm("Are you sure you want to leave this competition? Update your profile settings to stop automatic registrations for official competitions.")) return;
+	if (!confirm("Are you sure you want to leave this competition?")) return;
 	
 	var url = '/competitions/kick/'+competition_id;
 	$.post(url, {user_id:user_id}, function(response) {
-		alert(response.msg);
-		if (response.success) window.location.reload();
+		if (response.success) 
+			window.location.href = '/';
+		else alert(response.msg);
 	});
 }
 
@@ -549,25 +574,34 @@ function show_preview(coords) {
 
 //Title:		save_competition
 //Description:	Save a competition
+var saving_competition = false;
 function save_competition() {
-	var form = $('#competition_form');
+	if (saving_competition) return;
+	
+	var data_container = $('#new-competition-fancybox');
+	
 	var data = {};
-	data['id'] = $(form).find('#competition_id').val();
-	data['competition_name'] = $(form).find('#name').val();
-	data['competition_description'] = $(form).find('#description').val();
-	data['open_to'] = $(form).find('input[name=open_to]:checked').val();
-	data['invitations'] = $(form).find('#invitations').val();
-	data['image_name'] = $(form).find('#image_name').val();
-	data['races'] = $(form).find('select[name=race]').val();
+	data['id'] = $(data_container).find('.competition-id').val();
+	data['race_id'] = $(data_container).find('.race-id').val();
+	data['competition_name'] = $(data_container).find('.competition-name').val();
+	data['competition_description'] = $(data_container).find('.competition-description').val();
+	data['open_to'] = $(data_container).find('input[name=privacy]:checked').val();
+	data['invitations'] = $(data_container).find('.invitations').val();
+	
+	$(data_container).find('.footer .loading').show();
+	$(data_container).find('.footer .btn').removeClass('yellow').addClass('gray');
+	
+	saving_competition = true;
 	
 	$.post('/competitions/save_competition', {data:data}, function(response) {
-		if (!response.success)
+		$(data_container).find('.footer .loading').hide();
+		if (!response.success) {
 			alert(response.msg);
-		else {
-			$('#competition_id').val(response.id);
-			form = document.getElementById('image_upload');
-			form.submit();
+			$(data_container).find('.footer .btn').removeClass('gray').addClass('yellow');
+		} else {
+			$(data_container).find('.footer .success').show();
 		}
+		saving_competition = false;
 	});
 	return false;
 }
@@ -600,51 +634,6 @@ function load_more__competitions(elt) {
 		$(elt).show();
 		$(elt).parent().find('img.loading').hide();
 		modulePageColumns();
-	});
-}
-
-//Title:		save_general_settings
-//Description:	Save general settings
-function save_general_settings(elt) {
-	var data = {};
-	
-	//Display name
-	data['display_name'] = $('#display_name').val();
-	//Participate in grand competitions
-	data['in_grand_competition'] = $('#grand_participation').val();
-	
-	$(elt).hide();
-	$('img.loading.general_settings').show();
-	
-	$.post('/users/save_general_settings', {data:data}, function(response) {
-		alert(response.msg);
-			
-		$(elt).show();
-		$('img.loading.general_settings').hide();
-	});
-}
-
-//Title:		change_password
-//Description:	Change password
-function change_password(elt) {
-	var old_password = $('input[name=old_password]').val();
-	var password = $('input[name=new_password]').val();
-	var verify_password = $('input[name=verify_password]').val();
-	
-	//Passwords dont match
-	if (password != verify_password) {
-		alert('Your passwords do not match.');
-		return false;
-	}
-	
-	$(elt).hide();
-	$('img.loading.change_password').show();
-	
-	$.post('/users/change_password', {old_password:old_password, password:password}, function(response) {
-		alert(response.msg);
-			
-		$(elt).show();
-		$('img.loading.change_password').hide();
 	});
 }
 
@@ -702,4 +691,402 @@ function load_comments() {
 	$('.fb-comments').attr('data-width', document.width * 0.6);
 	FB.XFBML.parse();
 	moduleTextPage(true);
+}
+
+//Title:		get_user_race_data
+//Description:	Gets data for a user about a race
+//Params:		user_id - User requesting data
+//				race_id - Race ID
+//				elt - Element triggering event
+function get_user_race_data(user_id, race_id, elt) {
+	$.get('/competitions/user_race_data/'+race_id, {user_id:user_id}, function(response) {
+		var race_competition_source   = $('#race-competitions-template').html();
+		var race_competition_template = Handlebars.compile(race_competition_source);
+		
+		var competition_source = $('#race-competitions-data-template').html();
+		var competition_template = Handlebars.compile(competition_source);
+		
+		//Parse response
+		var remaining = parseInt(response.race['next_stage_remaining']);
+		var race_competition_context = {};
+		race_competition_context['completed'] = (remaining>0);
+		race_competition_context['race_name'] = response.race['race_name'];
+		race_competition_context['next_stage_name'] = response.race['next_stage_name'];
+		
+		//Get HTML
+		var html = race_competition_template(race_competition_context);
+		
+		//Put HTML into document
+		if (elt != null) {
+			var header = $(elt).parent().parent();
+			var container = $(header).parent();
+			
+			//Timer
+			var timer = $(html).find('div.timer');
+			$(header).find('.race-details').prepend($(timer).fadeIn());
+			if (remaining > 0) {
+				new CountdownTimer($(header).find('div.timer'), remaining);
+			}
+			
+			//Competition data
+			$(response.competition).each(function(ndx, elt) {
+				//Postfix
+				postfix = 'th';
+				var rank_str = elt['rank'].toString();
+				var ending = parseInt(rank_str.charAt(rank_str.length-1));
+				
+				if ([1].indexOf(ending)>=0) 
+					postfix = 'st';
+				else if ([2].indexOf(ending)>=0) 
+					postfix = 'nd';
+				else if ([3].indexOf(ending)>=0) 
+					postfix = 'rd';
+				
+				elt['postfix'] = postfix;
+				elt['completed'] = !(remaining>0);
+				console.log(elt);
+				var competition_html = competition_template(elt);
+				$(container).find('table.competitions').append(competition_html);
+			});
+			
+			//More competitions
+			var competition_box_source = $('#competition-box-template').html();
+			var competition_box_template = Handlebars.compile(competition_box_source);
+			$(response.more_competitions).each(function(ndx, elt) {
+				var competition_box_html = competition_box_template(elt);
+				$(container).find('.new-competition').after(competition_box_html);
+			});
+		}
+		
+		$(elt).hide();
+	});
+}
+
+var competitions_table = 'tipping';
+var competition_race_leaderboard_initialized = false;
+//Title:		show_tipping_leaderboard_from_competition
+//Description:	Show the tipping leaderboard table from the competitions page
+function show_tipping_leaderboard_from_competition() {
+	if (competitions_table=='tipping') return;
+	competitions_table = 'tipping';
+	
+	$('table.data').removeClass('grayblack');
+	$('table.data').addClass('blue');
+	$('table.data tr.race').hide();
+	$('table.data tr.tipping').show();
+	
+	$("table.data").tablesorter(); 
+}
+//Title:		show_race_leaderboard_from_competition
+//Description:	Show the race leaderboard table from the competitions page
+function show_race_leaderboard_from_competition(race_id) {
+	if (competitions_table=='race') return;
+	competitions_table = 'race';
+	
+	if (!competition_race_leaderboard_initialized) {
+		$('table.selector img.loading').show(); 
+		$.get('/races/get_results/'+race_id, {}, function(response) {
+			var source   = $('#competition-race-result-template').html();
+			var template = Handlebars.compile(source);
+		
+			$(response.results).each(function(ndx, result) {
+				result['ndx'] = ndx+1;
+				var row = template(result);
+				$('table.data tbody').append(row);
+			});
+			$('table.data').removeClass('blue');
+			$('table.data').addClass('grayblack');
+			
+			$('table.data tr.tipping').hide();
+			$('table.data tr.race').show();
+			
+			$("table.data").trigger("update"); 
+			
+			$('table.selector img.loading').hide(); 
+			competition_race_leaderboard_initialized = true;
+		});
+	} else {
+		$('table.data').removeClass('blue');
+		$('table.data').addClass('grayblack');
+		$('table.data tr.tipping').hide();
+		$('table.data tr.race').show();
+	}
+}
+
+//Title:		load_stage_info
+//Description:	Loads stage info into the competitions screen
+function load_stage_info(stage_id, competition_id) {
+	$.get('/stages/information/'+stage_id, {competition_id:competition_id}, function(stage_info) {
+		stage_leaderboard_type = 'tipping';
+		stage_leaderboard_scope = 'stage';
+		stage_leaderboard_initialized = false;
+		stage_leaderboard_loaded_tables = {'tipping':{}, 'race':{}};
+		
+		stage_info['countdown'] = (stage_info['remaining']>0);
+		
+		//Stage overview
+		var stage_header_source   = $('#stage-header-template').html();
+		var stage_header_template = Handlebars.compile(stage_header_source);
+		var stage_header_html = stage_header_template(stage_info);
+		
+		$('#content-with-nav').hide();
+		$('#content-with-nav').html(stage_header_html);
+		$('#content-with-nav').fadeIn();
+		
+		//Tip sheet
+		if (stage_info['remaining']>0) {
+			new CountdownTimer('div.countdown', stage_info['remaining']);
+			
+			var tip_sheet_source   = $('#tip-sheet-template').html();
+			var tip_sheet_template = Handlebars.compile(tip_sheet_source);
+			var tip_sheet_html = tip_sheet_template({});
+			$('#content-with-nav').append(tip_sheet_html);
+			
+			$.get('/competitions/get_tip_sheet/'+competition_id, {stage_id:stage_id}, function(tip_sheet_info) {
+				var tip_sheet_team_source = $('#tip-sheet-team-template').html();
+				var tip_sheet_team_template = Handlebars.compile(tip_sheet_team_source);
+				$(tip_sheet_info.tipsheet).each(function(ndx, team) {
+					var context = {};
+					context['team_ndx'] = ndx;
+					context['team_name'] = team['team_name'];
+					var tip_sheet_team_html = tip_sheet_team_template(context);
+					$('div#tip-sheet div.teams').append(tip_sheet_team_html);
+					
+					var team_elt = $('div.team[ndx='+ndx+']');
+					
+					var tip_sheet_team_rider_source = $('#tip-sheet-team-rider-template').html();
+					var tip_sheet_team_rider_template = Handlebars.compile(tip_sheet_team_rider_source);
+					$(team.riders).each(function(ndx2, rider) {
+						var context = {}
+						context['allowed'] = rider.allowed['allowed'];
+						context['rider_name'] = rider['rider_name'];
+						context['rider_number'] = rider['rider_number'];
+						context['rider_id'] = rider['rider_id'];
+						context['reason'] = rider.allowed['reason'];
+						context['selected'] = (rider['rider_id']==stage_info['rider_id']);
+						context['competition_id'] = competition_id;
+						context['stage_id'] = stage_id;
+						var tip_sheet_team_rider_html = tip_sheet_team_rider_template(context);
+						$(team_elt).append(tip_sheet_team_rider_html);
+						
+						if (context['selected']) $(team_elt).find('div.rider[rider-id='+rider['rider_id']+']').addClass('selected');
+					});
+				});
+				$('div#tip-sheet div.teams').append('<div style="clear:both;"></div>');
+			});
+		}
+		//Stage leaderboard
+		else {
+			load_stage_leaderboard(competition_id, stage_info['race_id'], stage_id);
+		}
+	});
+}
+
+var stage_leaderboard_type = 'tipping';
+var stage_leaderboard_scope = 'stage';
+var stage_leaderboard_initialized = false;
+var stage_leaderboard_loaded_tables = {'tipping':{}, 'race':{}};
+//Title:		load_stage_leaderboard
+//Description:	Loads leaderboard into the stage details page
+function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) {
+	if (type==stage_leaderboard_type && scope==stage_leaderboard_scope) return;
+	
+	if (type==null) type = stage_leaderboard_type;
+	if (scope==null) scope = stage_leaderboard_scope;
+	
+	url = '';
+	var params = {};
+	if (type=='tipping') {
+		params['group_type'] = 'stage';
+		if (scope=='stage') {
+			url = '/competitions/get_competition_leaderboard/'+competition_id;
+			params = {'group_type':'stage', 'group_id':stage_id};
+		}
+		if (scope=='cumulative') {
+			url = '/competitions/get_competition_leaderboard/'+competition_id;
+			params = {'group_type':'race', 'group_id':race_id};
+		}
+	}
+	if (type=='race') {
+		if (scope=='stage') {
+			url = '/stages/get_results/'+stage_id;
+		}
+		if (scope=='cumulative') {
+			url = '/races/get_results/'+race_id;
+		}
+	}
+	
+	if (url.length==0) return;
+	
+	if (stage_leaderboard_loaded_tables[type][scope]) {
+		$('div#stage-leaderboard tr.entry').hide();
+		$('div#stage-leaderboard tr.entry.'+type+'.'+scope).show();
+	} else {
+		$.get(url, params, function(response) {
+			console.log(response);
+			var context = {};
+			//Standardize response
+			var entries = [];
+			if (type=='tipping') {
+				$(response.leaderboard).each(function(ndx, entry) {
+					entries.push({
+						'rank': ndx+1,
+						'name': entry['username'],
+						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
+						'time': entry['time_formatted'],
+						'sprint': entry['sprint'],
+						'kom': entry['kom'],
+						'type': type,
+						'scope': scope,
+					});
+				});
+				context['entries'] = entries;
+				context['competition_id'] = competition_id;
+				context['race_id'] = race_id;
+				context['stage_id'] = stage_id;
+			}
+			else if (type=='race') {
+				$(response.results).each(function(ndx, entry) {
+					entries.push({
+						'rank': ndx+1,
+						'name': entry['rider_name'],
+						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
+						'time': (entry['disqualified']==null)?entry['time_formatted']:entry['disqualified'],
+						'sprint': (entry['disqualified']==null)?entry['sprint_points']:'--',
+						'kom': (entry['disqualified']==null)?entry['kom_points']:'--',
+						'type': type,
+						'scope': scope,
+					});
+				});
+				context['entries'] = entries;
+				context['competition_id'] = competition_id;
+				context['race_id'] = race_id;
+				context['stage_id'] = stage_id;
+			}
+			
+			//Initialize table
+			if (!stage_leaderboard_initialized) {
+				var stage_leaderboard_source = $('#stage-leaderboard-template').html();
+				var stage_leaderboard_template = Handlebars.compile(stage_leaderboard_source);
+				var stage_leaderboard_html = stage_leaderboard_template(context);
+			
+				$('#content-with-nav').append(stage_leaderboard_html);
+				
+				stage_leaderboard_initialized = true;
+				$('div#stage-leaderboard table.data').tablesorter();
+			}
+			//Add new rows
+			else {
+				var stage_leaderboard_row_source = $('#stage-leaderboard-row-template').html();
+				var stage_leaderboard_row_template = Handlebars.compile(stage_leaderboard_row_source);
+				var stage_leaderboard_row_html = stage_leaderboard_row_template(context);
+				
+				$('div#stage-leaderboard tr.entry').not('.'+type+'.'+scope).hide();
+				$('div#stage-leaderboard tbody').append(stage_leaderboard_row_html);
+				
+				$('div#stage-leaderboard table.data').trigger('update');
+			}
+			stage_leaderboard_loaded_tables[type][scope] = true;
+		});
+	}
+	
+	if (type!=null) stage_leaderboard_type = type;
+	if (scope!=null) stage_leaderboard_scope = scope;
+	
+	//Set scope switch
+	$('div#stage-leaderboard th.choice.toggle div.switch.yellow').removeClass('yellow').addClass('gray');
+	$('div#stage-leaderboard th.choice.toggle div.switch.'+scope).addClass('yellow').removeClass('gray');
+	//Set table type color
+	if (type=='tipping') {
+		$('div#stage-leaderboard table.data.grayblack').removeClass('grayblack').addClass('blue');
+	}
+	else if (type=='race') {
+		$('div#stage-leaderboard table.data.blue').removeClass('blue').addClass('grayblack');
+	}
+	
+}
+//Title:		change_stage_leaderboard
+//Description:	Toggle between stage leaderboard types
+function change_stage_leaderboard(competition_id, race_id, stage_id, type, value) {
+	if (type=='type') {
+		load_stage_leaderboard(competition_id, race_id, stage_id, value, stage_leaderboard_scope);
+	}
+	else if(type=='scope') {
+		load_stage_leaderboard(competition_id, race_id, stage_id, stage_leaderboard_type, value);
+	}
+}
+
+//Title:		load_other_information
+//Description:	Loads other information into the competitions screen
+function load_other_information(competition_id) {
+	var other_info_source = $('#other-information-template').html();
+	var other_info_template = Handlebars.compile(other_info_source);
+	
+	$.get('/competitions/get_competition_other_info/'+competition_id, {}, function(response) {
+		console.log(response);
+		var other_info_html = other_info_template(response);
+		$('#content-with-nav').html(other_info_html);
+	});
+}
+
+//Title:		save_tie_break_info
+//Description:	Save tie break information
+function save_tie_break_info(competition_id) {
+	var container = $('#other-information');
+	
+	$(container).find('.tie-break-footer .btn').removeClass('yellow').addClass('gray');
+	$(container).find('.tie-break-footer .loading').show();
+	$(container).find('.tie-break-footer .success').hide();
+	
+	var data = {};
+	data['rider_id'] = $(container).find('select.tie-break-rider').val();
+	data['days'] = $(container).find('div.tie-break-time input[name=days]').val();
+	data['hours'] = $(container).find('div.tie-break-time input[name=hours]').val();
+	data['minutes'] = $(container).find('div.tie-break-time input[name=minutes]').val();
+	data['seconds'] = $(container).find('div.tie-break-time input[name=seconds]').val();
+	
+	$.post('/competitions/save_tie_break_info/'+competition_id, data, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+		} else {
+			$(container).find('.tie-break-footer .success').show();
+		}
+		
+		$(container).find('.tie-break-footer .btn').removeClass('gray').addClass('yellow');
+		$(container).find('.tie-break-footer .loading').hide();
+	});
+}
+
+//Title:		save_user_basic_information
+//Description:	Saves basic user information from the user settings page
+var saving_user_basic_information = false;
+function save_user_basic_information() {
+	if (saving_user_basic_information) return;
+	
+	var container = $('#user-settings div.basic-information');
+	
+	saving_user_basic_information = true;
+	$(container).find('div.btn').removeClass('yellow').addClass('gray');
+	$(container).find('div.loading').show();
+	$(container).find('div.success').hide();
+	
+	var data = {'information':{}, 'password':{}};
+	data['information']['firstname'] = $(container).find('input[name=firstname]').val();
+	data['information']['lastname'] = $(container).find('input[name=lastname]').val();
+	data['information']['display_name'] = $(container).find('input[name=display_name]').val();
+	data['information']['about_me'] = $(container).find('textarea[name=about_me]').val();
+	
+	data['password']['old_password'] = $(container).find('input[name=old_password]').val();
+	data['password']['new_password'] = $(container).find('input[name=new_password]').val();
+	
+	$.post('/users/save_information', data, function(response) {
+		if (!response.success) {
+			alert (response.msg);
+		} else {	
+			$(container).find('div.success').show();
+		}
+		saving_user_basic_information = false;
+		$(container).find('div.btn').removeClass('gray').addClass('yellow');
+		$(container).find('div.loading').hide();
+	});
 }

@@ -29,6 +29,7 @@
 	<%= csrf_meta_tags %>
 	
 	<%= stylesheet_link_tag "application.css", :media => "all" %>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
@@ -41,24 +42,11 @@
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
 
-<div class="main-template-loader"></div>
+	<div id="main-content">
+		<%= render 'layouts/partials/header' %>
 
-<div id="template-wrapper">
-    <%= render :partial=>'app_partials/left_navigator' %>
+		<%= yield %>
+	</div>
 
-    <div id="module-container">
-    </div>
-    
-</div>
-
-<div id="load-container">
-</div>
-
-<div id="loading-animation">
-	<img src="assets/synergy/loaders/loader.gif" width="16" height="11" alt="Synergy - loading animation"/>
-</div>
-<div id="footer-social-tooltip"></div>
-
-<div id="console-log"></div>
 </body>
 </html>

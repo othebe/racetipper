@@ -9,13 +9,12 @@ var current_timer = null;
 var CountdownTimer = function(elt, seconds) {
 	this.timer_elt = $(elt);
 	this.remaining_secs = seconds;
-	
 	//Get span elements
-	this.weeks = $(elt).find('span#weeks');
-	this.days = $(elt).find('span#days');
-	this.hours = $(elt).find('span#hours');
-	this.minutes = $(elt).find('span#minutes');
-	this.seconds = $(elt).find('span#seconds');
+	this.weeks = $(elt).find('.weeks');
+	this.days = $(elt).find('.days');
+	this.hours = $(elt).find('.hours');
+	this.minutes = $(elt).find('.minutes');
+	this.seconds = $(elt).find('.seconds');
 	
 	//Start timer
 	this.start_timer();
@@ -36,40 +35,13 @@ CountdownTimer.prototype.start_timer = function() {
 CountdownTimer.prototype.display_time = function(arr) {
 	var str = [];
 	
-	//Weeks
-	var weeks = arr['weeks'];
-	if (weeks > 0) {
-		str.push(arr['weeks']);
-		if (weeks > 1)
-			str.push(' weeks,');
-		else str.push(' week, ');
-	} else this.weeks.hide();
+	this.weeks.html((arr['weeks']>0)?arr['weeks']:'--');
+	this.days.html((arr['days']>0)?arr['days']:'--');
+	this.hours.html((arr['hours']>0)?arr['hours']:'--');
+	this.minutes.html((arr['minutes']>0)?arr['minutes']:'--');
+	this.seconds.html((arr['seconds']>0)?arr['seconds']:'--');
 	
-	//Days
-	var days = arr['days'];
-	if (days > 0) {
-		str.push(arr['days']);
-		if (days > 1)
-			str.push(' days,');
-		else str.push(' day, ');
-	} else this.days.hide();
-	
-	//Hours
-	var hours = arr['hours'];
-	if (hours < 10) hours = "0"+hours;
-	str.push(hours, ':');
-	
-	//Minutes
-	var minutes = arr['minutes'];
-	if (minutes < 10) minutes = "0"+minutes;
-	str.push(minutes, ':');
-	
-	//Seconds
-	var seconds = arr['seconds'];
-	if (seconds < 10) seconds = "0"+seconds;
-	str.push(seconds);
-	
-	this.timer_elt.html(str.join(''));
+	return;
 }
 
 //Convert remaining_sec -> remaining_arr

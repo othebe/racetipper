@@ -1,0 +1,93 @@
+<div id="competition-header">
+	<div class="col general">
+		<div class="logo">
+			<%=image_tag 'users.png'%>
+		</div>
+		<div class="title-1 bold">
+			<%=@race.name%>
+		</div>
+		<div class="title-2 bold">
+			<%=@competition.name%>
+		</div>
+
+		<div class="action-buttons">
+		<% if (@participating) %>
+			<a href="/competitions/<%=@competition.id%>">
+				<div class="btn black">
+					<%=image_tag 'eye.png'%>
+					<span>Overview</span>
+				</div>
+			</a>
+			
+			<div class="btn yellow" onclick="load_other_information(<%=@competition.id%>)">
+				<%=image_tag 'more-options.png'%>
+				<span>Other Information</span>
+			</div>
+			
+			<% if (!@user.nil? && @user.id==@creator.id) %>
+				<div style="display:none;">
+					<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} %>
+				</div>
+				
+				<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>', '<%=@competition.name.tr("'", "`")%>', <%=@competition.status==STATUS[:ACTIVE]%>, '<%=@competition.description.tr("'", "`")%>');">
+					<%=image_tag 'pencil.png'%>
+					<span>Edit Competition</span>
+				</div>
+			<% end %>
+		<% elsif (!@user.nil?) %>
+			<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, this);">
+				<%=image_tag 'pencil.png'%>
+				<span>Join Competition</span>
+			</div>
+		<% else %>
+			<div class="btn gray">
+				<span>Login to tip</span>
+			</div>
+		<% end %>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	
+	<div class="col leaderboard">
+		<div class="yellow-shirt">
+			<%=image_tag 'shirt-yellow.png'%>
+		</div>
+		
+		<div class="best-time">
+			<div class="title bold">BEST TIME</div>
+			<% count = 5 %>
+			<% for i in 0..(count-1) %>
+				<div><%=i+1%>. <%=(@leaderboard[i].nil?)?'--':@leaderboard[i][:username]%></div>
+			<% end %>
+		</div>
+		
+		<div class="other-shirts">
+			<div class="polka">
+				<%=image_tag 'shirt-polka.png'%>
+			</div>
+			
+			<div class="green">
+				<%=image_tag 'shirt-green.png'%>
+			</div>
+		</div>
+		
+		<div class="other-times">
+			<div class="kom">
+				<div class="title bold">K.O.M</div>
+				<% count = [2, @top_koms.size].min %>
+				<% for i in 0..(count-1) %>
+					<div><%=i+1%>. <%=(@top_koms[i].nil?)?'--':@top_koms[i][:username]%></div>
+				<% end %>
+			</div>
+			
+			<div class="sprint">
+				<div class="title bold">Sprint</div>
+				<% count = [2, @top_sprints.size].min %>
+				<% for i in 0..(count-1) %>
+					<div><%=i+1%>. <%=(@top_sprints[i].nil?)?'--':@top_sprints[i][:username]%></div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+</div>

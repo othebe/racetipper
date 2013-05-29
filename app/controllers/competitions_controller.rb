@@ -34,6 +34,49 @@ class CompetitionsController < ApplicationController
 	#Title:			show
 	#Description:	General information about a competition
 	def show
+		user_id = 0
+		user_id = @user.id if (!@user.nil?)
+		
+		#Get leaderboard
+		competition_stage = CompetitionStage.where({:competition_id=>params[:id]}).first
+		@leaderboard = get_leaderboard(params[:id], 'race', competition_stage.race_id)
+		
+		#Competition
+		@competition = Competition.find_by_id(params[:id])
+		
+		#Creator
+		@creator = User.find_by_id(@competition.creator_id)
+		
+		#Number of participants
+		participants = CompetitionParticipant.where({:competition_id=>params[:id], :status=>STATUS[:ACTIVE]})
+		@num_participants = participants.count
+		
+		#Check if participating
+		is_participant = participants.where({:user_id=>user_id})
+		@participating = (!is_participant.empty?)
+		
+		#Race
+		@race = Race.find_by_id(competition_stage.race_id)
+		
+		#Completed stage count
+		@stages = Stage.where({:race_id=>competition_stage.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
+
+		@total_stages = @stages.count
+		@completed_stages = @stages.where({:is_complete=>true}).count
+		
+		#Get top 2 sprint
+		@top_sprints = get_top(:sprint, 2, @leaderboard)
+		
+		#Get top 2 KOM
+		@top_koms = get_top(:kom, 2, @leaderboard)
+		
+		#Left nav data
+		@left_nav_data = get_left_nav_data(@stages, params[:id])
+	end
+	
+	#Title:			show (OLD)
+	#Description:	General information about a competition
+	def show_old
 		redirect_to :root if (!params.has_key?(:id))
 		@data = get_competition_data(params[:id])
 		@data[:races] = Competition.get_all_races(params[:id])
@@ -88,7 +131,6 @@ class CompetitionsController < ApplicationController
 		group_id = params[:group_id]
 		
 		leaderboard = get_leaderboard(competition_id, group_type, group_id)
-		
 		@data = []
 		leaderboard.each do |entry|
 			line = {
@@ -107,6 +149,18 @@ class CompetitionsController < ApplicationController
 		end
 		
 		render :json => {:leaderboard => @data}
+	end
+	
+	#Title:			user_race_data
+	#Description:	Return competition data about a user in a race
+	def user_race_data
+		race_id = params[:id]
+		user_id = params[:user_id]
+		
+		race = Race.find_by_id(race_id)
+		response = get_user_race_data(user_id, race)
+		
+		render :json => response
 	end
 	
 	#Title:			show_tips
@@ -428,11 +482,6 @@ class CompetitionsController < ApplicationController
 		end
 		
 		render :json=>{:success=>false, :msg=>'Please enter a name for your competition.'} and return if (!competition_data.has_key?(:competition_name) || competition_data[:competition_name].empty?)
-		render :json=>{:success=>false, :msg=>'Please select races for your competition.'} and return if (!competition_data.has_key?(:races) || competition_data[:races].empty?)
-		#Only check images for new competitions
-		if (competition.nil?)
-			render :json=>{:success=>false, :msg=>'Please select an image for your competition.'} and return if (!competition_data.has_key?(:image_name) || competition_data[:image_name].empty?)
-		end
 		
 		#Save competition
 		competition ||= Competition.new
@@ -441,6 +490,7 @@ class CompetitionsController < ApplicationController
 		competition.name = competition_data[:competition_name]
 		competition.description = competition_data[:competition_description]
 		competition.season_id = season_id
+		competition.race_id = competition_data[:race_id]
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
 		else
@@ -469,7 +519,7 @@ class CompetitionsController < ApplicationController
 		
 		#Save races/stages
 		CompetitionStage.update_all({:status=>STATUS[:DELETED]}, {:competition_id=>competition.id})
-		race_id = competition_data[:races]
+		race_id = competition_data[:race_id]
 		competition_races = []
 		stages = Stage.where('race_id=? AND season_id=? AND status=?', race_id, season_id, STATUS[:ACTIVE])
 		stages.each do |stage|
@@ -598,6 +648,57 @@ class CompetitionsController < ApplicationController
 		render :json=>{:data=>data}
 	end
 	
+	#Title:			get_competition_other_info
+	#Description:	Retrieves tie breaker and default riders
+	#Returns:		JSON of data array
+	def get_competition_other_info
+		uid = nil
+		uid = @user.id if (!@user.nil?)
+		
+		competition_id = params[:id]
+		competition = Competition.find_by_id(competition_id)
+		
+		#Participation status
+		is_participant = false
+		competition_participant = nil
+		if (!uid.nil?)
+			competition_participant = CompetitionParticipant.where({:user_id=>uid, :competition_id=>competition_id}).first
+			is_participant = (!competition_participant.nil?)
+		end
+		
+		#Default riders
+		default_riders = DefaultRider.get_default_riders(competition.race_id, competition_id, uid)
+		
+		#Get tie breaker time
+		tie_break_time_sec = 0
+		tie_break_time_sec = (competition_participant.tie_break_time||0) if (!competition_participant.nil?)
+		tie_break_time = break_time(tie_break_time_sec)
+		
+		#Get tie break rider
+		tie_break_rider_id = nil
+		tie_break_rider_id = competition_participant.tie_break_rider_id if (!competition_participant.nil?)
+		
+		#Rider list
+		tie_break_riders = []
+		riders = TeamRider.where({:race_id=>competition.race_id, :rider_status=>STATUS[:ACTIVE]})
+		riders.each do |rider|
+			tie_break_riders.push({
+				:rider_id => rider.rider_id,
+				:rider_name => rider.rider.name,
+				:selected => (rider.rider_id == tie_break_rider_id)
+			})
+		end
+		
+		render :json=>{
+			:competition_id => competition_id,
+			:user_id => uid,
+			:is_participant=>is_participant, 
+			:default_riders=>default_riders, 
+			:tie_break_riders=>tie_break_riders,
+			:tie_break_time=>tie_break_time
+		}
+	end
+	
 	#Title:			get_more_competitions
 	#Description:	Gets next set of competitions
 	#Returns:		JSON of data array
@@ -704,10 +805,10 @@ class CompetitionsController < ApplicationController
 	def kick
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
 		
-		competition_id = params[:id]
+		competition_id = params[:id].to_i
 		if (params.has_key?(:user_id) && !params[:user_id].empty?)
 			msg = 'User has been kicked from the competition.'
-			user_id = params[:user_id]
+			user_id = params[:user_id].to_i
 		else
 			msg = 'You have left the competition.'
 			user_id = @user.id
@@ -715,9 +816,9 @@ class CompetitionsController < ApplicationController
 		
 		#Check if user has authority
 		competition = Competition.find_by_id(competition_id)
-		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (!(@user.id != user_id || competition.creator_id != @user.id))
 		render :json=>{:success=>false, :msg=>'Cannot kick creator.'} and return if (competition.creator_id == user_id)
-		
+		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id)
+			
 		#Find participant and kick
 		participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id}).first
 		if (!participant.nil?)
@@ -725,6 +826,40 @@ class CompetitionsController < ApplicationController
 			participant.save
 		end
 		render :json=>{:success=>true, :msg=>msg}
+	end
+	
+	#Title:			save_tie_break_info
+	#Description:	Saves information about tie breaks
+	def save_tie_break_info
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		
+		#Valid competition?
+		competition_id = params[:id]
+		competition = Competition.find_by_id(competition_id)
+		render :json=>{:success=>false, :msg=>'Invalid competition.'} and return if (competition.nil?)
+		
+		####
+		## Some logic to check whether tie break can be save.
+		## can_save = Model.can_save? (Use this in the get_other_info function to determine whether to disable tie breaks
+		###
+		
+		#Rider ID
+		render :json=>{:success=>false, :msg=>'Please select a rider.'} and return if (!params.has_key?(:rider_id))
+		rider = Rider.find_by_id(params[:rider_id])
+		render :json=>{:success=>false, :msg=>'Invalid rider.'} and return if (rider.nil?)
+		
+		time_sec = (params[:days].to_i*24*60*60) + (params[:hours].to_i*60*60) + (params[:minutes].to_i*60) + params[:seconds].to_i
+		
+		#Participation record
+		competition_participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>@user.id}).first
+		render :json=>{:success=>false, :msg=>'Participation record not found.'} and return if (competition_participant.nil?)
+		
+		#Save tie breaks
+		competition_participant.tie_break_rider_id = rider.id
+		competition_participant.tie_break_time = time_sec
+		competition_participant.save
+		
+		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
 	def send_invitation_emails
@@ -779,111 +914,113 @@ class CompetitionsController < ApplicationController
 	#				limit - How many entries in the leaderboard to show
 	private
 	def get_leaderboard(competition_id, group_type, group_id, limit=10)
-		tip_conditions = {:competition_id=>competition_id}
-		tip_conditions[:stage_id] = group_id if (group_type=='stage')
-		
-		race_results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
-		tips = CompetitionTip.where(tip_conditions)
+		return Rails.cache.fetch('leaderboard_'+competition_id.to_s+'_'+group_type+'_'+group_id.to_s, :expires_in=>24.hours) {
+			tip_conditions = {:competition_id=>competition_id}
+			tip_conditions[:stage_id] = group_id if (group_type=='stage')
+			
+			race_results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
+			tips = CompetitionTip.where(tip_conditions)
 
-		user_scores = {}
-		tips.each do |tip|
-			#Skip non participants
-			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>competition_id}).first
-			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
-			
-			next if (race_results.nil?)
-			#Fill tip if user has not tipped anyone and the leaderboard is open
-			if (tip.rider_id.nil? && tip.default_rider_id.nil?)
-				#logger.info(tip.inspect)
-				#CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
-				#tip = CompetitionTip.find_by_id(tip.id)
-			end
-			
-			#Account for default riders
-			if (tip.default_rider_id.nil?)
-				modifier = 0
-				rider_id = tip.rider_id
-			else
-				rider_id = tip.default_rider_id || tip.rider_id
-				modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
-			end
-			
-			stage_id = tip.stage_id
-			user_id = tip.competition_participant_id
-			
-			user = User.find_by_id(user_id)
-			username = user.display_name
-			username = (user.firstname+' '+user.lastname).strip if (username.nil? || username.empty?)
+			user_scores = {}
+			tips.each do |tip|
+				#Skip non participants
+				participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>competition_id}).first
+				next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
+				
+				#next if (race_results.nil?)
+				#Fill tip if user has not tipped anyone and the leaderboard is open
+				if (tip.rider_id.nil? && tip.default_rider_id.nil?)
+					#logger.info(tip.inspect)
+					#CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
+					#tip = CompetitionTip.find_by_id(tip.id)
+				end
+				
+				#Account for default riders
+				if (tip.default_rider_id.nil?)
+					modifier = 0
+					rider_id = tip.rider_id
+				else
+					rider_id = tip.default_rider_id || tip.rider_id
+					modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
+				end
+				
+				stage_id = tip.stage_id
+				user_id = tip.competition_participant_id
+				
+				user = User.find_by_id(user_id)
+				username = user.display_name
+				username = (user.firstname+' '+user.lastname).strip if (username.nil? || username.empty?)
 
-			user_score = user_scores[user_id] || Hash.new
-			user_score[:tip] ||= Array.new
-			user_score[:user_id] = user_id
-			user_score[:username] = username
-			user_score[:is_default] = !tip.default_rider_id.nil?
-			
-			rider = Rider.find_by_id(rider_id)
-			
-			#User has not tipped for a stage that does not have results
-			if (rider.nil?)
-				user_score[:tip].push({:id=>nil, :name=>'TBA'})
+				user_score = user_scores[user_id] || Hash.new
+				user_score[:tip] ||= Array.new
+				user_score[:user_id] = user_id
+				user_score[:username] = username
+				user_score[:is_default] = !tip.default_rider_id.nil?
+				
+				rider = Rider.find_by_id(rider_id)
+				
+				#User has not tipped for a stage that does not have results
+				if (rider.nil?)
+					user_score[:tip].push({:id=>nil, :name=>'TBA'})
+					user_scores[user_id] = user_score
+					next
+				end
+				
+				#Get tip data from results
+				if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
+					#Cumulate times
+					if (user_score[:time].nil?)
+						user_score[:time] = race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
+					else 
+						user_score[:time] += race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
+					end
+					
+					#Formatted time
+					user_score[:formatted_time] = format_time(user_score[:time])
+					
+					#Cumulate points
+					if (user_score[:points].nil?)
+						user_score[:points] = race_results[rider_id][:stages][stage_id][:points]
+					else 
+						user_score[:points] += race_results[rider_id][:stages][stage_id][:points]
+					end
+					
+					#Cumulate KOM points
+					if (user_score[:kom].nil?)
+						user_score[:kom] = race_results[rider_id][:stages][stage_id][:kom_points]
+					else 
+						user_score[:kom] += race_results[rider_id][:stages][stage_id][:kom_points]
+					end
+					
+					#Cumulate sprint points
+					if (user_score[:sprint].nil?)
+						user_score[:sprint] = race_results[rider_id][:stages][stage_id][:sprint_points]
+					else 
+						user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
+					end
+				end
+				
+				user_score[:tip].push({:id=>rider_id, :name=>rider.name})
 				user_scores[user_id] = user_score
-				next
 			end
 			
-			#Get tip data from results
-			if (!race_results[rider_id].nil? && !race_results[rider_id][:stages][stage_id].nil?)
-				#Cumulate times
-				if (user_score[:time].nil?)
-					user_score[:time] = race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
-				else 
-					user_score[:time] += race_results[rider_id][:stages][stage_id][:time] - race_results[rider_id][:stages][stage_id][:bonus_time] + modifier
-				end
+			#Sort leaderboard
+			leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
+			
+			#Get gap times
+			leaderboard_with_gap = []
+			base_time = nil
+			leaderboard.each do |entry|
+				gap_formatted = nil
+				gap = (entry[1][:time] - base_time) if (!base_time.nil?)
+				gap_formatted = format_time(gap) if (!gap.nil?)
+				entry[1][:formatted_gap] = gap_formatted
+				leaderboard_with_gap.push(entry[1])
 				
-				#Formatted time
-				user_score[:formatted_time] = format_time(user_score[:time])
-				
-				#Cumulate points
-				if (user_score[:points].nil?)
-					user_score[:points] = race_results[rider_id][:stages][stage_id][:points]
-				else 
-					user_score[:points] += race_results[rider_id][:stages][stage_id][:points]
-				end
-				
-				#Cumulate KOM points
-				if (user_score[:kom].nil?)
-					user_score[:kom] = race_results[rider_id][:stages][stage_id][:kom_points]
-				else 
-					user_score[:kom] += race_results[rider_id][:stages][stage_id][:kom_points]
-				end
-				
-				#Cumulate sprint points
-				if (user_score[:sprint].nil?)
-					user_score[:sprint] = race_results[rider_id][:stages][stage_id][:sprint_points]
-				else 
-					user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
-				end
+				base_time ||= entry[1][:time]
 			end
-			
-			user_score[:tip].push({:id=>rider_id, :name=>rider.name})
-			user_scores[user_id] = user_score
-		end
-		
-		#Sort leaderboard
-		leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
-		
-		#Get gap times
-		leaderboard_with_gap = []
-		base_time = nil
-		leaderboard.each do |entry|
-			gap_formatted = nil
-			gap = (entry[1][:time] - base_time) if (!base_time.nil?)
-			gap_formatted = format_time(gap) if (!gap.nil?)
-			entry[1][:formatted_gap] = gap_formatted
-			leaderboard_with_gap.push(entry[1])
-			
-			base_time ||= entry[1][:time]
-		end
-		return leaderboard_with_gap
+			return leaderboard_with_gap
+		}
 	end
 	
 	#Title:			get_remaining_time
@@ -997,6 +1134,88 @@ class CompetitionsController < ApplicationController
 		return tips
 	end
 	
+	#Title:			get_user_race_data
+	#Description:	Gets user race data
+	def get_user_race_data(user_id, race)
+		#Next stage
+		next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first
+
+		#Get race data
+		race_data = {}
+		race_data[:race_name] = race.name
+		race_data[:next_stage_name] = (next_stage.nil?)?nil:next_stage.name
+		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
+		
+		#Competitions that haven't been joined
+		more_competitions = []
+		
+		data = []
+		seen = []
+		competition_stages = CompetitionStage.where({:race_id=>race.id})
+		competition_stages.each do |competition_stage|
+			next if (seen.include?(competition_stage.competition_id))
+			seen.push(competition_stage.competition_id)
+
+			competition = Competition.find_by_id(competition_stage.competition_id)
+			participants = CompetitionParticipant.where({:competition_id=>competition.id})
+			is_participant = (!participants.where({:user_id=>user_id}).empty?)
+			
+			#For private competitions, check participation
+			if (competition.status == STATUS[:PRIVATE])
+				next if (!is_participant)
+			#Ignore non-active competitions
+			else
+				next if (competition.status != STATUS[:ACTIVE])
+			end
+			
+			#Check if participant
+			if (!is_participant)
+				more_competitions.push({
+					:competition_id => competition.id,
+					:competition_name => competition.name,
+					:num_participants => participants.length
+				}) if (competition.status == STATUS[:ACTIVE])
+				next
+			end
+			
+			#Leaderboard for this competition
+			leaderboard = get_leaderboard(competition_stage.competition_id, 'race', race.id)
+
+			#Check tip for next stage
+			rider = nil
+			if (!next_stage.nil?)
+				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition_stage.competition_id}).first
+				logger.info tip.inspect
+				rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
+			end
+			
+			current_time = nil;
+			rank = 0
+			
+			leaderboard.each do |entry|
+				if (current_time.nil? || entry[:time] > current_time)
+					rank += 1
+					current_time = entry[:time]
+				end
+
+				next if (entry[:user_id].to_i != user_id.to_i)
+
+				line = {
+					:user_id => entry[:user_id],
+					:username => entry[:username],
+					:time_formatted => entry[:formatted_time],
+					:competition_id => competition.id,
+					:competition_name => competition.name,
+					:rank => rank,
+					:next_rider => (rider.nil?)?nil:rider.name 
+				}
+				data.push(line)
+			end
+		end
+		
+		return {:competition=>data, :race=>race_data, :more_competitions=>more_competitions}
+	end
+	
 	#Title:			format_time
 	#Description:	Format time by days/HMS
 	def format_time(time_in_sec)
@@ -1006,6 +1225,115 @@ class CompetitionsController < ApplicationController
 		else
 			return Time.at(time_in_sec).gmtime.strftime('%R:%S')
 		end
+	end
+	
+	#Title:			break_time
+	#Description:	Breaks a time in seconds to a hash of days, hours, minutes and seconds
+	def break_time(time)
+		result = {}
+		tt = time
+		
+		#Days
+		result[:days] = (tt/(24*60*60)).to_i
+		tt -= (result[:days]*24*60*60)
+		
+		#Hours
+		result[:hours] = (tt/(60*60)).to_i
+		tt -= (result[:hours]*60*60)
+		
+		#Minutes
+		result[:minutes] = (tt/60).to_i
+		tt -= (result[:minutes]*60)
+		
+		#Seconds
+		result[:seconds] = tt
+		
+		return result
+	end
+	
+	#Title:			get_top
+	#Description:	Get top scorers in the leaderboard
+	def get_top(data_sym, count, data)
+		top = []
+		added_ndx = []
+		
+		for i in 1..count
+			max = nil
+			current = nil
+			ndx = 0
+			
+			data.each do |d|
+				if (max.nil? || d[data_sym]>max)
+					if (!added_ndx.include?(ndx))
+						max = d[data_sym]
+						current = d
+						added_ndx.push(ndx)
+					end
+				end
+				ndx += 1
+			end
+			
+			top.push(current)
+		end
+		
+		return top
+	end
+	
+	#Title:			get_left_nav_data
+	#Description:	Gets data array for the left navigator
+	def get_left_nav_data(stages, competition_id)
+		user_id = (@user.nil?)?0:@user.id
+		
+		tips = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>stages.first.race_id, :competition_id=>competition_id})
+		
+		data = []
+		stages.each do |stage|
+			#Get remaining
+			remaining = (stage.starts_on-Time.now)
+			if (remaining > 86400)
+				remaining = (remaining/86400).to_i.to_s + ' days'
+			elsif (remaining > 3600)
+				remaining = (remaining/3600).to_i.to_s + ' hours'
+			elsif (remaining > 0)
+				remaining = (remaining/60).to_i.to_s + ' minutes'
+			else 
+				remaining = nil
+			end
+			
+			stage_info = {
+				:stage_id => stage.id,
+				:stage_name => stage.name,
+				:time_remaining => remaining,
+			}
+			
+			#Check participation status
+			if (user_id==0)
+				stage_info[:participation] = 'NO_LOGIN'
+			else
+				participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id})
+				if (participant.empty?)
+					stage_info[:participation] = 'NO_PARTICIPATION'
+				else
+					stage_info[:participation] = 'OK'
+				end
+			end
+			
+			#Get tipped rider info
+			rider = nil
+			if (user_id > 0)
+				tip = tips.where({:stage_id => stage.id}).first
+				chosen_rider = (tip.nil?)?nil:(tip.default_rider_id || tip.rider_id)
+				if (!chosen_rider.nil?)
+					rider = Rider.find_by_id(chosen_rider)
+					rider = rider.name if (!rider.nil?)
+				end
+			end
+			stage_info[:tip] = rider;
+			
+			data.push(stage_info)
+		end
+		
+		return data
 	end
 	
 	def results_old

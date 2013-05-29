@@ -1,0 +1,63 @@
+<script id="race-competitions-template" type="text/x-handlebars-template">
+	<div class="race-competitions">
+		<div class="header">
+			<div class="race-name bold">
+				{{race_name}}
+			</div>
+			
+			<div class="timer" style="margin-top:-20px;">
+				{{#if completed}}
+					<div class="title">
+						<span class="bold">{{next_stage_name}}</span> STARTING IN
+					</div>
+					<div class="countdown">
+						<div class="col">
+							<div class="value days">--</div>
+							<div class="unit">DAYS</div>
+						</div>
+						
+						<div class="col">
+							<div class="value hours">--</div>
+							<div class="unit">HOURS</div>
+						</div>
+						
+						<div class="col">
+							<div class="value minutes">--</div>
+							<div class="unit">MINS</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				{{else}}
+					<div class="completed"><span class="bold">Race</span> completed</div>
+				{{/if}}
+			</div>
+			
+			<div style="clear:both;"></div>
+		</div>
+		
+		<table class="competitions">
+		</table>
+		
+		<div class="more-competitions blue">
+			JOIN MORE COMPETITIONS
+		</div>
+	</div>
+</script>
+
+<script id="race-competitions-data-template" type="text/x-handlebars-template">
+	<tr class="data" onclick="location.href='/competitions/{{competition_id}}'" style="cursor:pointer;">
+		<td class="logo row"><%=image_tag 'users.png'%></td>
+		<td class="rank bold row"><div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div></td>
+		<td class="competition bold row"><div>{{competition_name}}</div></td>
+		{{#if completed}}
+			<td class="gray"></td>
+		{{else}}
+			{{#if next_rider}}
+				<td class="tip bold row" colspan="2"><div>You've tipped {{next_rider}}</div></td>
+			{{else}}
+				<td class="empty-tip italic bold row">You have not tipped any rider</td>
+				<td class="empty-tip-button"><%=image_tag 'add-black.png'%></td>
+			{{/if}}
+		{{/if}}
+	</tr>
+</script>

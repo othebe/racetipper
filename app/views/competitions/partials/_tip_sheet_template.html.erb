@@ -1,0 +1,32 @@
+<script id="tip-sheet-template" type="text/x-handlebars-template">
+	<div id="tip-sheet">
+		<div class="title black">
+			+ TIP A RIDER FOR THIS STAGE
+		</div>
+		
+		<div class="teams"></div>
+	</div>
+</script>
+
+<script id="tip-sheet-team-template" type="text/x-handlebars-template">
+	<div class="team" ndx="{{team_ndx}}">
+		<div class="bar"></div>
+		<div class="team-name bold">{{team_name}}</div>
+	</div>
+</script>
+
+<script id="tip-sheet-team-rider-template" type="text/x-handlebars-template">
+	{{#if allowed}}
+		<div class="rider italic" rider-id="{{rider_id}}" onclick="save_tip({{competition_id}}, {{stage_id}}, {{rider_id}}, this);">{{rider_number}}. {{rider_name}}</div>
+	{{else}}
+		<div class="rider italic invalid">{{rider_number}}. {{rider_name}} ({{reason}})</div>
+	{{/if}}
+</script>
+
+<script id="tip-sheet-loader-template" type="text/x-handlebars-template">
+	<%=image_tag 'ajax-spinner.gif', {:style=>'margin-left:10px;', :class=>'loader'}%>
+</script>
+
+<script id="tip-sheet-success-template" type="text/x-handlebars-template">
+	<%=image_tag 'tick.png', {:style=>'margin-left:10px; height:16px;', :class=>'loader'}%>
+</script>
