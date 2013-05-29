@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130528045242) do
+ActiveRecord::Schema.define(:version => 20130529170204) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(:version => 20130528045242) do
     t.string   "end_location"
     t.float    "distance_km"
     t.boolean  "is_complete",    :default => false
+    t.string   "stage_type",     :default => "F"
   end
 
   create_table "team_riders", :force => true do |t|

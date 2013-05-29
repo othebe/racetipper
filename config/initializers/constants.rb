@@ -48,3 +48,13 @@ COMPETITION_TYPE = {
 	:USER => 1,
 	:GLOBAL => 2
 }
+
+#Stage types
+STAGE_TYPE = {
+	:F => 'Flat',
+	:MM => 'Medium Mountains',
+	:HM => 'High Mountains',
+	:MF => 'Mountain Finish',
+	:ITT => 'Individual Time Trial',
+	:TTT => 'Team Time Trial'
+}

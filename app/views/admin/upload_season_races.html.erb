@@ -11,7 +11,6 @@
 <% if (!@result_data.empty?) %>
 	<label>Race name: </label><%=@race_name%></br>
 	<label>Race description: </label><%=@race_description%></br>
-	<label>Race image: </label><a href="<%=@race_image_url%>" target="_BLANK"><%=@race_image_url%></a></br></br>
 	
 	<label style="text-decoration:underline;">Stages</label></br>
 	<% order = 1 %>
@@ -49,12 +48,11 @@ function submit_upload_season_races() {
 		var stage_data = {};
 		stage_data['stage_name'] = '<%=result[@result_keys.index('name')]%>';
 		stage_data['stage_description'] = '<%=result[@result_keys.index('description')]%>';
-		stage_data['stage_image_url'] = '<%=result[@result_keys.index('image_url')]%>';
-		stage_data['stage_profile'] = '<%=result[@result_keys.index('profile')]%>';
 		stage_data['stage_starts_on'] = '<%=result[@result_keys.index('starts_on')]%>';
 		stage_data['stage_start_location'] = '<%=result[@result_keys.index('start_location')]%>';
 		stage_data['stage_end_location'] = '<%=result[@result_keys.index('end_location')]%>';
 		stage_data['stage_distance'] = '<%=result[@result_keys.index('distance_km')]%>';
+		stage_data['stage_type'] = '<%=result[@result_keys.index('stage_type')]%>';
 		stage_info.push(stage_data);
 	<% end %>
 	race_info['stage_data'] = stage_info;

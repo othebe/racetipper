@@ -824,6 +824,13 @@ function load_stage_info(stage_id, competition_id) {
 		
 		stage_info['countdown'] = (stage_info['remaining']>0);
 		
+		stage_info['stage_type_flat'] = (stage_info['stage_type']=='F');
+		stage_info['stage_type_medium_mountain'] = (stage_info['stage_type']=='MM');
+		stage_info['stage_type_high_mountain'] = (stage_info['stage_type']=='HM');
+		stage_info['stage_type_mountain_finish'] = (stage_info['stage_type']=='MF');
+		stage_info['stage_type_itt'] = (stage_info['stage_type']=='ITT');
+		stage_info['stage_type_ttt'] = (stage_info['stage_type']=='TTT');
+		
 		//Stage overview
 		var stage_header_source   = $('#stage-header-template').html();
 		var stage_header_template = Handlebars.compile(stage_header_source);
@@ -832,6 +839,21 @@ function load_stage_info(stage_id, competition_id) {
 		$('#content-with-nav').hide();
 		$('#content-with-nav').html(stage_header_html);
 		$('#content-with-nav').fadeIn();
+		
+		//Stage images
+		if (stage_info['stage_images'].length > 0) {
+			var stage_image_slider_source = $('#stage-image-slider-template').html();
+			var stage_image_slider_template = Handlebars.compile(stage_image_slider_source);
+			var stage_image_slider_html = stage_image_slider_template(stage_info);
+			$('#content-with-nav').append(stage_image_slider_html);
+			$('.stage-images').bjqs({
+				height      : 320,
+				width       : 620,
+				showcontrols : false,
+				responsive  : true,
+				automatic: false,
+			});
+		}
 		
 		//Tip sheet
 		if (stage_info['remaining']>0) {
@@ -923,7 +945,6 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 		$('div#stage-leaderboard tr.entry.'+type+'.'+scope).show();
 	} else {
 		$.get(url, params, function(response) {
-			console.log(response);
 			var context = {};
 			//Standardize response
 			var entries = [];

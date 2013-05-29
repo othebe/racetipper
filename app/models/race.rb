@@ -76,9 +76,11 @@ class Race < ActiveRecord::Base
 		race.save
 	end
 	
+	#DEPRECATED
 	#Title:			create_competition_from_race
 	#Description:	Creates global competition for a race
 	def create_competition_from_race
+		return
 		#Create competition
 		competition = Competition.new({
 			:creator_id => ADMIN_ID,

@@ -27,8 +27,18 @@ class StagesController < ApplicationController
 			end
 		end
 		
+		#Get stage images
+		stage_images = []
+		img_resources = Cloudinary::Api.resources(:type=>:upload, :prefix=>'stage_'+stage.id.to_s+'_')
+		img_resources['resources'].each do |resource|
+			public_id = resource['public_id']
+			img_path = 'http://res.cloudinary.com/'+Cloudinary.config.cloud_name+'/image/upload/w_620,h_320,c_fit/'+public_id+'.jpg'
+			stage_images.push(img_path)
+		end
+		
 		data = {}
 		data[:stage_name] = stage.name
+		data[:stage_type] = stage.stage_type.upcase
 		data[:distance_km] = stage.distance_km
 		data[:start_location] = stage.start_location
 		data[:end_location] = stage.end_location
@@ -39,6 +49,7 @@ class StagesController < ApplicationController
 		data[:rider_id] = (rider.nil?)?nil:rider.id
 		data[:rider_name] = rider_name
 		data[:race_id] = stage.race_id
+		data[:stage_images] = stage_images
 		
 		render :json=>data
 	end

@@ -219,7 +219,6 @@ class AdminController < ApplicationController
 		race ||= Race.new
 		race.name = race_info[:race_name]
 		race.description = race_info[:race_description]
-		race.image_url = race_info[:race_image_url]
 		race.season_id = session[:season_id]
 		create_global_competition = race.id.nil?
 		race.save
@@ -230,8 +229,6 @@ class AdminController < ApplicationController
 			stage ||= Stage.new
 			stage.name = stage_info[:stage_name]
 			stage.description = stage_info[:stage_description]
-			stage.image_url = stage_info[:stage_image_url]
-			stage.profile = stage_info[:stage_profile]
 			stage.order_id = ndx
 			stage.race_id = race.id
 			stage.season_id = session[:season_id]
@@ -239,13 +236,11 @@ class AdminController < ApplicationController
 			stage.start_location = stage_info[:stage_start_location]
 			stage.end_location = stage_info[:stage_end_location]
 			stage.distance_km = stage_info[:stage_distance]
+			stage.stage_type = stage_info[:stage_type]
 			stage.save
 			stage_arr.push(stage.id)
 		end
 		Stage.where('race_id=? AND season_id=? AND id NOT IN (?)', race.id, session[:season_id], stage_arr).delete_all
-		
-		#Create a global competition and add participants
-		Race.create_competition_from_race if (create_global_competition)
 		
 		render :json=>{:success=>true, :msg=>'success'} and return
 	end
@@ -543,7 +538,6 @@ class AdminController < ApplicationController
 			@result_data = []
 			@race_name = ''
 			@race_description = ''
-			@race_image_url = ''
 			
 			file_data = params[:upload][:datafile].read
 			ndx = 0
@@ -557,7 +551,6 @@ class AdminController < ApplicationController
 					line_arr = line.split(',')
 					@race_name = line_arr[0].strip
 					@race_description = line_arr[1].strip
-					@race_image_url = line_arr[2].strip
 					next
 				end
 				

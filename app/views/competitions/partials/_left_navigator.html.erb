@@ -10,7 +10,14 @@
 					<tr class="<%=(open)?'gray':'darkgray'%>">
 				<% end %>
 					<td class="<%=(nav_data[:time_remaining].nil?)?'':'yellow'%>"><%=nav_data[:stage_name]%></td>
-					<td><%=image_tag 'type-medium-mountain.png'%></td>
+					<td>
+						<%=image_tag 'type-flat.jpg', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='F') %>
+						<%=image_tag 'type-medium-mountain.png', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='MM') %>
+						<%=image_tag 'type-high-mountain.png', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='HM') %>
+						<%=image_tag 'type-mountaintop-finish.png', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='MF') %>
+						<%=image_tag 'type-individual-time-trial.png', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='ITT') %>
+						<%=image_tag 'type-team-time-trial.png', {:class=>'stage-type'} if (nav_data[:stage_type].upcase=='TTT') %>
+					</td>
 					<% if (nav_data[:participation]!='OK') %>
 						<% if (nav_data[:participation]=='NO_LOGIN') %>
 							<td class="italic" colspan="2">Login to tip.</td>

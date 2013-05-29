@@ -1303,6 +1303,7 @@ class CompetitionsController < ApplicationController
 			stage_info = {
 				:stage_id => stage.id,
 				:stage_name => stage.name,
+				:stage_type => stage.stage_type,
 				:time_remaining => remaining,
 			}
 			
