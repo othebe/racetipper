@@ -1,0 +1,29 @@
+<script id="tipping-report-creator-template" type="text/x-handlebars-template">
+	<div class="tipping-report creator">
+		<div class="bar">&nbsp;</div>
+		<div class="title bold">{{stage_name}} TIPPING REPORT</div>
+		<div class="data-input gray">
+			<input type="text" name="title" placeholder="Tipping report title">
+			<textarea name="report" class="italic" placeholder="Tipping report content."></textarea>
+			
+			<div class="btn yellow" onclick="save_tipping_report({{competition_id}}, {{stage_id}}, this);">Save report</div>
+			<div class="loading"><%= image_tag 'ajax-spinner.gif'%></div>
+			<div style="clear:both;"></div>
+		</div>
+	</div>
+</script>
+
+<script id="tipping-report-template" type="text/x-handlebars-template">
+	{{#each tipping_reports}}
+		<div class="tipping-report" report-id="{{report_id}}">
+			<div class="bar">&nbsp;</div>
+			<div class="title bold">
+				{{stage_name}} RACE REPORT
+				<a class="delete-report" style="color:gray;" onclick="delete_report({{report_id}}, this);">(Delete)</a>
+				<%= image_tag 'ajax-spinner.gif', {:class=>'delete loading'}%>
+			</div> 
+			<div class="title-2">{{this.title}}</div>
+			<p class="italic">{{this.report}}</p>
+		</div>
+	{{/each}}
+</script>

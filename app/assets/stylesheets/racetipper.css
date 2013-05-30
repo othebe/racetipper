@@ -46,6 +46,10 @@ div#main-content * {
 	.success img {
 		height: 16px;
 	}
+
+.loading-overlay {
+	opacity: 0.2;
+}
 	
 img.stage-type {
 	height: 25px;
@@ -803,6 +807,46 @@ div#stage-overview div.status {
 div.stage-image-container {
 	padding: 30px 22%;
 }
+
+/* *** Tipping report *** */
+div.tipping-report {
+	margin-top: 45px;
+}
+	div.tipping-report div.bar {
+		border-top: 8px solid lightgray;
+		width: 50px;
+		margin-bottom: 10px;
+	}
+	div.tipping-report div.title {
+		font-size: 14pt;
+		margin-bottom: 20px;
+	}
+	div.tipping-report div.title-2 {
+		font-size: 24pt;
+		margin-bottom: 20px;
+	}
+	div.tipping-report .delete-report {
+		color: gray;
+		font-size: 11pt;
+	}
+	div.tipping-report img.loading.delete {
+		height: 12px;
+	}
+	div.tipping-report.creator div.data-input {
+		padding: 20px 25px;
+	}
+	div.tipping-report.creator div.data-input input {
+		width: 98%;
+		margin-bottom: 20px;
+	}
+	div.tipping-report.creator div.data-input textarea {
+		width: 98.2%;
+		margin-bottom: 20px;
+		height: 80px;
+	}
+	div.tipping-report.creator div.loading {
+		margin-top: 12px;
+	}
 
 /* *** Other information *** */
 div#other-information div.col {

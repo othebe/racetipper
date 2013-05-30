@@ -815,7 +815,16 @@ function show_race_leaderboard_from_competition(race_id) {
 
 //Title:		load_stage_info
 //Description:	Loads stage info into the competitions screen
+var loading_stage_info = false;
+var current_stage_id = null;
 function load_stage_info(stage_id, competition_id) {
+	if (loading_stage_info) return;
+	if (current_stage_id==stage_id) return;
+	
+	current_stage_id = stage_id;
+	loading_stage_info = true;
+	$('#content-with-nav').addClass('loading-overlay');
+	
 	$.get('/stages/information/'+stage_id, {competition_id:competition_id}, function(stage_info) {
 		stage_leaderboard_type = 'tipping';
 		stage_leaderboard_scope = 'stage';
@@ -853,6 +862,24 @@ function load_stage_info(stage_id, competition_id) {
 				responsive  : true,
 				automatic: false,
 			});
+		}
+		
+		//Tipping reports
+		var tipping_report_source = $('#tipping-report-template').html();
+		var tipping_report_template = Handlebars.compile(tipping_report_source);
+		var tipping_report_html = tipping_report_template(stage_info);
+		$('#content-with-nav').append(tipping_report_html);
+		
+		//Tipping report creator
+		if (stage_info['allow_tipping_report_creation']) {
+			var tipping_report_creator_source = $('#tipping-report-creator-template').html();
+			var tipping_report_creator_template = Handlebars.compile(tipping_report_creator_source);
+			var tipping_report_creator_html = tipping_report_creator_template({
+				'competition_id': competition_id, 
+				'stage_id': stage_id,
+				'stage_name': stage_info['stage_name'].toUpperCase()
+			});
+			$('#content-with-nav').append(tipping_report_creator_html);
 		}
 		
 		//Tip sheet
@@ -901,6 +928,9 @@ function load_stage_info(stage_id, competition_id) {
 		else {
 			load_stage_leaderboard(competition_id, stage_info['race_id'], stage_id);
 		}
+		
+		loading_stage_info = false;
+		$('#content-with-nav').removeClass('loading-overlay');
 	});
 }
 
@@ -1109,5 +1139,68 @@ function save_user_basic_information() {
 		saving_user_basic_information = false;
 		$(container).find('div.btn').removeClass('gray').addClass('yellow');
 		$(container).find('div.loading').hide();
+	});
+}
+
+//Title:		save_tipping_report
+//Description:	Save a tipping report
+var saving_tipping_report = false;
+function save_tipping_report(competition_id, stage_id, elt) {
+	if (saving_tipping_report) return;
+	
+	var container = $(elt).parent();
+	$(elt).removeClass('yellow').addClass('gray');
+	$(container).find('div.loading').show();
+	saving_tipping_report = true;
+	
+	var title = $(container).find('input[name=title]').val();
+	var report = $(container).find('textarea[name=report]').val();
+	
+	$.post('/competitions/save_report/'+competition_id, {stage_id:stage_id, title:title, report:report}, function(response) {
+		if (response.success) {
+			context = {};
+			context['report_id'] = response.msg;
+			context['stage_name'] = $(container).parent().find('div.title').html().replace('TIPPING REPORT', '');
+			context['title'] = title;
+			context['report'] = report;
+			
+			var tipping_report_source = $('#tipping-report-template').html();
+			var tipping_report_template = Handlebars.compile(tipping_report_source);
+			var tipping_report_html = tipping_report_template({'tipping_reports': [context]});
+			
+			$('.tipping-report').first().before(tipping_report_html);
+			
+			$(container).find('input[name=title]').val('');
+			$(container).find('textarea[name=report]').val('');
+		} else {
+			alert(response.msg);
+		}
+		
+		saving_tipping_report = false;
+		$(elt).removeClass('gray').addClass('yellow');
+		$(container).find('div.loading').hide();	
+	});
+}
+
+//Title:		delete_report
+//Description:	Delete a tipping report
+var deleting_tipping_report = false;
+function delete_report(report_id, elt) {
+	if (deleting_tipping_report) return;
+	
+	var container = $(elt).parent();
+	$(elt).removeClass('yellow').addClass('gray');
+	$(container).find('.loading').show();
+	
+	if (!confirm("Are you sure you want to delete this report?")) return;
+	
+	$.post('/competitions/delete_report/'+report_id, {}, function(response) {
+		if (response.success) {
+			$(container).parent().remove();
+		} else {
+			alert(response.msg);
+			$(elt).removeClass('yellow').addClass('gray');
+			$(container).find('.loading').show();
+		}
 	});
 }

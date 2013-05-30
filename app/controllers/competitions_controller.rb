@@ -862,6 +862,60 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
+	#Title:			save_report
+	#Description:	Save a tipping report for a competition's stage
+	def save_report
+		render :json=>{:sucess=>false, :msg=>'No competition specified'} and return if (!params.has_key?(:id))
+		render :json=>{:sucess=>false, :msg=>'No stage specified'} and return if (!params.has_key?(:stage_id))
+		
+		#Check competition
+		competition = Competition.find_by_id(params[:id])
+		render :json=>{:success=>false, :msg=>'Competition not found.'} and return if (competition.nil?)
+		
+		#Check user
+		render :json=>{:success=>false, :msg=>'No user found'} and return if (@user.nil?)
+		render :json=>{:sucsess=>false, :msg=>'User not authorized.'} and return if (competition.creator_id != @user.id)
+		
+		#Check title
+		render :json=>{:sucess=>false, :msg=>'Please enter a title.'} and return if (!params.has_key?(:title) || params[:title].empty?)
+		
+		#Check report
+		render :json=>{:sucess=>false, :msg=>'Please enter a report.'} and return if (!params.has_key?(:report) || params[:report].empty?)
+		
+		#Save report
+		report = TippingReport.create({
+			:competition_id => params[:id],
+			:stage_id => params[:stage_id],
+			:title => params[:title],
+			:report => params[:report]
+		})
+		
+		render :json=>{:success=>true, :msg=>report.id}
+	end
+	
+	#Title:			delete_report
+	#Description:	Delete a tipping report for a competition's stage
+	def delete_report
+		render :json=>{:sucess=>false, :msg=>'No report specified'} and return if (!params.has_key?(:id))
+		
+		#Check report
+		report = TippingReport.find_by_id(params[:id])
+		render :json=>{:success=>false, :msg=>'Report not found.'} and return if (report.nil?)
+		
+		#Check competition
+		competition = Competition.find_by_id(report.competition_id)
+		render :json=>{:success=>false, :msg=>'Competition not found.'} and return if (competition.nil?)
+		
+		#Check user
+		render :json=>{:success=>false, :msg=>'No user found'} and return if (@user.nil?)
+		render :json=>{:sucsess=>false, :msg=>'User not authorized.'} and return if (competition.creator_id != @user.id)
+		
+		report.status = STATUS[:INACTIVE]
+		report.save
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
 	def send_invitation_emails
 		render :json=>{:success=>false, :msg=>'Could not read competition data. Please refresh your browser and try again'} and return if (!params.has_key?(:competition_id))
 		render :json=>{:success=>false, :msg=>'Could not read invitation data. Please refresh your browser and try again'} and return if (!params.has_key?(:emails))

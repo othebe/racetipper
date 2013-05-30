@@ -5,16 +5,22 @@ class StagesController < ApplicationController
 		stage = Stage.find_by_id(params[:id])
 		render :json=>{:success=>false} and return if (stage.nil?)
 		
+		user_id = 0
+		user_id = @user.id if (!@user.nil?)
+		
 		#Get stage tips
 		rider = nil
 		rider_name = nil
 		competition_id = params[:competition_id]
-		if (!@user.nil?)
-			tip = CompetitionTip.where({:competition_participant_id=>@user.id, :stage_id=>params[:id], :competition_id=>competition_id}).first
+		if (user_id>0)
+			tip = CompetitionTip.where({:competition_participant_id=>user_id, :stage_id=>params[:id], :competition_id=>competition_id}).first
 			rider_used = (tip.default_rider_id || tip.rider_id)
 			rider = Rider.find_by_id(rider_used)
 			rider_name = (rider.nil?)?nil:rider.name
 		end
+		
+		#Competition
+		competition = Competition.find_by_id(params[:competition_id])
 		
 		#Get current pending/completed status
 		status = 'OPEN'
@@ -36,6 +42,18 @@ class StagesController < ApplicationController
 			stage_images.push(img_path)
 		end
 		
+		#Get tipping reports
+		reports = []
+		report_data = TippingReport.where({:competition_id=>competition.id, :stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).order('id DESC')
+		report_data.each do |report|
+			reports.push({
+				:report_id => report.id,
+				:title => report.title,
+				:report => report.report
+			})
+		end
+		
+		
 		data = {}
 		data[:stage_name] = stage.name
 		data[:stage_type] = stage.stage_type.upcase
@@ -50,6 +68,8 @@ class StagesController < ApplicationController
 		data[:rider_name] = rider_name
 		data[:race_id] = stage.race_id
 		data[:stage_images] = stage_images
+		data[:tipping_reports] = reports
+		data[:allow_tipping_report_creation] = (competition.creator_id==user_id)
 		
 		render :json=>data
 	end
