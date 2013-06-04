@@ -972,7 +972,10 @@ class CompetitionsController < ApplicationController
 	#				limit - How many entries in the leaderboard to show
 	private
 	def get_leaderboard(competition_id, group_type, group_id, limit=10)
-		return Rails.cache.fetch('leaderboard_'+competition_id.to_s+'_'+group_type+'_'+group_id.to_s, :expires_in=>24.hours) {
+		cache_name = 'leaderboard_'+competition_id.to_s+'_'+group_type+'_'+group_id.to_s
+		leaderboard_with_gap = nil
+		leaderboard_with_gap = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
+		if (leaderboard_with_gap.nil?)
 			tip_conditions = {:competition_id=>competition_id}
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
 			
@@ -1077,8 +1080,11 @@ class CompetitionsController < ApplicationController
 				
 				base_time ||= entry[1][:time]
 			end
-			return leaderboard_with_gap
-		}
+			REDIS.set(cache_name, leaderboard_with_gap)
+			REDIS.expire(cache_name, 24*60*60)
+		end
+		
+		return leaderboard_with_gap
 	end
 	
 	#Title:			get_remaining_time
