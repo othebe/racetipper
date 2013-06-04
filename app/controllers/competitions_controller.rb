@@ -37,13 +37,14 @@ class CompetitionsController < ApplicationController
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
-		#Get leaderboard
-		competition_stage = CompetitionStage.where({:competition_id=>params[:id]}).first
-		@leaderboard = get_leaderboard(params[:id], 'race', competition_stage.race_id)
+		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
 		#Competition
 		@competition = Competition.find_by_id(params[:id])
 		
+		#Get leaderboard
+		@leaderboard = get_leaderboard(params[:id], 'race', @competition.race_id)
+
 		#Creator
 		@creator = User.find_by_id(@competition.creator_id)
 		
@@ -56,10 +57,10 @@ class CompetitionsController < ApplicationController
 		@participating = (!is_participant.empty?)
 		
 		#Race
-		@race = Race.find_by_id(competition_stage.race_id)
+		@race = Race.find_by_id(@competition.race_id)
 		
 		#Completed stage count
-		@stages = Stage.where({:race_id=>competition_stage.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
+		@stages = Stage.where({:race_id=>@competition.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 
 		@total_stages = @stages.count
 		@completed_stages = @stages.where({:is_complete=>true}).count

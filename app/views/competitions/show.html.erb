@@ -45,3 +45,11 @@
 		<%=render 'competitions/partials/competition_leaderboard'%>
 	</div>
 </div>
+
+<% if (!@stage_id.nil?) %>
+	<script>
+		$(document).ready(function() {
+			load_stage_info('<%=@stage_id%>', '<%=@competition.id%>');
+		});
+	</script>
+<% end %>

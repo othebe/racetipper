@@ -834,6 +834,8 @@ function load_stage_info(stage_id, competition_id) {
 	if (loading_stage_info) return;
 	if (current_stage_id==stage_id) return;
 	
+	window.history.pushState('Object', 'Title', '/competitions/'+competition_id+'?stage_id='+stage_id);
+	
 	current_stage_id = stage_id;
 	loading_stage_info = true;
 	$('#content-with-nav').addClass('loading-overlay');
@@ -944,6 +946,12 @@ function load_stage_info(stage_id, competition_id) {
 		
 		loading_stage_info = false;
 		$('#content-with-nav').removeClass('loading-overlay');
+		
+		setTimeout(function() {
+			$('html, body').animate({
+				scrollTop: $(".tip-sheet").offset().top
+			}, 2000);
+		}, 500);
 	});
 }
 
