@@ -94,11 +94,11 @@
 				{{#if rider_id}}
 					<%=image_tag 'tick.png', {:style=>'float:left; margin-right:5px; margin-top:10px;'}%>
 					<div class="text">
-						You've tipped {{rider_name}}
+						You've tipped <span class="selected-rider-name {{stage_id}}">{{rider_name}}</span>
 					</div>
 				{{else}}
 					<div class="text red">
-						You have not tipped anybody.
+						<span class="selected-rider-name {{stage_id}}">You have not tipped anybody.</span>
 					</div>
 				{{/if}}
 			</div>

@@ -12,7 +12,7 @@ class Result < ActiveRecord::Base
 	#					index_by_rank - Return indexed by rank (DEFAULT
 	#					index_by_rider - Return indexed by rider ID
 	def self.get_results(group_type, group_id, options={})
-		cache_name = 'results_'+group_type.to_s+'_'+group_id+to_s
+		cache_name = 'results_'+group_type.to_s+'_'+group_id.to_s
 		options.each do |k,v|
 			cache_name += (k.to_s+'_')
 		end

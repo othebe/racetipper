@@ -79,6 +79,7 @@ class User < ActiveRecord::Base
 	#Params:		data - Array of email and password
 	def self.check_credentials(data)
 		user = self.find_by_email(data[:email].downcase)
+		
 		return nil if (user.nil?)
 		
 		enc_password = Digest::SHA1.hexdigest(user.salt+data[:password])

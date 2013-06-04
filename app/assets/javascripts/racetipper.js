@@ -301,6 +301,19 @@ function save_tip(competition_id, stage_id, rider_id, elt) {
 			$(elt).find('img.loader').remove();
 			$(elt).append(success_html);
 			$(elt).addClass('selected');
+			
+			//Change chosen rider name
+			$(document).find('.selected-rider-name.'+stage_id).html(response.data['rider_name']);
+			
+			//Remove unselected message on header if any
+			var header_container = $('.col.add-tip.bold');
+			$(header_container).find('.red').prepend("You've tipped ").before('<img alt="Tick" src="/assets/tick.png" style="float:left; margin-right:5px; margin-top:10px;">');
+			$(header_container).find('.red').removeClass('red');
+			
+			//Remove unselected message on floating bar if any
+			var header_container = $('tr.'+stage_id);
+			$(header_container).find('.name-td.yellow').removeClass('yellow');
+			$(header_container).find('td.red').removeClass('red').html('<img alt="Pencil" src="/assets/pencil.png">');
 		}
 	});
 }

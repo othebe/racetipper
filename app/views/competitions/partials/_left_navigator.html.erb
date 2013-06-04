@@ -5,7 +5,7 @@
 			<% @left_nav_data.each do |nav_data| %>
 				<% open = !nav_data[:time_remaining].nil? %>
 				<% if (nav_data[:participation]=='OK') %>
-					<tr style="cursor:pointer;" onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open)?'gray':'darkgray'%>">
+					<tr style="cursor:pointer;" onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open)?'gray':'darkgray'%> <%=nav_data[:stage_id]%>">
 				<% else %>
 					<tr class="<%=(open)?'gray':'darkgray'%>">
 				<% end %>
@@ -28,18 +28,18 @@
 						<% if (nav_data[:time_remaining]).nil? %>
 							<td colspan="2"></td>
 						<% else %>
-							<td class="yellow">
+							<td class="yellow name-td">
 								<div>
-									<%=nav_data[:time_remaining]%>
+									<span class="selected-rider-name <%=nav_data[:stage_id]%>"><%=nav_data[:time_remaining]%></span>
 								</div>
 							</td>
 							<td class="red" style="width:20px;"><%=image_tag 'add-black.png', {:class=>'add-tip'}%></td>
 						<% end %>
 					<% else %>
 						<% if (nav_data[:time_remaining]).nil? %>
-							<td colspan="2"><%=nav_data[:tip]%></td>
+							<td colspan="2"><span class="selected-rider-name <%=nav_data[:stage_id]%>"><%=nav_data[:tip]%></span></td>
 						<% else %>
-							<td><%=nav_data[:tip]%></td>
+							<td><span class="selected-rider-name <%=nav_data[:stage_id]%>"><%=nav_data[:tip]%></span></td>
 							<td><%=image_tag 'pencil.png'%></td>
 						<% end %>
 					<% end %>
