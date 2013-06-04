@@ -34,12 +34,19 @@ class StagesController < ApplicationController
 		end
 		
 		#Get stage images
-		stage_images = []
-		img_resources = Cloudinary::Api.resources(:type=>:upload, :prefix=>'stage_'+stage.id.to_s+'_')
-		img_resources['resources'].each do |resource|
-			public_id = resource['public_id']
-			img_path = 'http://res.cloudinary.com/'+Cloudinary.config.cloud_name+'/image/upload/w_620,h_320,c_fit/'+public_id+'.jpg'
-			stage_images.push(img_path)
+		cache_name = 'stage_'+params[:id].to_s+'_images'
+		stage_images = nil
+		stage_images = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
+		if (stage_images.nil?)
+			stage_images = []
+			img_resources = Cloudinary::Api.resources(:type=>:upload, :prefix=>'stage_'+stage.id.to_s+'_')
+			img_resources['resources'].each do |resource|
+				public_id = resource['public_id']
+				img_path = 'http://res.cloudinary.com/'+Cloudinary.config.cloud_name+'/image/upload/w_620,h_320,c_fit/'+public_id+'.jpg'
+				stage_images.push(img_path)
+			end
+			REDIS.set(cache_name, stage_images)
+			REDIS.expire(cache_name, 15*60)
 		end
 		
 		#Get tipping reports

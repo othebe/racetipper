@@ -97,3 +97,6 @@ CLOUDINARY_URL = 'cloudinary://354521382215813:rWbmYgLsHoOGXJvgJT9WiHNpvf4@racet
 #Ironworker
 IRONWORKER_PROJECT_ID = '516968bc2267d85351001a8d'
 IRONWORKER_TOKEN = 'sDMGz4n9RX85PZoi27Y4CuCHcNk'
+
+#Redis
+ENV["REDISTOGO_URL"] = 'redis://redistogo:72db279f5fc11a9d974c7b19b1f6c5ce@dory.redistogo.com:10500'

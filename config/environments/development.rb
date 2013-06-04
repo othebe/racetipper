@@ -12,7 +12,7 @@ Racetipper::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = true
-
+  
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
   #Action mailer stuff
@@ -66,3 +66,6 @@ CLOUDINARY_URL = 'cloudinary://189312664843342:G8jADd0bciw0VSqzh5Y2FE7OPh4@dmlhr
 #Ironworker
 IRONWORKER_PROJECT_ID = '516968bc2267d85351001a8d'
 IRONWORKER_TOKEN = 'sDMGz4n9RX85PZoi27Y4CuCHcNk'
+
+#Redis
+ENV["REDISTOGO_URL"] = 'redis://redistogo:72db279f5fc11a9d974c7b19b1f6c5ce@dory.redistogo.com:10500'

@@ -1,0 +1,9 @@
+Stage images(stage_id):
+stage_(stage_id)_images 15*60
+
+Competition leaderboard:
+leaderboard_(competition_id)_(group_type)_(group_id) 24*60*60
+
+Race results:
+results_(group_type)_(group_id)_(:options.each) 24*60*60
+
