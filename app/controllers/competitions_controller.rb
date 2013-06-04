@@ -770,13 +770,12 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'This rider is not part of the race.'} and return if (teamrider.empty?)
 		
 		#Determine if user is trying to tip a disqualified rider
-		teamrider = TeamRider.where('rider_id=? AND race_id=? AND rider_status<>?', params[:rider_id], stage.race_id, RIDER_RESULT_STATUS[:ACTIVE]).joins(:team)
+		teamrider = TeamRider.where('rider_id=? AND race_id=? AND rider_status<>?', params[:rider_id], stage.race_id, RIDER_RESULT_STATUS[:ACTIVE])
 		render :json=>{:success=>false, :msg=>'This rider has been disqualified.'} and return if (!teamrider.empty?)
 		
 		#Determine if user is in competition
 		participant = CompetitionParticipant.where({:competition_id=>params[:id], :user_id=>@user.id, :status=>STATUS[:ACTIVE]})
 		render :json=>{:success=>false, :msg=>'You need to join a competition to tip.'} and return if (participant.empty?)
-		
 		
 		tip = CompetitionTip.where({
 			:competition_participant_id => @user.id,
@@ -797,7 +796,12 @@ class CompetitionsController < ApplicationController
 		
 		tip.save
 		
-		render :json=>{:success=>true, :msg=>stage.name}
+		rider = Rider.find_by_id(params[:rider_id])
+		
+		render :json=>{:success=>true, :msg=>stage.name, :data=>{
+			:rider_id => rider.id,
+			:rider_name => rider.name
+		}}
 	end
 	
 	#Title:			kick

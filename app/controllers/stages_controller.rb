@@ -55,6 +55,7 @@ class StagesController < ApplicationController
 		
 		
 		data = {}
+		data[:stage_id] = stage.id
 		data[:stage_name] = stage.name
 		data[:stage_type] = stage.stage_type.upcase
 		data[:distance_km] = stage.distance_km
