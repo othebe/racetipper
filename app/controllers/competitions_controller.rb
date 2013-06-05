@@ -133,20 +133,36 @@ class CompetitionsController < ApplicationController
 		
 		leaderboard = get_leaderboard(competition_id, group_type, group_id)
 		@data = []
+		
+		ndx = 1
+		max_rank = display_rank = 0
+		
 		leaderboard.each do |entry|
+			if (!entry[:rank].nil?)
+				#Same rider ranking = same user ranking
+				if (entry[:rank] > max_rank) 
+					display_rank = ndx
+					max_rank = entry[:rank]
+				end
+			else
+				display_rank = ndx
+			end
+			
 			line = {
 				:user_id => entry[:user_id],
 				:username => entry[:username],
 				:time_formatted => entry[:formatted_time],
 				:gap_formatted => entry[:formatted_gap],
 				:kom => entry[:kom],
-				:sprint => entry[:sprint]
+				:sprint => entry[:sprint],
+				:rank => display_rank
 			}
 			if (group_type == 'stage')
 				line[:tip] = entry[:tip]
 				line[:is_default] = entry[:is_default]
 			end
 			@data.push(line)
+			ndx += 1
 		end
 		
 		render :json => {:leaderboard => @data}
@@ -989,14 +1005,6 @@ class CompetitionsController < ApplicationController
 				participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>competition_id}).first
 				next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
 				
-				#next if (race_results.nil?)
-				#Fill tip if user has not tipped anyone and the leaderboard is open
-				if (tip.rider_id.nil? && tip.default_rider_id.nil?)
-					#logger.info(tip.inspect)
-					#CompetitionTip.fill_tips(tip.competition_participant_id, competition_id)
-					#tip = CompetitionTip.find_by_id(tip.id)
-				end
-				
 				#Account for default riders
 				if (tip.default_rider_id.nil?)
 					modifier = 0
@@ -1060,6 +1068,9 @@ class CompetitionsController < ApplicationController
 					else 
 						user_score[:sprint] += race_results[rider_id][:stages][stage_id][:sprint_points]
 					end
+					
+					#Rank
+					user_score[:rank] = race_results[rider_id][:stages][stage_id][:rank]
 				end
 				
 				user_score[:tip].push({:id=>rider_id, :name=>rider.name})
@@ -1067,7 +1078,11 @@ class CompetitionsController < ApplicationController
 			end
 			
 			#Sort leaderboard
-			leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
+			if (group_type=='stage')
+				leaderboard = user_scores.sort_by {|user_id, data| data[:rank]}
+			else
+				leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
+			end
 			
 			#Get gap times
 			leaderboard_with_gap = []

@@ -39,11 +39,15 @@ class StagesController < ApplicationController
 		stage_images = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
 		if (stage_images.nil?)
 			stage_images = []
-			img_resources = Cloudinary::Api.resources(:type=>:upload, :prefix=>'stage_'+stage.id.to_s+'_')
-			img_resources['resources'].each do |resource|
-				public_id = resource['public_id']
-				img_path = 'http://res.cloudinary.com/'+Cloudinary.config.cloud_name+'/image/upload/w_620,h_320,c_fit/'+public_id+'.jpg'
-				stage_images.push(img_path)
+			begin
+				img_resources = Cloudinary::Api.resources(:type=>:upload, :prefix=>'stage_'+stage.id.to_s+'_')
+				img_resources['resources'].each do |resource|
+					public_id = resource['public_id']
+					img_path = 'http://res.cloudinary.com/'+Cloudinary.config.cloud_name+'/image/upload/w_620,h_320,c_fit/'+public_id+'.jpg'
+					stage_images.push(img_path)
+				end
+			rescue
+				#
 			end
 			REDIS.set(cache_name, stage_images)
 			REDIS.expire(cache_name, 15*60)

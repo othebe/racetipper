@@ -306,6 +306,9 @@ class AdminController < ApplicationController
 			Competition.check_completion_status(competition.competition_id)
 		end
 		
+		#Clear cache
+		REDIS.flushall()
+		
 		render :json=>{:success=>true}
 	end
 	

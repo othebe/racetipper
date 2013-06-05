@@ -1002,7 +1002,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 			if (type=='tipping') {
 				$(response.leaderboard).each(function(ndx, entry) {
 					entries.push({
-						'rank': ndx+1,
+						'rank': entry['rank'],
 						'name': entry['username'],
 						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
 						'time': entry['time_formatted'],
