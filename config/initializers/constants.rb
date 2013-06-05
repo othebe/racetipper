@@ -58,3 +58,8 @@ STAGE_TYPE = {
 	:ITT => 'Individual Time Trial',
 	:TTT => 'Team Time Trial'
 }
+
+#Partner access tokens
+PARTNER_ACCESS_TOKEN = {
+	:CYCLINGTIPS => '8JUDm7cFiVGLIqiWbkVs6S2gxxOvAvbl'
+}

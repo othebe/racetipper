@@ -32,9 +32,6 @@ class User < ActiveRecord::Base
 		
 		user.save
 		
-		#Add user to any global competitions
-		user.add_to_global_competition
-		
 		return self.find_by_id(user.id)
 	end
 
