@@ -1,0 +1,89 @@
+<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<% image_tag 'synergy/media/about_us/philosophy/backgroundPhilosophy.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-cc"  data-id="module-position-cc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				
+				<!-- Sign in -->
+				<div id="module-text-page-holder-philosophy" style="width:32%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Login to Racetipper</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder signin" style="width:100%;">
+						<form onsubmit="$('.login.button').click(); return false;">
+							<input type="text" name="email" placeholder="Email"></br>
+							<input type="password" name="password" placeholder="Password">
+							<input type="submit" value="" style="width:0px; height:0px; opacity:0;"></button>
+							<div style="text-align:center;">
+								<div class="login button" style="margin-left:0; padding-right:12px;" onclick="login(this);">
+									<span>Login</span>
+								</div>
+								<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
+							</div>
+						</form>
+						<p></p>
+						<h3>Or, Login with Facebook</h3>
+						<a onclick="facebook_login();" style="cursor:pointer;"><%=image_tag 'facebook.gif'%></a>
+					</div>
+				</div>
+				
+				<!-- Sign up -->
+				<div id="module-text-page-holder-philosophy" style="border-left:1px solid #C3C3C3; padding-left:30px; width:32%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Create an account</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div class="main-text-holder signup" style="width:100%;">
+						<input type="text" name="firstname" placeholder="First name"></br>
+						<input type="text" name="lastname" placeholder="Last name"></br>
+						<input type="text" name="email" placeholder="Email"></br>
+						<input type="password" name="password" placeholder="Password">
+						<div class="button" style="margin-left:0; margin-top:15px; padding-right:12px;" onclick="signup(this);">
+							<span>Create</span>
+						</div>
+						<%=image_tag 'ajax-loader.gif', :class=>'loading' %>
+					</div>
+				</div>
+				
+				<!-- Password reset option -->
+				<div style="clear:both;"></div>
+				<div style="text-align:center; margin-top:-30px;">
+					<p>
+						<a style="color:darkmagneta; text-decoration:none; cursor:pointer;" onclick="$(this).hide(); $('div.password_reset').slideDown();">Forgot your password?</a>
+					</p>
+				</div>
+				
+				<!-- Password reset -->
+				<div id="module-text-page-holder-philosophy" class="password_reset" style="margin-top:0px; width:83%; display:none;">  
+					<div class="custom-separator"></div>
+					<div class="title-holder">
+						<span class="title-text_normal">Password Reset</span>
+					</div>
+					
+					<h3>Type in your email and we'll send you a temporary password.</3>
+					
+					<div class="main-text-holder signup" style="width:100%; margin-top:5px;">
+						<input type="text" name="reset_email" placeholder="Email" style="width:auto; float:left;">
+						<div class="button" style="margin:0 0 0 15px; padding-right:12px; width:30%; float:left;" onclick="forgot_password(this);">
+							<span>Send</span>
+						</div>
+						<%=image_tag 'ajax-loader.gif', {:class=>'loading password_reset', :style=>'margin:10px 10px;'} %>
+					</div>
+				</div>
+				
+				
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

@@ -1,0 +1,36 @@
+<% @races.each do |race| %>
+
+	<div class="main-text-holder">
+		<p>
+			<span><%=race[:race_data].name%></span>
+			
+			<div class="competition_results">
+				<select onchange="load_results(this);">
+					<option value="<%=race[:race_data].id%>" data-type="race">Results Summary</option>
+					<% race[:stages].each do |stage| %>
+						<option value="<%=stage.id%>" data-type="stage"><%=stage.name%></option>
+					<% end %>
+				</select>
+				
+				<%=image_tag 'ajax-loader.gif', {:onload=>'load_results(this);', :class=>'loading'} %>
+				<table style="display:none;">
+					<thead>
+						<tr>
+							<th>Rank</th>
+							<th>Name</th>
+							<th>Time</th>
+							<th>Bonus</th>
+							<th>Gap</th>
+							<th>KOM</th>
+							<th>Sprint</th>
+						</tr>
+					</thead>
+					
+					<tbody></tbody>
+				</table>
+			</div>
+		</p>
+	</div>
+
+	<div class="custom-separator"></div>
+<% end %>

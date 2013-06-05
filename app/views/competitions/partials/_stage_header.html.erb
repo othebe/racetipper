@@ -1,0 +1,114 @@
+<script id="stage-header-template" type="text/x-handlebars-template">
+	<!-- Stage overview -->
+	<div id="stage-overview" class="grayblack">
+		<div class="name" style="float:left;">
+			<div class="title black">{{stage_name}}</div>
+		</div>
+		{{#if countdown}}
+			<div class="timer" style="margin:20px;">
+				<div class="title">
+					<span class="bold">STAGE 7</span> STARTING IN
+				</div>
+				<div class="countdown">
+					<div class="col">
+						<div class="value days">--</div>
+						<div class="unit">DAYS</div>
+					</div>
+					
+					<div class="col">
+						<div class="value hours">--</div>
+						<div class="unit">HOURS</div>
+					</div>
+					
+					<div class="col">
+						<div class="value minutes">--</div>
+						<div class="unit">MINS</div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+		{{else}}
+			<div class="status">
+				<span class="bold">STAGE</span> {{status}}
+			</div>
+		{{/if}}
+		<div style="clear:both;"></div>
+		
+		<div class="info">
+			<div class="col big bold" style="margin-right:10px;">
+				{{#if stage_type_flat}}
+					<%=image_tag 'type-flat.jpg'%>
+				{{/if}}
+				{{#if stage_type_medium_mountain}}
+					<%=image_tag 'type-medium-mountain.png'%>
+				{{/if}}
+				{{#if stage_type_high_mountain}}
+					<%=image_tag 'type-high-mountain.png'%>
+				{{/if}}
+				{{#if stage_type_mountain_finish}}
+					<%=image_tag 'type-mountaintop-finish.png'%>
+				{{/if}}
+				{{#if stage_type_itt}}
+					<%=image_tag 'type-individual-time-trial.png'%>
+				{{/if}}
+				{{#if stage_type_ttt}}
+					<%=image_tag 'type-team-time-trial.png'%>
+				{{/if}}
+			</div>
+			
+			<div class="col bold stacked">
+				TYPE</br>
+				{{#if stage_type_flat}}
+					<%=STAGE_TYPE[:F]%>
+				{{/if}}
+				{{#if stage_type_medium_mountain}}
+					<%=STAGE_TYPE[:MM]%>
+				{{/if}}
+				{{#if stage_type_high_mountain}}
+					<%=STAGE_TYPE[:HM]%>
+				{{/if}}
+				{{#if stage_type_mountain_finish}}
+					<%=STAGE_TYPE[:MF]%>
+				{{/if}}
+				{{#if stage_type_itt}}
+					<%=STAGE_TYPE[:ITT]%>
+				{{/if}}
+				{{#if stage_type_ttt}}
+					<%=STAGE_TYPE[:TTT]%>
+				{{/if}}
+			</div>
+			
+			<div class="col big bold">
+				{{distance_km}}
+			</div>
+			
+			<div class="col bold stacked">
+				DISTANCE</br>KILOMETERS
+			</div>
+			
+			<div class="col bold stacked" style="max-width:24%;">
+				START-FINISH</br>{{start_location}}-{{end_location}}
+			</div>
+			
+			<div class="col add-tip bold" style="float:right; max-width:24%;">
+				{{#if rider_id}}
+					<%=image_tag 'tick.png', {:style=>'float:left; margin-right:5px; margin-top:10px;'}%>
+					<div class="text">
+						You've tipped {{rider_name}}
+					</div>
+				{{else}}
+					<div class="text red">
+						You have not tipped anybody.
+					</div>
+				{{/if}}
+			</div>
+			
+			<div style="clear:both;"></div>
+		</div>
+		
+		<div class="description gray italic">
+			{{description}}
+		</div>
+		
+	</div>
+</script>

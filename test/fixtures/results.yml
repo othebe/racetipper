@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  season_stage_id: 1
+  rider_id: 1
+  time: 1.5
+  kom_points: 1.5
+  sprint_points: 1.5
+
+two:
+  season_stage_id: 1
+  rider_id: 1
+  time: 1.5
+  kom_points: 1.5
+  sprint_points: 1.5

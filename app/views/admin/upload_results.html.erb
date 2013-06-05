@@ -1,0 +1,97 @@
+<form method="POST" action="/admin/upload_results" enctype="multipart/form-data">
+	<label>Upload results file:</label>
+	<%= file_field 'upload', 'datafile' %></p>
+	
+	<input type="submit" value="Preview">
+</form>
+
+<% if (!@result_data.nil?) %>
+	<hr/>
+	<h3>Results Preview</h3>
+	<span style="font-style:italic;"><%=@race.name%> - <%=@stage.name%> (<%=@season.year%>)<span>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<% @result_keys.each do |key| %>
+					<% key = key.tr('_', ' ').capitalize %>
+					<% key = 'Rider' if (key=='Rider id') %>
+					<th><%=key%></th>
+				<% end %>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<% row_ndx = 1 %>
+			<% first_time = 0 %>
+			<% @result_data.each do |result_entry| %>
+				<tr>	
+					<% ndx = 0 %>
+					<td><%=row_ndx%></td>
+					<% result_entry.each do |data| %>
+						<% 
+						if (ndx==@rider_column)
+							rider = Rider.find_by_id(data)
+							data = rider.name + ' ['+data+']'
+						elsif (ndx==@time_column)
+							if (data.to_i != 0)
+								data = data.to_f
+								first_time = data if (row_ndx==1)
+								relative_time = (row_ndx>1)?' (+'+Time.at(data-first_time).gmtime.strftime('%R:%S')+')':''
+								data = Time.at(data).gmtime.strftime('%R:%S') + relative_time
+							end
+						end
+						%>
+						<td><%= data %></td>
+						<% ndx += 1 %>
+					<% end %>
+				</tr>
+				<% row_ndx += 1 %>
+			<% end %>
+		</tbody>
+	</table>
+	
+	<form method="POST" action="/admin/save_results" onsubmit="return submit_results();">
+		<input type="submit" value="Save" style="margin-top:20px;">
+	</form>
+<% end %>
+
+<script>
+<% if (!@result_data.nil?) %>
+	function submit_results() {
+		allow = confirm("Upload results?");
+		if (!allow) return false;
+		
+		var result_data = [];
+		<% @result_data.each do |result_entry| %>
+			data = {};
+			<% ndx = 0 %>
+			<% result_entry.each do |entry_data| %>
+				data['<%=@result_keys[ndx]%>'] = '<%=entry_data%>';
+				<% ndx += 1 %>
+			<% end %>
+			result_data.push(data);
+		<% end %>
+		
+		$.post('/admin/save_results', {stage_id:<%=@stage.id%>, race_id:<%=@race.id%>, result_data:result_data}, function(response) {
+			if (response.success) {
+				alert('Results have been uploaded.');
+				window.location.reload();
+			}
+		});
+		return false;
+	}
+<% end %>
+</script>
+
+<style>
+table {
+	border-collapse: collapse;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 5px;
+}
+</style>

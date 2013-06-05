@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  season_id: 1
+  race_id: 1
+  stage_id: 1
+  start_dt: 2012-12-29 05:33:55
+  end_dt: 2012-12-29 05:33:55
+
+two:
+  season_id: 1
+  race_id: 1
+  stage_id: 1
+  start_dt: 2012-12-29 05:33:55
+  end_dt: 2012-12-29 05:33:55

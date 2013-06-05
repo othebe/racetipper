@@ -1,0 +1,62 @@
+<script id="stage-leaderboard-template" type="text/x-handlebars-template">
+	<div id="stage-leaderboard">
+		<table class="selector">
+			<thead>
+				<th class="choice blue bold" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'type', 'tipping');">
+					TIPPING LEADERBOARD
+					<%=image_tag 'ajax-spinner.gif', {:class=>'loading'}%>
+				</th>
+				<th class="choice grayblack bold" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'type', 'race');">
+					RACE LEADERBOARD 
+					<%=image_tag 'ajax-spinner.gif', {:class=>'loading'}%>
+				</th>
+				<th class="choice grayblack toggle">
+					<div class="switch gray cumulative" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'scope', 'cumulative');">
+						Cumulative
+					</div>
+					<div class="switch yellow stage" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'scope', 'stage');">
+						Stage
+					</div>
+					<div style="clear:both;"></div>
+				</th>
+			</thead>
+		</div>
+		
+		<table class="data blue tipping tablesorter">
+			<thead>
+				<th style="width:5%;">No.</th>
+				<th style="width:22%">Name</th>
+				<th style="width:23%">Tip</th>
+				<th>Time</th>
+				<th>Sprint</th>
+				<th>KOM</th>
+			</thead>
+			
+			<tbody>
+				{{#each entries}}
+					<tr class="entry {{this.type}} {{this.scope}}">
+						<td>{{this.rank}}</td>
+						<td class="gray">{{this.name}}</td>
+						<td class="gray">{{this.tip}}</td>
+						<td class="gray">{{this.time}}</td>
+						<td class="gray">{{this.sprint}}</td>
+						<td class="gray">{{this.kom}}</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+</script>
+
+<script id="stage-leaderboard-row-template" type="text/x-handlebars-template">
+	{{#each entries}}
+		<tr class="entry {{this.type}} {{this.scope}}">
+			<td>{{this.rank}}</td>
+			<td class="gray">{{this.name}}</td>
+			<td class="gray">{{this.tip}}</td>
+			<td class="gray">{{this.time}}</td>
+			<td class="gray">{{this.sprint}}</td>
+			<td class="gray">{{this.kom}}</td>
+		</tr>
+	{{/each}}
+</script>

@@ -1,0 +1,54 @@
+<div style="margin-bottom:15px;">
+	<a href="#" onclick="edit_stage(null);">+ Add new stage</a>
+</div>
+
+<% if (!@stages.empty?) %>
+	<table class="stages">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Profile</th>
+			<th>Image</th>
+			<th></th>
+		</tr>
+		
+		<%@stages.each do |stage| %>
+			<tr>
+				<td><%=stage.id%></td>
+				<td><%=stage.name%></td>
+				<td style="max-width:600px;"><%=stage.description%></td>
+				<td><%=stage.profile%></td>
+				<td><img class="thumbnail" src="<%=stage.image_url%>"></td>
+				<td>
+					<a href="#" onclick="edit_stage('<%=stage.id%>')">Edit</a>
+					<a href="#">Remove</a>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<script>
+function edit_stage(id) {
+	if (id==null)
+		window.open('/admin/edit_stage', 'Add stage(s)', 'height=400,width=400');
+	else window.open('/admin/edit_stage/'+id, 'Edit stage', 'height=400,width=400');
+}
+</script>
+
+<style>
+.stages {
+	border: 1px solid #C3C3C3;
+	border-collapse: collapse;
+}
+	.stages th,
+	.stages td {
+		border: 1px solid #C3C3C3;
+	}
+
+.thumbnail {
+	max-height: 65px;
+	max-width: 43px;
+}
+</style>

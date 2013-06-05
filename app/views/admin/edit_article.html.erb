@@ -1,0 +1,54 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<div style="padding:15px;">
+	<label style="font-weight:bold;">Stage ID:</label></br>
+	<input id="stage_id" type="text" style="width:50px;" value="<%=@article.stage_id%>">
+	
+	</br>
+	<label style="font-weight:bold;">Title:</label></br>
+	<input id="title" type="text" style="width:280px;" value="<%=@article.title%>">
+	
+	</br>
+	<label style="font-weight:bold;">Author:</label></br>
+	<input id="author" type="text" style="width:280px;" value="<%=@article.author%>">
+	
+	</br>
+	<label style="font-weight:bold;">Body:</label></br>
+	<textarea id="body" rows="15" style="width:100%;"><%=@article.body%></textarea>
+
+	<div style="clear:both;"></div>
+	</br>
+	<hr />
+	<button onclick="submit_article();">Save</button>
+</div>
+
+<style>
+	span.help-type {
+		margin-left: 20px;
+		font-style: italic;
+		color: green;
+	}
+	
+	.image a, .video a {
+		color: blue;
+	}
+</style>
+
+<script>
+function submit_article() {
+	var article_data = {};
+	article_data['stage_id'] = $('#stage_id').val();
+	article_data['title'] = $('#title').val();
+	article_data['author'] = $('#author').val();
+	article_data['body'] = $('#body').val();
+	
+	<% if (!(@id.empty?)) %>
+		article_data['id'] = '<%=@id%>';
+	<% end %>
+	
+	$.post('/admin/save_article', {article_data:article_data}, function(response) {
+		window.opener.location.reload();
+		self.close();
+	});
+}
+</script>

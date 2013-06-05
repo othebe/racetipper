@@ -1,0 +1,67 @@
+<div style="margin-bottom:15px;">
+	<form method="POST" action="/admin/upload_season_teams" enctype="multipart/form-data">
+		<label>Upload rider file:</label>
+		<%= file_field 'upload', 'datafile' %></p>
+		<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token.to_s%>">
+		<input type="submit" value="Preview">
+	</form>
+	<hr />
+	
+	<a href="#" onclick="edit_team(null);">+ Add new team</a>
+</div>
+
+<% if (!@teams.empty?) %>
+	<table class="teams">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Image</th>
+			<th></th>
+		</tr>
+		
+		<%@teams.each do |team| %>
+			<tr>
+				<td><%=team.id%></td>
+				<td><%=team.name%></td>
+				<td><img class="thumbnail" src="<%=team.image_url%>"></td>
+				<td>
+					<a href="#" onclick="edit_team('<%=team.id%>')">Edit</a>
+					<a href="#" onclick="remove_team('<%=team.id%>');">Remove</a>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<script>
+function edit_team(id) {
+	if (id==null)
+		window.open('/admin/edit_season_team', 'Add team(s)', 'height=400,width=1000');
+	else window.open('/admin/edit_season_team/'+id, 'Edit team', 'height=400,width=1000');
+}
+
+function remove_team(id) {
+	var confirm_delete = confirm('Delete this team?');
+	if (!confirm_delete) return;
+	
+	$.post('/admin/delete_season_team', {id:id}, function(response) {
+		window.location.reload();
+	});
+}
+</script>
+
+<style>
+.teams {
+	border: 1px solid #C3C3C3;
+	border-collapse: collapse;
+}
+	.teams th,
+	.teams td {
+		border: 1px solid #C3C3C3;
+	}
+
+.thumbnail {
+	max-height: 65px;
+	max-width: 43px;
+}
+</style>

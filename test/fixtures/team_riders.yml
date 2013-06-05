@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  team_id: 1
+  rider_id: 1
+  display_name: MyString
+
+two:
+  team_id: 1
+  rider_id: 1
+  display_name: MyString

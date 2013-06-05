@@ -1,0 +1,6 @@
+#name, image_url, race_id
+Team Pokemon, http://sphotos-a.xx.fbcdn.net/hphotos-ash4/c0.0.250.250/p403x403/423350_183556628452074_1027059070_n.png, 1, 9
+!rider_id, display_name, rider_number
+5, Ash#001, 1
+6, BATMAN, 2
+

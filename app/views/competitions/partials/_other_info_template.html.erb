@@ -1,0 +1,91 @@
+<script id="other-information-template" type="text/x-handlebars-template">
+	<div id="other-information">
+		<div class="name">
+			<div class="title black">OTHER INFORMATION</div>
+		</div>
+		
+		{{#if is_participant}}
+		<div class="col">
+			<div class="row">
+				<div class="title black">Tie break</div>
+				<p>Tie breaks are used in the unlikely event that two tippers end the race with the same time. Each tipper nominates the winning rider and that rider's time. Tie goes to the tipper whose nominated rider finished higher, followed by the tipper whose total time is closer to the actual total time.</p>
+				
+				<div class="field-names blue">
+					<div>Rider</div>
+					<div>Time</div>
+				</div>
+				
+				<div class="field-values gray">
+					<div>
+						<select class="tie-break-rider" style="width:100%;">
+							{{#each tie_break_riders}}
+								{{#if this.selected}}
+									<option value="{{this.rider_id}}" selected="selected">{{this.rider_name}}</option>
+								{{else}}
+									<option value="{{this.rider_id}}">{{this.rider_name}}</option>
+								{{/if}}
+							{{/each}}
+						</select>
+					</div>
+					<div class="tie-break-time">
+						<table>
+							<tr>
+								<td><input type="text" name="days" style="margin-left:0;" value="{{tie_break_time.days}}"> days </td>
+								<td><input type="text" name="hours" style="margin-left:0;" value="{{tie_break_time.hours}}"> hours </td>
+								<td><input type="text" name="minutes" style="margin-left:0;" value="{{tie_break_time.minutes}}"> mins </td>
+								<td><input type="text" name="seconds" style="margin-left:0;" value="{{tie_break_time.seconds}}"> secs </td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				
+				<div class="tie-break-footer">
+					<div class="btn yellow" onclick="save_tie_break_info({{competition_id}});">
+						Save tie break selection
+					</div>
+					
+					<div class="loading">
+						<%=image_tag 'ajax-spinner.gif'%>
+					</div>
+					
+					<div class="success">
+						<%=image_tag 'tick-green.png'%>
+					</div>
+					
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="title black">Quit competition</div>
+				<p>Leaving a tipping competition is serious business. It's probably not really worth it. But if you want to, here is the button to do so. It might or might not be reversible, depending on how busy and/or clever we are.</p>
+				<a style="color:red;" onclick="leave_competition({{competition_id}}, {{user_id}});">Quit competition</a>
+			</div>
+		</div>
+		{{/if}}
+		
+		<div class="col">
+			<div class="row">
+				<div class="title black">Default riders</div>
+				<p></p>
+				<table class="default-riders">
+					<thead></thead>
+					<tbody>
+						{{#each default_riders}}
+							<tr>
+							{{#if valid}}
+								<td class="blue bold ndx">{{this.ndx}}</td>
+								<td class="gray">{{this.rider_name}}</td>
+							{{else}}
+								<td class="blue ndx">{{this.ndx}}</td>
+								<td class="darkgray">{{this.rider_name}} ({{this.valid_str}})</td>
+							{{/if}}
+							</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</script>

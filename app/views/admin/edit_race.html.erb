@@ -1,0 +1,124 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<div id="edit_race_form" method="POST" action="/admin/save_race">
+	<div class="info">
+		<div class="label"><label style="margin-right:34px;">Name:</label></div>
+		<input type="text" name="race_name" value="<%=(@race.nil?)?'':@race.name%>"></br>
+		
+		<div class="label"><label style="margin-right:34px;">Description:</label></div>
+		<input type="text" name="race_description" value="<%=(@race.nil?)?'':@race.description%>"></br>
+		
+		<div class="label"><label>Image URL:</label></div>
+		<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=(@race.nil?)?'':@race.image_url%>"></br>
+		
+		<div class="col1">
+			<div class="label"><label style="text-decoration:underline;">All Stages:</label></div></br>
+			<% @stages.each do |stage| %>
+				<div class="stage_choice"><label><%=stage.name%></label></div>
+				<button onclick="add_stage('<%=stage.id%>', '<%=stage.name%>');">Add</button>
+			<% end %>
+		</div>
+		
+		<div class="col2">
+			<div class="label"><label style="text-decoration:underline;">Race Stages:</label></div></br>
+			<div id="stage_list">
+				<% ndx = 1 %>
+				<% @race_stages.each do |racestage| %>
+					<div class="stage_selection" id="<%=racestage.stage.id%>">
+						<div class="stage_choice"><span class="order"><%=ndx%>.</span> <span class="stage"><%=racestage.stage.name%></span></div>
+						<button onclick="remove_stage(this);">Remove</button>
+					</div>
+					<% ndx += 1 %>
+				<% end %>
+			</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		</br>
+		<hr/>
+	</div>
+</form>
+
+<div class="stage_selection template">
+	<div class="stage_choice"><span class="order"></span> <span class="stage"></span></div>
+	<button onclick="remove_stage(this);">Remove</button>
+</div>
+
+<button id="save_close" name="save_close" value="save_close" style="float:left;">Save and close</button>
+
+<script>
+$(document).ready(function() {
+	$('#save_close').click(function() {
+		submit_races();
+	});
+});
+
+function add_stage(id, name) {
+	num_stages = $('#stage_list').children().length;
+	elt = $('.stage_selection.template').clone().removeClass('template').attr('id', id);
+	$(elt).find('.order').html(num_stages+1+'.');
+	$(elt).find('.stage').html(name);
+	$('#stage_list').append(elt);
+}
+
+function remove_stage(elt) {
+	$(elt).closest('.stage_selection').remove();
+}
+
+function submit_races() {
+	var race_info = [];
+	var elt = $('#edit_race_form div.info');
+	var info = {};
+	info['race_name'] = $(elt).find('input[name=race_name]').val();
+	info['race_description'] = $(elt).find('input[name=race_description]').val();
+	info['image_url'] = $(elt).find('input[name=image_url]').val();
+	<% if (@edit_mode) %>
+		info['id'] = '<%=@race.id%>';
+	<% end %>
+	
+	var stages = [];
+	choices = $('.stage_selection').not('.template');
+	$(choices).each(function(ndx, elt) {
+		stages.push($(elt).attr('id'));
+	});
+	info['stages'] = stages;
+	
+	race_info.push(info);
+	
+	$.post('/admin/save_races', {race_info:race_info}, function(response) {
+		window.opener.location.reload();
+		self.close();
+	});
+}
+</script>
+
+<style>
+div.template {
+	display: none;
+}
+
+div.label {
+	float: left;
+	width: 150px;
+}
+
+div.stage_choice {
+	float: left;
+	min-width: 80%;
+}
+
+div.col1 {
+	width: 40%; 
+	float: left; 
+	border-right: 1px solid;
+}
+
+div.col2 {
+	width: 55%;
+}
+
+div.col2 {
+	float: left;
+	margin-left: 15px;
+}
+</style>

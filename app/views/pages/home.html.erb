@@ -1,0 +1,37 @@
+<%=render 'pages/partials/profile_header'%>
+<%=render 'competitions/partials/competition_box'%>
+
+<div class="content">
+	<% @invitations.each do |invitation| %>
+		<%= render :partial=>'pages/partials/competition_invitations', :locals=>{:invitation=>invitation} %>
+	<% end %>
+	
+	<% @races.each do |race| %>
+		<div class="race-competitions">
+			<div class="header">
+				<div class="race-name bold">
+					<div class="title"><%= race.name %></div>
+					<%= image_tag 'ajax-loader-white.gif', {:onload=>'get_user_race_data('+@user.id.to_s+', '+race.id.to_s+', this);'} %>
+				</div>
+				
+				<div class="race-details">
+				</div>
+				
+				<div style="clear:both;"></div>
+			</div>
+			
+			<table class="competitions"></table>
+			
+			<% next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first %>
+			<% if (!next_stage.nil?) %>
+				<div class="competitions-box blue">
+					<div class="title bold">MORE COMPETITIONS</div>
+					<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>race}%>
+					
+					<div style="clear:both;"></div>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+	<%= render :partial=>'pages/partials/race_competitions'%>
+</div>

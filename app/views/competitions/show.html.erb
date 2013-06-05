@@ -1,0 +1,47 @@
+<%=render 'competitions/partials/competition_header'%>
+<%=render 'competitions/partials/stage_header'%>
+<%=render 'competitions/partials/tip_sheet_template'%>
+<%=render 'competitions/partials/stage_leaderboard_template'%>
+<%=render 'competitions/partials/stage_image_slider_template'%>
+<%=render 'competitions/partials/other_info_template'%>
+<%=render 'competitions/partials/tipping_report_template'%>
+
+<div class="content">
+	<%=render 'competitions/partials/left_navigator'%>
+	
+	<div id="content-with-nav">
+		<!-- Overview -->
+		<div id="overview">
+			<div class="name">
+				OVERVIEW
+				<div class="title black"><%=@competition.name%></div>
+			</div>
+			
+			<div class="info">
+				<div class="col big bold" style="margin-right:10px;">
+					<%=@completed_stages%>/<%=@total_stages%>
+				</div>
+				
+				<div class="col bold stacked" style="margin-right:50px;">
+					STAGES</br>COMPLETED
+				</div>
+				
+				<div class="col big bold" style="margin-right:10px;">
+					<%=@num_participants%>
+				</div>
+				
+				<div class="col bold stacked">
+					TIPPERS</br>JOINED
+				</div>
+				
+				<div class="col bold" style="float:right; padding-right:20px;">
+					CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
+				</div>
+				
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+		
+		<%=render 'competitions/partials/competition_leaderboard'%>
+	</div>
+</div>

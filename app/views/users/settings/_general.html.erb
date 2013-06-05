@@ -1,0 +1,26 @@
+<div id="general" class="form-field settings">
+	<table>
+		<tr>
+			<td class="label">Display name:</td>
+			<td><input type="text" id="display_name" name="display_name" placeholder="<%=(@user.firstname+' '+@user.lastname).strip%>" value="<%=@user.display_name%>"></td>
+		</tr>
+		
+		<tr>
+			<td class="label">Automatically participate in official competitions:</td>
+			<td>
+				<select id="grand_participation" name="grand_participation">
+					<option value="true">Yes</option>
+					<option value="false" <%=(@user.in_grand_competition)?'':'selected="selected"'%>>No</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="custom-separator" style="margin-bottom:15px;"></div>
+	<div style="clear:both;"></div>
+	
+	<div class="button" style="width:82px; margin-left:0;" onclick="save_general_settings(this);">
+		<span>Save</span>
+	</div>
+	<%=image_tag 'ajax-loader.gif', {:class=>'loading general_settings'} %>
+</div>

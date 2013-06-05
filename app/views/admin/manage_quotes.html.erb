@@ -1,0 +1,58 @@
+<% if (!@quotes.empty?) %>
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Quote</th>
+				<th>Author</th>
+				<th></th>
+			</tr>
+			
+			<% ndx = 1 %>
+			<% @quotes.each do |quote| %>
+				<tr>
+					<td><%=ndx%></td>
+					<td><%=quote.quote%></td>
+					<td><%=quote.author%></td>
+					<td>
+						<button onclick="edit_quote(<%=quote.id%>);">Edit</button>
+						<button onclick="delete_quote(<%=quote.id%>);">Delete</button>
+					</td>
+				</tr>
+				<% ndx += 1 %>
+			<% end %>
+		</thead>
+	</table>
+<% end %>
+
+<button onclick="edit_quote();">Add</button>
+
+<script>
+function edit_quote(id) {
+	if (id==null)
+		window.open('/admin/edit_quote', 'Add quote', 'height=300,width=400');
+	else window.open('/admin/edit_quote/'+id, 'Edit quote', 'height=300,width=400');
+}
+
+function delete_quote(id) {
+	$.post('/admin/delete_quote', {id:id}, function(response) {
+		if (response.success) {
+			window.location.reload();
+		} else alert(response.alert);
+	});
+}
+</script>
+
+<style>
+	table {
+		border-collapse: collapse;
+	}
+	
+	table tr,
+	table th,
+	table td {
+		padding: 5px; 
+		border: 1px solid black;
+		max-width: 800px;
+	}
+</style>

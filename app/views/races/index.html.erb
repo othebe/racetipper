@@ -1,0 +1,84 @@
+<%=render 'competitions/partials/competition_box'%>
+
+<div class="content">
+	<div id="races">
+		<% @racedata.each do |data| %>
+			<% race = data[:race] %>
+			<% competitions = data[:competitions] %>
+			
+			<div class="race-competitions">
+				<div class="header">
+					<div class="race-name bold">
+						<div class="title"><%= race.name %></div>
+						<p class="italic"><%=race.description%></p>
+					</div>
+					
+					<div class="race-details">
+						<% if (data[:next_stage][:next_stage_remaining]>0) %>
+							<div class="timer race_<%=race.id%>" style="margin-top:-20px;">
+								<div class="title">
+									<span class="bold"><%=data[:next_stage][:next_stage_name]%></span> STARTING IN
+								</div>
+								<div class="countdown">
+									<div class="col">
+										<div class="value days">--</div>
+										<div class="unit">DAYS</div>
+									</div>
+									
+									<div class="col">
+										<div class="value hours">--</div>
+										<div class="unit">HOURS</div>
+									</div>
+									
+									<div class="col">
+										<div class="value minutes">--</div>
+										<div class="unit">MINS</div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								
+								<script>
+									$(document).ready(function() {
+										new CountdownTimer($('#races div.timer.race_<%=race.id%>'), <%=data[:next_stage][:next_stage_remaining]%>);
+									});
+								</script>
+							</div>
+						<% else %>
+							<div class="timer"><div class="completed"><span class="bold">Race</span> completed</div></div>
+						<% end %>
+						
+						<div style="clear:both;"></div>
+						<a href="/races/<%=race.id%>">
+							<div class="btn yellow" style="float:right; margin-top:20px;">
+								<span><%=image_tag 'eye-black.png'%></span>
+								View race details
+							</div>
+						</a>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+				
+				<div class="competitions-box blue">
+					<div class="title bold">COMPETITIONS</div>
+					<% if (data[:allow_new_competition]) %>
+						<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>race}%>
+					<% end %>
+					
+					<% competitions.each do |competition| %>
+						<a href="/competitions/<%=competition.id%>">
+							<div class="competition grayblack">
+								<div class="name bold"><%=competition.name%></div>
+								<div class="stats"><%=competition[:num_participants]%> tippers joined</div>
+								<div class="btn yellow" style="float:none; text-align:center;">View details</div>
+							</div>
+						</a>
+					<% end %>
+					
+					<div style="clear:both;"></div>
+				</div>
+				
+			</div>
+		<% end %>
+		<%= render :partial=>'pages/partials/race_competitions'%>
+	</div>
+</div>

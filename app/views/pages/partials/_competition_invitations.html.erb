@@ -1,0 +1,20 @@
+<div class="competition-invite">
+	<img src="/users/picture/<%=invitation[:creator].id%>" class="user-img">
+	<div class="invite-str">
+		<span class="who"><%=(invitation[:creator].firstname+' '+invitation[:creator].lastname).strip%></span>
+		invited you to join
+		<span class="what"><%=invitation[:competition].name%></span>
+		competition on
+		<span class="for"><%=invitation[:race].name%></span>		
+	</div>
+	
+	<div class="action">
+		<div class="btn black">
+			<%=image_tag 'tick.png'%>
+			<span>Join competition</span>
+		</div>
+		
+		<%=image_tag 'cross.png', {:class=>'cancel'}%>
+	</div>
+	<div style="clear:both;"></div>
+</div>

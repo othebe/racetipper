@@ -1,0 +1,52 @@
+<!doctype html>
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,IE=8,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta itemprop="image" content="<%=image_path 'favicon.png'%>" />
+	<meta name="google" content="notranslate" />
+    <link rel="icon" href="<%=image_path 'favicon.png'%>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<%=image_path 'favicon.png'%>" type="image/x-icon" />
+    
+    
+	<title>Racetipper - Tip to Win</title>
+    
+	<meta name="description" content="" />
+	<meta name="author" content="RACETIPPER.COM" />
+        
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption:400,700' rel='stylesheet' type='text/css' />        
+	
+	<!-- SCRIPT IE FIXES -->  
+	<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+	<!-- END SCRIPT IE FIXES-->
+
+	<%= javascript_include_tag "application" %>
+	<%= csrf_meta_tags %>
+	
+	<%= stylesheet_link_tag "application.css", :media => "all" %>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<%=FACEBOOK_APP_ID%>";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+	<div id="main-content">
+		<%= render 'layouts/partials/landing_header' %>
+
+		<%= yield %>
+	</div>
+
+</body>
+</html>

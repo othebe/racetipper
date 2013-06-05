@@ -1,0 +1,134 @@
+<div id="module-container"><!-- start #module-container -->
+        <div id="module-background-holder">   
+        	<% image_tag 'synergy/backg/bck-04.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+			<%= image_tag 'backgrounds/race.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+        </div>
+		
+        <div id="module-container-holder" class="module-position-cc"  data-id="module-position-cc">
+            <div id="module-columns"  class="module-columns " > <!-- .shadow-side-all-->
+                <div id="module-columns-wrapper">
+                    <div id="module-columns-container">
+                        <div class="columns-filter-holder">
+                            <div id="filter-buttons-holder">
+								<% if (!@user.nil?) %>
+									<div class="filter-button" data-filter="created">Created</div>
+									<div class="filter-button" data-filter="participating">Participating</div>
+									<div class="filter-button" data-filter="official">Official</div>
+								<% end %>
+                                <div class="filter-button selected" data-filter="*">Show All</div>
+                            </div>
+                        </div>  
+                        <div class="columns-horizontal-separator"></div>         
+                    	<div id="module-columns-holder" style="margin-bottom:15px;"> 
+							<% if (!@user.nil?) %>
+								<div class="fourth-thumb-holder" data-id="participating created" data-url="#competitions/edit">
+									<div class="fourth-thumb-image">
+										<img src="<%=image_path 'placeholder.gif'%>" onload="animateThumb(this);" class="opacity_0" width="220" height="180" alt="" />
+										<div id="thumb-image-hover" class="hover-default">
+											<div class="background opacity_6"></div>
+											<div class="zoom-gallery"></div>
+										</div>
+										
+									</div> 
+									<div class="thumb-tag">
+										<h1>Create a competition</h1>
+										<h2>+++</h2>
+									</div>                  
+								</div>
+							<% end %>
+						
+							<% @competitions.each do |competition| %>
+								<% selector = (competition[:is_participant])?'participating ':'' %>
+								<% selector += (competition[:is_creator])?'created ':'' %>
+								<% selector += (competition[:competition][:competition_type] == COMPETITION_TYPE[:GLOBAL])?'official':'' %>
+								<% is_open = (competition[:competition][:is_complete])?'Completed':'Open' %>
+								
+								<div class="fourth-thumb-holder" data-id="<%=selector%>" data-url="#competitions/<%=competition[:competition].id%>">
+									<div class="fourth-thumb-image">
+										<img src="<%=cl_image_path competition[:competition][:image_url], {:width=>220, :height=>180, :crop=>:crop} %>" onload="animateThumb(this);" class="opacity_0" width="220" height="180" alt="" />
+										<div id="thumb-image-hover" class="hover-default">
+											<div class="background opacity_6"></div>
+											<div class="zoom-gallery"></div>
+										</div>
+										
+									</div> 
+									<div class="thumb-tag">
+										<h1><%=competition[:competition].name%></h1>
+										<h2><%=is_open %></h2>
+									</div>                  
+								</div>
+							<% end %>
+                        </div>
+						<div class="button" onclick="load_more__competitions(this);" style="text-align:center; clear:both;">
+							<span>Load More</span>
+						</div>
+						<%=image_tag 'ajax-loader.gif', {:class=>'loading'} %>
+                    </div><!-- end #module-columns-container -->
+                </div>    
+                 
+                <div id="module-columns-preview-wrapper">
+                    <div id="module-columns-preview"><!-- start #module-columns-preview -->
+                        <div id="module-columns-preview-holder">
+                            <div id="columns-preview-controls">
+                                  <div class="columns-preview-counter">
+                                    <span>x/x</span>
+                                  </div>
+                                  <div class="columns-preview-backward">
+                                    <div class="columns-preview-backg"></div>
+                                    <div class="columns-preview-backward-sign"></div>
+                                  </div>
+                                  <div class="columns-preview-close">
+                                    <div class="columns-preview-backg"></div>
+                                    <div class="columns-preview-close-sign"></div>
+                                  </div>
+                                  <div class="columns-preview-forward">
+                                    <div class="columns-preview-backg"></div>
+                                    <div class="columns-preview-forward-sign"></div>
+                                  </div>  
+                            </div>
+                            <div class="columns-horizontal-separator"></div>
+                            <div class="columns-preview-horizontal-fix">
+								<div id="columns-slides-controls">
+                                    <div class="col-prev-media-arrow-backward">
+                                        <div class="col-prev-media-arrow-backg opacity_2"></div>
+                                        <div class="col-prev-media-arrow-backward-sign"></div>
+                                    </div>
+                                    <div class="col-prev-media-arrow-forward">
+                                        <div class="col-prev-media-arrow-backg opacity_2"></div>
+                                        <div class="col-prev-media-arrow-forward-sign"></div>
+                                    </div>                
+                                </div>
+                                <ul>
+                                    <li>
+                                        <div class="columns-preview-media" data-src="assets/media/our_projects/4_columns/images/image1.jpg"></div>
+                                        <div class="columns-preview-description">
+                                            <p>Giuseppe</p>
+                                            <span>Etiam viverra, sem sit amet convallis posuere, ante velit congue dolor, vitae semper tortor diam in sapien. Cras pulvinar, justo id hendrerit congue, est ante elementum lectus, vitae rutrum justo quam ut lectus. </span>
+                                            <span>Sed sit amet leo sit amet nisl dignissim sagittis. Donec semper arcu augue. In eget erat nibh, vel venenatis metus. Donec fermentum arcu ac mauris viverra dictum. Duis venenatis turpis at nisl dictum pretium. Vestibulum sollicitudin nunc ut tortor sollicitudin bibendum. Proin convallis elit ac risus iaculis scelerisque. Nulla pellentesque mi dapibus ligula condimentum commodo porta metus fringilla. Nam venenatis est non ligula convallis vitae tempor eros tempus. </span>
+                                            <span>Suspendisse mollis feugiat consectetur. Suspendisse arcu nisl, vulputate ut laoreet ut, lacinia nec nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae. Praesent quis odio ligula, a dictum erat. Donec et pharetra lacus. </span>
+											<!-- start social facebook, twitter and pinterest -->
+											<div id="social-holder">
+												<div id="social-holder-back" class="opacity_2"></div>
+												<div data-src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fthemes.mediacreed.com%2F%23portfolio&amp;send=false&amp;layout=button_count&amp;width=85&amp;show_faces=false&amp;font=verdana&amp;colorscheme=light&amp;action=like&amp;height=21" 
+													 style="float:left; border:none; overflow:hidden; width:82px; height:21px; margin: 6px 5px 5px 10px;"></div>
+												<div data-src="https://platform.twitter.com/widgets/tweet_button.html?url=http://themes.mediacreed.com/html/synergy/#portfolio&text=Synergy - Awesome HTML Portfolio Template&via=mediacreed" 
+													 style="float:left; border:none; overflow:hidden; width:82px; height:21px; margin: 6px 5px 5px 10px;"></div>     
+												<a href="http://pinterest.com/pin/create/button/?url=http%3A%2F%2Fthemes.mediacreed.com%2Fhtml%2Fsynergy%2F&media=http%3A%2F%2Fthemes.mediacreed.com%2Fdesc_images%2Fprofile_preview_synergy.jpg&description=Synergy%20is%20a%20responsive%20%26%20interactive%20fullscreen%20portfolio%20for%20artists%2C%20photographers%2C%20media%20agencies%2C%20restaurants%20and%20for%20everyone%20that%20wants%20to%20showcase%20their%20portfolio%20in%20a%20professional%20way." class="pin-it-button" count-layout="horizontal" target="_blank"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>                                
+											</div>
+											<!-- end social facebook, twitter and pinterest -->
+										</div>
+                                    </li>
+                                </ul>    
+                            </div>
+                        </div>
+                    </div> <!-- end #module-columns-preview -->
+                </div>    
+                <!--<div id="galleries-background" class="opacity_8"></div>-->  
+            </div>
+            
+        </div>
+        <div id="module-scrollbar-holder_v2">
+            <div id="module-scrollbar-background" class="opacity_8"></div>
+            <div id="module-scrollbar-dragger"></div>
+        </div>	       
+    </div><!-- end #module-container -->

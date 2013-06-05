@@ -1,0 +1,47 @@
+<div id="module-container"><!-- start #module-container -->
+	<div id="module-background-holder">
+		<%=image_tag 'backgrounds/dirt.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">Profile Settings</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div style="clear:both;"></div>
+					
+					<div class="main-text-holder">
+						<div class="profile_settings">
+							<div class="button" onclick="$('.settings').hide(); $('.settings#general').show();">
+								<span>General</span>
+							</div>
+							<div class="button" onclick="$('.settings').hide(); $('.settings#change_password').show();">
+								<span>Change Password</span>
+							</div>
+							<% if (@user.fb_id.nil?) %>
+								<div class="button" onclick="link_fb();">
+									<span>Link to Facebook</span>
+								</div>
+							<% end %>
+						</div>
+						
+						<div class="data" style="float:left; padding:10px 0px 20px 20px; border-left:1px solid #E3E3E3;">
+							<%=render 'users/settings/general'%>
+							<%=render 'users/settings/change_password'%>
+						</div>
+						
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

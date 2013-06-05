@@ -1,0 +1,85 @@
+<a class="new-competition" onclick="edit_competition('<%=race.id%>', '', '<%=race.name.tr("'", '`')%>');">
+	<div class="competition new yellow">
+		<div class="name">+</div>
+		<div class="btn grayblack" style="float:none; text-align:center;">Create new</div>
+	</div>
+</a>
+
+<script id="new-competition-fancybox-template" type="text/x-handlebars-template">
+	<div id="new-competition-fancybox" class="gray">
+		<input class="competition-id" race-id="" type="hidden">
+		<input class="race-id" race-id="" type="hidden">
+		
+		<div class="header bold grayblack">
+			<div class="col-left">CREATE A COMPETITION</div>
+			<div class="col-right race-name"></div>
+			<div style="clear:both;"></div>
+		</div>
+		
+		<div class="field-names blue">
+			<div>Title</div>
+			<div>Invite</div>
+			<div>Privacy</div>
+			<div style="padding-bottom:67px;">Description</div>
+		</div>
+		
+		<div class="field-values gray">
+			<div><input type="text" class="competition-name"></div>
+			<div><input type="text" class="invitations"></div>
+			<div>
+				<input id="privacy-public" type="radio" name="privacy" value="public" checked><label for="privacy-public">Public </label>
+				<input id="privacy-private" type="radio" value="private" style="margin-left:30px;" name="privacy"><label for="privacy-private">Private</label>
+			</div>
+			<div style="margin-top:10px;"><textarea class="competition-description" style="height:70px;"></textarea></div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		
+		<div class="footer bold grayblack">
+			<div class="loading">
+				<%=image_tag 'ajax-spinner.gif'%>
+			</div>
+			<div class="success" style="color:lightgreen;">
+				<%=image_tag 'tick.png', {:style=>'margin-right:20px;'}%> Competition saved.
+			</div>
+			<div class="btn yellow" onclick="save_competition();">Submit</div>
+			<div style="clear:both;"></div>
+		</div>
+		
+		<div style="clear:both;"></div>
+	</div>
+</script>
+
+<script>
+$(document).ready(function() {
+	if ($('#new-competition-fancybox').length==0) {
+		var source = $('#new-competition-fancybox-template').html();
+		var template = Handlebars.compile(source);
+		var html = template();
+		$('a.new-competition').first().after(html);
+	}
+});
+
+function edit_competition(race_id, competition_id, race_name, competition_name, is_public, competition_dsec) {
+	$('#new-competition-fancybox input.race-id').val(race_id);
+	$('#new-competition-fancybox input.competition-id').val(competition_id);
+	$('#new-competition-fancybox div.header div.race-name').html(race_name);
+	$('#new-competition-fancybox div.field-values input.competition-name').val(competition_name);
+	$('#new-competition-fancybox div.field-values textarea.competition-description').html(competition_dsec);
+	if (!is_public) $('#privacy-private').attr('checked', true);
+	
+	
+	$.fancybox.open('#new-competition-fancybox', {
+		padding: 5,
+		width: 600,
+		autoSize: false,
+		autoHeight: true,
+		scrolling: 'no',
+		helpers: {
+			overlay: {
+				closeClick: false
+			}
+		}
+	});
+}
+</script>

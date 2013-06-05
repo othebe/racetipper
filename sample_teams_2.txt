@@ -1,0 +1,6 @@
+#name, image_url, race_id, team_id
+Radioshack-Nissan, http://www.sibsportswear.com/ekmps/shops/sibsportswear/images/craft-radio-shack-nissan-trek-team-jersey-386-p.jpg, 1, 2
+!rider_id, display_name, rider_number
+3, ZH, 1
+4, VoG, 2
+

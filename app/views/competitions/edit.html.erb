@@ -1,0 +1,111 @@
+<div id="module-container"><!-- start #module-container -->
+	<%= csrf_meta_tag %>
+	<input type="hidden" class="module_type" value="text_page">
+	<div id="module-background-holder">
+		<%=image_tag 'synergy/media/about_us/philosophy/backgroundPhilosophy.jpg', {:onload=>'animateModuleBackground(this)', :class=>'module-background', :id=>'module-background'}%>
+	</div>	
+	<div id="module-container-holder" class="module-position-lc wide"  data-id="module-position-lc">
+		<div id="module-text-page"  class="module-philosophy shadow-side-all">
+			<div id="module-wrapper">
+				<div id="module-text-page-holder-philosophy" style="width:95%;">             	
+					<div class="title-holder">
+						<span class="title-text_normal">
+							<% if (@competition.nil?) %>
+								Create a competition
+							<% else %>
+								Edit competition
+							<% end %>
+						</span>
+					</div>
+					<div class="custom-separator"></div>
+					
+					<div id="competition_form" onsubmit="return false;">
+						<!-- Create competition col 1 -->
+						<div class="main-text-holder form-field" style="float:left; width:40%;">
+							<p>
+								<table>
+									<tr>
+										<td class="label">Name:</td>
+										<td><input type="text" id="name" name="name" placeholder="Race name" value="<%=@competition.name%>"></td>
+									</tr>
+									
+									<tr>
+										<td class="label">Description:</td>
+										<td><textarea id="description" name="description" placeholder="Briefly describe your competition here."><%=@competition.description%></textarea></td>
+									</tr>
+									
+									<tr>
+										<td class="label">Open to:</td>
+										<td>
+											<input type="radio" name="open_to" value="public" id="public" <%=(@competition.status==STATUS[:ACTIVE])?'checked="true"':''%> ><label for="public">Public</label>
+											<input type="radio" name="open_to" value="private" id="private" <%=(@competition.status==STATUS[:PRIVATE])?'checked="true"':''%> ><label for="private">Private</label>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="label">Invitations:</td>
+										<td><textarea id="invitations" name="invitations" placeholder="Comma separated list of emails."></textarea></td>
+									</tr>
+									
+									<tr>
+										<% if (!@competition.id.nil?) %>
+											<td class="label">Race:</td>
+											<td><%=@competition_race.name%></td>
+										<% else %>
+											<td class="label">Races:</td>
+											<td>
+												<% ndx = 0 %>
+												<select name="race">
+													<% @races.each do |race| %>
+														<option value="<%=race.id%>"><%=race.name%></option>
+													<% end %>
+												</select>
+											</td>
+										<% end %>
+									</tr>
+								</table>
+							</p>
+						</div>
+						
+						<!-- Create competition col 2 -->
+						<div class="main-text-holder form-field" style="float:left; width:40%; clear:none;">
+							<p>
+								<form id="image_upload" action="/competitions/save_image" method="POST" enctype="multipart/form-data">
+									<div>Competition image:</div>
+									<input type="hidden" id="competition_id" name="competition_id" value="<%=@competition.id%>">
+									<input type="hidden" id="crop_h" name="crop_h">
+									<input type="hidden" id="crop_w" name="crop_w">
+									<input type="hidden" id="crop_x" name="crop_x">
+									<input type="hidden" id="crop_x2" name="crop_x2">
+									<input type="hidden" id="crop_y" name="crop_y">
+									<input type="hidden" id="crop_y2" name="crop_y2">
+									<div class="image_upload" style="max-width:516px;">
+										<input type="hidden" name="image_name" id="image_name">
+										<input type="file" name="image" onchange="setup_crop(event, this);" width="516" height="167">
+									</div>
+								</form>
+								
+								<div id="preview_label" style="margin:50px 0 5px 0; display:none;">Preview: </div>
+								<div class="image_preview" style="width:516px; height:167px; overflow:hidden; margin-left:5px;">
+								</div>
+							</p>
+						</div>
+					</div>
+				
+					<div style="clear:both;"></div>
+					<div class="custom-separator"></div>
+					
+					<div class="button" style="margin-left:0; margin-top:50px; padding-right:12px; width:100px;" onclick="save_competition();">
+						<span>Save</span>
+					</div>
+					
+				</div>
+			</div>                	 
+		</div>
+		<div id="module-scrollbar-holder">
+			<div id="module-scrollbar-background" class="opacity_4"></div>
+			<div id="module-scrollbar-dragger"></div>
+		</div>    
+	</div>
+		
+</div><!-- end #module-container -->

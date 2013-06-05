@@ -1,0 +1,2 @@
+runtime "ruby"
+exec "add_participants_to_global_competition.rb"

@@ -1,0 +1,148 @@
+<%=csrf_meta_tag%>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<div id="edit_season_team_form" method="POST" action="/admin/save_season_team">
+	<div class="info">
+		<div class="label"><label style="margin-right:34px;">Name:</label></div>
+		<input type="text" name="team_name" value="<%=(@team.nil?)?'':@team.name%>"></br>
+
+		<div class="label"><label>Image URL:</label></div>
+		<input type="text" name="image_url" placeholder="http://google.com/img.jpg" value="<%=(@team.nil?)?'':@team.image_url%>"></br>
+		
+		<div class="label"><label>Race:</label></div>
+		<select name="race">
+			<% @races.each do |race| %>
+				<option value="<%=race.id%>"><%=race.name%></option>
+			<% end %>
+		</select>
+		
+		<div class="col1">
+			<div class="label"><label style="text-decoration:underline;">All Riders:</label></div></br>
+			<% @riders.each do |rider| %>
+				<div class="rider_choice"><label><%=rider.name%></label></div>
+				<button onclick="add_rider('<%=rider.id%>', '<%=rider.name%>');">Add</button>
+			<% end %>
+		</div>
+		
+		<div class="col2">
+			<div class="label"><label style="text-decoration:underline;">Team Riders:</label></div></br>
+			<div id="rider_list">
+				<% ndx = 1 %>
+				<% @team_riders.each do |teamrider| %>
+					<div class="rider_selection" id="<%=teamrider.rider_id%>">
+						<div class="rider_choice"><span class="order"><%=ndx%>.</span> <span class="rider"><%=teamrider.rider.name%></span></div>
+						<input type="text" name="rider_number" placeholder="#" title="Rider number" value="<%=teamrider.rider_number%>" style="width:35px;">
+						<input type="text" name="display_name" placeholder="Display name" value="<%=teamrider.display_name%>">
+						<button onclick="remove_rider(this);">Remove</button>
+					</div>
+					<% ndx += 1 %>
+				<% end %>
+			</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		</br>
+		<hr/>
+	</div>
+</form>
+
+<div class="rider_selection template">
+	<div class="rider_choice"><span class="order"></span> <span class="rider"></span></div>
+	<input type="text" name="rider_number" placeholder="#" title="Rider number" style="width:35px;">
+	<input type="text" name="display_name" placeholder="Display name">
+	<button onclick="remove_riderthis);">Remove</button>
+</div>
+
+<button id="save_close" name="save_close" value="save_close" style="float:left;">Save and close</button>
+
+<script>
+$(document).ready(function() {
+	$('#save_close').click(function() {
+		submit_season_team();
+	});
+	
+	$("body").bind("ajaxSend", function(elm, xhr, s){
+		if (s.type == "POST") {
+		  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+		}
+	});
+});
+
+function add_rider(id, name) {
+	num_riders = $('#rider_list').children().length;
+	elt = $('.rider_selection.template').clone().removeClass('template').attr('id', id);
+	$(elt).find('.order').html(num_riders+1+'.');
+	$(elt).find('.rider').html(name);
+	$('#rider_list').append(elt);
+}
+
+function remove_rider(elt) {
+	$(elt).closest('.rider_selection').remove();
+}
+
+function submit_season_team() {
+	var team_info = [];
+	var elt = $('#edit_season_team_form div.info');
+	var info = {};
+	info['team_name'] = $(elt).find('input[name=team_name]').val();
+	info['image_url'] = $(elt).find('input[name=image_url]').val();
+	info['race_id'] = $(elt).find('select[name=race]').val();
+	<% if (@edit_mode) %>
+		info['id'] = '<%=@team.id%>';
+	<% end %>
+	
+	var riders = [];
+	choices = $('.rider_selection').not('.template');
+	$(choices).each(function(ndx, elt) {
+		rider = {};
+		rider['id'] = $(elt).attr('id');
+		rider['display_name'] = $(elt).find('input[name=display_name]').val();
+		rider['rider_number'] = $(elt).find('input[name=rider_number]').val();
+		riders.push(rider);
+	});
+	info['riders'] = riders;
+	
+	team_info.push(info);
+	console.log(team_info);
+
+	$.post('/admin/save_season_teams', {team_info:team_info}, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+		}
+		window.opener.location.reload();
+		self.close();
+	});
+
+}
+</script>
+
+<style>
+div.template {
+	display: none;
+}
+
+div.label {
+	float: left;
+	width: 150px;
+}
+
+div.rider_choice {
+	float: left;
+	min-width: 50%;
+}
+
+div.col1 {
+	width: 40%; 
+	float: left; 
+	border-right: 1px solid;
+}
+
+div.col2 {
+	width: 55%;
+}
+
+div.col2 {
+	float: left;
+	margin-left: 15px;
+}
+</style>
