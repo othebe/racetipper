@@ -278,6 +278,8 @@ class UsersController < ApplicationController
 			})
 		end
 		
+		session[:user] = @user if (!@user.nil?)
+		
 		render :json=>{:success=>true, :msg=>'Success', :data=>nil}
 	end
 	

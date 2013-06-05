@@ -34,6 +34,9 @@ class CompetitionsController < ApplicationController
 	#Title:			show
 	#Description:	General information about a competition
 	def show
+		#Check for login via access token
+		login_with_token
+		
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
@@ -73,6 +76,9 @@ class CompetitionsController < ApplicationController
 		
 		#Left nav data
 		@left_nav_data = get_left_nav_data(@stages, params[:id])
+		
+		#Cycling tips display
+		render :layout=>'cyclingtips' if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
 	
 	#Title:			show (OLD)
@@ -1415,6 +1421,51 @@ class CompetitionsController < ApplicationController
 		end
 		
 		return data
+	end
+	
+	#Title:			login_with_token
+	#Description:	Takes user information and an access token, and authenticate the matched user. New user is created is no user found.
+	private
+	def login_with_token
+		if (params.has_key?(:pid))
+			#Check email
+			render :json=>{:success=>false, :msg=>'email field is missing.'} and return if (!params.has_key?(:email))
+			render :json=>{:success=>false, :msg=>'Email cannot be empty.'} and return if (params[:email].empty?)
+			
+			#Check partner ID
+			render :json=>{:success=>false, :msg=>'pid field is missing.'} and return if (!params.has_key?(:pid))
+			render :json=>{:success=>false, :msg=>'Partner ID cannot be empty.'} and return if (params[:pid].empty?)
+			
+			#Check partner access token
+			partner_access_token = PARTNER_ACCESS_TOKEN[params[:pid].upcase.to_sym]
+			render :json=>{:success=>false, :msg=>'Invalid pid.'} and return if (partner_access_token.nil?)
+			
+			#Check key
+			render :json=>{:success=>false, :msg=>'key field is missing.'} and return if (!params.has_key?(:key))
+			render :json=>{:success=>false, :msg=>'Key cannot be empty.'} and return if (params[:key].empty?)
+			render :json=>{:success=>false, :msg=>'Invalid key.'} and return if (Digest::SHA1.hexdigest(params[:email]+partner_access_token) != params[:key])
+			
+			#Find user
+			@user = User.find_by_email(params[:email])
+			
+			#Create new user if no user found
+			if (@user.nil?)
+				#Check firstname
+				render :json=>{:success=>false, :msg=>'firstname field is missing.'} and return if (!params.has_key?(:firstname))
+				render :json=>{:success=>false, :msg=>'Firstname cannot be empty.'} and return if (params[:firstname].empty?)
+			
+				pw_base = [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+				password  =  (0...10).map{ base[rand(base.length)] }.join
+				@user = User.create_new_user({
+					:firstname => params[:firstname],
+					:lastname => params[:lastname],
+					:email => params[:email],
+					:password => password
+				})
+			end
+			
+			session[:user] = @user if (!@user.nil?)
+		end
 	end
 	
 	def results_old
