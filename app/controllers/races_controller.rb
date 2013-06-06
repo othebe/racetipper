@@ -47,6 +47,8 @@ class RacesController < ApplicationController
 		end
 	end
 	
+	#Title:			show
+	#Description:	Landing page for a race
 	def show
 		@race = Race.find_by_id(params[:id])
 		
@@ -102,5 +104,25 @@ class RacesController < ApplicationController
 		}
 		
 		render :json=>{:results=>data, :race=>race_data}
+	end
+	
+	#Title:			get_stages
+	#Description:	Get the stages in a race
+	def get_stages
+		render :json=>{:success=>false, :msg=>'Missing race ID'} and return if (!params.has_key?(:id))
+		
+		race = Race.find_by_id(params[:id])
+		render :json=>{:success=>false, :msg=>'Invalid race ID'} and return if (race.nil?)
+		
+		data = []
+		stages = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]})
+		stages.each do |stage|
+			data.push({
+				:id => stage.id,
+				:name => stage.name
+			})
+		end
+		
+		render :json=>{:success=>true, :data=>data}
 	end
 end

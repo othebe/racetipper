@@ -67,31 +67,71 @@ class AdminController < ApplicationController
 		render :layout=>false
 	end
 	
-	def manage_quotes
-		@title = 'Manage quotes'
-		@quotes = CyclingQuote.all
-	end
-	
-	def edit_quote
-		if (params.has_key?(:id))
-			@id = params[:id]
-			@quote = CyclingQuote.find_by_id(@id)
-		end
-		render :layout=>false
-	end
-	
-	def manage_articles
-		@title = 'Manage articles'
-		@articles = Article.where({:status=>STATUS[:ACTIVE]})
-	end
-	
-	def edit_article
-		@id = ''
-		@id = params[:id] if (params.has_key?(:id))
-		@article = Article.find_by_id(params[:id]) if (params.has_key?(:id))
-		@article ||= Article.new
+	#Title:			manage_stage_reports
+	#Description:	Manage stage and stage preview reports
+	def manage_stage_reports
+		@title = 'Manage stage reports'
 		
-		render :layout=>false
+		@reports = TippingReport.where('status=? AND report_type <> ?', STATUS[:ACTIVE], REPORT_TYPE[:TIPPING]).order(:stage_id)
+	end
+	
+	#Title:			edit_stage_report
+	#Description:	Edit a stage report
+	def delete_stage_report
+		if (params.has_key?(:id))
+			report = TippingReport.find_by_id(params[:id])
+			if (!report.nil?)
+				report.status = STATUS[:DELETED]
+				report.save
+			end
+		end
+		redirect_to :action=>'manage_stage_reports' 
+	end
+	
+	#Title:			edit_stage_report
+	#Description:	Edit a stage report
+	def edit_stage_report
+		@title = 'Edit stage reports'
+		@races = Race.where({:season_id=>session[:season_id], :status=>STATUS[:ACTIVE]})
+		
+		@report = nil
+		@report = TippingReport.find_by_id(params[:id]) if (params.has_key?(:id))
+		@report ||= TippingReport.new
+		
+		#Preload race and stage
+		if (!@report.stage_id.nil?)
+			@race = @report.stage.race
+		else
+			@race = @race.first
+		end
+		@stages = Stage.where({:race_id=>@race.id, :status=>STATUS[:ACTIVE]})
+		
+		@errors = []
+		if (params.has_key?(:save))
+			#Check report title
+			if (!params.has_key?(:title))
+				@errors.push('Missing report title')
+			else
+				@report.title = params[:title]
+				@errors.push('Title cannot be empty.') if (@report.title.empty?)
+			end
+			
+			#Check report body
+			if (!params.has_key?(:report))
+				@errors.push('Missing report')
+			else
+				@report.report = params[:report]
+				@errors.push('Report cannot be empty.') if (@report.report.empty?)
+			end
+			
+			@report.stage_id = params[:stages]
+			@report.report_type = params[:report_type]
+			
+			if (@errors.empty?)
+				@report.save
+				redirect_to :action=>'manage_stage_reports' 
+			end
+		end
 	end
 	
 	#POST

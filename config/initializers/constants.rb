@@ -59,6 +59,13 @@ STAGE_TYPE = {
 	:TTT => 'Team Time Trial'
 }
 
+#Report type
+REPORT_TYPE = {
+	:STAGE => 1,
+	:STAGE_PREVIEW => 2,
+	:TIPPING => 3
+}
+
 #Partner access tokens
 PARTNER_ACCESS_TOKEN = {
 	:CYCLINGTIPS => '8JUDm7cFiVGLIqiWbkVs6S2gxxOvAvbl'
