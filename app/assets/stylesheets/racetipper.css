@@ -242,6 +242,8 @@ div#header {
 	}
 		div#header div#header-logo img{
 			height: 100%;
+			position: relative;
+			top: 10px;
 		}
 		
 		div#header div#header-logo span {
@@ -249,7 +251,6 @@ div#header {
 			font-weight: 600;
 			font-size: 20px;
 			position: relative;
-			top: -15px;
 			color: white;
 		}
 		div#header div#header-logo span.plus {
@@ -400,6 +401,9 @@ div.login-page {
 		color: white;
 		width: 55%;
 		margin-top: 15%;
+		-webkit-box-sizing : border-box;
+		-moz-box-sizing    : border-box;
+		box-sizing         : border-box;
 	}
 		div.login-page div.col.left div.title-1 {
 			font-size: 16.04pt;
@@ -412,6 +416,10 @@ div.login-page {
 		color: white;
 		padding-right: 50px;
 		margin-top: 10%;
+		width : 45%;
+		-webkit-box-sizing : border-box;
+		-moz-box-sizing    : border-box;
+		box-sizing         : border-box;
 	}
 		div.login-page div.col.right div.title-1,
 		div.login-page div.col.right div.title-1 span {
@@ -785,7 +793,7 @@ div.stacked-cols {
 			vertical-align: middle;
 			margin: 0 5px;
 		}
-		
+	
 /* *** Stage overview *** */
 div#stage-overview div.info div.col.add-tip {
 	
@@ -854,6 +862,11 @@ div#other-information div.col {
 	font-size: 14pt;
 	width: 50%;
 }
+
+	#other-information p {
+		line-height: 1.0;
+	}
+
 	div#other-information div.col div.row {
 		margin: 30px 0;
 		padding-right: 30px;

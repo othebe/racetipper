@@ -54,7 +54,7 @@
 		</div>
 		
 		<div class="best-time">
-			<div class="title bold">BEST TIME</div>
+			<div class="title bold">GC</div>
 			<% count = 5 %>
 			<% for i in 0..(count-1) %>
 				<div><%=i+1%>. <%=(@leaderboard[i].nil?)?'--':@leaderboard[i][:username]%></div>
@@ -73,7 +73,7 @@
 		
 		<div class="other-times">
 			<div class="kom">
-				<div class="title bold">K.O.M</div>
+				<div class="title bold">KOM</div>
 				<% count = [2, @top_koms.size].min %>
 				<% for i in 0..(count-1) %>
 					<div><%=i+1%>. <%=(@top_koms[i].nil?)?'--':@top_koms[i][:username]%></div>
