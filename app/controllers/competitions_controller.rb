@@ -35,7 +35,7 @@ class CompetitionsController < ApplicationController
 	#Description:	General information about a competition
 	def show
 		#Check for login via access token
-		login_with_token
+		return if login_with_token.nil?
 		
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
@@ -74,11 +74,39 @@ class CompetitionsController < ApplicationController
 		#Get top 2 KOM
 		@top_koms = get_top(:kom, 2, @leaderboard)
 		
+		#Competition reports
+		@reports = []
+		#Get admin reports
+		admin_reports = TippingReport.where('stages.race_id=? AND tipping_reports.status=? AND (report_type=? OR report_type=?)', @race.id, STATUS[:ACTIVE], REPORT_TYPE[:STAGE], REPORT_TYPE[:PREVIEW]).joins(:stage)
+		admin_reports.each do |r|
+			@reports.push({
+				:title=>r.title,
+				:report=>r.report,
+				:stage_id=>r.stage_id,
+				:stage_name=>r.stage.name,
+				:stage_starts_on=>r.stage.starts_on,
+				:report_type=>r.report_type
+			})
+		end
+		#Get user reports
+		user_reports = TippingReport.where({:competition_id=>@competition.id, :report_type=>REPORT_TYPE[:TIPPING], :status=>STATUS[:ACTIVE]})
+		user_reports.each do |r|
+			@reports.push({
+				:title=>r.title,
+				:report=>r.report,
+				:stage_id=>r.stage_id,
+				:stage_name=>r.stage.name,
+				:stage_starts_on=>r.stage.starts_on,
+				:report_type=>r.report_type
+			})
+		end
+		@reports = @reports.sort_by{|r| r[:stage_starts_on]}
+		
 		#Left nav data
 		@left_nav_data = get_left_nav_data(@stages, params[:id])
 		
 		#Cycling tips display
-		render :layout=>'cyclingtips' if (params.has_key?(:display) && params[:display]=='cyclingtips')
+		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
 	
 	#Title:			show (OLD)
@@ -909,13 +937,16 @@ class CompetitionsController < ApplicationController
 		#Check report
 		render :json=>{:sucess=>false, :msg=>'Please enter a report.'} and return if (!params.has_key?(:report) || params[:report].empty?)
 		
+		#Get the tipping report
+		report = TippingReport.where({:status=>STATUS[:ACTIVE], :competition_id=>params[:id], :stage_id=>params[:stage_id]}).first || TippingReport.new
+		
 		#Save report
-		report = TippingReport.create({
-			:competition_id => params[:id],
-			:stage_id => params[:stage_id],
-			:title => params[:title],
-			:report => params[:report]
-		})
+		report.competition_id = params[:id]
+		report.stage_id = params[:stage_id]
+		report.title = params[:title]
+		report.report = params[:report]
+		report.report_type = REPORT_TYPE[:TIPPING]
+		report.save
 		
 		render :json=>{:success=>true, :msg=>report.id}
 	end
@@ -1465,7 +1496,9 @@ class CompetitionsController < ApplicationController
 			end
 			
 			session[:user] = @user if (!@user.nil?)
+			return true
 		end
+		return true
 	end
 	
 	def results_old

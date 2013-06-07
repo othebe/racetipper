@@ -5,8 +5,8 @@
 	<div class="section float-left">
 		<div class="title">Report type:</div>
 		<select name="report_type">
-			<option value="1">Stage</option>
-			<option value="2">Stage preview</option>
+			<option value="1" <%=(@report.report_type==REPORT_TYPE[:STAGE])?'selected':''%>>Stage</option>
+			<option value="2" <%=(@report.report_type==REPORT_TYPE[:STAGE_PREVIEW])?'selected':''%>>Stage preview</option>
 		</select>
 	</div>
 

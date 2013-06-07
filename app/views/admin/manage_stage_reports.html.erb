@@ -7,6 +7,7 @@
 		<tr>
 			<th>No.</th>
 			<th>Title</th>
+			<th>Type</th>
 			<th>Race</th>
 			<th>Stage</th>
 			<th></th>
@@ -17,6 +18,7 @@
 			<tr>
 				<td><%=ndx%></td>
 				<td><%=report.title%> [<%=report.id%>]</td>
+				<td><%=(report.report_type==REPORT_TYPE[:STAGE])?'Stage':'Stage Preview'%></td>
 				<td><%=report.stage.race.name%></td>
 				<td><%=report.stage.name%></td>
 				<td>

@@ -102,7 +102,7 @@ class AdminController < ApplicationController
 		if (!@report.stage_id.nil?)
 			@race = @report.stage.race
 		else
-			@race = @race.first
+			@race = @races.first
 		end
 		@stages = Stage.where({:race_id=>@race.id, :status=>STATUS[:ACTIVE]})
 		

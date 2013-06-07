@@ -53,17 +53,18 @@ class StagesController < ApplicationController
 			REDIS.expire(cache_name, 15*60)
 		end
 		
-		#Get tipping reports
-		reports = []
-		report_data = TippingReport.where({:competition_id=>competition.id, :stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).order('id DESC')
-		report_data.each do |report|
-			reports.push({
-				:report_id => report.id,
-				:title => report.title,
-				:report => report.report
-			})
-		end
+		reports = {}
+		#Get stage tipping reports
+		stage_report_data = TippingReport.where({:stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).order('id DESC')
+		#Get competition tipping reports
+		competition_report_data = TippingReport.where({:competition_id=>competition.id, :stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).order('id DESC').limit(1)
 		
+		#Get stage report
+		reports[:stage_report] = stage_report_data.where({:report_type=>REPORT_TYPE[:STAGE]}).first
+		#Get stage preview report
+		reports[:stage_preview] = stage_report_data.where({:report_type=>REPORT_TYPE[:STAGE_PREVIEW]}).first
+		#Get tipping report
+		reports[:tipping_report] = competition_report_data.where({:report_type=>REPORT_TYPE[:TIPPING]}).first
 		
 		data = {}
 		data[:stage_id] = stage.id
