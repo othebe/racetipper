@@ -1,0 +1,45 @@
+<div style="margin-bottom:15px;">
+	<a href="/admin/edit_stage_report">+ Add new report</a>
+</div>
+
+<% if (!@reports.empty?) %>
+	<table class="reports">
+		<tr>
+			<th>No.</th>
+			<th>Title</th>
+			<th>Type</th>
+			<th>Race</th>
+			<th>Stage</th>
+			<th></th>
+		</tr>
+		
+		<% ndx = 1 %>
+		<%@reports.each do |report| %>
+			<tr>
+				<td><%=ndx%></td>
+				<td><%=report.title%> [<%=report.id%>]</td>
+				<td><%=(report.report_type==REPORT_TYPE[:STAGE])?'Stage':'Stage Preview'%></td>
+				<td><%=report.stage.race.name%></td>
+				<td><%=report.stage.name%></td>
+				<td>
+					<a href="/admin/edit_stage_report/<%=report.id%>">Edit</a>
+					<a href="/admin/delete_stage_report/<%=report.id%>">Delete</a>
+				</td>
+			</tr>
+			<% ndx += 1 %>
+		<% end %>
+	</table>
+<% end %>
+
+<style>
+table {
+	border-collapse: collapse;
+}
+	table tr {
+		text-align: left;
+		border-bottom: 1px solid black;
+	}
+		table tr td {
+			padding: 5px;
+		}
+</style>

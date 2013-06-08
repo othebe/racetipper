@@ -1,5 +1,8 @@
+var MSG_TYPES = ['RESIZE'];
+var SEPARATOR = '^';
+
 $(document).ready(function(event) {
-	
+	send_resize_msg();
 });
 
 //Title:		login
@@ -879,20 +882,63 @@ function load_stage_info(stage_id, competition_id) {
 			});
 		}
 		
-		//Tipping reports
-		var tipping_report_source = $('#tipping-report-template').html();
-		var tipping_report_template = Handlebars.compile(tipping_report_source);
-		var tipping_report_html = tipping_report_template(stage_info);
-		$('#content-with-nav').append(tipping_report_html);
+		/* *** Tipping reports *** */
+		var report_source = $('#tipping-report-template').html();
+		var report_template = Handlebars.compile(report_source);
+		var dummy_report = {
+			report_id: 0,
+			stage_name: stage_info['stage_name'],
+			allow_edit: false,
+			title: '',
+			report: ''
+		};
+		
+		//Stage preview
+		if (stage_info['status']=='OPEN' && stage_info['tipping_reports']['stage_preview']!=null) {
+			var report_data = stage_info['tipping_reports']['stage_preview'];
+			report_data['report'] = report_data['report'].replace(/\n/g, '</br>');
+			report_data['allow_edit'] = false;
+			report_data['report_type'] = 'STAGE PREVIEW';
+			report_data['report_type_class'] = 'preview';
+			report_data['stage_name'] = stage_info['stage_name'];
+			var stage_preview_report_html = report_template(report_data);
+			$('#content-with-nav').append(stage_preview_report_html);
+		}
+		//Stage report
+		else if (stage_info['tipping_reports']['stage_report']!=null) {
+			var report_data = stage_info['tipping_reports']['stage_report'];
+			report_data['report'] = report_data['report'].replace(/\n/g, '</br>');
+			report_data['allow_edit'] = false;
+			report_data['stage_name'] = stage_info['stage_name'];
+			report_data['report_type'] = 'STAGE REPORT';
+			report_data['report_type_class'] = 'stage';
+			var stage_report_html = report_template(report_data);
+			$('#content-with-nav').append(stage_report_html);
+		}
+		//Tipping report
+		if (stage_info['tipping_reports']['tipping_report']!=null) {
+			var report_data = stage_info['tipping_reports']['tipping_report'];
+			report_data['allow_edit'] = stage_info['allow_tipping_report_creation'];
+			report_data['report_id'] = stage_info['tipping_reports']['tipping_report']['id'];
+			report_data['report'] = report_data['report'].replace(/\n/g, '</br>');
+			report_data['stage_name'] = stage_info['stage_name'];
+			report_data['report_type'] = 'TIPPING REPORT';
+			report_data['report_type_class'] = 'tipping';
+			var tipping_report_html = report_template(report_data);
+			$('#content-with-nav').append(tipping_report_html);
+		}
 		
 		//Tipping report creator
 		if (stage_info['allow_tipping_report_creation']) {
 			var tipping_report_creator_source = $('#tipping-report-creator-template').html();
 			var tipping_report_creator_template = Handlebars.compile(tipping_report_creator_source);
 			var tipping_report_creator_html = tipping_report_creator_template({
+				'hide_on_load': stage_info['tipping_reports']['tipping_report']!=null,
 				'competition_id': competition_id, 
 				'stage_id': stage_id,
-				'stage_name': stage_info['stage_name'].toUpperCase()
+				'stage_name': stage_info['stage_name'].toUpperCase(),
+				'title': (stage_info['tipping_reports']['tipping_report']!=null)?stage_info['tipping_reports']['tipping_report']['title']:'',
+				'report': (stage_info['tipping_reports']['tipping_report']!=null)?stage_info['tipping_reports']['tipping_report']['report'].replace(/<\/br>/g,'\n'):'',
 			});
 			$('#content-with-nav').append(tipping_report_creator_html);
 		}
@@ -947,11 +993,14 @@ function load_stage_info(stage_id, competition_id) {
 		loading_stage_info = false;
 		$('#content-with-nav').removeClass('loading-overlay');
 		
-		setTimeout(function() {
-			$('html, body').animate({
-				scrollTop: $(".tip-sheet").offset().top
-			}, 2000);
-		}, 500);
+		if ($('.tip-sheet').length > 0) {
+			setTimeout(function() {
+				$('html, body').animate({
+					scrollTop: $(".tip-sheet").offset().top
+				}, 2000);
+			}, 500);
+		}
+		send_resize_msg(); 
 	});
 }
 
@@ -1059,6 +1108,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 				$('div#stage-leaderboard table.data').trigger('update');
 			}
 			stage_leaderboard_loaded_tables[type][scope] = true;
+			send_resize_msg();
 		});
 	}
 	
@@ -1179,20 +1229,32 @@ function save_tipping_report(competition_id, stage_id, elt) {
 	
 	$.post('/competitions/save_report/'+competition_id, {stage_id:stage_id, title:title, report:report}, function(response) {
 		if (response.success) {
-			context = {};
-			context['report_id'] = response.msg;
-			context['stage_name'] = $(container).parent().find('div.title').html().replace('TIPPING REPORT', '');
-			context['title'] = title;
-			context['report'] = report;
-			
-			var tipping_report_source = $('#tipping-report-template').html();
-			var tipping_report_template = Handlebars.compile(tipping_report_source);
-			var tipping_report_html = tipping_report_template({'tipping_reports': [context]});
-			
-			$('.tipping-report').first().before(tipping_report_html);
-			
-			$(container).find('input[name=title]').val('');
-			$(container).find('textarea[name=report]').val('');
+			var tipping_report = $('.report.tipping-report');
+			//Add new report
+			if (tipping_report.length == 0) {
+				context = {};
+				context['report_id'] = response.msg;
+				context['stage_name'] = $(container).parent().find('div.title').html().replace('TIPPING REPORT', '');
+				context['report_type'] = 'TIPPING REPORT';
+				context['title'] = title;
+				context['report'] = report.replace(/\n/g, '</br>');
+				context['allow_edit'] = true;
+				
+				var tipping_report_source = $('#tipping-report-template').html();
+				var tipping_report_template = Handlebars.compile(tipping_report_source);
+				var tipping_report_html = tipping_report_template(context);
+				
+				$('.tipping-report.creator').first().before(tipping_report_html).hide();
+				$('.tipping-report').not('.creator').last().addClass('tipping');
+			}
+			//Modify existing report
+			else {
+				console.log(title);
+				$(tipping_report).find('div.title-2').html(title);
+				$(tipping_report).find('p').html(report.replace(/\n/g, '</br>'));
+				$('.tipping-report.creator').hide();
+				$(tipping_report).show();
+			}
 		} else {
 			alert(response.msg);
 		}
@@ -1201,6 +1263,13 @@ function save_tipping_report(competition_id, stage_id, elt) {
 		$(elt).removeClass('gray').addClass('yellow');
 		$(container).find('div.loading').hide();	
 	});
+}
+
+//Title:		edit_tipping_report
+//Description:	Edit a tipping report
+function edit_tipping_report() {
+	$('.tipping-report.creator').show();
+	$('.tipping-report.tipping').hide();
 }
 
 //Title:		delete_report
@@ -1218,10 +1287,20 @@ function delete_report(report_id, elt) {
 	$.post('/competitions/delete_report/'+report_id, {}, function(response) {
 		if (response.success) {
 			$(container).parent().remove();
+			$('.tipping-report.creator').find('input[name=title]').val('');
+			$('.tipping-report.creator').find('textarea[name=report]').val('');
+			$('.tipping-report.creator').show();
 		} else {
 			alert(response.msg);
 			$(elt).removeClass('yellow').addClass('gray');
 			$(container).find('.loading').show();
 		}
 	});
+}
+
+//Title:		send_resize_msg
+//Description:	Sends parent a RESIZE message
+function send_resize_msg() {
+	var padding = 50;
+	window.parent.postMessage(MSG_TYPES.indexOf('RESIZE')+SEPARATOR+(window.document.height+padding), '*');
 }

@@ -133,15 +133,8 @@ textarea {
 	padding: 7.5px;
 }
 
-#main-content {
-	max-width: 1440px;
-	margin: 0 auto;
-}
-
 div.content {
-	padding: 20px 0 20px 0;
-	max-width: 1140px;
-	margin: 0 auto;
+	padding: 20px 0px 0 0%;
 }
 
 /* *** Two-col table *** */
@@ -262,8 +255,8 @@ div#header {
 		}
 		div#header div#header-logo span.plus {
 			font-size: 36pt;
+			top: -8px;
 			padding: 0 10px;
-			top: 6px;
 			margin-left: 10px;
 		}
 		div#header div#header-logo span.plus:hover {
@@ -389,14 +382,6 @@ div#header {
 			float: left;
 			margin-right: 10px;
 		}
-		
-div#footer {
-	margin-top: 20px;
-	padding: 20px 20px 20px 10%;
-}
-	div#footer a {
-		color: white;
-	}
 		
 /* *** Login page *** */
 div.login-page {
@@ -616,7 +601,7 @@ div.race-competitions {
 /* *** Competition header *** */
 div#competition-header {
 	background-color: #1b94e9;
-	padding: 25px 50px 25px 10%;
+	padding: 25px 50px 25px 2%;
 }
 	div#competition-header div.col {
 		color: white;
@@ -743,7 +728,7 @@ div#left-navigator {
 	color: white;
 	float: left;
 	width: 23%;
-	margin-right: 2%;
+	margin-right: 4%;
 }
 	div#left-navigator table {
 		width: 100%;
@@ -754,7 +739,7 @@ div#left-navigator {
 
 div#content-with-nav {
 	float: left;
-	width: 75%
+	width: 73%
 }
 
 /* *** Overview *** */

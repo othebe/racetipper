@@ -15,6 +15,11 @@ class PagesController < ApplicationController
 		@races = Race.where({:status=>STATUS[:ACTIVE]}).order('id DESC').limit(3)
 	end
 	
+	#Title:			about_us
+	#Description:	About us
+	def about
+	end
+	
 	#Title:			login
 	#Description:	Login
 	def login

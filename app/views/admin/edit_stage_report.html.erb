@@ -1,0 +1,84 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<form method="POST">
+	<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token.to_s%>">
+	<div class="section float-left">
+		<div class="title">Report type:</div>
+		<select name="report_type">
+			<option value="1" <%=(@report.report_type==REPORT_TYPE[:STAGE])?'selected':''%>>Stage</option>
+			<option value="2" <%=(@report.report_type==REPORT_TYPE[:STAGE_PREVIEW])?'selected':''%>>Stage preview</option>
+		</select>
+	</div>
+
+	<div class="section float-left">
+		<div class="title">Race:</div>
+		<select name="races" onchange="load_stages(this.value);">
+			<% @races.each do |race| %>
+				<option value="<%=race.id%>" <%=(@race.id==race.id)?'selected':''%>><%=race.name%></option>
+			<% end %>
+		</select>
+	</div>
+
+	<div class="section float-left">
+		<div class="title">Stage:</div>
+		<select name="stages">
+			<% @stages.each do |stage| %>
+				<option value="<%=stage.id%>" <%=(@report.stage_id==stage.id)?'selected':''%>><%=stage.name%></option>
+			<% end %>
+		</select>
+	</div>
+
+	<div style="clear:both;"></div>
+
+	<div class="section">
+		<div class="title">Title:</div>
+		<input type="text" name="title" style="min-width:25%;" value="<%=@report.title%>">
+	</div>
+
+	<div class="section">
+		<div class="title">Report:</div>
+		<textarea name="report" style="min-width:25%; height:100px;"><%=@report.report%></textarea>
+	</div>
+	
+	<div class="section">
+		<input type="submit" name="save" value="Save">
+	</div>
+	
+	<% @errors.each do |error| %>
+		<div class="error">
+			<%=error%>
+		</div>
+	<% end %>
+</form>
+
+
+
+
+<style>
+div.section {
+}
+	div.section div.title {
+		font-weight: bold;
+	}
+div.section.float-left {
+	float: left;
+}
+
+div.error {
+	color: red;
+}
+</style>
+
+<script>
+function load_stages(race_id) {
+	var container = $('select[name=stages]').html('<option> -- Loading stages -- </option>');
+	$.get('/races/get_stages/'+race_id, {}, function(response) {
+		$(container).html('');
+		if (response.success) {
+			$(response.data).each(function(ndx, stage) {
+				$(container).append(['<option value="',stage['id'],'">',stage['name'],'</option>'].join(''));
+			});
+		} else alert(response.msg);
+	});
+}
+</script>
