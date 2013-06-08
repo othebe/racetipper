@@ -55,5 +55,7 @@ gem 'fb_graph'
 #Cloudinary
 gem 'cloudinary'
 
+gem 'rb-readline'
+
 #Librato
 gem 'librato-rails'

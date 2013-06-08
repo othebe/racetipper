@@ -18,7 +18,7 @@ development:
   database: racetipper
   pool: 5
   username: postgres
-  password: postgres
+  password: henner
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -44,7 +44,7 @@ test:
   database: racetipper
   pool: 5
   username: postgres
-  password: postgres
+  password: henner
 
 production:
   adapter: postgresql
@@ -52,4 +52,4 @@ production:
   database: racetipper
   pool: 5
   username: postgres
-  password: postgres
+  password: henner

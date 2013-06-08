@@ -133,8 +133,15 @@ textarea {
 	padding: 7.5px;
 }
 
+#main-content {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
 div.content {
-	padding: 20px 50px 0 150px;
+	padding: 20px 0 20px 0;
+	max-width: 1140px;
+	margin: 0 auto;
 }
 
 /* *** Two-col table *** */
@@ -255,8 +262,8 @@ div#header {
 		}
 		div#header div#header-logo span.plus {
 			font-size: 36pt;
-			top: -8px;
 			padding: 0 10px;
+			top: 6px;
 			margin-left: 10px;
 		}
 		div#header div#header-logo span.plus:hover {

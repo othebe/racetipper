@@ -69,4 +69,4 @@ IRONWORKER_TOKEN = 'sDMGz4n9RX85PZoi27Y4CuCHcNk'
 
 #Redis
 #ENV["REDISTOGO_URL"] = 'redis://redistogo:72db279f5fc11a9d974c7b19b1f6c5ce@dory.redistogo.com:10500'
-ENV["REDISTOGO_URL"] = 'redis://Redis_Dev:stupify12@pub-redis-19161.us-west-1.1.azure.garantiadata.com:19161'
+ENV["REDISTOGO_URL"] = 'redis://racetipper-h:henner@pub-redis-13957.eu-west-1-1.2.ec2.garantiadata.com:13957'
