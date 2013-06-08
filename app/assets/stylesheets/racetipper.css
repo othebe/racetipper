@@ -383,6 +383,14 @@ div#header {
 			margin-right: 10px;
 		}
 		
+div#footer {
+	margin-top: 20px;
+	padding: 20px 20px 20px 10%;
+}
+	div#footer a {
+		color: white;
+	}
+		
 /* *** Login page *** */
 div.login-page {
 	background-image: url('/assets/backgrounds/landing.jpg');
