@@ -133,16 +133,51 @@ textarea {
 	padding: 7.5px;
 }
 
-#main-content {
-	max-width: 1440px;
-	margin: 0 auto;
+body {
+	background-color: #f0f0f0;
 }
 
+#main-content {
+	position: relative;
+	max-width: 1440px;
+	/*min-width: 1140px;*/
+	min-height : 100%;
+	height     : auto !important;
+    height     : 100%;
+	margin: 0 auto;
+	background-color: white;
+	-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0 0 20px rgba(0,0,0,0.2);
+	box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+#main-content:before, #main-content:after{
+	content: "";
+	display: table;
+}
+#main-content:after {
+	clear: both;
+}
+
+/*
+@media only screen and (max-width: 767px) {
+	#main-content {
+		min-width: auto;
+	}
+}
+*/
 div.content {
 	padding: 20px 0 20px 0;
 	max-width: 1140px;
 	margin: 0 auto;
 }
+
+	.content:before, .content:after{
+		content: "";
+		display: table;
+	}
+	.content:after {
+		clear: both;
+	}
 
 /* *** Two-col table *** */
 div.field-names {
@@ -171,6 +206,10 @@ div.btn {
 	cursor: pointer;
 	float: left;
 }
+	div.btn > a {
+		color: white;
+	}
+
 	div.btn img {
 		margin-right:4px;
 		height: 11px;
@@ -241,8 +280,8 @@ div.timer {
 div#header {
 	color: white;
 	background-color: #303030;
-	height: 50px;
-	padding: 5px 50px 5px 10%;
+	height: 60px;
+	padding: 5px 0 5px 0;
 }
 	div#header div#header-logo {
 		float: left;
@@ -339,6 +378,7 @@ div#header {
 		}
 	
 	div#header div#header-user {
+		position: relative;
 		float: right;
 		font-weight: 700;
 		margin-top: 8px;
@@ -363,8 +403,8 @@ div#header {
 		}
 		div#header div#header-user ul.user-menu {
 			position: absolute;
-			top: 44px;
-			right: 54px;
+			right: 5px;
+			top: 30px;
 			display: none;
 			background-color: #EEEEEE;
 			color: black;
@@ -372,8 +412,12 @@ div#header {
 			list-style: none;
 			padding: 0;
 		}
+			div#header div#header-user ul.user-menu a {
+				color: black;
+			}
+
 			div#header div#header-user ul.user-menu li {
-				padding: 8px;
+				padding: 15px;
 				border: 1px solid #C3C3C3;
 			}
 			div#header div#header-user ul.user-menu li:hover {
@@ -400,21 +444,40 @@ div#footer {
 		
 /* *** Login page *** */
 div.login-page {
+	position: absolute;
+	top:70px;
+	bottom: 0;
+	right: 0;
+	left: 0;
 	background-image: url('/assets/backgrounds/landing.jpg');
 	background-size: cover;
+    height     : 100%;
 }
+
 	div.login-page div.overlay {
-		height: 100%;
 		background-color: rgba(27, 148, 233, 0.85);
+	    height     : 100%;
 		padding-left: 10%;
 	}
+	
+	@media only screen and (max-width: 767px) {
+		div.login-page {
+			height: auto;
+			min-height: 100%;
+		}
+
+		div.login-page div.overlay {
+			padding-left: 20px;
+		}
+	}
+
 	div.login-page div.col {
 		
 	}
 	div.login-page div.col.left {
 		float: left;
 		color: white;
-		width: 55%;
+		width: 100%;
 		margin-top: 15%;
 		-webkit-box-sizing : border-box;
 		-moz-box-sizing    : border-box;
@@ -426,16 +489,25 @@ div.login-page {
 		div.login-page div.col.left div.title-2 {
 			font-size: 60.14pt;
 		}
+
+		@media only screen and (max-width: 990px) {
+			div.login-page div.col.left div.title-2 {
+				font-size: 45.00pt;
+			}
+		}
+
 	div.login-page div.col.right {
 		float: right;
 		color: white;
-		padding-right: 50px;
+		padding-right: 20px;
+		margin-bottom: 20px;
 		margin-top: 10%;
-		width : 45%;
+		width : 100%;
 		-webkit-box-sizing : border-box;
 		-moz-box-sizing    : border-box;
 		box-sizing         : border-box;
 	}
+
 		div.login-page div.col.right div.title-1,
 		div.login-page div.col.right div.title-1 span {
 			font-size: 24.07pt;
@@ -444,31 +516,45 @@ div.login-page {
 			float: left;
 			background-color: #303030;
 			color: white;
-			width: 35%;
+			width: 40%;
 		}
 			div.login-page div.col.right div.field-name div {
 				font-size: 14pt;
 				padding: 20px;
 			}
+
 		div.login-page div.col.right div.field-value {
 			float: left;
 			color: #303030;
+			background: #ccc; /*IE9-*/
 			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#C3C3C3'); /* for IE */
 			background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#C3C3C3)); /* for webkit browsers */
 			background: -moz-linear-gradient(top, #eeeeee, #C3C3C3); /* for firefox 3.6+ */
-			width: 65%;
+
+			width: 60%;
 		}
 			div.login-page div.col.right div.field-value input {
 				font-size: 14pt;
-				padding: 14.3px;
+				padding: 15px;
 				background: none;
-				border: 0px;
+				width: 100%;
+				border-bottom: 1px solid #c0c0c0;
 				display: block;
-				width: 90%;
 			}
 			div.login-page div.col.right div.field-value input:focus {
-				background: #E3E3E3;
+				outline    : none;
+				background : #eee;
 			}
+
+			@media only screen and (max-width: 1010px) and (min-width: 767px) {
+				div.login-page div.col.right div.field-name > div {
+					padding: 15px;
+				}
+				div.login-page div.col.right div.field-value input {
+					padding: 10px;
+				}
+			}
+
 		div.login-page div.col.right div.submit div.tnc {
 			line-height: 1.2;
 		}
@@ -477,7 +563,7 @@ div.login-page {
 /* *** Dashboard *** */
 div #profile-header {
 	background-color: #1b94e9;
-	padding: 20px 50px 20px 150px;
+	padding: 20px 50px 20px 0;
 }
 	div#profile-header img {
 		border-radius: 100%;
@@ -756,6 +842,8 @@ div#content-with-nav {
 	float: left;
 	width: 75%
 }
+
+
 
 /* *** Overview *** */
 div#overview div.name,

@@ -40,6 +40,11 @@ class CompetitionsController < ApplicationController
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
+		#if params contain invitation code
+		if params[:code]
+			join_by_code()
+		end
+
 		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
 		#Competition
@@ -496,7 +501,7 @@ class CompetitionsController < ApplicationController
 	#POST
 	
 	def join_by_code
-		competition_id = params[:competition_id]
+		competition_id = params[:id]
 		code = params[:code]
 		
 		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
@@ -506,10 +511,12 @@ class CompetitionsController < ApplicationController
 		if (@user.nil?)
 			session[:invited_competitions] ||= []
 			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
-			redirect_to('/#/competitions/'+competition_id) and return
+			redirect_to('/competitions/'+competition_id) and return
 		else
+			#TODO Delete the invitation
+			CompetitionInvitation.delete_invitation(@user.id, competition.id)
 			CompetitionParticipant.add_participant(@user.id, competition.id)
-			redirect_to('/#/competitions/'+competition_id) and return
+			redirect_to('/competitions/'+competition_id) and return
 		end
 	end
 	
@@ -562,7 +569,9 @@ class CompetitionsController < ApplicationController
 		
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
-			CompetitionInvitation.invite_user(@user.id, competition.id)
+			email = competition_data[:invitations]
+			invited_user_id = User.get_id_using_email(email)
+			CompetitionInvitation.invite_user(invited_user_id, competition.id, @user.id)
 		end
 		
 		#Send emails

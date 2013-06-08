@@ -11,7 +11,9 @@
 	<div class="action">
 		<div class="btn black">
 			<%=image_tag 'tick.png'%>
-			<span>Join competition</span>
+			<a href="/competitions/<%= invitation[:competition].id %>?code=<%= invitation[:competition].invitation_code %>">
+				<span>Join competition</span>
+			</a>
 		</div>
 		
 		<%=image_tag 'cross.png', {:class=>'cancel'}%>
