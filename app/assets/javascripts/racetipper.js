@@ -1,5 +1,7 @@
+var MSG_TYPES = ['RESIZE'];
+
 $(document).ready(function(event) {
-	
+	window.parent.postMessage(MSG_TYPES.indexOf('RESIZE'), '*');
 });
 
 //Title:		login
@@ -997,6 +999,7 @@ function load_stage_info(stage_id, competition_id) {
 				}, 2000);
 			}, 500);
 		}
+		window.parent.postMessage(MSG_TYPES.indexOf('RESIZE'), '*');
 	});
 }
 
@@ -1104,6 +1107,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 				$('div#stage-leaderboard table.data').trigger('update');
 			}
 			stage_leaderboard_loaded_tables[type][scope] = true;
+			window.parent.postMessage(MSG_TYPES.indexOf('RESIZE'), '*');
 		});
 	}
 	
