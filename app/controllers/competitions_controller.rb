@@ -199,6 +199,7 @@ class CompetitionsController < ApplicationController
 			if (group_type == 'stage')
 				line[:tip] = entry[:tip]
 				line[:is_default] = entry[:is_default]
+				line[:original_rider] = entry[:original_rider]
 			end
 			@data.push(line)
 			ndx += 1
@@ -1072,6 +1073,30 @@ class CompetitionsController < ApplicationController
 				user_score[:user_id] = user_id
 				user_score[:username] = username
 				user_score[:is_default] = !tip.default_rider_id.nil?
+				
+				#Original rider
+				user_score[:original_rider] = nil
+				if (user_score[:is_default])
+					original_rider = Rider.find_by_id(tip.rider_id)
+					user_score[:original_rider] = nil
+					
+					#Get original rider only if it exists
+					if (!original_rider.nil?)
+						result = Result.where({:rider_id=>original_rider.id, :season_stage_id=>tip.stage_id}).first
+						user_score[:original_rider] = {
+							:id => original_rider.id,
+							:name => original_rider.name,
+							:reason => Result.rider_status_to_str(result.rider_status)
+						} if (!result.nil?)
+					end
+					
+					#No original rider was chosen
+					user_score[:original_rider] = {
+						:id => nil,
+						:name => nil,
+						:reason => 'No rider chosen'
+					} if (user_score[:original_rider].nil?)
+				end
 				
 				rider = Rider.find_by_id(rider_id)
 				

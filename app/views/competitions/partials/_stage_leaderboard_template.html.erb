@@ -37,8 +37,22 @@
 					<tr class="entry {{this.type}} {{this.scope}}">
 						<td>{{this.rank}}</td>
 						<td class="gray">{{this.name}}</td>
-						<td class="gray">{{this.tip}}</td>
-						<td class="gray">{{this.time}}</td>
+						<td class="gray">
+							{{this.tip}} 
+							{{#if this.original_rider}}
+								{{#if this.original_rider.name}}
+									<%=image_tag 'tooltip.png', {:class=>'tooltip', :style=>'', :title=>'{{this.original_rider.name}} ({{this.original_rider.reason}})'}%>
+								{{else}}
+									<%=image_tag 'tooltip.png', {:class=>'tooltip', :style=>'margin-top:-5px;', :title=>'No rider chosen'}%>
+								{{/if}}
+							{{/if}}
+						</td>
+						<td class="gray">
+							{{this.time}}
+							{{#if this.gap_formatted}}
+								<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.gap_formatted}}'}%>
+							{{/if}}
+						</td>
 						<td class="gray">{{this.sprint}}</td>
 						<td class="gray">{{this.kom}}</td>
 					</tr>
@@ -54,7 +68,12 @@
 			<td>{{this.rank}}</td>
 			<td class="gray">{{this.name}}</td>
 			<td class="gray">{{this.tip}}</td>
-			<td class="gray">{{this.time}}</td>
+			<td class="gray">
+				{{this.time}}
+				{{#if this.gap_formatted}}
+					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.gap_formatted}}'}%>
+				{{/if}}
+			</td>
 			<td class="gray">{{this.sprint}}</td>
 			<td class="gray">{{this.kom}}</td>
 		</tr>

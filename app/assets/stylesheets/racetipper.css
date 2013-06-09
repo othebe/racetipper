@@ -37,6 +37,10 @@ div#main-content * {
 	transition: all 0.2s linear;
 }
 
+.tooltip {
+	height: 17px;
+}
+
 .loading {
 	display: none;
 }
@@ -463,6 +467,14 @@ div#header {
 		div#header div#landing-header-login div.col {
 			float: left;
 			margin-right: 10px;
+		}
+
+		@media only screen and (max-width: 990px) {
+
+			div#header div#landing-header-login input[type="text"],
+			div#header div#landing-header-login input[type="password"] {
+				width: 115px;
+			}
 		}
 		
 div#footer {
@@ -1309,3 +1321,27 @@ div#race-information  div.race-description {
 	div#race-information  div.race-description p{
 		margin: 0;
 	}
+
+/* SLIDER */
+.stage-images {
+	height: 300px;
+	max-width: 620px;
+}
+
+.stage-images .bjqs {
+	min-height: 300px;
+	height: 300px;
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+	.stage-images .bjqs .bjqs-slide {
+		width: 100%;
+		max-height: 300px;
+		text-align: center;
+	}
+
+		.stage-images .bjqs .bjqs-slide img{
+			width: auto;
+			height: auto;
+		}
