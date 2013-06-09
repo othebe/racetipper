@@ -46,7 +46,7 @@
 
 <script id="race-competitions-data-template" type="text/x-handlebars-template">
 	<tr class="data" onclick="location.href='/competitions/{{competition_id}}'" style="cursor:pointer;">
-		<td class="logo row"><%=image_tag 'users.png'%></td>
+		<td class="logo"><%=image_tag 'users.png'%></td>
 		<td class="rank bold row"><div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div></td>
 		<td class="competition bold row"><div>{{competition_name}}</div></td>
 		{{#if completed}}

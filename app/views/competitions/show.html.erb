@@ -7,67 +7,72 @@
 <%=render 'competitions/partials/tipping_report_template'%>
 
 <div class="content">
-	<%=render 'competitions/partials/left_navigator'%>
-	
-	<div id="content-with-nav">
-		<!-- Overview -->
-		<div id="overview">
-			<div class="name">
-				OVERVIEW
-				<div class="title black"><%=@competition.name%></div>
-			</div>
-			
-			<div class="info">
-				<div class="col big bold" style="margin-right:10px;">
-					<%=@completed_stages%>/<%=@total_stages%>
+	<div class="row">
+		<div class="large-3 small-12 columns">
+			<%=render 'competitions/partials/left_navigator'%>
+		</div>
+		<div class="large-9 hide-for-small columns">
+			<div id="content-with-nav">
+				<!-- Overview -->
+				<div id="overview">
+					<div class="name">
+						OVERVIEW
+						<div class="title black"><%=@competition.name%></div>
+					</div>
+					
+					<div class="info">
+						<div class="col big bold" style="margin-right:10px;">
+							<%=@completed_stages%>/<%=@total_stages%>
+						</div>
+						
+						<div class="col bold stacked" style="margin-right:50px;">
+							STAGES</br>COMPLETED
+						</div>
+						
+						<div class="col big bold" style="margin-right:10px;">
+							<%=@num_participants%>
+						</div>
+						
+						<div class="col bold stacked">
+							TIPPERS</br>JOINED
+						</div>
+						
+						<div class="col bold" style="float:right; padding-right:20px;">
+							CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
+						</div>
+						
+						<div style="clear:both;"></div>
+					</div>
 				</div>
 				
-				<div class="col bold stacked" style="margin-right:50px;">
-					STAGES</br>COMPLETED
-				</div>
+				<%=render 'competitions/partials/competition_leaderboard'%>
 				
-				<div class="col big bold" style="margin-right:10px;">
-					<%=@num_participants%>
-				</div>
-				
-				<div class="col bold stacked">
-					TIPPERS</br>JOINED
-				</div>
-				
-				<div class="col bold" style="float:right; padding-right:20px;">
-					CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
-				</div>
-				
-				<div style="clear:both;"></div>
+				<% @reports.reverse_each do |r| %>
+					<div class="tipping-report" style="margin-bottom:100px;">
+						<div class="bar">&nbsp;</div>
+						<div class="title bold">
+							<%=r[:stage_name]%>&nbsp;
+							<% if (r[:report_type]==REPORT_TYPE[:STAGE]) %>
+								Stage Report
+							<% elsif (r[:report_type]==REPORT_TYPE[:PREVIEW]) %>
+								Stage Preview
+							<% elsif (r[:report_type]==REPORT_TYPE[:TIPPING]) %>
+								Tipping Report
+							<% end %>
+						</div> 
+						<div class="title-2"><%=r[:title]%></div>
+						<div class="report-text" style="max-height:300px; overflow:hidden; margin-bottom:25px;">
+							<% if (r[:report_type]==REPORT_TYPE[:STAGE] || r[:report_type]==REPORT_TYPE[:PREVIEW]) %>
+								<%=raw((r[:report].length>550)?r[:report][0..550]+'...':r[:report])%>
+							<% else %>
+								<%=simple_format((r[:report].length>550)?r[:report][0..550]+'...':r[:report])%>
+							<% end %>
+						</div>
+						<a href="/competitions/<%=@competition.id%>?stage_id=<%=r[:stage_id]%>"><div class="btn yellow">Read more</div></a>
+					</div>
+				<% end %>
 			</div>
 		</div>
-		
-		<%=render 'competitions/partials/competition_leaderboard'%>
-		
-		<% @reports.reverse_each do |r| %>
-			<div class="tipping-report" style="margin-bottom:100px;">
-				<div class="bar">&nbsp;</div>
-				<div class="title bold">
-					<%=r[:stage_name]%>&nbsp;
-					<% if (r[:report_type]==REPORT_TYPE[:STAGE]) %>
-						Stage Report
-					<% elsif (r[:report_type]==REPORT_TYPE[:PREVIEW]) %>
-						Stage Preview
-					<% elsif (r[:report_type]==REPORT_TYPE[:TIPPING]) %>
-						Tipping Report
-					<% end %>
-				</div> 
-				<div class="title-2"><%=r[:title]%></div>
-				<div class="italic" style="max-height:300px; overflow:hidden; margin-bottom:25px;">
-					<% if (r[:report_type]==REPORT_TYPE[:STAGE] || r[:report_type]==REPORT_TYPE[:PREVIEW]) %>
-						<%=raw((r[:report].length>550)?r[:report][0..550]+'...':r[:report])%>
-					<% else %>
-						<%=simple_format((r[:report].length>550)?r[:report][0..550]+'...':r[:report])%>
-					<% end %>
-				</div>
-				<a href="/competitions/<%=@competition.id%>?stage_id=<%=r[:stage_id]%>"><div class="btn yellow">Read more</div></a>
-			</div>
-		<% end %>
 	</div>
 </div>
 

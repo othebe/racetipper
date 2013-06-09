@@ -1,6 +1,6 @@
 <div id="header">
 	<div class="row collapse">
-		<div class="large-6 small-8 columns">
+		<div class="large-6 small-7 columns">
 			<div id="header-logo">
 				<a href="/">
 					<%= image_tag 'biketipper-logo.png'%>
@@ -9,12 +9,12 @@
 				<a href="/races"><span class="plus grayblack">+</span></a>
 			</div>
 		</div>
-		<div class="large-6 small-4 columns">
+		<div class="large-6 small-5 columns">
 			<% if (@user.nil?) %>
 				<!-- No user -->
 				<div id="header-login">
 					<div class="login">
-						<div>Log in</div>
+						<div>Login</div>
 						<div class="arrow-container">
 							<div class="arrow-down"></div>
 						</div>
@@ -46,8 +46,8 @@
 						</div>
 						
 					</div>
-					<div style="color:gray; margin-right:10px;margin-top:8px;">&nbsp;or&nbsp;</div>
-					<div class="signup">
+					<div style="color:gray;margin-top:8px;" class="hide-for-iphone">&nbsp;or&nbsp;</div>
+					<div class="signup hide-for-iphone">
 						<div>Sign up</div>
 						<div class="arrow-container">
 							<div class="arrow-down"></div>
