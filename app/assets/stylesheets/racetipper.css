@@ -37,6 +37,10 @@ div#main-content * {
 	transition: all 0.2s linear;
 }
 
+.tooltip {
+	height: 17px;
+}
+
 .loading {
 	display: none;
 }

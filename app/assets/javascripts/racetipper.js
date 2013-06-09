@@ -820,12 +820,14 @@ function show_race_leaderboard_from_competition(race_id) {
 			
 			$('table.selector img.loading').hide(); 
 			competition_race_leaderboard_initialized = true;
+			send_resize_msg();
 		});
 	} else {
 		$('table.data').removeClass('blue');
 		$('table.data').addClass('grayblack');
 		$('table.data tr.tipping').hide();
 		$('table.data tr.race').show();
+		send_resize_msg();
 	}
 }
 
@@ -1054,11 +1056,13 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 						'rank': entry['rank'],
 						'name': entry['username'],
 						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
+						'gap_formatted': entry['gap_formatted'],
 						'time': entry['time_formatted'],
 						'sprint': entry['sprint'],
 						'kom': entry['kom'],
 						'type': type,
 						'scope': scope,
+						'original_rider': entry['original_rider'],
 					});
 				});
 				context['entries'] = entries;
@@ -1073,6 +1077,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 						'name': entry['rider_name'],
 						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
 						'time': (entry['disqualified']==null)?entry['time_formatted']:entry['disqualified'],
+						'gap_formatted': entry['gap_formatted'],
 						'sprint': (entry['disqualified']==null)?entry['sprint_points']:'--',
 						'kom': (entry['disqualified']==null)?entry['kom_points']:'--',
 						'type': type,
@@ -1108,6 +1113,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 				$('div#stage-leaderboard table.data').trigger('update');
 			}
 			stage_leaderboard_loaded_tables[type][scope] = true;
+			$('.tooltip').tipTip();
 			send_resize_msg();
 		});
 	}

@@ -18,15 +18,15 @@
 			</div>
 			
 			<div class="info">
-				<div class="col big bold" style="margin-right:10px;">
+				<div class="col big bold">
 					<%=@completed_stages%>/<%=@total_stages%>
 				</div>
 				
-				<div class="col bold stacked" style="margin-right:50px;">
+				<div class="col bold stacked">
 					STAGES</br>COMPLETED
 				</div>
 				
-				<div class="col big bold" style="margin-right:10px;">
+				<div class="col big bold">
 					<%=@num_participants%>
 				</div>
 				
@@ -34,7 +34,7 @@
 					TIPPERS</br>JOINED
 				</div>
 				
-				<div class="col bold" style="float:right; padding-right:20px;">
+				<div class="col bold" style="float:right;">
 					CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
 				</div>
 				

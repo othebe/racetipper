@@ -4,7 +4,7 @@
 			<th class="choice blue bold" onclick="show_tipping_leaderboard_from_competition();">TIPPING LEADERBOARD</th>
 			<th class="choice grayblack bold" onclick="show_race_leaderboard_from_competition('<%=@race.id%>');">RACE LEADERBOARD <%=image_tag 'ajax-spinner.gif', {:class=>'loading'}%></th>
 		</thead>
-	</div>
+	</table>
 	
 	<table class="data blue tipping tablesorter">
 		<thead>
@@ -22,7 +22,10 @@
 				<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
 					<td><%=ndx%></td>
 					<td class="gray"><%=entry[:username]%></td>
-					<td class="gray"><%=entry[:formatted_time]%></td>
+					<td class="gray">
+						<%=entry[:formatted_time]%>
+						<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+'+entry[:formatted_gap]} if (!entry[:formatted_gap].nil?)%>
+					</td>
 					<td class="gray"><%=entry[:sprint]%></td>
 					<td class="gray"><%=entry[:kom]%></td>
 				</tr>
@@ -46,7 +49,12 @@ $(document).ready(function() {
 			<td class="gray">--</td>
 			<td class="gray">--</td>
 		{{else}}
-			<td class="gray">{{time_formatted}}</td>
+			<td class="gray">
+				{{time_formatted}}
+				{{#if gap_formatted}}
+					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{gap_formatted}}'}%>
+				{{/if}}
+			</td>
 			<td class="gray">{{sprint_points}}</td>
 			<td class="gray">{{kom_points}}</td>
 		{{/if}}
