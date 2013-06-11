@@ -688,17 +688,29 @@ function submit_feedback(elt) {
 
 //Title:		forgot_password
 //Description:	User forgot password. Mail them one.
+var resetting_password_from_email = false;
 function forgot_password(elt) {
-	var email = $('input[name=reset_email]').val();
+	if (resetting_password_from_email) return;
+	var container = $(elt).parent();
 	
-	$(elt).hide();
-	$('.loading.password_reset').show();
+	resetting_password_from_email = true;
+	$(elt).removeClass('yellow').addClass('gray');
+	$(container).find('.loading').show();
+	$(container).find('.success').hide();
+	var email = $(container).find('input[name=email]').val();
 	
 	$.post('/users/reset_password_from_email', {email:email}, function(response) {
-		alert(response.msg);
-		$(elt).show();
-		$('.loading.password_reset').hide();
+		if (response.success) {
+			$(container).find('.success').show();
+		} else {
+			alert(response.msg);
+		}
+		resetting_password_from_email = false;
+		$(container).find('.loading').hide();
+		$(elt).removeClass('gray').addClass('yellow');
 	});
+	
+	return;
 }
 
 //Title:		load_comments

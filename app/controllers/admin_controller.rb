@@ -587,11 +587,14 @@ class AdminController < ApplicationController
 			file_data.each_line do |line|
 				next if (line.strip.length==0)
 				next if (line.start_with?('#'))
+				line.gsub!(/\/,/, ';comma;')
 				
 				ndx += 1
 				#Read race name/description/image_url info
 				if (ndx==1)
 					line_arr = line.split(',')
+					line_arr[0].gsub!(/;comma;/, ',')
+					line_arr[1].gsub!(/;comma;/, ',')
 					@race_name = line_arr[0].strip
 					@race_description = line_arr[1].strip
 					next
@@ -611,6 +614,7 @@ class AdminController < ApplicationController
 				line_arr = line.split(',')
 				data = []
 				line_arr.each do |l|
+					l.gsub!(/;comma;/, ',')
 					data.push(l.strip)
 				end
 				@result_data.push(data)
@@ -632,6 +636,8 @@ class AdminController < ApplicationController
 			file_data.each_line do |line|
 				next if (line.strip.length==0)
 				next if (line.start_with?('#'))
+				
+				line.gsub!(/\/,/, ';comma;')
 				
 				ndx += 1
 				#Read race name/description/image_url/team_id(OPT) info
@@ -659,6 +665,7 @@ class AdminController < ApplicationController
 				line_arr = line.split(',')
 				data = []
 				line_arr.each do |l|
+					l.gsub!(/;comma;/, ',')
 					data.push(l.strip)
 				end
 				@result_data.push(data)

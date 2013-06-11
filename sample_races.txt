@@ -1,6 +1,6 @@
 #name, description
-Pokemon Circuit, Pokemon Circuit competition 2013
+Pokemon/, Circuit, Pokemon Circuit competition/, 2013
 !name, description, starts_on, start_location, end_location, distance_km, stage_type
-Hometown, Your hometown, 2013-03-01 00:00:00, Ash1, Ash2, 50.1, MF
-Rival Hometown, Your rival's hometown, 2013-04-01 00:00:00, Ash2, Ash3, 100.5, ITT
+Hometown, Your hometown/, Here, 2013-07-01 00:00:00, Ash1, Ash2, 50.1, MF
+Rival Hometown, Your rival's hometown, 2013-07-02 00:00:00, Ash2, Ash3, 100.5, ITT
 
