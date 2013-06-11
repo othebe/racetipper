@@ -9,11 +9,10 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
-<<<<<<< HEAD
+
  *= require foundation
  *= require_tree .
-=======
  *= require_directory .
  *= require_tree ../../../lib/plugins
->>>>>>> 5821e42c31439d283800f98ebfe1104d64c71b5d
+
  */

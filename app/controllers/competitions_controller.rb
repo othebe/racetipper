@@ -36,7 +36,10 @@ class CompetitionsController < ApplicationController
 	def show
 		#Check for login via access token
 		return if login_with_token.nil?
-		
+
+		#Competition
+		@competition = Competition.find_by_id(params[:id])
+
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
@@ -45,10 +48,13 @@ class CompetitionsController < ApplicationController
 			join_by_code()
 		end
 
+		#If competition is private and the user haven't participate
+		if @competition.status == 3 && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id})
+			redirect_to :root and return
+		end
+
 		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
-		#Competition
-		@competition = Competition.find_by_id(params[:id])
 		
 		#Get leaderboard
 		@leaderboard = get_leaderboard(params[:id], 'race', @competition.race_id)
@@ -514,10 +520,16 @@ class CompetitionsController < ApplicationController
 			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
 			redirect_to('/competitions/'+competition_id) and return
 		else
-			#TODO Delete the invitation
-			CompetitionInvitation.delete_invitation(@user.id, competition.id)
-			CompetitionParticipant.add_participant(@user.id, competition.id)
-			redirect_to('/competitions/'+competition_id) and return
+			#If the current user exist in Competition_Invitation table
+			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id})
+				CompetitionInvitation.delete_invitation(@user.id, competition.id)
+				CompetitionParticipant.add_participant(@user.id, competition.id)
+				redirect_to('/competitions/'+competition_id) and return
+			#If doesn't exist, it means the user is not invited but has the code
+			else
+				redirect_to :root and return
+			end
+			
 		end
 	end
 	
