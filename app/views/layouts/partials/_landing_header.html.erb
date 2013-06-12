@@ -1,3 +1,5 @@
+
+<%= render 'users/partials/forgot_password' %>
 <div id="header" style="height:70px;">
 	<div class="row collapse">
 		<div class="large-3 small-12 columns">
@@ -6,6 +8,23 @@
 				<span>biketippr</span>
 			</div>
 		</div>
+	<!--
+	<div id="landing-header-login">
+		<div class="col">
+			<a href="#" onclick="facebook_login()"><%=image_tag 'facebook.jpg', {:style=>'margin-top:5px;'}%></a>
+		</div>
+		
+		<div class="col">
+			<input type="text" name="email" placeholder="email" name="email"></br>
+			<input type="checkbox"><span class="italic">Keep me logged in</span>
+		</div>
+		
+		<div class="col">
+			<input type="password" name="password" placeholder="password" style="margin-bottom:7.5px;" name="password"></br>
+			<a class="forgot-password-fancybox" href="#forgot-password" class="italic" style="color:white;">Forgot password?</a>
+		</div>
+	</div>
+	-->
 		<div class="large-9 columns hide-for-small">
 			<div id="landing-header-login">
 				<div class="col">
@@ -19,7 +38,7 @@
 				
 				<div class="col">
 					<input type="password" name="password" placeholder="password" style="margin-bottom:7.5px;" name="password"></br>
-					<a href="#" class="italic" style="color:white;">Forgot password?</a>
+					<a class="forgot-password-fancybox" href="#forgot-password" class="italic" style="color:white;">Forgot password?</a>
 				</div>
 				
 				<div class="col">
