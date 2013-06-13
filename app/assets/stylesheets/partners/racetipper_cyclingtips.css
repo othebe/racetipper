@@ -1,11 +1,11 @@
 /* *** General *** */
 @font-face {
     font-family: BrownStd-Bold;
-    src: url('fonts/BrownStd-Bold.eot'); /* IE9 Compat Modes */
-    src: url('fonts/BrownStd-Bold.svg#svgFontName') format('svg'), /* Legacy iOS */
-         url('fonts/BrownStd-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('fonts/BrownStd-Bold.woff') format('woff'), /* Modern Browsers */
-         url('fonts/BrownStd-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
+    src: url('/fonts/BrownStd-Bold.eot'); /* IE9 Compat Modes */
+    src: url('/fonts/BrownStd-Bold.svg#svgFontName') format('svg'), /* Legacy iOS */
+         url('/fonts/BrownStd-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('/fonts/BrownStd-Bold.woff') format('woff'), /* Modern Browsers */
+         url('/fonts/BrownStd-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
 body {
@@ -1017,13 +1017,13 @@ div#stage-leaderboard {
 		div#competition-leaderboard table.selector th,
 		div#stage-leaderboard table.selector th {
 			color: white;
-			padding: 30px;
+			padding: 30px 20px;
 			cursor: pointer;
 			font-size: 13pt;
 			width: 50%;
 		}
 		div#stage-leaderboard table.selector th {
-			width: 35%;
+			width: 33%;
 		}
 		div#stage-leaderboard table.selector th.toggle {
 			width: 30%;

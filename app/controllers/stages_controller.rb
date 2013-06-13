@@ -13,7 +13,7 @@ class StagesController < ApplicationController
 		rider_name = nil
 		competition_id = params[:competition_id]
 		if (user_id>0)
-			tip = CompetitionTip.where({:competition_participant_id=>user_id, :stage_id=>params[:id], :competition_id=>competition_id}).first
+			tip = CompetitionTip.where({:competition_participant_id=>user_id, :stage_id=>params[:id], :competition_id=>competition_id}).first || CompetitionTip.new
 			rider_used = (tip.default_rider_id || tip.rider_id)
 			rider = Rider.find_by_id(rider_used)
 			rider_name = (rider.nil?)?nil:rider.name

@@ -12,7 +12,7 @@
 
 		<div class="action-buttons">
 		<% if (@participating) %>
-			<a href="/competitions/<%=@competition.id%>">
+			<a href="/competitions/<%=@competition.id%>?<%=@iframe_params%>">
 				<div class="btn black">
 					<%=image_tag 'eye.png'%>
 					<span>Overview</span>
