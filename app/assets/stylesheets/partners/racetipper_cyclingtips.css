@@ -10,7 +10,7 @@
 
 body {
 	margin: 0;
-	/*overflow: hidden;*/ /*It disables scrolling on Login page*/
+	overflow: hidden;
 }
 body * {
 	font-family: 'Karla', sans-serif;

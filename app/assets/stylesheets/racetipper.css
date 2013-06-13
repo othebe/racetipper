@@ -581,6 +581,7 @@ div.login-page {
 				padding: 15px;
 				background: none;
 				width: 100%;
+				border: none;
 				border-bottom: 1px solid #c0c0c0;
 				display: block;
 			}

@@ -122,11 +122,4 @@ class User < ActiveRecord::Base
 			CompetitionParticipant.add_participant(self.id, competition.id)
 		end
 	end
-
-	#Title: get_id_using_email
-	#Description: Get a user id using the given email
-	def self.get_id_using_email(email)
-		user = self.where(:email=>email).first
-		return user.id
-	end
 end

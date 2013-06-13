@@ -49,7 +49,7 @@ class CompetitionsController < ApplicationController
 		end
 
 		#If competition is private and the user haven't participate
-		if @competition.status == 3 && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id})
+		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id})
 			redirect_to :root and return
 		end
 
@@ -583,8 +583,8 @@ class CompetitionsController < ApplicationController
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
 			email = competition_data[:invitations]
-			invited_user_id = User.get_id_using_email(email)
-			CompetitionInvitation.invite_user(invited_user_id, competition.id, @user.id)
+			invited_user_id = User.find_by_email(email).id
+			CompetitionInvitation.invite_user(invited_user_id, competition.id)
 		end
 		
 		#Send emails
