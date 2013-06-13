@@ -1320,5 +1320,5 @@ function delete_report(report_id, elt) {
 //Description:	Sends parent a RESIZE message
 function send_resize_msg() {
 	var padding = 50;
-	window.parent.postMessage(MSG_TYPES.indexOf('RESIZE')+SEPARATOR+(window.document.height+padding), '*');
+	window.parent.postMessage(MSG_TYPES.indexOf('RESIZE')+SEPARATOR+($(document).height()+padding), '*');
 }
