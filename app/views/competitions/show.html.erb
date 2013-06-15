@@ -9,10 +9,10 @@
 <div class="content">
 
 	<div class="row">
-		<div class="large-3 small-12 columns">
+		<div class="large-3 hide-for-small columns">
 			<%=render 'competitions/partials/left_navigator'%>
 		</div>
-		<div class="large-9 hide-for-small columns">
+		<div class="large-9 columns">
 			<div id="content-with-nav">
 				<!-- Overview -->
 				<div id="overview">
@@ -46,9 +46,6 @@
 						<div style="clear:both;"></div>
 					</div>
 				</div>
-				
-				<%=render 'competitions/partials/competition_leaderboard'%>
-				
 				<% @reports.reverse_each do |r| %>
 					<div class="tipping-report" style="margin-bottom:100px;">
 						<div class="bar">&nbsp;</div>
@@ -73,6 +70,10 @@
 						<a href="/competitions/<%=@competition.id%>?stage_id=<%=r[:stage_id]%>"><div class="btn yellow">Read more</div></a>
 					</div>
 				<% end %>
+
+				<%=render 'competitions/partials/competition_leaderboard'%>
+				
+				
 				
 			</div>
 		</div> <!--COLUMN-->

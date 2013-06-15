@@ -1,22 +1,32 @@
 <div class="competition-invite">
-	<img src="/users/picture/<%=invitation[:creator].id%>" class="user-img">
-	<div class="invite-str">
-		<span class="who"><%=(invitation[:creator].firstname+' '+invitation[:creator].lastname).strip%></span>
-		invited you to join
-		<span class="what"><%=invitation[:competition].name%></span>
-		competition on
-		<span class="for"><%=invitation[:race].name%></span>		
-	</div>
-	
-	<div class="action">
-		<div class="btn black">
-			<%=image_tag 'tick.png'%>
-			<a href="/competitions/<%= invitation[:competition].id %>?code=<%= invitation[:competition].invitation_code %>">
-				<span>Join competition</span>
-			</a>
+	<div class="row collapse">
+		<div class="large-1 small-2 columns">
+			<div class="text-center">
+				<img src="/users/picture/<%=invitation[:creator].id%>" class="user-img">
+			</div>
 		</div>
-		
-		<%=image_tag 'cross.png', {:class=>'cancel'}%>
+		<div class="large-7 small-7 columns">
+			<div class="invite-str">
+				<span class="who"><%=(invitation[:creator].firstname+' '+invitation[:creator].lastname).strip%></span>
+				invited you to join
+				<span class="what"><%=invitation[:competition].name%></span>
+				competition on
+				<span class="for"><%=invitation[:race].name%></span>		
+			</div>
+		</div>
+		<div class="large-4 small-2 columns">
+			<div class="action">
+				<div class="btn black">
+					<a href="/competitions/<%= invitation[:competition].id %>?code=<%= invitation[:competition].invitation_code %>">
+						<%=image_tag 'tick.png', :style=>'min-width: 11px;' %>
+					
+						<span class="hide-for-small">Join competition</span>
+					</a>
+				</div>
+				
+				<%=image_tag 'cross.png', {:class=>'cancel'}%>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
 	</div>
-	<div style="clear:both;"></div>
 </div>

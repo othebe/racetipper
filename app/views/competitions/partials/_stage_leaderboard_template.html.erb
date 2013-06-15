@@ -3,11 +3,13 @@
 		<table class="selector">
 			<thead>
 				<th class="choice blue bold" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'type', 'tipping');">
-					TIPPING LEADERBOARD
+					<span class="hide-for-small">TIPPING LEADERBOARD</span>
+					<span class="hide-for-medium-up">TIPPING</span>
 					<%=image_tag 'ajax-spinner.gif', {:class=>'loading'}%>
 				</th>
 				<th class="choice grayblack bold" onclick="change_stage_leaderboard({{competition_id}}, {{race_id}}, {{stage_id}}, 'type', 'race');">
-					RACE LEADERBOARD 
+					<span class="hide-for-small">RACE LEADERBOARD</span>
+					<span class="hide-for-medium-up">RACE STAGE</span>
 					<%=image_tag 'ajax-spinner.gif', {:class=>'loading'}%>
 				</th>
 				<th class="choice grayblack toggle">
