@@ -37,14 +37,25 @@ class CompetitionsController < ApplicationController
 	def show
 		#Check for login via access token
 		return if login_with_token.nil?
-		
+
+		#Competition
+		@competition = Competition.find_by_id(params[:id])
+
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
+		#if params contain invitation code
+		if params[:code]
+			join_by_code()
+		end
+
+		#If competition is private and the user haven't participate
+		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id, :status=>STATUS[:ACTIVE]})
+			redirect_to :root and return
+		end
+
 		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
-		#Competition
-		@competition = Competition.find_by_id(params[:id])
 		
 		#Get leaderboard
 		@leaderboard = get_leaderboard(params[:id], 'race', @competition.race_id)
@@ -498,7 +509,7 @@ class CompetitionsController < ApplicationController
 	#POST
 	
 	def join_by_code
-		competition_id = params[:competition_id]
+		competition_id = params[:id]
 		code = params[:code]
 		
 		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
@@ -508,10 +519,18 @@ class CompetitionsController < ApplicationController
 		if (@user.nil?)
 			session[:invited_competitions] ||= []
 			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
-			redirect_to('/#/competitions/'+competition_id) and return
+			redirect_to('/competitions/'+competition_id) and return
 		else
-			CompetitionParticipant.add_participant(@user.id, competition.id)
-			redirect_to('/#/competitions/'+competition_id) and return
+			#If the current user exist in Competition_Invitation table
+			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+				CompetitionInvitation.delete_invitation(@user.id, competition.id)
+				CompetitionParticipant.add_participant(@user.id, competition.id)
+				redirect_to('/competitions/'+competition_id) and return
+			#If doesn't exist, it means the user is not invited but has the code
+			else
+				redirect_to :root and return
+			end
+			
 		end
 	end
 	
@@ -563,9 +582,9 @@ class CompetitionsController < ApplicationController
 		participation.save
 		
 		#Generate invitations
-		if (competition_data[:open_to]=='private')
-			CompetitionInvitation.invite_user(@user.id, competition.id)
-		end
+		email = competition_data[:invitations]
+		invited_user = User.find_by_email(email)
+		CompetitionInvitation.invite_user(invited_user.id, competition.id) if (!invited_user.nil?)
 		
 		#Send emails
 		send_competition_invitations(competition_data[:invitations], competition)
@@ -785,7 +804,25 @@ class CompetitionsController < ApplicationController
 		render :json=>{:competition_data=>competition_data}
 	end
 	
-	#POST
+	#JSON
+	
+	#Title:			remove_invitation
+	#Description:	Sets a invitation as DELETED
+	def remove_invitation
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		render :json=>{:success=>false, :msg=>'No competition selected'} and return if (!params.has_key?(:id))
+		
+		invitation = CompetitionInvitation.where({:competition_id=>params[:id], :user_id=>@user.id, :status=>STATUS[:ACTIVE]}).first
+		if (!invitation.nil?)
+			invitation.status = STATUS[:DELETED]
+			invitation.save
+		end
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	#Title:			join
+	#Description:	Join a competition
 	def join
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
 		render :json=>{:success=>false, :msg=>'No competition selected'} and return if (!params.has_key?(:id))

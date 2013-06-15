@@ -1,72 +1,77 @@
 <div id="header">
-	<div id="header-logo">
-		<a href="/">
-			<%= image_tag 'biketipper-logo.png'%>
-			<span>biketippr</span>
-		</a>
-		<a href="/races"><span class="plus grayblack">+</span></a>
-	</div>
-	
-	<% if (@user.nil?) %>
-		<!-- No user -->
-		<div id="header-login">
-			<div class="login">
-				<div>Log in</div>
-				<div class="arrow-container">
-					<div class="arrow-down"></div>
-				</div>
-				
-				<!-- Login form -->
-				<div class="login-form login">
-					<%=image_tag 'facebook.jpg', {:style=>'border-bottom:1px solid #C3C3C3;', :onclick=>'facebook_login();'}%>
-					<input type="text" placeholder="Email" name="email">
-					<input type="password" placeholder="Password" name="password">
-					
-					<div class="btn yellow" style="float:right;" onclick="login(this);">Login</div>
-					<div class="loading">
-						<%=image_tag 'ajax-spinner.gif'%>
-					</div>
-					<div style="clear:both;"></div>
-				</div>
-				
-				<!-- Signup form -->
-				<div class="login-form signup">
-					<input type="text" placeholder="First name" name="firstname">
-					<input type="text" placeholder="Last name" name="lastname">
-					<input type="text" placeholder="Email" name="email">
-					<input type="password" placeholder="Password" name="password">
-					
-					<div class="btn yellow" style="float:right;" onclick="signup(this);">Register</div>
-					<div class="loading">
-						<%=image_tag 'ajax-spinner.gif'%>
-					</div>
-				</div>
-				
-			</div>
-			<div style="color:gray; margin-right:10px;margin-top:8px;">&nbsp;or&nbsp;</div>
-			<div class="signup">
-				<div>Sign up</div>
-				<div class="arrow-container">
-					<div class="arrow-down"></div>
-				</div>
+	<div class="row collapse">
+		<div class="large-6 small-7 columns">
+			<div id="header-logo">
+				<a href="/">
+					<%= image_tag 'biketipper-logo.png'%>
+					<span>biketippr</span>
+				</a>
+				<a href="/races"><span class="plus grayblack">+</span></a>
 			</div>
 		</div>
-	<% else %>
-		<!-- Authenticated user -->
-		<div id="header-user">
-			<img src="<%=@user_img%>">
-			<div class="username"><%=@user[:display_name]%></div>
-			<div class="arrow-container">
-				<div class="arrow-down"></div>
-			</div>
-			
-			<!-- User menu -->
-			<ul class="user-menu">
-				<a href="/users/settings"><li class="regular">Settings</li></a>
-				<a href="/users/logout"><li class="regular">Logout</li></a>
-			</ul>
-		</div>
-	<% end %>
+		<div class="large-6 small-5 columns">
+			<% if (@user.nil?) %>
+				<!-- No user -->
+				<div id="header-login">
+					<div class="login">
+						<div>Login</div>
+						<div class="arrow-container">
+							<div class="arrow-down"></div>
+						</div>
+						
+						<!-- Login form -->
+						<div class="login-form login">
+							<%=image_tag 'facebook.jpg', {:style=>'border-bottom:1px solid #C3C3C3;', :onclick=>'facebook_login();'}%>
+							<input type="text" placeholder="Email" name="email">
+							<input type="password" placeholder="Password" name="password">
+							
+							<div class="btn yellow" style="float:right;" onclick="login(this);">Login</div>
+							<div class="loading">
+								<%=image_tag 'ajax-spinner.gif'%>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						
+						<!-- Signup form -->
+						<div class="login-form signup">
+							<input type="text" placeholder="First name" name="firstname">
+							<input type="text" placeholder="Last name" name="lastname">
+							<input type="text" placeholder="Email" name="email">
+							<input type="password" placeholder="Password" name="password">
+							
+							<div class="btn yellow" style="float:right;" onclick="signup(this);">Register</div>
+							<div class="loading">
+								<%=image_tag 'ajax-spinner.gif'%>
+							</div>
+						</div>
+						
+					</div>
+					<div style="color:gray;margin-top:8px;" class="hide-for-iphone">&nbsp;or&nbsp;</div>
+					<div class="signup hide-for-iphone">
+						<div>Sign up</div>
+						<div class="arrow-container">
+							<div class="arrow-down"></div>
+						</div>
+					</div>
+				</div>
+			<% else %>
+				<!-- Authenticated user -->
+				<div id="header-user">
+					<img src="<%=@user_img%>">
+					<div class="username hide-for-small"><%=@user[:display_name]%></div>
+					<div class="arrow-container">
+						<div class="arrow-down"></div>
+					</div>
+					
+					<!-- User menu -->
+					<ul class="user-menu">
+						<a href="/users/settings"><li class="regular">Settings</li></a>
+						<a href="/users/logout"><li class="regular">Logout</li></a>
+					</ul>
+				</div>
+			<% end %>
+		</div> <!--COLUMNS-->
+	</div> <!--ROW-->
 </div>
 
 <script>

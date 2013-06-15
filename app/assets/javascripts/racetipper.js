@@ -343,6 +343,17 @@ function join_competition(competition_id, elt) {
 	});
 }
 
+//Title:		remove_invitation
+//Description:	Remove an invitation
+function remove_invitation(competition_id, elt) {
+	var container = $(elt).parent().parent();
+	$(container).fadeOut();
+	
+	$.post('/competitions/remove_invitation/'+competition_id, {}, function(response) {
+		if (!response.success) alert(response.msg);
+	});
+}
+
 //Title:		leave_competition
 //Description:	User leaves a competition
 //Params:		competition_id - Competition ID

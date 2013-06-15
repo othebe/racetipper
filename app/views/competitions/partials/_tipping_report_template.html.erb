@@ -8,7 +8,7 @@
 		<div class="title bold">TIPPING REPORT</div>
 		<div class="data-input gray">
 			<input type="text" name="title" placeholder="Tipping report title" value="{{title}}">
-			<textarea name="report" class="italic" placeholder="Tipping report content.">{{report}}</textarea>
+			<textarea name="report" placeholder="Tipping report content.">{{report}}</textarea>
 			
 			<div class="btn yellow" onclick="save_tipping_report({{competition_id}}, {{stage_id}}, this);">Save report</div>
 			<div class="loading"><%= image_tag 'ajax-spinner.gif'%></div>
@@ -30,6 +30,6 @@
 			{{/if}}
 		</div> 
 		<div class="title-2">{{title}}</div>
-		<p class="italic">{{{report}}}</p>
+		<p>{{{report}}}</p>
 	</div>
 </script>
