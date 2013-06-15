@@ -60,52 +60,58 @@ img.stage-type {
 }
 
 .white {
-	background-color: white;
+	background-color: white !important;
 	color: black;
 }
 
 .blue {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #1b94e9, #1a8edf); /* for firefox 3.6+ */
+	background: #1b94e9 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #1b94e9, #1a8edf) !important; /* for firefox 3.6+ */
 	color: white;
 }
 
 .red { 
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1342c', endColorstr='#db322b'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#e1342c), to(#db322b)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #e1342c, #db322b); /* for firefox 3.6+ */
+	background: #e1342c !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1342c', endColorstr='#db322b') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#e1342c), to(#db322b)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #e1342c, #db322b) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
 .yellow {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff000', endColorstr='#f8e900'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff000), to(#f8e900)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #fff000, #f8e900); /* for firefox 3.6+ */
+	background: #fff000 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff000', endColorstr='#f8e900') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff000), to(#f8e900)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #fff000, #f8e900) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
 .grayblack {
-	background-color: #303030;
+	background: #303030 !important;
 	color: white;
 }
 
 .gray {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
+	background: #eee !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eeeeee, #e8e8e8) !important; /* for firefox 3.6+ */
 	color: black;
 }
 .gray2 {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#d5d5d5'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#dcdcdc), to(#d5d5d5)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #dcdcdc, #d5d5d5); /* for firefox 3.6+ */
+	background: #dcdcdc !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#d5d5d5') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#dcdcdc), to(#d5d5d5)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #dcdcdc, #d5d5d5) !important; /* for firefox 3.6+ */
 	color: black;
 }
 .darkgray {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#979797', endColorstr='#919191'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#979797), to(#919191)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #979797, #919191); /* for firefox 3.6+ */
+	background: #979797 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#979797', endColorstr='#919191') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#979797), to(#919191)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #979797, #919191) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
@@ -162,13 +168,10 @@ body {
 	clear: both;
 }
 
-/*
-@media only screen and (max-width: 767px) {
-	#main-content {
-		min-width: auto;
+	#main-content.login-content {
+		max-width : 100% !important;
 	}
-}
-*/
+
 div.content {
 	padding: 20px 0 20px 0;
 	max-width: 1140px;
@@ -246,7 +249,6 @@ div.btn.black:hover {
 div.timer {
 	float: right;
 	color: white;
-	margin-bottom: 20px;
 	min-width: 250px;
 }
 	div.timer div.completed {
@@ -286,7 +288,7 @@ div.timer {
 		}
 		div.timer div.title {
 			padding: 10px;
-			background-color: rgba(27, 147, 231, 0.7);
+			background-color: rgba(0, 0, 0, 0.7);
 		}
 		div.timer div.title,
 		div.timer div.title * {
@@ -331,13 +333,12 @@ div#header {
 		}
 		div#header div#header-logo span.plus {
 			font-size: 36pt;
-			padding: 0 10px;
 			top: 6px;
 			margin-left: 10px;
 		}
 		div#header div#header-logo span.plus:hover {
 			background-color: #eeeeee;	
-			color: black;
+			color: #1B94E9;
 		}
 	div#header div.arrow-container {
 		margin: -28px 5px 0 5px;
@@ -724,12 +725,11 @@ div.race-competitions {
 }
 	div.race-competitions div.header {
 		background-image: url('/assets/backgrounds/race_competitions_01.jpg');
-		padding: 50px 20px 25px 20px;
+		padding: 25px;
 	}
 		div.race-competitions div.header div.race-name {
 			color: white;
 			float: left;
-			max-width: 75%;
 		}
 			div.race-competitions div.header div.race-name div.title {
 				font-size: 48pt;
@@ -742,96 +742,127 @@ div.race-competitions {
 		border-collapse: collapse;
 	}
 		div.race-competitions tr.data td.row {
-			padding: 10px;
+			/*padding: 10px;*/
 		}
-			div.race-competitions td.logo {
+			div.race-competitions .logo {
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #1b94e9, #1a8edf); /* for firefox 3.6+ */
 				width: 5%;
 			}
-				div.race-competitions td.logo img {
+				div.race-competitions .logo img {
 					width: 30px;
 				}
-			div.race-competitions td.rank {
+			div.race-competitions .rank {
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec', endColorstr='#dedede'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#dedede)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #ececec, #dedede); /* for firefox 3.6+ */
 				width: 10%;
 			}
-				div.race-competitions td.rank .value {
+				div.race-competitions .rank .value {
+					display: inline-block;
 					color: #303030;
 					font-size: 48pt;
-					float: left;
 				}
-				div.race-competitions td.rank  .postfix {
+				div.race-competitions .rank  .postfix {
+					display: inline-block;
 					vertical-align: top;
-					float: left;
 					margin-top: 5px;
 				}
-			div.race-competitions td.competition {
+			div.race-competitions .competition {
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
 				width: 60%;
 			}
-				div.race-competitions td.competition div {
-					font-size: 22pt;
-					margin-top: 10px;
+
+			div.race-competitions .competition div {
+				font-size: 16pt;
+			}
+
+				div.race-competitions .competition.new .btn{
+					font-size: 14pt;
 				}
-			div.race-competitions td.tip {
+			div.race-competitions .tip {
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
 			}
-				div.race-competitions td.tip div {
+				div.race-competitions .tip div {
 					font-size: 14pt;
-					margin-top: 10px;
 				}
-			div.race-competitions td.empty-tip {
+			div.race-competitions .empty-tip {
 				background-color: #e1342c;
 				text-align: center;
 				color: white;
 				width: 20%;
 			}
-			div.race-competitions td.empty-tip-button {
+			div.race-competitions .empty-tip-button {
 				background-color: #fff000;
 				text-align: center;
 				padding-left: 15px;
 				cursor: pointer;
 				width: 5%;
 			}
-				div.race-competitions td.empty-tip-button img {
+				div.race-competitions .empty-tip-button img {
 					height: 25px;
 				}
-	
+	@media only screen and (max-width: 1039px) {
+		div.race-competitions .rank .value {
+			font-size: 30pt;
+		}
+	}
+
 	@media only screen and (max-width: 949px) {
+		div.race-competitions .rank .value {
+			font-size: 26pt;
+		}
 		div.race-competitions div.header div.race-name div.title {
 			font-size: 36pt;
+		}
+		div.race-competitions .competition div {
+			font-size: 16pt;
 		}
 	}
 
 	@media only screen and (max-width: 767px) {
 		div.race-competitions div.header {
 			background-image: url('/assets/backgrounds/race_competitions_01.jpg');
-			padding: 15px;
+			padding: 15px 10px;
 		}
 		div.race-competitions div.header div.race-name div.title {
-			font-size: 22pt;
+			font-size: 18pt;
 		}
-			div.race-competitions td.rank .value {
-				font-size: 22pt;
+
+		div.race-competitions .rank {
+			background: #1b94e9;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf');
+			background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf));
+			background: -moz-linear-gradient(top, #1b94e9, #1a8edf);
+			color: white;
+			padding: 10px 5px;
+			width: 15%;
+		}
+			div.race-competitions .rank .value {
+				font-size: 18pt;
+				color: white;
 			}
-			div.race-competitions td.competition {
+
+			div.race-competitions .rank  .postfix {
+				margin-top: 0;
+				font-size: 10pt;
+			}
+
+			div.race-competitions .competition {
 				width: 50%;
 			}
-				div.race-competitions td.competition div {
-					font-size: 16pt;
+				div.race-competitions .competition div {
+					font-size: 14pt;
 				}
-			div.race-competitions td.empty-tip {
+			div.race-competitions .empty-tip {
 				font-size: 12pt;
 			}
-			div.race-competitions td.empty-tip-button {
+			div.race-competitions .empty-tip-button {
 				width: 15%;
 			}
 	}
@@ -847,7 +878,6 @@ div#competition-header {
 		color: white;
 	}
 		div#competition-header div.col.general {
-			float: left;
 			min-width: 45%;
 		}
 			div#competition-header div.col.general div.logo {
@@ -1046,22 +1076,28 @@ div.stacked-cols {
 	font-size: 14pt;
 	padding: 10px 20px 10px 20px;
 }
+
+	div#overview div.info .columns > *,
+	div#stage-overview div.info .columns > * {
+		display: inline-block;
+	}
+
 	div#overview div.info div.col,
 	div#stage-overview div.info div.col,
 	div.stacked-cols div.col {
 		float: left;
 		max-width: 100%;
 	}
-	div#overview div.info div.col.big,
-	div#stage-overview div.info div.col.big,
-	div.stacked-cols div.col.big{
+	div#overview div.info div.big,
+	div#stage-overview div.info div.big,
+	div.stacked-cols div.big{
 		font-size: 40pt;
 		margin-right: 10px;
 	}
 
-	div#overview div.info div.col.stacked,
-	div#stage-overview div.info div.col.stacked,
-	div.stacked-cols div.col.stacked {
+	div#overview div.info div.stacked,
+	div#stage-overview div.info div.stacked,
+	div.stacked-cols div.stacked {
 		line-height: 1.2;
 		margin-right: 0;
 	}
@@ -1074,13 +1110,32 @@ div.stacked-cols {
 			color: #ccc;
 			vertical-align: top;
 		}
-		div#overview div.info div.col img.user-pic,
-		div#stage-overview div.info div.col img.user-pic {
+		div#overview div.info img.user-pic,
+		div#stage-overview div.info img.user-pic {
 			border-radius: 100%;
 			width: 40px;
 			vertical-align: middle;
 			margin: 0 5px;
+			float: left;
 		}
+
+	@media only screen and (max-width: 879px) {
+		div#overview div.info div.big {
+			font-size: 30pt;
+		}
+		div#overview div.info {
+			font-size: 12pt;
+		}
+	}
+
+	@media only screen and (max-width: 554px) {
+		div#overview div.info div.big {
+			font-size: 22pt;
+		}
+		div#overview div.info {
+			font-size: 10pt;
+		}
+	}
 
 /* *** Stage overview *** */
 div#stage-overview div.info div.col.add-tip {
@@ -1096,7 +1151,7 @@ div#stage-overview div.description {
 }
 div#stage-overview div.status {
 	float: right;
-	padding: 45px;
+	padding: 40px;
 	font-size: 18pt;
 }
 
@@ -1113,22 +1168,26 @@ div.stage-image-container {
 	}
 
 	@media only screen and (max-width: 530px) {
-		div#overview div.info,
 		div#stage-overview div.info,
 		div#stage-overview div.description,
 		div.stacked-cols {
 			font-size: 12pt;
 		}
-		div#overview div.info div.col.big,
 		div#stage-overview div.info div.col.big,
 		div.stacked-cols div.col.big{
 			font-size: 16pt;
 		}
-			div#overview div.info .stick-to-left,
 			div#stage-overview div.info .stick-to-left,
 			div.stacked-cols .stick-to-left {
 				font-size: 12pt;
 			}
+
+		div#overview div.info,
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			padding: 10px;
+		}
 	}
 
 	@media only screen and (max-width: 850px) {
@@ -1137,25 +1196,28 @@ div.stage-image-container {
 		div#other-information div.name div.title {
 			font-size: 36pt;
 		}
-	}
-
-	@media only screen and (max-width: 767px) {
 		div#overview div.name,
 		div#stage-overview div.name,
 		div#other-information div.name {
 			padding: 15px 10px;
 		}
 
-		div#overview div.name div.title,
+		div#stage-overview div.status {
+			padding: 15px 10px;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+
 		div#stage-overview div.name div.title,
 		div#other-information div.name div.title {
 			font-size: 18pt;
 			text-transform: uppercase;
 		}
 
-			div#overview div.name div.title.black,
-			div#stage-overview div.name div.title.black,
-			div#other-information div.name div.title.black {
+			div#overview div.name div.title,
+			div#stage-overview div.name div.title,
+			div#other-information div.name div.title {
 				font-size: 18pt;
 				font-weight: 600;
 			}
@@ -1184,10 +1246,10 @@ div.tipping-report {
 }
 	
 	div.tipping-report .report-text {
-		line-height: 1;
+		line-height: 1.2;
 	}
 		div.tipping-report .report-text p {
-			line-height: 1;
+			line-height: 1.2;
 		}
 	div.tipping-report div.bar {
 		border-top: 8px solid lightgray;
@@ -1404,6 +1466,20 @@ div#stage-leaderboard {
 			padding: 10px;
 			width: auto;
 		}
+	}
+
+	@media only screen and (max-width: 479px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 5px;
+			font-size: 12pt;
+		}
+		div#stage-leaderboard table.selector th.toggle div.switch{
+			padding: 5px;
+			font-size: 12pt;
+			width: 100%;
+		}
+		
 	}
 			
 /* *** ********************************** User profile ************************************** *** */			

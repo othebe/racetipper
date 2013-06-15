@@ -746,7 +746,7 @@ function get_user_race_data(user_id, race_id, elt) {
 		
 		//Put HTML into document
 		if (elt != null) {
-			var header = $(elt).parent().parent();
+			var header = $(elt).closest('.header');
 			var container = $(header).parent();
 			
 			//Timer

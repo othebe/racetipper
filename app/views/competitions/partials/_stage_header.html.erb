@@ -1,7 +1,7 @@
 <script id="stage-header-template" type="text/x-handlebars-template">
 	<!-- Stage overview -->
 	<div id="stage-overview" class="grayblack">
-		<div class="row">
+		<div class="row collapse">
 			<div class="large-6 small-6 columns">
 				<div class="name" style="float:left;">
 					<div class="title black">{{stage_name}}</div>
@@ -9,11 +9,11 @@
 			</div>
 			<div class="large-6 small-6 columns">
 				{{#if countdown}}
-					<div class="timer" style="margin:20px;">
+					<div class="timer" style="margin:10px 5px;">
 						<div class="title">
 							<span class="bold">{{stage_name}}</span> STARTING IN
 						</div>
-						<div class="countdown">
+						<div class="countdown hide-for-small">
 							<div class="col">
 								<div class="value days">--</div>
 								<div class="unit">DAYS</div>
@@ -27,6 +27,23 @@
 							<div class="col">
 								<div class="value minutes">--</div>
 								<div class="unit">MINS</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="countdown hide-for-medium-up">
+							<div class="col">
+								<span class="value days bold">--</span>
+								<span class="unit">D</span>
+							</div>
+							
+							<div class="col">
+								<span class="value hours bold">--</span>
+								<span class="unit">H</span>
+							</div>
+							
+							<div class="col">
+								<span class="value minutes bold">--</span>
+								<span class="unit">M</span>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -64,7 +81,7 @@
 								{{/if}}
 							</div>
 						</div>
-						<div class="large-2 small-3 columns">
+						<div class="large-2 small-4 columns">
 							<div class="col bold stacked">
 								<span class="hide-for-small">TYPE</br></span>
 								{{#if stage_type_flat}}
@@ -87,7 +104,7 @@
 								{{/if}}
 							</div>
 						</div>
-						<div class="large-3 small-4 columns">
+						<div class="large-3 small-3 columns">
 							<div class="text-center">
 								<div class="col big bold">
 									{{distance_km}} <span class="stick-to-left">KM</span>

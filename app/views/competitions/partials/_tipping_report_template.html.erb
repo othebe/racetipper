@@ -1,8 +1,8 @@
 <script id="tipping-report-creator-template" type="text/x-handlebars-template">
 	{{#if hide_on_load}}
-		<div class="tipping-report creator" style="display:none;">
+		<div class="tipping-report creator hide-for-small" style="display:none;">
 	{{else}}
-		<div class="tipping-report creator">
+		<div class="tipping-report creator hide-for-small">
 	{{/if}}
 		<div class="bar">&nbsp;</div>
 		<div class="title bold">TIPPING REPORT</div>
@@ -18,7 +18,7 @@
 </script>
 
 <script id="tipping-report-template" type="text/x-handlebars-template">
-	<div class="tipping-report {{report_type_class}} hide-for-small" report-id="{{report_id}}">
+	<div class="tipping-report {{report_type_class}}" report-id="{{report_id}}">
 		<div class="bar">&nbsp;</div>
 		<div class="title bold">
 			{{stage_name}} {{report_type}}
