@@ -1007,13 +1007,6 @@ function load_stage_info(stage_id, competition_id) {
 		loading_stage_info = false;
 		$('#content-with-nav').removeClass('loading-overlay');
 		
-		if ($('.tip-sheet').length > 0) {
-			setTimeout(function() {
-				$('html, body').animate({
-					scrollTop: $(".tip-sheet").offset().top
-				}, 2000);
-			}, 500);
-		}
 		send_resize_msg(); 
 	});
 }
