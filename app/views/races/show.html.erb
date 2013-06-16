@@ -2,84 +2,110 @@
 	<div id="race-information">
 		<div class="race-competitions">
 			<div class="header">
-				<div class="race-name bold">
-					<div class="title"><%=@race.name%></div>
-				</div>
-				
-				<div class="race-header">
-					<div class="timer race_<%=@race.id%>" style="margin-top:-20px;">
-						<% if (@next_stage_data[:next_stage_remaining] > 0) %>
-							<div class="title">
-								<span class="bold"><%=@next_stage_data[:next_stage_name]%></span> STARTING IN
-							</div>
-							<div class="countdown">
-								<div class="col">
-									<div class="value days">--</div>
-									<div class="unit">DAYS</div>
-								</div>
-								
-								<div class="col">
-									<div class="value hours">--</div>
-									<div class="unit">HOURS</div>
-								</div>
-								
-								<div class="col">
-									<div class="value minutes">--</div>
-									<div class="unit">MINS</div>
-								</div>
-								<div style="clear:both;"></div>
-							</div>
-							<script>
-								$(document).ready(function() {
-									new CountdownTimer($('#race-information div.timer.race_<%=@race.id%>'), <%=@next_stage_data[:next_stage_remaining]%>);
-								});
-							</script>
-						<% else %>
-							<div class="completed"><span class="bold">Race</span> completed</div>
-						<% end %>
+				<div class="row collapse">
+					<div class="large-8 small-7 columns">
+						<div class="race-name bold">
+							<div class="title"><%=@race.name%></div>
+						</div>
 					</div>
-					<div style="clear:both;"></div>
+					<div class="large-4 small-5 columns">
+						<div class="race-header">
+							<div class="timer race_<%=@race.id%>">
+								<% if (@next_stage_data[:next_stage_remaining] > 0) %>
+									<div class="title">
+										<span class="bold"><%=@next_stage_data[:next_stage_name]%></span> <span class="hide-for-small">STARTING</span> IN
+									</div>
+									<div class="countdown hide-for-small">
+										<div class="col">
+											<div class="value days">--</div>
+											<div class="unit">DAYS</div>
+										</div>
+										
+										<div class="col">
+											<div class="value hours">--</div>
+											<div class="unit">HOURS</div>
+										</div>
+										
+										<div class="col">
+											<div class="value minutes">--</div>
+											<div class="unit">MINS</div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div class="countdown hide-for-medium-up">
+										<div class="col">
+											<span class="value days bold">--</span>
+											<span class="unit">D</span>
+										</div>
+										
+										<div class="col">
+											<span class="value hours bold">--</span>
+											<span class="unit">H</span>
+										</div>
+										
+										<div class="col">
+											<span class="value minutes bold">--</span>
+											<span class="unit">M</span>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<script>
+										$(document).ready(function() {
+											new CountdownTimer($('#race-information div.timer.race_<%=@race.id%>'), <%=@next_stage_data[:next_stage_remaining]%>);
+										});
+									</script>
+								<% else %>
+									<div class="completed"><span class="bold">Race</span> completed</div>
+								<% end %>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
 				</div>
+
 				<div style="clear:both;"></div>
 			</div>
 			
 			<div class="race-stats blue stacked-cols">
-				<div class="col big bold">
-					<%=@race[:first_stage].starts_on.day%>
+				<div class="row collapse">
+					<div class="large-5 small-6 columns">
+						<div class="col big bold">
+							<%=@race[:first_stage].starts_on.day%>
+						</div>
+						<div class="col bold stacked">
+							<%=Date::MONTHNAMES[@race[:first_stage].starts_on.month]%></br><%=@race[:first_stage].starts_on.year%>
+						</div>
+						<div class="col big bold" style="margin-left:10px;">
+							-
+						</div>
+						
+						<div class="col big bold">
+							<%=@race[:last_stage].starts_on.day%>
+						</div>
+						<div class="col bold stacked">
+							<%=Date::MONTHNAMES[@race[:last_stage].starts_on.month]%></br><%=@race[:last_stage].starts_on.year%>
+						</div>
+					</div>
+					<div class="large-3 small-3 columns">
+						<div class="col big bold">
+							<%=@stages.count%>
+						</div>
+						
+						<div class="col bold stacked">
+							TOTAL</br>STAGES
+						</div>
+					</div>
+					<div class="large-3 small-3 columns">
+						<div class="col big bold">
+							<%=@num_riders%>
+						</div>
+						
+						<div class="col bold stacked">
+							TOTAL</br>RIDERS
+						</div>
+					</div>
+					<div class="large-1 hide-for-small columns"></div>
 				</div>
-				
-				<div class="col bold stacked" style="margin-right:10px;">
-					<%=Date::MONTHNAMES[@race[:first_stage].starts_on.month]%></br><%=@race[:first_stage].starts_on.year%>
-				</div>
-				
-				<div class="col big bold">
-					-
-				</div>
-				
-				<div class="col big bold">
-					<%=@race[:last_stage].starts_on.day%>
-				</div>
-				
-				<div class="col bold stacked">
-					<%=Date::MONTHNAMES[@race[:last_stage].starts_on.month]%></br><%=@race[:last_stage].starts_on.year%>
-				</div>
-				
-				<div class="col big bold">
-					<%=@stages.count%>
-				</div>
-				
-				<div class="col bold stacked">
-					TOTAL</br>STAGES
-				</div>
-				
-				<div class="col big bold">
-					<%=@num_riders%>
-				</div>
-				
-				<div class="col bold stacked">
-					TOTAL</br>RIDERS
-				</div>
-				
 				<div style="clear:both;"></div>
 			</div>
 			

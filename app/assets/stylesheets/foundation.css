@@ -526,7 +526,9 @@ th.hide-for-xlarge {
 
   .hide-for-small {
     display: inherit !important; }
-
+  span.hide-for-small {
+    display: inline-block !important;
+  }
   .hide-for-medium,
   .hide-for-medium-up {
     display: none !important; }

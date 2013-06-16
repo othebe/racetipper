@@ -283,7 +283,7 @@ div.timer {
 				}
 	@media only screen and (max-width: 767px) {
 		div.timer {
-			min-width: 100px;
+			min-width: 125px;
 			margin-bottom: 0;
 		}
 		div.timer div.title {
@@ -319,9 +319,10 @@ div#header {
 		padding-left: 10px;
 	}
 		div#header div#header-logo img{
-			height: 100%;
 			position: relative;
 			top: 10px;
+			width: 30px;
+			height: 30px;
 		}
 		
 		div#header div#header-logo span {
@@ -337,7 +338,6 @@ div#header {
 			margin-left: 10px;
 		}
 		div#header div#header-logo span.plus:hover {
-			background-color: #eeeeee;	
 			color: #1B94E9;
 		}
 	div#header div.arrow-container {
@@ -516,13 +516,14 @@ div.login-page {
 	left: 0;
 	background-image: url('/assets/backgrounds/landing.jpg');
 	background-size: cover;
-    height     : 100%;
+	background-repeat: repeat;
+	height: 100%;
 }
 
 	div.login-page div.overlay {
 		background-color: rgba(27, 148, 233, 0.85);
-	    height     : 100%;
 		padding-left: 10%;
+		min-height: 100%
 	}
 	
 	@media only screen and (max-width: 767px) {
@@ -734,6 +735,12 @@ div.race-competitions {
 			div.race-competitions div.header div.race-name div.title {
 				font-size: 48pt;
 			}
+			
+			div.race-competitions div.header div.race-name p {
+				font-weight: 400;
+				line-height: 1.2;
+			}
+
 		div.race-competitions div.header div.race-details {
 			float: right;
 		}
@@ -745,6 +752,7 @@ div.race-competitions {
 			/*padding: 10px;*/
 		}
 			div.race-competitions .logo {
+				background: #1b94e9;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #1b94e9, #1a8edf); /* for firefox 3.6+ */
@@ -754,6 +762,7 @@ div.race-competitions {
 					width: 30px;
 				}
 			div.race-competitions .rank {
+				background: #ececec;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec', endColorstr='#dedede'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#dedede)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #ececec, #dedede); /* for firefox 3.6+ */
@@ -770,6 +779,7 @@ div.race-competitions {
 					margin-top: 5px;
 				}
 			div.race-competitions .competition {
+				background: #eee;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
@@ -784,6 +794,7 @@ div.race-competitions {
 					font-size: 14pt;
 				}
 			div.race-competitions .tip {
+				background: #eee;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
@@ -840,7 +851,7 @@ div.race-competitions {
 			background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf));
 			background: -moz-linear-gradient(top, #1b94e9, #1a8edf);
 			color: white;
-			padding: 10px 5px;
+			padding: 10px 0;
 			width: 15%;
 		}
 			div.race-competitions .rank .value {
@@ -1050,7 +1061,96 @@ div#content-with-nav {
 	width: 100%;
 }
 
+/* Off canvas layout CSS/JS provided by or adapted from work by Jason Weaver and Luke Wroblewski */
+#sidebarButton {
+	position: relative;
+	padding: 15px 15px 15px 60px;
+	margin-bottom: 15px;
+	font-weight: 700;
+}
 
+	#sidebarButton.active {
+		padding: 15px 60px 15px 15px;
+	}
+	
+	#sidebarButton .arrow {
+		position  : absolute;
+		display   : inline-block;
+		padding   : 15px 25px;
+		top       : 0;
+		bottom    : 0;
+	}
+
+		#sidebarButton .arrow .arrow-shape{
+			position: absolute;
+			width: 10px;
+			height: 30px;
+			background: #333;
+			top: 6px;
+		}
+
+			#sidebarButton .arrow .arrow-shape:before,
+			#sidebarButton .arrow .arrow-shape:after {
+				content: '';
+				position: absolute;
+				top : 0;
+				width: 0; height: 0;
+				font-size: 0px; line-height: 0%;
+				border-style: solid;
+			}
+
+		#sidebarButton:not(.active) .arrow {
+			left  : 0;
+		}
+			#sidebarButton:not(.active) .arrow .arrow-shape {
+				right: 18px;
+			}
+
+				#sidebarButton:not(.active) .arrow .arrow-shape:before {
+					border-width: 15px 10px 15px 0;
+					border-color: transparent #333 transparent transparent;
+					right: 10px;
+				}
+				#sidebarButton:not(.active) .arrow .arrow-shape:after {
+					border-width: 15px 10px 15px 0;
+					border-color: transparent #FAEB00 transparent transparent;
+					left: 0;
+				}
+			
+		#sidebarButton.active .arrow {
+			right  : 0;
+		}
+			#sidebarButton.active .arrow .arrow-shape {
+				left: 18px;
+			}
+
+				#sidebarButton.active .arrow .arrow-shape:before {
+					border-width: 15px 0 15px 10px;
+					border-color: transparent transparent transparent #FAEB00;
+					right: 0;
+				}
+				#sidebarButton.active .arrow .arrow-shape:after {
+					border-width: 15px 0 15px 10px;
+					border-color: transparent transparent transparent #333;
+					left: 10px;
+				}
+
+body.off-canvas { padding: 0; margin: 0; }
+
+.container { width: 100%; }
+.content { overflow: hidden; }
+.row .row { overflow: visible; }
+
+[role="main"]:before { content: " "; position: absolute; z-index: -1; top: 0; left: -100%; width: 100%; height: 100%; }
+[role="complementary"], [role="main"] { display: block; position: relative;}
+
+@media only screen and (max-width: 767px) {
+	[role="complementary"] { margin-left: -100%; width: 80%; float: left; z-index: 2; }
+	[role="main"] { margin-left: 0; float: right; z-index: 1; position: relative; }
+
+	.active [role="complementary"] { margin-left: 0; }
+	.active [role="main"] { margin-right: -80%; }
+}
 
 /* *** Overview *** */
 div#overview div.name,
@@ -1148,6 +1248,7 @@ div#stage-overview div.info div.col.add-tip {
 	}
 div#stage-overview div.description {
 	color: black;
+	line-height: 1.2;
 }
 div#stage-overview div.status {
 	float: right;
@@ -1164,29 +1265,6 @@ div.stage-image-container {
 		div#stage-overview div.info div.col.big,
 		div.stacked-cols div.col.big{
 			font-size: 30pt;
-		}
-	}
-
-	@media only screen and (max-width: 530px) {
-		div#stage-overview div.info,
-		div#stage-overview div.description,
-		div.stacked-cols {
-			font-size: 12pt;
-		}
-		div#stage-overview div.info div.col.big,
-		div.stacked-cols div.col.big{
-			font-size: 16pt;
-		}
-			div#stage-overview div.info .stick-to-left,
-			div.stacked-cols .stick-to-left {
-				font-size: 12pt;
-			}
-
-		div#overview div.info,
-		div#stage-overview div.info,
-		div#stage-overview div.description,
-		div.stacked-cols {
-			padding: 10px;
 		}
 	}
 
@@ -1238,6 +1316,42 @@ div.stage-image-container {
 				display: inline-block;
 				height: 12px;
 			}
+
+		div.stacked-cols div.col.big{
+			font-size: 22pt;
+			margin-right: 5px;
+		}
+		div.stacked-cols div.col.stacked{
+			font-size: 12pt;
+			line-height: 1;
+		}
+	}
+
+	@media only screen and (max-width: 530px) {
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			font-size: 12pt;
+		}
+		div#stage-overview div.info div.col.big,
+		div.stacked-cols div.col.big{
+			font-size: 16pt;
+		}
+			div#stage-overview div.info .stick-to-left,
+			div.stacked-cols .stick-to-left {
+				font-size: 12pt;
+			}
+
+		div#overview div.info,
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			padding: 10px;
+		}
+
+			div.stacked-cols div.col.stacked{
+				font-size: 10pt;
+			}
 	}
 
 /* *** Tipping report *** */
@@ -1248,7 +1362,7 @@ div.tipping-report {
 	div.tipping-report .report-text {
 		line-height: 1.2;
 	}
-		div.tipping-report .report-text p {
+		div.tipping-report p {
 			line-height: 1.2;
 		}
 	div.tipping-report div.bar {
@@ -1413,6 +1527,11 @@ div#stage-leaderboard {
 			font-size: 16pt;
 			width: 50%;
 		}
+
+		div#competition-leaderboard tr td:first-child,
+		div#stage-leaderboard tr td:first-child {
+			text-align: center;
+		}
 		div#stage-leaderboard table.selector th {
 			width: 30%;
 		}
@@ -1479,9 +1598,34 @@ div#stage-leaderboard {
 			font-size: 12pt;
 			width: 100%;
 		}
-		
 	}
-			
+
+	/* Artfully masterminded by ZURB  */
+	@media only screen and (max-width: 767px) {
+		table.responsive { margin-bottom: 0; }
+		
+		.pinned { position: absolute; left: 0; top: 0; background: #fff; width: 50%; overflow: hidden; overflow-x: scroll; border-right: 1px solid #ccc; border-left: 1px solid #ccc; }
+		.pinned table { border-right: none; border-left: none; width: 100%; }
+		.pinned table th, .pinned table td { white-space: nowrap; }
+		.pinned td:last-child { border-bottom: 0; }
+		
+		div.table-wrapper { position: relative; margin-bottom: 20px; overflow: hidden; border-right: 1px solid #ccc; }
+		div.table-wrapper div.scrollable { margin-left: 50%; }
+		div.table-wrapper div.scrollable { overflow: scroll; overflow-y: hidden; }	
+		
+		table.responsive td, 
+		table.responsive th { position: relative; white-space: nowrap; overflow: hidden; }
+
+		table.responsive th:nth-child(-n+2), 
+		table.responsive td:nth-child(-n+2),
+		table.responsive.pinned td { display: none; }
+
+		.pinned th:nth-child(n+3), 
+		.pinned td:nth-child(n+3) {
+			display: none;
+		} 
+	}
+				
 /* *** ********************************** User profile ************************************** *** */			
 
 div#user-settings div.title {
@@ -1522,7 +1666,7 @@ div#user-settings div.col {
 		
 /* *** ********************************** Race details page ************************************** *** */
 div#race-information  div.race-description {
-	padding: 20px 20px 20px 40px;
+	padding: 20px;
 }
 	div#race-information  div.race-description p{
 		margin: 0;
