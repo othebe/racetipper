@@ -61,8 +61,9 @@ module Racetipper
 	
 	#Heroku
 	config.assets.initialize_on_precompile = false
-	
-	#Add asset path
-	config.assets.paths << "#{Rails.root}/lib/plugins"
+   
+    #Add asset path
+    config.assets.paths << "#{Rails.root}/lib/plugins"
+
   end
 end
