@@ -1,5 +1,6 @@
 class CompetitionsController < ApplicationController
 	skip_before_filter :verify_authenticity_token
+	before_filter :set_iframe_data
 	
 	#Title:			index
 	#Description:	Show competition grid
@@ -1313,13 +1314,9 @@ class CompetitionsController < ApplicationController
 		more_competitions = []
 		
 		data = []
-		seen = []
-		competition_stages = CompetitionStage.where({:race_id=>race.id})
-		competition_stages.each do |competition_stage|
-			next if (seen.include?(competition_stage.competition_id))
-			seen.push(competition_stage.competition_id)
-
-			competition = Competition.find_by_id(competition_stage.competition_id)
+		
+		competitions = Competition.where({:race_id=>race.id})
+		competitions.each do |competition|
 			participants = CompetitionParticipant.where({:competition_id=>competition.id})
 			is_participant = (!participants.where({:user_id=>user_id}).empty?)
 			
@@ -1342,12 +1339,12 @@ class CompetitionsController < ApplicationController
 			end
 			
 			#Leaderboard for this competition
-			leaderboard = get_leaderboard(competition_stage.competition_id, 'race', race.id)
+			leaderboard = get_leaderboard(competition.id, 'race', race.id)
 
 			#Check tip for next stage
 			rider = nil
 			if (!next_stage.nil?)
-				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition_stage.competition_id}).first
+				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
 				logger.info tip.inspect
 				rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
 			end
@@ -1545,6 +1542,17 @@ class CompetitionsController < ApplicationController
 			return true
 		end
 		return true
+	end
+	
+	#Title:			set_iframe_data
+	#Description:	Gets iframe params if any and sets the layout
+	private
+	def set_iframe_data
+		@iframe_params = ''
+		@iframe_params += ('pid=' + params[:pid]) if (params.has_key?(:pid))
+		@iframe_params += ('&email=' + params[:email]) if (params.has_key?(:email))
+		@iframe_params += ('&key=' + params[:key]) if (params.has_key?(:key))
+		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
 	end
 	
 	def results_old
