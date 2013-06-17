@@ -1010,7 +1010,7 @@ function load_stage_info(stage_id, competition_id) {
 					context['team_ndx'] = ndx;
 					context['team_name'] = team['team_name'];
 					var tip_sheet_team_html = tip_sheet_team_template(context);
-					$('div#tip-sheet div.teams').append(tip_sheet_team_html);
+					$('div#tip-sheet div.teams ul').append(tip_sheet_team_html);
 					
 					var team_elt = $('div.team[ndx='+ndx+']');
 					
@@ -1035,6 +1035,7 @@ function load_stage_info(stage_id, competition_id) {
 				$('div#tip-sheet div.teams').append('<div style="clear:both;"></div>');
 			});
 		}
+
 		//Stage leaderboard
 		else {
 			load_stage_leaderboard(competition_id, stage_info['race_id'], stage_id);
