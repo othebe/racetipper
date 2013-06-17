@@ -5,7 +5,7 @@
 				{{race_name}}
 			</div>
 			
-			<div class="timer" style="margin-top:-20px;">
+			<div class="timer">
 				{{#if completed}}
 					<div class="title">
 						<span class="bold">{{next_stage_name}}</span> STARTING IN
@@ -49,8 +49,13 @@
 		<td class="logo"><%=image_tag 'users.png'%></td>
 		<td class="rank bold row"><div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div></td>
 		<td class="competition bold row">
-			<div>{{competition_name}}</div>
-			<div class="btn yellow">Primary</div>
+			<div class="competition-name">{{competition_name}}</div>
+			{{#if is_primary}}
+				<div class="btn yellow">Primary</div>
+			{{else}}
+				<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+				<div class="btn black" onclick="set_primary({{competition_id}}, this, event);">Set Primary</div>
+			{{/if}}
 		</td>
 		{{#if completed}}
 			<td class="gray"></td>

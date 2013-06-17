@@ -246,6 +246,7 @@ div.btn.black:hover {
 div.timer {
 	float: right;
 	color: white;
+	margin-bottom: 20px;
 	min-width: 250px;
 }
 	div.timer div.completed {
@@ -278,12 +279,14 @@ div.timer {
 				div.timer div.countdown div.col div.value {
 					font-size: 48pt;
 				}
-	@media only screen and (max-width: 768px) {
+	@media only screen and (max-width: 767px) {
 		div.timer {
 			min-width: 100px;
+			margin-bottom: 0;
 		}
 		div.timer div.title {
 			padding: 10px;
+			background-color: rgba(27, 147, 231, 0.7);
 		}
 		div.timer div.title,
 		div.timer div.title * {
@@ -292,6 +295,14 @@ div.timer {
 		div.timer div.countdown div.col div.value {
 			font-size: 18pt;
 		}
+			div.timer div.completed {
+				font-size: 12pt;
+				padding: 10px 15px;
+				background-color: rgba(0,0,0,0.4);
+			}
+			div.timer div.completed  span {
+				font-size: 12pt;
+			}
 	}
 
 /* *** Layout *** */
@@ -303,6 +314,7 @@ div#header {
 }
 	div#header div#header-logo {
 		float: left;
+		padding-left: 10px;
 	}
 		div#header div#header-logo img{
 			height: 100%;
@@ -429,7 +441,7 @@ div#header {
 		}
 		div#header div#header-user div.arrow-container {
 			position: relative;
-			margin-top: -13px;
+			margin-top: -18px;
 		}
 
 		div#header div#header-user .arrow-down {
@@ -468,12 +480,21 @@ div#header {
 			float: left;
 			margin-right: 10px;
 		}
+		
+		div#header div#landing-header-login .forgot-password-fancybox {
+			color: white;
+		}
+
+			div#header div#landing-header-login .forgot-password-fancybox:hover {
+				color: #1B94E9;
+			}
 
 		@media only screen and (max-width: 990px) {
 
 			div#header div#landing-header-login input[type="text"],
 			div#header div#landing-header-login input[type="password"] {
 				width: 115px;
+				margin-bottom: 7.5px;
 			}
 		}
 		
@@ -511,7 +532,22 @@ div.login-page {
 
 		div.login-page div.overlay {
 			padding-left: 20px;
+			background-color: rgba(0, 0, 0, 0.7);
 		}
+
+			div.login-page div.overlay label{
+				color: white;
+			}
+
+			div.login-page div.overlay .login-buton,
+			div.login-page div.overlay .btn {
+				width      : 100%;
+				text-align : center;
+			}
+
+			div.login-page div.overlay .login-button {
+				margin-top : 20px;
+			}
 	}
 
 	div.login-page div.col {
@@ -590,7 +626,7 @@ div.login-page {
 				background : #eee;
 			}
 
-			@media only screen and (max-width: 1010px) and (min-width: 767px) {
+			@media only screen and (max-width: 1010px) and (min-width: 768px) {
 				div.login-page div.col.right div.field-name > div {
 					padding: 15px;
 				}
@@ -602,7 +638,7 @@ div.login-page {
 			@media only screen and (max-width: 768px) {
 				div.login-page div.col.right div.field-name div {
 					font-size: 12pt;
-					padding: 15px 10px;
+					padding: 14.5px 10px;
 				}
 				div.login-page div.col.right div.field-value input {
 					font-size: 12pt;
@@ -659,14 +695,11 @@ div.competition-invite {
 	div.competition-invite img.user-img {
 		border-radius: 100%;
 		width: 40px;
-		float: left;
 	}
 	div.competition-invite div.invite-str {
 		float: left;
-		margin-left: 10px;
-		margin-top: 15px;
-		font-weight: 400;
-		font-style: italic;
+		margin-top  : 5px;
+		font-weight : 400;
 	}
 		div.competition-invite div.invite-str span.who,
 		div.competition-invite div.invite-str span.what,
@@ -742,9 +775,13 @@ div.race-competitions {
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
 				width: 60%;
 			}
-				div.race-competitions td.competition div {
+				div.race-competitions td.competition div.competition-name {
 					font-size: 22pt;
-					margin-top: 10px;
+					margin-top: 7px;
+					float: left;
+				}
+				div.race-competitions td.competition div.btn {
+					float: right;
 				}
 			div.race-competitions td.tip {
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
@@ -771,8 +808,14 @@ div.race-competitions {
 				div.race-competitions td.empty-tip-button img {
 					height: 25px;
 				}
+	
+	@media only screen and (max-width: 949px) {
+		div.race-competitions div.header div.race-name div.title {
+			font-size: 36pt;
+		}
+	}
 
-	@media only screen and (max-width: 768px) {
+	@media only screen and (max-width: 767px) {
 		div.race-competitions div.header {
 			background-image: url('/assets/backgrounds/race_competitions_01.jpg');
 			padding: 15px;
@@ -996,16 +1039,7 @@ div#other-information div.name {
 	div#stage-overview div.name div.title,
 	div#other-information div.name div.title {
 		font-size: 48pt;
-		margin-top: 10px;
 	}
-
-		@media only screen and (max-width: 820px) {
-			div#overview div.name div.title,
-			div#stage-overview div.name div.title,
-			div#other-information div.name div.title {
-				font-size: 44pt;
-			}
-		}
 
 div#overview div.info,
 div#stage-overview div.info,
@@ -1026,30 +1060,23 @@ div.stacked-cols {
 	div#stage-overview div.info div.col.big,
 	div.stacked-cols div.col.big{
 		font-size: 40pt;
-		margin-top: 4px;
 		margin-right: 10px;
 	}
-		@media only screen and (max-width: 1000px) {
-			div#overview div.info div.col.big,
-			div#stage-overview div.info div.col.big,
-			div.stacked-cols div.col.big{
-				font-size: 30pt;
-			}
-		}
 
 	div#overview div.info div.col.stacked,
 	div#stage-overview div.info div.col.stacked,
 	div.stacked-cols div.col.stacked {
-		margin-top: 5px;
 		line-height: 1.2;
 		margin-right: 0;
 	}
 
-		div#overview div.info div.stacked.stick-to-left,
-		div#stage-overview div.info div.stacked.stick-to-left,
-		div.stacked-cols div.stacked.stick-to-left {
-			margin-left: -10px;
+		div#overview div.info .stick-to-left,
+		div#stage-overview div.info .stick-to-left,
+		div.stacked-cols .stick-to-left {
+			display: inline-block;
+			font-size: 14pt;
 			color: #ccc;
+			vertical-align: top;
 		}
 		div#overview div.info div.col img.user-pic,
 		div#stage-overview div.info div.col img.user-pic {
@@ -1058,7 +1085,7 @@ div.stacked-cols {
 			vertical-align: middle;
 			margin: 0 5px;
 		}
-	
+
 /* *** Stage overview *** */
 div#stage-overview div.info div.col.add-tip {
 	
@@ -1080,6 +1107,80 @@ div#stage-overview div.status {
 div.stage-image-container {
 	padding: 30px 22%;
 }
+	
+	@media only screen and (max-width: 1000px) {
+		div#overview div.info div.col.big,
+		div#stage-overview div.info div.col.big,
+		div.stacked-cols div.col.big{
+			font-size: 30pt;
+		}
+	}
+
+	@media only screen and (max-width: 530px) {
+		div#overview div.info,
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			font-size: 12pt;
+		}
+		div#overview div.info div.col.big,
+		div#stage-overview div.info div.col.big,
+		div.stacked-cols div.col.big{
+			font-size: 16pt;
+		}
+			div#overview div.info .stick-to-left,
+			div#stage-overview div.info .stick-to-left,
+			div.stacked-cols .stick-to-left {
+				font-size: 12pt;
+			}
+	}
+
+	@media only screen and (max-width: 850px) {
+		div#overview div.name div.title,
+		div#stage-overview div.name div.title,
+		div#other-information div.name div.title {
+			font-size: 36pt;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+		div#overview div.name,
+		div#stage-overview div.name,
+		div#other-information div.name {
+			padding: 15px 10px;
+		}
+
+		div#overview div.name div.title,
+		div#stage-overview div.name div.title,
+		div#other-information div.name div.title {
+			font-size: 18pt;
+			text-transform: uppercase;
+		}
+
+			div#overview div.name div.title.black,
+			div#stage-overview div.name div.title.black,
+			div#other-information div.name div.title.black {
+				font-size: 18pt;
+				font-weight: 600;
+			}
+
+		div#stage-overview div.status {
+			padding: 15px 10px;
+			font-size: 14pt;
+			color: #ccc;
+		}
+
+		div#stage-overview-small .text {
+			padding: 15px 10px;
+			text-align: center;
+			color: white;
+		}
+
+			div#stage-overview-small .text img {
+				display: inline-block;
+				height: 12px;
+			}
+	}
 
 /* *** Tipping report *** */
 div.tipping-report {
@@ -1255,10 +1356,10 @@ div#stage-leaderboard {
 			width: 50%;
 		}
 		div#stage-leaderboard table.selector th {
-			width: 35%;
+			width: 30%;
 		}
 		div#stage-leaderboard table.selector th.toggle {
-			width: 30%;
+			width: 35%;
 			padding: 20px;
 		}
 			div#stage-leaderboard table.selector th.toggle div.switch {
@@ -1275,6 +1376,38 @@ div#stage-leaderboard {
 		width: 100%;
 		padding: 10px 0 0 30px;
 		text-align: left;
+	}
+
+	@media only screen and (max-width: 1124px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 10px;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			padding: 10px;
+		}
+	}
+
+	@media only screen and (max-width: 1034px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			font-size: 14pt;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			font-size: 14pt;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 10px;
+			width: auto;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			padding: 10px;
+			width: auto;
+		}
 	}
 			
 /* *** ********************************** User profile ************************************** *** */			

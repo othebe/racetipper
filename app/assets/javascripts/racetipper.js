@@ -783,7 +783,6 @@ function get_user_race_data(user_id, race_id, elt) {
 				
 				elt['postfix'] = postfix;
 				elt['completed'] = !(remaining>0);
-				console.log(elt);
 				var competition_html = competition_template(elt);
 				$(container).find('table.competitions').append(competition_html);
 			});
@@ -1318,6 +1317,18 @@ function delete_report(report_id, elt) {
 			$(container).find('.loading').show();
 		}
 	});
+}
+
+//Title:		set_primary
+//Description:	Designates a competition as the primary
+var setting_primary = false;
+function set_primary(competition_id, elt, event) {
+	if (setting_primary) return;
+	
+	$(elt).parent().find('img.loading').show();
+	$(elt).hide();
+	
+	event.stopPropagation();
 }
 
 //Title:		send_resize_msg

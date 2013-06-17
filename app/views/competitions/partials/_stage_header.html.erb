@@ -2,16 +2,16 @@
 	<!-- Stage overview -->
 	<div id="stage-overview" class="grayblack">
 		<div class="row">
-			<div class="large-6 columns">
+			<div class="large-6 small-6 columns">
 				<div class="name" style="float:left;">
 					<div class="title black">{{stage_name}}</div>
 				</div>
 			</div>
-			<div class="large-6 columns">
+			<div class="large-6 small-6 columns">
 				{{#if countdown}}
 					<div class="timer" style="margin:20px;">
 						<div class="title">
-							<span class="bold">STAGE 7</span> STARTING IN
+							<span class="bold">{{stage_name}}</span> STARTING IN
 						</div>
 						<div class="countdown">
 							<div class="col">
@@ -38,11 +38,11 @@
 				{{/if}}
 			</div>
 		</div>
-		<div class="row">
+		<div class="row collapse">
 			<div class="large-12 columns">
 				<div class="info">
 					<div class="row collapse">
-						<div class="large-1 columns">
+						<div class="large-1 small-1 columns">
 							<div class="col big bold" style="margin-right:10px;">
 								{{#if stage_type_flat}}
 									<%=image_tag 'type-flat.jpg'%>
@@ -64,9 +64,9 @@
 								{{/if}}
 							</div>
 						</div>
-						<div class="large-2 columns">
+						<div class="large-2 small-3 columns">
 							<div class="col bold stacked">
-								TYPE</br>
+								<span class="hide-for-small">TYPE</br></span>
 								{{#if stage_type_flat}}
 									<%=STAGE_TYPE[:F]%>
 								{{/if}}
@@ -87,20 +87,19 @@
 								{{/if}}
 							</div>
 						</div>
-						<div class="large-3 columns">
-							<div class="col big bold">
-								{{distance_km}}
-							</div>
-							<div class="col bold stacked stick-to-left">
-								KM
+						<div class="large-3 small-4 columns">
+							<div class="text-center">
+								<div class="col big bold">
+									{{distance_km}} <span class="stick-to-left">KM</span>
+								</div>
 							</div>
 						</div>
-						<div class="large-3 columns">
+						<div class="large-3 small-4 columns">
 							<div class="col bold stacked">
-								START-FINISH</br>{{start_location}}-{{end_location}}
+								<span class="hide-for-small">START-FINISH</br></span>{{start_location}}-{{end_location}}
 							</div>
 						</div>
-						<div class="large-3 columns">
+						<div class="large-3 hide-for-small columns">
 							<div class="col add-tip bold">
 								{{#if rider_id}}
 									<%=image_tag 'tick.png', {:style=>'float:left; margin-right:5px; margin-top:10px;'}%>
@@ -119,10 +118,26 @@
 				</div>
 			</div>
 		</div>
-		
 		<div class="description gray italic">
 			{{description}}
 		</div>
-		
 	</div>
+
+	<div class="row collapse hide-for-medium-up" id="stage-overview-small">
+		<div class="small-12 columns">
+			<div class="col add-tip bold" style="width:100%;">
+				{{#if rider_id}}
+					<div class="text blue">
+						<%=image_tag 'tick.png' %>
+						You've tipped <span class="selected-rider-name {{stage_id}}">{{rider_name}}</span>
+					</div>
+				{{else}}
+					<div class="text red">
+						<span class="selected-rider-name {{stage_id}}">You have not tipped anybody.</span>
+					</div>
+				{{/if}}
+			</div>
+		</div>
+	</div>
+
 </script>
