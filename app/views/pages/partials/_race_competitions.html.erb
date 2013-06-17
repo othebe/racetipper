@@ -1,35 +1,57 @@
 <script id="race-competitions-template" type="text/x-handlebars-template">
 	<div class="race-competitions">
 		<div class="header">
-			<div class="race-name bold">
-				{{race_name}}
-			</div>
-			
-			<div class="timer">
-				{{#if completed}}
-					<div class="title">
-						<span class="bold">{{next_stage_name}}</span> STARTING IN
+			<div class="row collapse">
+				<div class="large-8 small-6 columns">
+					<div class="race-name bold">
+						{{race_name}}
 					</div>
-					<div class="countdown">
-						<div class="col">
-							<div class="value days">--</div>
-							<div class="unit">DAYS</div>
-						</div>
-						
-						<div class="col">
-							<div class="value hours">--</div>
-							<div class="unit">HOURS</div>
-						</div>
-						
-						<div class="col">
-							<div class="value minutes">--</div>
-							<div class="unit">MINS</div>
-						</div>
-						<div style="clear:both;"></div>
+				</div>
+				<div class="large-4 small-6 columns">
+					<div class="timer">
+						{{#if completed}}
+							<div class="title">
+								<span class="bold">{{next_stage_name}}</span> <span class="hide-for-small"> STARTING</span> IN
+							</div>
+							<div class="countdown hide-for-small">
+								<div class="col">
+									<div class="value days">--</div>
+									<div class="unit">DAYS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value hours">--</div>
+									<div class="unit">HOURS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value minutes">--</div>
+									<div class="unit">MINS</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="countdown hide-for-medium-up">
+								<div class="col">
+									<span class="value days bold">--</span>
+									<span class="unit">D</span>
+								</div>
+								
+								<div class="col">
+									<span class="value hours bold">--</span>
+									<span class="unit">H</span>
+								</div>
+								
+								<div class="col">
+									<span class="value minutes bold">--</span>
+									<span class="unit">M</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						{{else}}
+							<div class="completed"><span class="bold">Race</span> completed</div>
+						{{/if}}
 					</div>
-				{{else}}
-					<div class="completed"><span class="bold">Race</span> completed</div>
-				{{/if}}
+				</div>
 			</div>
 			
 			<div style="clear:both;"></div>
@@ -46,13 +68,21 @@
 
 <script id="race-competitions-data-template" type="text/x-handlebars-template">
 	<tr class="data" onclick="location.href='/competitions/{{competition_id}}'" style="cursor:pointer;">
-		<td class="logo"><%=image_tag 'users.png'%></td>
-		<td class="rank bold row"><div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div></td>
+		<td class="logo hide-for-small"><%=image_tag 'users.png'%></td>
+		<td class="rank bold row">
+			<div class="text-center">
+				<div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div>
+			</div>
+		</td>
 		<td class="competition bold row">
 			<div class="competition-name">{{competition_name}}</div>
 			{{#if is_primary}}
-				<div class="btn yellow">Primary</div>
+				<div class="btn yellow primary-competition">Primary</div>
 			{{else}}
+				<div class="btn yellow primary-competition" style="display:none;">Primary</div>
+			{{/if}}
+			
+			{{#if can_set_primary}}
 				<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
 				<div class="btn black" onclick="set_primary({{competition_id}}, this, event);">Set Primary</div>
 			{{/if}}
@@ -64,7 +94,7 @@
 				<td class="tip bold row" colspan="2"><div>You've tipped {{next_rider}}</div></td>
 			{{else}}
 				<td class="empty-tip italic bold row">You have not tipped any rider</td>
-				<td class="empty-tip-button"><%=image_tag 'add-black.png'%></td>
+				<td class="empty-tip-button hide-for-small"><%=image_tag 'add-black.png'%></td>
 			{{/if}}
 		{{/if}}
 	</tr>

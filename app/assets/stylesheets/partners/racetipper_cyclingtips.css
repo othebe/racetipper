@@ -13,7 +13,7 @@ body {
 	overflow: hidden;
 }
 body * {
-	font-family: 'Karla', sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
 	line-height: 0.8;
 }
 
@@ -70,52 +70,58 @@ img.stage-type {
 }
 
 .white {
-	background-color: white;
+	background-color: white !important;
 	color: black;
 }
 
 .blue {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #1b94e9, #1a8edf); /* for firefox 3.6+ */
+	background: #1b94e9 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #1b94e9, #1a8edf) !important; /* for firefox 3.6+ */
 	color: white;
 }
 
 .red { 
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1342c', endColorstr='#db322b'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#e1342c), to(#db322b)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #e1342c, #db322b); /* for firefox 3.6+ */
+	background: #e1342c !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1342c', endColorstr='#db322b') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#e1342c), to(#db322b)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #e1342c, #db322b) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
 .yellow {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff000', endColorstr='#f8e900'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff000), to(#f8e900)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #fff000, #f8e900); /* for firefox 3.6+ */
+	background: #fff000 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff000', endColorstr='#f8e900') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff000), to(#f8e900)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #fff000, #f8e900) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
 .grayblack {
-	background-color: #303030;
+	background: #303030 !important;
 	color: white;
 }
 
 .gray {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
+	background: #eee !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eeeeee, #e8e8e8) !important; /* for firefox 3.6+ */
 	color: black;
 }
 .gray2 {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#d5d5d5'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#dcdcdc), to(#d5d5d5)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #dcdcdc, #d5d5d5); /* for firefox 3.6+ */
+	background: #dcdcdc !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#d5d5d5') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#dcdcdc), to(#d5d5d5)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #dcdcdc, #d5d5d5) !important; /* for firefox 3.6+ */
 	color: black;
 }
 .darkgray {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#979797', endColorstr='#919191'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#979797), to(#919191)); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #979797, #919191); /* for firefox 3.6+ */
+	background: #979797 !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#979797', endColorstr='#919191') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#979797), to(#919191)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top, #979797, #919191) !important; /* for firefox 3.6+ */
 	color: black;
 }
 
@@ -129,7 +135,7 @@ img.stage-type {
 }
 
 .bold {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .semibold {
@@ -147,9 +153,48 @@ textarea {
 	padding: 7.5px;
 }
 
-div.content {
-	padding: 20px 0px 0 0%;
+body {
+	background-color: #f0f0f0;
 }
+
+#main-content {
+	position: relative;
+	max-width: 1440px;
+	/*min-width: 1140px;*/
+	min-height : 100%;
+	height     : auto !important;
+    height     : 100%;
+	margin: 0 auto;
+	background-color: white;
+	-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0 0 20px rgba(0,0,0,0.2);
+	box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+#main-content:before, #main-content:after{
+	content: "";
+	display: table;
+}
+#main-content:after {
+	clear: both;
+}
+
+	#main-content.login-content {
+		max-width : 100% !important;
+	}
+
+div.content {
+	padding: 20px 0 20px 0;
+	max-width: 1140px;
+	margin: 0 auto;
+}
+
+	.content:before, .content:after{
+		content: "";
+		display: table;
+	}
+	.content:after {
+		clear: both;
+	}
 
 /* *** Two-col table *** */
 div.field-names {
@@ -173,11 +218,18 @@ div.field-values {
 
 /* *** Buttons *** */
 div.btn {
+	padding: 5px 15px;
+	font-size: 14pt;
+	text-transform: uppercase;
+	font-family: BrownStd-Bold;
 	font-weight: 700;
-	padding: 12.5px 23px 12.5px 23px;
 	cursor: pointer;
 	float: left;
 }
+	div.btn > a {
+		color: white;
+	}
+
 	div.btn img {
 		margin-right:4px;
 		height: 11px;
@@ -226,7 +278,7 @@ div.timer {
 		font-size: 16pt;
 		padding: 10px 20px 10px 20px;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
 		div.timer div.title * {
 			font-size: 16pt;
@@ -237,29 +289,55 @@ div.timer {
 		}
 			div.timer div.countdown div.col {
 				float: left;
-				width: 29%;
+				width: 33.3%;
 				padding-left: 10px;
 				text-align: center;
 			}
 				div.timer div.countdown div.col div.value {
 					font-size: 48pt;
 				}
-
+	@media only screen and (max-width: 767px) {
+		div.timer {
+			min-width: 125px;
+			margin-bottom: 0;
+		}
+		div.timer div.title {
+			padding: 10px;
+			background-color: rgba(0, 0, 0, 0.7);
+		}
+		div.timer div.title,
+		div.timer div.title * {
+			font-size: 12pt;
+		}
+		div.timer div.countdown div.col div.value {
+			font-size: 18pt;
+		}
+			div.timer div.completed {
+				font-size: 12pt;
+				padding: 10px 15px;
+				background-color: rgba(0,0,0,0.4);
+			}
+			div.timer div.completed  span {
+				font-size: 12pt;
+			}
+	}
 
 /* *** Layout *** */
 div#header {
 	color: white;
 	background-color: #303030;
-	height: 50px;
-	padding: 5px 50px 5px 10%;
+	height: 60px;
+	padding: 5px 0 5px 0;
 }
 	div#header div#header-logo {
 		float: left;
+		padding-left: 10px;
 	}
 		div#header div#header-logo img{
-			height: 100%;
 			position: relative;
 			top: 10px;
+			width: 30px;
+			height: 30px;
 		}
 		
 		div#header div#header-logo span {
@@ -271,19 +349,24 @@ div#header {
 		}
 		div#header div#header-logo span.plus {
 			font-size: 36pt;
-			top: -8px;
-			padding: 0 10px;
+			top: 6px;
 			margin-left: 10px;
 		}
 		div#header div#header-logo span.plus:hover {
-			background-color: #eeeeee;	
-			color: black;
+			color: #1B94E9;
 		}
 	div#header div.arrow-container {
 		margin: -28px 5px 0 5px;
-		padding: 22px 0 21px 0;
+		padding: 27px 0 21px 0;
 		cursor: pointer;
 	}
+	/*
+	@media only screen and (max-width: 479px) {
+		div#header div.arrow-container {
+			padding: 22px 0 26px 0;
+		}
+	}
+	*/
 	div#header div.arrow-container:hover {
 		background-color: #eeeeee;			
 	}
@@ -316,12 +399,14 @@ div#header {
 		}
 	div#header div#header-login div.login-form {
 		position:absolute;
-		top: 75px;
-		border-radius: 5px;
+		top: 47px;
+		right: 5px;
+		border-radius: 0;
+		z-index: 99;
 		display: none;
-		width: 210px;
+		width: 223px;
 		background-color: white;
-		padding: 7px;
+		padding: 10px;
 		border: 1px solid #E3E3E3;
 		cursor: initial;
 	}
@@ -338,9 +423,14 @@ div#header {
 			float: right;
 			margin: 9px 20px 0 0;
 		}
+		div#header div#header-login div.arrow-container {
+			position: relative;
+			color: #1B94E9;
+		}
+
 		div#header div#header-login div.login-form input {
 			border: 1px solid #C3C3C3;
-			border-radius: 5px;
+			border-radius: 0;
 			padding: 5px;
 			width: 200px;
 			font-size: 15px;
@@ -348,6 +438,7 @@ div#header {
 		}
 	
 	div#header div#header-user {
+		position: relative;
 		float: right;
 		font-weight: 700;
 		margin-top: 8px;
@@ -365,15 +456,18 @@ div#header {
 			float: left;
 		}
 		div#header div#header-user div.arrow-container {
-			margin-top: -13px;
+			position: relative;
+			margin-top: -18px;
 		}
+
 		div#header div#header-user .arrow-down {
 			
 		}
 		div#header div#header-user ul.user-menu {
 			position: absolute;
-			top: 44px;
-			right: 54px;
+			right: 5px;
+			top: 30px;
+			z-index: 99;
 			display: none;
 			background-color: #EEEEEE;
 			color: black;
@@ -381,8 +475,12 @@ div#header {
 			list-style: none;
 			padding: 0;
 		}
+			div#header div#header-user ul.user-menu a {
+				color: black;
+			}
+
 			div#header div#header-user ul.user-menu li {
-				padding: 8px;
+				padding: 15px;
 				border: 1px solid #C3C3C3;
 			}
 			div#header div#header-user ul.user-menu li:hover {
@@ -399,23 +497,83 @@ div#header {
 			margin-right: 10px;
 		}
 		
+		div#header div#landing-header-login .forgot-password-fancybox {
+			color: white;
+		}
+
+			div#header div#landing-header-login .forgot-password-fancybox:hover {
+				color: #1B94E9;
+			}
+
+		@media only screen and (max-width: 990px) {
+
+			div#header div#landing-header-login input[type="text"],
+			div#header div#landing-header-login input[type="password"] {
+				width: 115px;
+				margin-bottom: 7.5px;
+			}
+		}
+		
+div#footer {
+	margin-top: 20px;
+	padding: 20px 20px 20px 10%;
+}
+	div#footer a {
+		color: white;
+	}
+		
 /* *** Login page *** */
 div.login-page {
+	position: absolute;
+	top:70px;
+	bottom: -200px;
+	right: 0;
+	left: 0;
 	background-image: url('/assets/backgrounds/landing.jpg');
 	background-size: cover;
+	background-repeat: repeat;
+	height: 100%;
 }
+
 	div.login-page div.overlay {
-		height: 100%;
 		background-color: rgba(27, 148, 233, 0.85);
 		padding-left: 10%;
+		min-height: 100%
 	}
+	
+	@media only screen and (max-width: 767px) {
+		div.login-page {
+			height: auto;
+			min-height: 100%;
+		}
+
+		div.login-page div.overlay {
+			padding-left: 20px;
+			background-color: rgba(0, 0, 0, 0.7);
+		}
+
+			div.login-page div.overlay label{
+				color: white;
+			}
+
+			div.login-page div.overlay .login-buton,
+			div.login-page div.overlay .btn {
+				width      : 100%;
+				text-align : center;
+			}
+
+			div.login-page div.overlay .login-button {
+				margin-top : 20px;
+			}
+	}
+
 	div.login-page div.col {
 		
 	}
 	div.login-page div.col.left {
 		float: left;
 		color: white;
-		width: 55%;
+		width: 100%;
 		margin-top: 15%;
 		-webkit-box-sizing : border-box;
 		-moz-box-sizing    : border-box;
@@ -424,58 +582,93 @@ div.login-page {
 		div.login-page div.col.left div.title-1 {
 			font-size: 16.04pt;
 			font-family: BrownStd-Bold;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
 		div.login-page div.col.left div.title-2 {
 			font-size: 60.14pt;
 			font-family: BrownStd-Bold;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
+
+		@media only screen and (max-width: 990px) {
+			div.login-page div.col.left div.title-2 {
+				font-size: 45.00pt;
+			}
+		}
+
 	div.login-page div.col.right {
 		float: right;
 		color: white;
-		padding-right: 50px;
+		padding-right: 20px;
+		margin-bottom: 20px;
 		margin-top: 10%;
-		width : 45%;
+		width : 100%;
 		-webkit-box-sizing : border-box;
 		-moz-box-sizing    : border-box;
 		box-sizing         : border-box;
 	}
+
 		div.login-page div.col.right div.title-1,
 		div.login-page div.col.right div.title-1 span {
 			font-size: 24.07pt;
 			font-family: BrownStd-Bold;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
 		div.login-page div.col.right div.field-name {
 			float: left;
 			background-color: #303030;
 			color: white;
-			width: 35%;
+			width: 40%;
 		}
 			div.login-page div.col.right div.field-name div {
 				font-size: 14pt;
 				padding: 20px;
 			}
+
 		div.login-page div.col.right div.field-value {
 			float: left;
 			color: #303030;
+			background: #ccc; /*IE9-*/
 			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#C3C3C3'); /* for IE */
 			background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#C3C3C3)); /* for webkit browsers */
 			background: -moz-linear-gradient(top, #eeeeee, #C3C3C3); /* for firefox 3.6+ */
-			width: 65%;
+
+			width: 60%;
 		}
 			div.login-page div.col.right div.field-value input {
 				font-size: 14pt;
-				padding: 14.3px;
+				padding: 15px;
 				background: none;
-				border: 0px;
+				width: 100%;
+				border: none;
+				border-bottom: 1px solid #c0c0c0;
 				display: block;
-				width: 90%;
 			}
 			div.login-page div.col.right div.field-value input:focus {
-				background: #E3E3E3;
+				outline    : none;
+				background : #eee;
 			}
+
+			@media only screen and (max-width: 1010px) and (min-width: 768px) {
+				div.login-page div.col.right div.field-name > div {
+					padding: 15px;
+				}
+				div.login-page div.col.right div.field-value input {
+					padding: 10px;
+				}
+			}
+
+			@media only screen and (max-width: 768px) {
+				div.login-page div.col.right div.field-name div {
+					font-size: 12pt;
+					padding: 14.5px 10px;
+				}
+				div.login-page div.col.right div.field-value input {
+					font-size: 12pt;
+					padding: 10px;
+				}
+			}
+
 		div.login-page div.col.right div.submit div.tnc {
 			line-height: 1.2;
 		}
@@ -484,13 +677,19 @@ div.login-page {
 /* *** Dashboard *** */
 div #profile-header {
 	background-color: #1b94e9;
-	padding: 20px 50px 20px 150px;
+	padding: 20px 20px 20px 0;
 }
 	div#profile-header img {
 		border-radius: 100%;
 		float: left;
 	}
+
+	div#profile-header .avatar {
+		width: 100px;
+	}
+
 	div#profile-header div.data {
+		max-width: 100%;
 		float: left;
 		margin-left: 20px;
 	}
@@ -498,6 +697,17 @@ div #profile-header {
 		font-size: 24px;
 		font-weight: 700;
 		color: white;
+	}
+
+	div#profile-header .about-me {
+		color: white;
+		padding-bottom: 15px;
+	}
+
+	@media only screen and (max-width: 768px) {
+		div#profile-header .avatar {
+			width: 45px;
+		}
 	}
 	
 div.competition-invite {
@@ -508,14 +718,11 @@ div.competition-invite {
 	div.competition-invite img.user-img {
 		border-radius: 100%;
 		width: 40px;
-		float: left;
 	}
 	div.competition-invite div.invite-str {
 		float: left;
-		margin-left: 10px;
-		margin-top: 15px;
-		font-weight: 400;
-		font-style: italic;
+		margin-top  : 5px;
+		font-weight : 400;
 	}
 		div.competition-invite div.invite-str span.who,
 		div.competition-invite div.invite-str span.what,
@@ -540,18 +747,23 @@ div.race-competitions {
 }
 	div.race-competitions div.header {
 		background-image: url('/assets/backgrounds/race_competitions_01.jpg');
-		padding: 50px 20px 25px 20px;
+		padding: 25px;
 	}
 		div.race-competitions div.header div.race-name {
 			color: white;
 			float: left;
-			max-width: 75%;
 		}
 			div.race-competitions div.header div.race-name div.title {
 				font-size: 48pt;
 				font-family: BrownStd-Bold;
-				text-transform: capitalize;
+				text-transform: uppercase;
 			}
+			
+			div.race-competitions div.header div.race-name p {
+				font-weight: 400;
+				line-height: 1.2;
+			}
+
 		div.race-competitions div.header div.race-details {
 			float: right;
 		}
@@ -560,78 +772,146 @@ div.race-competitions {
 		border-collapse: collapse;
 	}
 		div.race-competitions tr.data td.row {
-			padding: 10px;
+			/*padding: 10px;*/
 		}
-			div.race-competitions td.logo {
+			div.race-competitions .logo {
+				background: #1b94e9;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #1b94e9, #1a8edf); /* for firefox 3.6+ */
-				width: 2%;
+				width: 5%;
 			}
-				div.race-competitions td.logo img {
+				div.race-competitions .logo img {
 					width: 30px;
 				}
-			div.race-competitions td.rank {
+			div.race-competitions .rank {
+				background: #ececec;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec', endColorstr='#dedede'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#dedede)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #ececec, #dedede); /* for firefox 3.6+ */
-				width: 9%;
+				width: 10%;
 			}
-				div.race-competitions td.rank .value {
+				div.race-competitions .rank .value {
+					display: inline-block;
 					color: #303030;
 					font-size: 48pt;
-					float: left;
 				}
-				div.race-competitions td.rank  .postfix {
+				div.race-competitions .rank  .postfix {
+					display: inline-block;
 					vertical-align: top;
-					float: left;
 					margin-top: 5px;
 				}
-			div.race-competitions td.competition {
+			div.race-competitions .competition {
+				background: #eee;
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
 				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
-				width: 63%;
+				width: 60%;
 			}
-				div.race-competitions td.competition div {
-					font-size: 22pt;
-					margin-top: 10px;
-				}
-			div.race-competitions td.tip {
-				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
-				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
-				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
+
+			div.race-competitions .competition div {
+				font-size: 16pt;
 			}
-				div.race-competitions td.tip div {
+
+				div.race-competitions .competition.new .btn{
 					font-size: 14pt;
-					margin-top: 10px;
 				}
-			div.race-competitions td.empty-tip {
+			div.race-competitions .tip {
+				background: #eee;
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
+				background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
+				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
+			}
+				div.race-competitions .tip div {
+					font-size: 14pt;
+				}
+			div.race-competitions .empty-tip {
 				background-color: #e1342c;
 				text-align: center;
 				color: white;
+				width: 20%;
 			}
-			div.race-competitions td.empty-tip-button {
+			div.race-competitions .empty-tip-button {
 				background-color: #fff000;
+				text-align: center;
 				padding-left: 15px;
 				cursor: pointer;
+				width: 5%;
 			}
-				div.race-competitions td.empty-tip-button img {
+				div.race-competitions .empty-tip-button img {
 					height: 25px;
 				}
+	@media only screen and (max-width: 1039px) {
+		div.race-competitions .rank .value {
+			font-size: 30pt;
+		}
+	}
+
+	@media only screen and (max-width: 949px) {
+		div.race-competitions .rank .value {
+			font-size: 26pt;
+		}
+		div.race-competitions div.header div.race-name div.title {
+			font-size: 36pt;
+		}
+		div.race-competitions .competition div {
+			font-size: 16pt;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+		div.race-competitions div.header {
+			background-image: url('/assets/backgrounds/race_competitions_01.jpg');
+			padding: 15px 10px;
+		}
+		div.race-competitions div.header div.race-name div.title {
+			font-size: 18pt;
+		}
+
+		div.race-competitions .rank {
+			background: #1b94e9;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1b94e9', endColorstr='#1a8edf');
+			background: -webkit-gradient(linear, left top, left bottom, from(#1b94e9), to(#1a8edf));
+			background: -moz-linear-gradient(top, #1b94e9, #1a8edf);
+			color: white;
+			padding: 10px 0;
+			width: 15%;
+		}
+			div.race-competitions .rank .value {
+				font-size: 18pt;
+				color: white;
+			}
+
+			div.race-competitions .rank  .postfix {
+				margin-top: 0;
+				font-size: 10pt;
+			}
+
+			div.race-competitions .competition {
+				width: 50%;
+			}
+				div.race-competitions .competition div {
+					font-size: 14pt;
+				}
+			div.race-competitions .empty-tip {
+				font-size: 12pt;
+			}
+			div.race-competitions .empty-tip-button {
+				width: 15%;
+			}
+	}
 				
 /* *** ********************************** Competitions ************************************** *** */
 
 /* *** Competition header *** */
 div#competition-header {
-	background-color: #ff4650;
-	padding: 25px 50px 25px 2%;
+	background: #ff4650;
+	padding: 20px 0;
 }
 	div#competition-header div.col {
 		color: white;
 	}
 		div#competition-header div.col.general {
-			float: left;
 			min-width: 45%;
 		}
 			div#competition-header div.col.general div.logo {
@@ -643,12 +923,12 @@ div#competition-header {
 				font-size: 16pt;
 				margin-bottom: 2px;
 				font-family: BrownStd-Bold;
-				text-transform: capitalize;
+				text-transform: uppercase;
 			}
 			div#competition-header div.col.general div.title-2 {
 				font-size: 24pt;
 				font-family: BrownStd-Bold;
-				text-transform: capitalize;
+				text-transform: uppercase;
 			}
 			div#competition-header div.col.general div.action-buttons {
 				margin-top: 20px;
@@ -657,31 +937,43 @@ div#competition-header {
 					margin-right: 10px;
 				}
 		div#competition-header div.col.leaderboard {
+			width: 100%;
 			float: right;
 		}
+
 			div#competition-header div.col.leaderboard div {
-				margin-left: 10px;
+				margin-left: 0;
 			}
+
+			div#competition-header div.col.leaderboard div.best-time,
+			div#competition-header div.col.leaderboard div.other-times{
+				padding-left: 10px;
+			}	
+
 			div#competition-header div.col.leaderboard div.yellow-shirt {
 				float: left;
+				width: 35%;
 			}
 				div#competition-header div.col.leaderboard div.yellow-shirt img {
-					height: 101px;
+					height: auto;
 				}
 			div#competition-header div.col.leaderboard div.best-time {
 				float: left;
+				width: 65%;
 			}
 				div#competition-header div.col.leaderboard div.best-time div {
 					margin-bottom: 5px;
 				}
 			div#competition-header div.col.leaderboard div.other-shirts {
 				float: left;
+				width: 25%;
 			}
 				div#competition-header div.col.leaderboard div.other-shirts div.polka {
 					margin-bottom: 5px;
 				}				
 			div#competition-header div.col.leaderboard div.other-times {
 				float: left;
+				width: 75%;
 			}
 				div#competition-header div.col.leaderboard div.other-times div {
 					margin-bottom: 5px;
@@ -689,21 +981,22 @@ div#competition-header {
 				
 /* *** Competitions box *** */			
 div.competitions-box {
+
 }
 	div.competitions-box div.title {
 		font-size: 24pt;
 		text-align: center;
 		padding: 20px;
+		text-transform: uppercase;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
 	}
 	div.competitions-box div.competition {
 		float: left;
 		margin: 10px 20px;
 		font-size: 14pt;
 		padding: 20px 20px 10px 20px;
-		height: 150px;
-		width: 160px;
+		height: 180px;
+		width: 200px;
 		overflow: hidden;
 		cursor: pointer;
 	}
@@ -757,7 +1050,7 @@ div#new-competition-fancybox {
 div#left-navigator {
 	color: white;
 	float: left;
-	width: 25%;
+	width: 100%;
 	margin-right: 2%;
 }
 	div#left-navigator table {
@@ -766,10 +1059,127 @@ div#left-navigator {
 		div#left-navigator table img.add-tip {
 			width: 20px;
 		}
+	
+	div#left-navigator td.stage-no {
+		width: 20%;
+		text-align: center;
+	}
+	div#left-navigator td.track-type {
+		width: 30%;
+		text-align: center;
+	}
+		div#left-navigator img.stage-type {
+			width: 100%;
+			max-width: 30px;
+			min-width: 20px;
+			height: auto;
+		}
+	div#left-navigator td.name-td {
+		width: 30%;
+	}
+
+	/*The + Button*/
+	div#left-navigator table tr td:nth-child(4) {
+		text-align: center;
+		width: 20%;
+		padding-left: 0;
+		padding-right: 0;
+	}
 
 div#content-with-nav {
 	float: left;
-	width: 73%
+	width: 100%;
+}
+
+/* Off canvas layout CSS/JS provided by or adapted from work by Jason Weaver and Luke Wroblewski */
+#sidebarButton {
+	position: relative;
+	padding: 15px 15px 15px 60px;
+	margin-bottom: 15px;
+	font-weight: 700;
+}
+
+	#sidebarButton.active {
+		padding: 15px 60px 15px 15px;
+	}
+	
+	#sidebarButton .arrow {
+		position  : absolute;
+		display   : inline-block;
+		padding   : 15px 25px;
+		top       : 0;
+		bottom    : 0;
+	}
+
+		#sidebarButton .arrow .arrow-shape{
+			position: absolute;
+			width: 10px;
+			height: 30px;
+			background: #333;
+			top: 6px;
+		}
+
+			#sidebarButton .arrow .arrow-shape:before,
+			#sidebarButton .arrow .arrow-shape:after {
+				content: '';
+				position: absolute;
+				top : 0;
+				width: 0; height: 0;
+				font-size: 0px; line-height: 0%;
+				border-style: solid;
+			}
+
+		#sidebarButton:not(.active) .arrow {
+			left  : 0;
+		}
+			#sidebarButton:not(.active) .arrow .arrow-shape {
+				right: 18px;
+			}
+
+				#sidebarButton:not(.active) .arrow .arrow-shape:before {
+					border-width: 15px 10px 15px 0;
+					border-color: transparent #333 transparent transparent;
+					right: 10px;
+				}
+				#sidebarButton:not(.active) .arrow .arrow-shape:after {
+					border-width: 15px 10px 15px 0;
+					border-color: transparent #FAEB00 transparent transparent;
+					left: 0;
+				}
+			
+		#sidebarButton.active .arrow {
+			right  : 0;
+		}
+			#sidebarButton.active .arrow .arrow-shape {
+				left: 18px;
+			}
+
+				#sidebarButton.active .arrow .arrow-shape:before {
+					border-width: 15px 0 15px 10px;
+					border-color: transparent transparent transparent #FAEB00;
+					right: 0;
+				}
+				#sidebarButton.active .arrow .arrow-shape:after {
+					border-width: 15px 0 15px 10px;
+					border-color: transparent transparent transparent #333;
+					left: 10px;
+				}
+
+body.off-canvas { padding: 0; margin: 0; }
+
+.container { width: 100%; }
+.content { overflow: hidden; }
+.row .row { overflow: visible; }
+
+[role="main"]:before { content: " "; position: absolute; z-index: -1; top: 0; left: -100%; width: 100%; height: 100%; }
+[role="complementary"], [role="main"] { display: block; position: relative;}
+
+@media only screen and (max-width: 767px) {
+	[role="complementary"] { margin-left: -100%; width: 80%; float: left; z-index: 2; }
+	[role="main"] { margin-left: 0; float: right; z-index: 1; position: relative; }
+
+	.active [role="complementary"] { margin-left: 0; }
+	.active [role="main"] { margin-right: -80%; }
 }
 
 /* *** Overview *** */
@@ -779,53 +1189,86 @@ div#other-information div.name {
 	background-color: #2f2f2f;
 	color: white;
 	font-size: 16pt;
-	padding: 25px 40px;
-}
+	padding: 25px 40px 25px 20px;
+}.
 	div#overview div.name div.title,
 	div#stage-overview div.name div.title,
 	div#other-information div.name div.title {
-		font-size: 48pt;
-		margin-top: 10px;
+		font-size: 32pt;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
+
 div#overview div.info,
 div#stage-overview div.info,
 div#stage-overview div.description,
 div.stacked-cols {
-	background-color: #ff4650;
+	background: #ff4650;
 	color: white;
-	font-size: 13pt;
-	padding: 10px 20px 10px 40px;
+	font-size: 14pt;
+	padding: 10px 20px 10px 20px;
 }
+
+	div#overview div.info .columns > *,
+	div#stage-overview div.info .columns > * {
+		display: inline-block;
+	}
+
 	div#overview div.info div.col,
 	div#stage-overview div.info div.col,
 	div.stacked-cols div.col {
 		float: left;
-		max-width: 45%;
+		max-width: 100%;
 	}
-	div#overview div.info div.col.big,
-	div#stage-overview div.info div.col.big,
-	div.stacked-cols div.col.big{
-		font-size: 25pt;
-		margin-top: 4px;
+	div#overview div.info div.big,
+	div#stage-overview div.info div.big,
+	div.stacked-cols div.big{
+		font-size: 40pt;
 		margin-right: 10px;
 	}
-	div#overview div.info div.col.stacked,
-	div#stage-overview div.info div.col.stacked,
-	div.stacked-cols div.col.stacked {
-		margin-top: 5px;
+
+	div#overview div.info div.stacked,
+	div#stage-overview div.info div.stacked,
+	div.stacked-cols div.stacked {
 		line-height: 1.2;
-		margin-right: 15px;
+		margin-right: 0;
 	}
-		div#overview div.info div.col img.user-pic,
-		div#stage-overview div.info div.col img.user-pic {
+
+		div#overview div.info .stick-to-left,
+		div#stage-overview div.info .stick-to-left,
+		div.stacked-cols .stick-to-left {
+			display: inline-block;
+			font-size: 14pt;
+			color: #ccc;
+			vertical-align: top;
+		}
+		div#overview div.info img.user-pic,
+		div#stage-overview div.info img.user-pic {
 			border-radius: 100%;
 			width: 40px;
 			vertical-align: middle;
 			margin: 0 5px;
+			float: left;
 		}
-	
+
+	@media only screen and (max-width: 879px) {
+		div#overview div.info div.big {
+			font-size: 30pt;
+		}
+		div#overview div.info {
+			font-size: 12pt;
+		}
+	}
+
+	@media only screen and (max-width: 554px) {
+		div#overview div.info div.big {
+			font-size: 22pt;
+		}
+		div#overview div.info {
+			font-size: 10pt;
+		}
+	}
+
 /* *** Stage overview *** */
 div#stage-overview div.info div.col.add-tip {
 	
@@ -837,21 +1280,128 @@ div#stage-overview div.info div.col.add-tip {
 	}
 div#stage-overview div.description {
 	color: black;
+	line-height: 1.2;
 }
 div#stage-overview div.status {
 	float: right;
-	padding: 45px;
+	padding: 40px;
 	font-size: 18pt;
 }
 
 div.stage-image-container {
 	padding: 30px 22%;
 }
+	
+	@media only screen and (max-width: 1000px) {
+		div#overview div.info div.col.big,
+		div#stage-overview div.info div.col.big,
+		div.stacked-cols div.col.big{
+			font-size: 30pt;
+		}
+	}
+
+	@media only screen and (max-width: 850px) {
+		div#overview div.name div.title,
+		div#stage-overview div.name div.title,
+		div#other-information div.name div.title {
+			font-size: 36pt;
+		}
+		div#overview div.name,
+		div#stage-overview div.name,
+		div#other-information div.name {
+			padding: 15px 10px;
+		}
+
+		div#stage-overview div.status {
+			padding: 15px 10px;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+
+		div#stage-overview div.name div.title,
+		div#other-information div.name div.title {
+			font-size: 18pt;
+			text-transform: uppercase;
+		}
+
+			div#overview div.name div.title,
+			div#stage-overview div.name div.title,
+			div#other-information div.name div.title {
+				font-size: 18pt;
+				font-weight: 600;
+			}
+
+		div#stage-overview div.status {
+			padding: 15px 10px;
+			font-size: 14pt;
+			color: #ccc;
+		}
+
+		div#stage-overview-small .text {
+			padding: 15px 10px;
+			text-align: center;
+			color: white;
+		}
+
+			div#stage-overview-small .text img {
+				display: inline-block;
+				height: 12px;
+			}
+
+		div.stacked-cols div.col.big{
+			font-size: 22pt;
+			margin-right: 5px;
+		}
+		div.stacked-cols div.col.stacked{
+			font-size: 12pt;
+			line-height: 1;
+		}
+	}
+
+	@media only screen and (max-width: 530px) {
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			font-size: 12pt;
+		}
+		div#stage-overview div.info div.col.big,
+		div.stacked-cols div.col.big{
+			font-size: 16pt;
+		}
+			div#stage-overview div.info .stick-to-left,
+			div.stacked-cols .stick-to-left {
+				font-size: 12pt;
+			}
+
+		div#overview div.info,
+		div#stage-overview div.info,
+		div#stage-overview div.description,
+		div.stacked-cols {
+			padding: 10px;
+		}
+
+			div.stacked-cols div.col.stacked{
+				font-size: 10pt;
+			}
+	}
 
 /* *** Tipping report *** */
+.tipping-report * {
+	font-family: 'Merriweather', serif;
+	color: #808080;
+}
+
 div.tipping-report {
 	margin-top: 45px;
 }
+	
+	div.tipping-report .report-text {
+		line-height: 1.2;
+	}
+		div.tipping-report p {
+			line-height: 1.2;
+		}
 	div.tipping-report div.bar {
 		border-top: 8px solid lightgray;
 		width: 50px;
@@ -861,13 +1411,13 @@ div.tipping-report {
 		font-size: 14pt;
 		margin-bottom: 20px;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
 	div.tipping-report div.title-2 {
 		font-size: 24pt;
 		margin-bottom: 20px;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
 	div.tipping-report .delete-report {
 		color: gray;
@@ -910,7 +1460,7 @@ div#other-information div.col {
 		div#other-information div.col div.title {
 			font-size: 24pt;
 			font-family: BrownStd-Bold;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
 		div#other-information div.col div.tie-break-time {
 			margin-bottom: 2px;
@@ -922,7 +1472,7 @@ div#other-information div.col {
 					padding: 0;
 				}
 					div#other-information div.col div.tie-break-time table td input {
-						width: 20px;
+						width: 40px;
 						margin-left: 7px;
 					}
 		div#other-information div.col table.default-riders {
@@ -959,7 +1509,7 @@ div.race-teams {
 	div.race-teams div.title {
 		font-size: 24pt;
 		font-family: BrownStd-Bold;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
 	div#tip-sheet div.teams,
 	div.race-teams div.teams {
@@ -1017,17 +1567,22 @@ div#stage-leaderboard {
 		div#competition-leaderboard table.selector th,
 		div#stage-leaderboard table.selector th {
 			color: white;
-			padding: 30px 20px;
+			padding: 30px;
 			cursor: pointer;
-			font-size: 13pt;
+			font-size: 16pt;
 			width: 50%;
 		}
+
+		div#competition-leaderboard tr td:first-child,
+		div#stage-leaderboard tr td:first-child {
+			text-align: center;
+		}
 		div#stage-leaderboard table.selector th {
-			width: 33%;
+			width: 30%;
 		}
 		div#stage-leaderboard table.selector th.toggle {
-			width: 30%;
-			padding: 10px;
+			width: 35%;
+			padding: 20px;
 		}
 			div#stage-leaderboard table.selector th.toggle div.switch {
 				padding: 10px;
@@ -1044,14 +1599,85 @@ div#stage-leaderboard {
 		padding: 10px 0 0 30px;
 		text-align: left;
 	}
-			
+
+	@media only screen and (max-width: 1124px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 10px;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			padding: 10px;
+		}
+	}
+
+	@media only screen and (max-width: 1034px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			font-size: 14pt;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			font-size: 14pt;
+		}
+	}
+
+	@media only screen and (max-width: 767px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 10px;
+			width: auto;
+		}
+		div#stage-leaderboard table.selector th.toggle {
+			padding: 10px;
+			width: auto;
+		}
+	}
+
+	@media only screen and (max-width: 479px) {
+		div#competition-leaderboard table.selector th,
+		div#stage-leaderboard table.selector th {
+			padding: 5px;
+			font-size: 12pt;
+		}
+		div#stage-leaderboard table.selector th.toggle div.switch{
+			padding: 5px;
+			font-size: 12pt;
+			width: 100%;
+		}
+	}
+
+	/* Artfully masterminded by ZURB  */
+	@media only screen and (max-width: 767px) {
+		table.responsive { margin-bottom: 0; }
+		
+		.pinned { position: absolute; left: 0; top: 0; background: #fff; width: 50%; overflow: hidden; overflow-x: scroll; border-right: 1px solid #ccc; border-left: 1px solid #ccc; }
+		.pinned table { border-right: none; border-left: none; width: 100%; }
+		.pinned table th, .pinned table td { white-space: nowrap; }
+		.pinned td:last-child { border-bottom: 0; }
+		
+		div.table-wrapper { position: relative; margin-bottom: 20px; overflow: hidden; border-right: 1px solid #ccc; }
+		div.table-wrapper div.scrollable { margin-left: 50%; }
+		div.table-wrapper div.scrollable { overflow: scroll; overflow-y: hidden; }	
+		
+		table.responsive td, 
+		table.responsive th { position: relative; white-space: nowrap; overflow: hidden; }
+
+		table.responsive th:nth-child(-n+2), 
+		table.responsive td:nth-child(-n+2),
+		table.responsive.pinned td { display: none; }
+
+		.pinned th:nth-child(n+3), 
+		.pinned td:nth-child(n+3) {
+			display: none;
+		} 
+	}
+				
 /* *** ********************************** User profile ************************************** *** */			
 
 div#user-settings div.title {
 	font-size: 48pt;
 	margin-bottom: 20px;
 	font-family: BrownStd-Bold;
-    text-transform: capitalize;
+    text-transform: uppercase;
 }
 div#user-settings div.col {
 	float: left;
@@ -1063,7 +1689,7 @@ div#user-settings div.col {
 			font-size: 24pt;
 			margin-bottom: 25px;
 			font-family: BrownStd-Bold;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
 		div#user-settings div.col div.row table td.name {
 			width: 20%;
@@ -1089,21 +1715,45 @@ div#user-settings div.col {
 		
 /* *** ********************************** Race details page ************************************** *** */
 div#race-information  div.race-description {
-	padding: 20px 20px 20px 40px;
+	padding: 20px;
 }
 	div#race-information  div.race-description p{
 		margin: 0;
 	}
-	
+
 /* ************************************* CYCLINGTIP ADDONS ************************************ */
 .choice.blue.bold {
-    background-color: #ff4650;
+    background: #ff4650;
 }
 
 table.data.blue.tipping th {
-    background-color: #ff4650;
+    background: #ff4650;
 }
 
-tr.tipping.black td {
-    background-color: #ff4650;
+tr.tipping td {
+    background: #ff4650;
 }
+
+/* SLIDER */
+.stage-images {
+	height: 300px;
+	max-width: 620px;
+}
+
+.stage-images .bjqs {
+	min-height: 300px;
+	height: 300px;
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+	.stage-images .bjqs .bjqs-slide {
+		width: 100%;
+		max-height: 300px;
+		text-align: center;
+	}
+
+		.stage-images .bjqs .bjqs-slide img{
+			width: auto;
+			height: auto;
+		}

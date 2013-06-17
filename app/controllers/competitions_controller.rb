@@ -1319,12 +1319,20 @@ class CompetitionsController < ApplicationController
 	def get_user_race_data(user_id, race)
 		#Next stage
 		next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first
+		#Has race started?
+		first_stage = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
+		if (!first_stage.nil?)
+			has_started = (first_stage.starts_on <= Time.now)
+		else 
+			has_started = false
+		end
 
 		#Get race data
 		race_data = {}
 		race_data[:race_name] = race.name
 		race_data[:next_stage_name] = (next_stage.nil?)?nil:next_stage.name
 		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
+		race_data[:has_started] = has_started
 		
 		#Competitions that haven't been joined
 		more_competitions = []

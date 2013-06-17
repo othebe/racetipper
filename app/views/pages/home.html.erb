@@ -9,14 +9,17 @@
 	<% @races.each do |race| %>
 		<div class="race-competitions">
 			<div class="header">
-				<div class="race-name bold">
-					<div class="title"><%= race.name %></div>
-					<%= image_tag 'ajax-loader-white.gif', {:onload=>'get_user_race_data('+@user.id.to_s+', '+race.id.to_s+', this);'} %>
+				<div class="row collapse">
+					<div class="large-8 small-7 columns">
+						<div class="race-name bold">
+							<div class="title"><%= race.name %></div>
+							<%= image_tag 'ajax-loader-white.gif', {:onload=>'get_user_race_data('+@user.id.to_s+', '+race.id.to_s+', this);'} %>
+						</div>
+					</div>
+					<div class="large-4 small-5 columns">
+						<div class="race-details"></div>
+					</div>
 				</div>
-				
-				<div class="race-details">
-				</div>
-				
 				<div style="clear:both;"></div>
 			</div>
 			

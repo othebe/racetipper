@@ -757,7 +757,7 @@ function get_user_race_data(user_id, race_id, elt) {
 		
 		//Put HTML into document
 		if (elt != null) {
-			var header = $(elt).parent().parent();
+			var header = $(elt).closest('.header');
 			var container = $(header).parent();
 			
 			//Timer
@@ -783,6 +783,7 @@ function get_user_race_data(user_id, race_id, elt) {
 				
 				elt['postfix'] = postfix;
 				elt['completed'] = !(remaining>0);
+				elt['can_set_primary'] = !response.race['has_started'];
 				var competition_html = competition_template(elt);
 				$(container).find('table.competitions').append(competition_html);
 			});

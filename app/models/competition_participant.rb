@@ -41,6 +41,13 @@ class CompetitionParticipant < ActiveRecord::Base
 		participation = self.where({:competition_id=>competition_id, :user_id=>user_id, :status=>STATUS[:ACTIVE]}).first
 		return false if (participation.nil?)
 		
+		#Cant set primaries for a race thats already started, AND you already have one chosen
+		has_started = false
+		first_stage = Stage.where({:race_id=>competition.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
+		has_started = (first_stage.starts_on <= Time.now) if (!first_stage.nil?)
+		has_chosen = !self.where({:user_id=>user_id, :status=>STATUS[:ACTIVE], :is_primary=>true}).empty?
+		return if (has_started && has_chosen)
+		
 		#Remove primary status from other records
 		primaries = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=? AND competition_participants.id<>?', user_id, competition.race_id, true, participation.id)
 		primaries.each do |primary|

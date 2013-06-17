@@ -7,12 +7,21 @@
 <%=render 'competitions/partials/tipping_report_template'%>
 
 <div class="content">
-
+	<div class="row hide-for-medium-up">
+		<div class="small-12 columns">
+			<a class="button grayblack hide-for-medium-up" id="sidebarButton">
+				<span class="arrow yellow">
+					<span class="arrow-shape"></span>
+				</span>
+				Select Stage
+			</a>
+		</div>
+	</div>
 	<div class="row">
-		<div class="large-3 hide-for-small columns">
+		<div class="large-3 columns" role="complementary">
 			<%=render 'competitions/partials/left_navigator'%>
 		</div>
-		<div class="large-9 columns">
+		<div class="large-9 small-12 columns" role="main" >
 			<div id="content-with-nav">
 				<!-- Overview -->
 				<div id="overview">
@@ -22,32 +31,36 @@
 					</div>
 					
 					<div class="info">
-						<div class="col big bold" style="margin-right:10px;">
-							<%=@completed_stages%>/<%=@total_stages%>
+						<div class="row collapse">
+							<div class="large-4 small-4 columns">
+								<div class="big bold">
+									<%=@completed_stages%>/<%=@total_stages%>
+								</div>
+								
+								<div class="bold stacked">
+									STAGES</br>COMPLETED
+								</div>
+							</div>
+							<div class="large-4 small-3 columns">
+								<div class="big bold" style="margin-right:10px;">
+									<%=@num_participants%>
+								</div>
+								<div class="bold stacked">
+									TIPPERS</br>JOINED
+								</div>
+							</div>
+							<div class="large-4 small-5 columns">
+								<div class="bold" style="float:right; padding-right:20px;">
+									<img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> CREATED BY <br> <%=(@creator.firstname+' '+@creator.lastname).strip%>
+								</div>
+							</div>
 						</div>
-						
-						<div class="col bold stacked" style="margin-right:50px;">
-							STAGES</br>COMPLETED
-						</div>
-						
-						<div class="col big bold" style="margin-right:10px;">
-							<%=@num_participants%>
-						</div>
-						
-						<div class="col bold stacked">
-							TIPPERS</br>JOINED
-						</div>
-						
-						<div class="col bold" style="float:right; padding-right:20px;">
-							CREATED BY <img class="user-pic" src="/users/picture/<%=@competition.creator_id%>"> <%=(@creator.firstname+' '+@creator.lastname).strip%>
-						</div>
-						
-						
+
 						<div style="clear:both;"></div>
 					</div>
 				</div>
 				<% @reports.reverse_each do |r| %>
-					<div class="tipping-report" style="margin-bottom:100px;">
+					<div class="tipping-report hide-for-small" style="margin-bottom:100px;">
 						<div class="bar">&nbsp;</div>
 						<div class="title bold">
 							<%=r[:stage_name]%>&nbsp;
@@ -72,9 +85,7 @@
 				<% end %>
 
 				<%=render 'competitions/partials/competition_leaderboard'%>
-				
-				
-				
+
 			</div>
 		</div> <!--COLUMN-->
 	</div> <!--ROW-->
