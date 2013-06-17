@@ -767,6 +767,30 @@ function get_user_race_data(user_id, race_id, elt) {
 				new CountdownTimer($(header).find('div.timer'), remaining);
 			}
 			
+			if (response.global_results['rank']>0) {
+				//Postfix
+				postfix = 'th';
+				var rank_str = response.global_results['rank'].toString();
+				var ending = parseInt(rank_str.charAt(rank_str.length-1));
+				
+				if ([1].indexOf(ending)>=0) 
+					postfix = 'st';
+				else if ([2].indexOf(ending)>=0) 
+					postfix = 'nd';
+				else if ([3].indexOf(ending)>=0) 
+					postfix = 'rd';
+					
+				var competition_html = competition_template({
+					'rank': response.global_results['rank'],
+					'competition_name': 'Sitewide',
+					'postfix': postfix,
+					'can_set_primary': false,
+					'completed': true,
+					'is_global': true,
+				});
+				$(container).find('table.competitions').append(competition_html);
+			}
+			
 			//Competition data
 			$(response.competition).each(function(ndx, elt) {
 				//Postfix
@@ -784,6 +808,7 @@ function get_user_race_data(user_id, race_id, elt) {
 				elt['postfix'] = postfix;
 				elt['completed'] = !(remaining>0);
 				elt['can_set_primary'] = !response.race['has_started'];
+				elt['is_global'] = false;
 				var competition_html = competition_template(elt);
 				$(container).find('table.competitions').append(competition_html);
 			});
@@ -1326,8 +1351,27 @@ var setting_primary = false;
 function set_primary(competition_id, elt, event) {
 	if (setting_primary) return;
 	
+	setting_primary = true;
 	$(elt).parent().find('img.loading').show();
 	$(elt).hide();
+	
+	$.post('/competitions/set_primary/'+competition_id, {}, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+			$(elt).parent().find('img.loading').hide();
+			$(elt).show();
+		} else {
+			$(elt).parent().find('img.loading').hide();
+			$('td.competition div.primary-competition').hide();
+			$(elt).parent().find('.primary-competition').show();
+			
+			$('td.competition div.set-primary-competition').show();
+			$(elt).parent().find('.set-primary-competition').hide();
+		}
+		
+		setting_primary = false;
+		
+	});
 	
 	event.stopPropagation();
 }

@@ -1334,6 +1334,9 @@ class CompetitionsController < ApplicationController
 		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
 		race_data[:has_started] = has_started
 		
+		#Global results
+		global_results = get_global_competition_results(race.id)
+		
 		#Competitions that haven't been joined
 		more_competitions = []
 		
@@ -1400,7 +1403,7 @@ class CompetitionsController < ApplicationController
 			end
 		end
 		
-		return {:competition=>data, :race=>race_data, :more_competitions=>more_competitions}
+		return {:competition=>data, :global_results=>global_results, :race=>race_data, :more_competitions=>more_competitions}
 	end
 	
 	#Title:			format_time
@@ -1580,5 +1583,24 @@ class CompetitionsController < ApplicationController
 		@iframe_params += ('&email=' + params[:email]) if (params.has_key?(:email))
 		@iframe_params += ('&key=' + params[:key]) if (params.has_key?(:key))
 		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
+	end
+	
+	#Title:			get_global_competition_results
+	#Description:	Gets results for global competitions
+	private
+	def get_global_competition_results(race_id)
+		rank = 0
+		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil)
+		
+		if (!@user.nil? && !leaderboard.nil?)
+			leaderboard.each do |entry|
+				rank += 1
+				break if (entry[:user].id == @user.id)
+			end
+		end
+		
+		return {
+			:rank => rank,
+		}
 	end
 end

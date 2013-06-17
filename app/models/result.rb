@@ -9,7 +9,7 @@ class Result < ActiveRecord::Base
 	#				group_id - Group ID
 	#				options - Hash:
 	#					sort_field - Sort results by (DEFAULT: sort_score)
-	#					index_by_rank - Return indexed by rank (DEFAULT
+	#					index_by_rank - Return indexed by rank (DEFAULT)
 	#					index_by_rider - Return indexed by rider ID
 	def self.get_results(group_type, group_id, options={})
 		cache_name = 'results_'+group_type.to_s+'_'+group_id.to_s

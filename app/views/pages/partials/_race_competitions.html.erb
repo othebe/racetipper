@@ -68,7 +68,11 @@
 
 <script id="race-competitions-data-template" type="text/x-handlebars-template">
 	<tr class="data" onclick="location.href='/competitions/{{competition_id}}'" style="cursor:pointer;">
-		<td class="logo hide-for-small"><%=image_tag 'users.png'%></td>
+		{{#if is_global}}
+			<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
+		{{else}}
+			<td class="logo hide-for-small"><%=image_tag 'users.png'%></td>
+		{{/if}}
 		<td class="rank bold row">
 			<div class="text-center">
 				<div class="value">{{rank}}</div><div class="postfix">{{postfix}}</div>
@@ -83,18 +87,30 @@
 			{{/if}}
 			
 			{{#if can_set_primary}}
-				<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
-				<div class="btn black" onclick="set_primary({{competition_id}}, this, event);">Set Primary</div>
+				{{#if is_primary}}
+					<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+					<div class="btn black set-primary-competition" onclick="set_primary({{competition_id}}, this, event);" style="display:none;">Set Primary</div>
+				{{else}}
+					<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+					<div class="btn black set-primary-competition" onclick="set_primary({{competition_id}}, this, event);">Set Primary</div>
+				{{/if}}
 			{{/if}}
 		</td>
-		{{#if completed}}
+		{{#if is_global}}
 			<td class="gray"></td>
+			{{#unless completed}}
+				<td class="gray"></td>
+			{{/unless}}
 		{{else}}
-			{{#if next_rider}}
-				<td class="tip bold row" colspan="2"><div>You've tipped {{next_rider}}</div></td>
+			{{#if completed}}
+				<td class="gray"></td>
 			{{else}}
-				<td class="empty-tip italic bold row">You have not tipped any rider</td>
-				<td class="empty-tip-button hide-for-small"><%=image_tag 'add-black.png'%></td>
+				{{#if next_rider}}
+					<td class="tip bold row" colspan="2"><div>You've tipped {{next_rider}}</div></td>
+				{{else}}
+					<td class="empty-tip italic bold row">You have not tipped any rider</td>
+					<td class="empty-tip-button hide-for-small"><%=image_tag 'add-black.png'%></td>
+				{{/if}}
 			{{/if}}
 		{{/if}}
 	</tr>
