@@ -1,25 +1,31 @@
 <script id="tip-sheet-template" type="text/x-handlebars-template">
 	<div id="tip-sheet" class="tip-sheet">
-		<div class="title black">
+		<div class="title black hide-for-small">
 			+ TIP A RIDER FOR THIS STAGE
 		</div>
 		
-		<div class="teams"></div>
+		<div class="teams">
+			<ul class="large-block-grid-2 small-block-grid-1">
+
+			</ul>
+		</div>
 	</div>
 </script>
 
 <script id="tip-sheet-team-template" type="text/x-handlebars-template">
-	<div class="team" ndx="{{team_ndx}}">
-		<div class="bar"></div>
-		<div class="team-name bold">{{team_name}}</div>
-	</div>
+	<li>
+		<div class="team" ndx="{{team_ndx}}">
+			<div class="bar hide-for-small"></div>
+			<div class="team-name bold">{{team_name}}</div>
+		</div>
+	</li>
 </script>
 
 <script id="tip-sheet-team-rider-template" type="text/x-handlebars-template">
 	{{#if allowed}}
-		<div class="rider italic" rider-id="{{rider_id}}" onclick="save_tip({{competition_id}}, {{stage_id}}, {{rider_id}}, this);">{{rider_number}}. {{rider_name}}</div>
+		<div class="rider italic hide-for-small" rider-id="{{rider_id}}" onclick="save_tip({{competition_id}}, {{stage_id}}, {{rider_id}}, this);">{{rider_number}}. {{rider_name}}</div>
 	{{else}}
-		<div class="rider italic invalid">{{rider_number}}. {{rider_name}} ({{reason}})</div>
+		<div class="rider italic invalid hide-for-small">{{rider_number}}. {{rider_name}} ({{reason}})</div>
 	{{/if}}
 </script>
 
@@ -29,4 +35,12 @@
 
 <script id="tip-sheet-success-template" type="text/x-handlebars-template">
 	<%=image_tag 'tick.png', {:style=>'margin-left:10px; height:16px;', :class=>'loader'}%>
+</script>
+
+<script>
+	$(document).ready( function(){
+		$(document).on('click', '.team .team-name', function(e){
+			$(this).siblings('.rider').toggleClass('hide-for-small');
+		});
+	});
 </script>
