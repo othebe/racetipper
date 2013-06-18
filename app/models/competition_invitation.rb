@@ -22,8 +22,8 @@ class CompetitionInvitation < ActiveRecord::Base
 	#Params:		user_id - The invited user
 	#				competition_id - The invited competition
 	def self.delete_invitation(user_id, competition_id)
-		invitation = self.where({:user_id=>user_id, :competition_id=>competition_id}).first
-		return if (!invitation.nil?)
+		invitation = self.where({:user_id=>user_id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).first
+		return if (invitation.nil?)
 		
 		invitation.status = STATUS[:INACTIVE]
 		invitation.save
@@ -36,7 +36,8 @@ class CompetitionInvitation < ActiveRecord::Base
 		response = []
 		invitations = self.where({:user_id=>user_id, :status=>STATUS[:ACTIVE]})
 		invitations.each do |invitation|
-			race_id = CompetitionStage.select('race_id').where({:competition_id=>invitation.competition.id}).first
+			next if (invitation.competition.nil?)
+			race_id = CompetitionStage.select('race_id').where({:competition_id=>invitation.competition_id}).first
 			response.push({
 				:invitation => invitation,
 				:competition => invitation.competition,

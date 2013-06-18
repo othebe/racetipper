@@ -5,6 +5,7 @@
 				<img src="/users/picture/<%=invitation[:creator].id%>" class="user-img">
 			</div>
 		</div>
+		<%=image_tag 'cross.png', {:class=>'cancel', :onclick=>'remove_invitation('+invitation[:competition].id.to_s+', this);'}%>
 		<div class="large-7 small-7 columns">
 			<div class="invite-str">
 				<span class="who"><%=(invitation[:creator].firstname+' '+invitation[:creator].lastname).strip%></span>

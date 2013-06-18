@@ -46,11 +46,11 @@ class CompetitionsController < ApplicationController
 		
 		#if params contain invitation code
 		if params[:code]
-			join_by_code()
+			redirect_to :root and return if (!join_by_code(params[:id], params[:code]))
 		end
 
 		#If competition is private and the user haven't participate
-		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id})
+		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id, :status=>STATUS[:ACTIVE]})
 			redirect_to :root and return
 		end
 
@@ -119,21 +119,6 @@ class CompetitionsController < ApplicationController
 		
 		#Cycling tips display
 		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
-	end
-	
-	#Title:			show (OLD)
-	#Description:	General information about a competition
-	def show_old
-		redirect_to :root if (!params.has_key?(:id))
-		@data = get_competition_data(params[:id])
-		@data[:races] = Competition.get_all_races(params[:id])
-		
-		@articles = Article.get_articles_for_competition(params[:id])
-		
-		@is_owner = false
-		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
-		
-		render :layout => 'competition'
 	end
 	
 	#Title:			results
@@ -507,33 +492,6 @@ class CompetitionsController < ApplicationController
 	
 	
 	#POST
-	
-	def join_by_code
-		competition_id = params[:id]
-		code = params[:code]
-		
-		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
-		redirect_to :root and return if (competition.nil?)
-		
-		#If user not logged in, store invitation in session until they login.
-		if (@user.nil?)
-			session[:invited_competitions] ||= []
-			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
-			redirect_to('/competitions/'+competition_id) and return
-		else
-			#If the current user exist in Competition_Invitation table
-			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id})
-				CompetitionInvitation.delete_invitation(@user.id, competition.id)
-				CompetitionParticipant.add_participant(@user.id, competition.id)
-				redirect_to('/competitions/'+competition_id) and return
-			#If doesn't exist, it means the user is not invited but has the code
-			else
-				redirect_to :root and return
-			end
-			
-		end
-	end
-	
 	#Title:			save_competition
 	#Description:	Save competition (except image)
 	def save_competition
@@ -812,7 +770,25 @@ class CompetitionsController < ApplicationController
 		render :json=>{:competition_data=>competition_data}
 	end
 	
-	#POST
+	#JSON
+	
+	#Title:			remove_invitation
+	#Description:	Sets a invitation as DELETED
+	def remove_invitation
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		render :json=>{:success=>false, :msg=>'No competition selected'} and return if (!params.has_key?(:id))
+		
+		invitation = CompetitionInvitation.where({:competition_id=>params[:id], :user_id=>@user.id, :status=>STATUS[:ACTIVE]}).first
+		if (!invitation.nil?)
+			invitation.status = STATUS[:DELETED]
+			invitation.save
+		end
+		
+		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	#Title:			join
+	#Description:	Join a competition
 	def join
 		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
 		render :json=>{:success=>false, :msg=>'No competition selected'} and return if (!params.has_key?(:id))
@@ -1001,6 +977,21 @@ class CompetitionsController < ApplicationController
 		report.save
 		
 		render :json=>{:success=>true, :msg=>'success'}
+	end
+	
+	#Title:			set_primary
+	#Description:	Sets a competition as the primary
+	#Params:		competition_id - Competition to designate as primary
+	def set_primary
+		render :json=>{:success=>false, :msg=>'No competition specified'} and return if (!params.has_key?(:id))
+		render :json=>{:success=>false, :msg=>'User not logged in'} and return if (@user.nil?)
+		
+		success = CompetitionParticipant.set_primary_competition(params[:id], @user.id)
+		if (success)
+			render :json=>{:success=>true, :msg=>'success'} and return
+		else
+			render :json=>{:success=>false, :msg=>'There was an error. Please refresh and try again.'}
+		end
 	end
 	
 	def send_invitation_emails
@@ -1309,12 +1300,23 @@ class CompetitionsController < ApplicationController
 	def get_user_race_data(user_id, race)
 		#Next stage
 		next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first
+		#Has race started?
+		first_stage = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
+		if (!first_stage.nil?)
+			has_started = (first_stage.starts_on <= Time.now)
+		else 
+			has_started = false
+		end
 
 		#Get race data
 		race_data = {}
 		race_data[:race_name] = race.name
 		race_data[:next_stage_name] = (next_stage.nil?)?nil:next_stage.name
 		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
+		race_data[:has_started] = has_started
+		
+		#Global results
+		global_results = get_global_competition_results(race.id)
 		
 		#Competitions that haven't been joined
 		more_competitions = []
@@ -1323,7 +1325,7 @@ class CompetitionsController < ApplicationController
 		
 		competitions = Competition.where({:race_id=>race.id})
 		competitions.each do |competition|
-			participants = CompetitionParticipant.where({:competition_id=>competition.id})
+			participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
 			is_participant = (!participants.where({:user_id=>user_id}).empty?)
 			
 			#For private competitions, check participation
@@ -1344,6 +1346,9 @@ class CompetitionsController < ApplicationController
 				next
 			end
 			
+			#Check if this competition is the primary
+			is_primary = participants.where({:user_id=>user_id}).first.is_primary
+			
 			#Leaderboard for this competition
 			leaderboard = get_leaderboard(competition.id, 'race', race.id)
 
@@ -1351,7 +1356,6 @@ class CompetitionsController < ApplicationController
 			rider = nil
 			if (!next_stage.nil?)
 				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
-				logger.info tip.inspect
 				rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
 			end
 			
@@ -1373,13 +1377,14 @@ class CompetitionsController < ApplicationController
 					:competition_id => competition.id,
 					:competition_name => competition.name,
 					:rank => rank,
-					:next_rider => (rider.nil?)?nil:rider.name 
+					:next_rider => (rider.nil?)?nil:rider.name ,
+					:is_primary => is_primary
 				}
 				data.push(line)
 			end
 		end
 		
-		return {:competition=>data, :race=>race_data, :more_competitions=>more_competitions}
+		return {:competition=>data, :global_results=>global_results, :race=>race_data, :more_competitions=>more_competitions}
 	end
 	
 	#Title:			format_time
@@ -1561,153 +1566,48 @@ class CompetitionsController < ApplicationController
 		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
 	end
 	
-	def results_old
-		redirect_to :root if (!params.has_key?(:id))
+	#Title:			get_global_competition_results
+	#Description:	Gets results for global competitions
+	private
+	def get_global_competition_results(race_id)
+		rank = 0
+		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil)
 		
-		@data = get_competition_data(params[:id])
-		@is_owner = false
-		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
-		@results = []
-		
-		races = []
-		CompetitionStage.where({:competition_id=>params[:id], :status=>STATUS[:ACTIVE]}).select(:race_id).group(:race_id).each do |race|
-			races.push(race.race_id)
-		end
-		
-		#Starting stage and tip
-		@selected_stage = nil
-		@selected_tip = nil
-		default_stage = nil
-		
-		@data[:race_data] = {}
-		races.each do |race_id|
-			race = Race.find_by_id(race_id)
-			@data[:race_data][race_id] = {}
-			@data[:race_data][race_id][:name] = race.name
-			stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
-			@data[:race_data][race_id][:stages] = stages
-			next if (!@selected_stage.nil?)
-			
-			stages.each do |stage|
-				next if (!@selected_stage.nil?)
-				
-				default_stage = stage if (default_stage.nil?)
-				if (stage.starts_on > Time.now)
-					@selected_stage = stage
-					tip = CompetitionTip.where({
-						:competition_participant_id => @user.id,
-						:stage_id => stage.id,
-						:competition_id => params[:id]
-					}).first
-					@selected_tip = tip.rider_id if (!tip.nil?)
-				end
+		if (!@user.nil? && !leaderboard.nil?)
+			leaderboard.each do |entry|
+				rank += 1
+				break if (entry[:user].id == @user.id)
 			end
 		end
 		
-		#Grab existing tips
-		tip_data = CompetitionTip.where({
-			:competition_participant_id => @user.id,
-			:competition_id => params[:id]
-		})
-		@tips = {}
-		tip_data.each do |tip|
-			rider_id = tip.default_rider_id || tip.rider_id
-			stage = Stage.find_by_id(tip.stage_id)
-			@tips[rider_id] = {}
-			@tips[rider_id][stage.race_id] = {:stage=>stage}
-		end
-		
-		#If tipping is not open for any stage, show results for starting stage
-		if (@selected_stage.nil?)
-			@selected_stage = default_stage
-			@results = Result.get_results('stage', @selected_stage.id)
-		end
-		
-		#Grab team data
-		raceteams = RaceTeam.where({
-			:status=>STATUS[:ACTIVE],
-			:race_id=>races
-		}).joins(:team)
-		
-		allowed_teams = []
-		race_team_map = {}
-		raceteams.each do |raceteam|
-			allowed_teams.push(raceteam.team_id)
-			race_team_map[raceteam.team_id] ||= []
-			race_team_map[raceteam.team_id].push(raceteam.race_id)
-		end
-		
-		teams = Team.where({
-					:id=>allowed_teams,
-					:season_id=>@data[:competition].season_id, 
-					:status=>STATUS[:ACTIVE]
-				}).joins(:TeamRiders).order('team_riders.rider_number')
-				
-		team_hash = {}
-		teams.each do |team|
-			team_data = {}
-			team_data[:team_id] = team.id
-			team_data[:team_name] = team.name
-			team_data[:riders] = []
-			race_team_map[team.id].each do |race_id|
-				rider_data = {}
-				rider_data[:race_id] = race_id
-				rider_data[:riders] = team.TeamRiders.where(:race_id=>race_id).order('team_riders.rider_number')
-				team_data[:riders].push(rider_data)
-			end
-			team_hash[team.id] = team_data
-		end
-		@data[:teams] = team_hash
-		
-		@time_to_tip = get_remaining_time(@selected_stage.starts_on)
-		
-		render :layout=>false
+		return {
+			:rank => rank,
+		}
 	end
 	
-	def leaderboard_old
-		@data = get_competition_data(params[:id])
+	#Title:			join_by_code
+	#Description:	Join a competition via competition code
+	private
+	def join_by_code(competition_id, code)
+		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
+		return false if (competition.nil?)
 		
-		@races = []
-		@is_owner = false
-		@is_owner = true if (!@user.nil? && @user.id==@data[:creator].id)
-		
-		#Drill down by stage
-		if (params.has_key?(:stage_id))
-			@stage_id = params[:stage_id]
-			stage = Stage.find_by_id(@stage_id)
-			@result_name = stage.name
-			@race_id  = stage.race_id
-			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
-			@group_type = 'stage'
-			group_id = @stage_id
-		
-		#Drill down by race
-		elsif (params.has_key?(:race_id))
-			@race_id = params[:race_id]
-			@stages = Stage.where({:race_id=>@race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
-			current_race_id = @race_id
-			race = Race.find_by_id(params[:race_id])
-			@result_name = race.name
-			@group_type = 'race'
-			group_id = current_race_id
-		
-		#Show first race if only race, else show race list
+		#If user not logged in, store invitation in session until they login.
+		if (@user.nil?)
+			session[:invited_competitions] ||= []
+			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
+			return false
 		else
-			@races = Competition.get_all_races(params[:id])
-			if (@races.length==1)
-				@result_name = @races.first.race.name
-				current_race_id = @races.first.race_id	
-				@race_id = current_race_id
-				@stages = Stage.where({:race_id=>current_race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
-				@group_type = 'race'
-				group_id = current_race_id
+			#If the current user exist in Competition_Invitation table
+			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+				CompetitionInvitation.delete_invitation(@user.id, competition.id)
+				CompetitionParticipant.add_participant(@user.id, competition.id)
+				return true
+			#If doesn't exist, it means the user is not invited but has the code
 			else
-				@leaderboard = nil
+				return false
 			end
+			
 		end
-		
-		@leaderboard ||= get_leaderboard(params[:id], @group_type, group_id) if (!@group_type.nil? && !group_id.nil?)
-		
-		render :layout=>false
 	end
 end

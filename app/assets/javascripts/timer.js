@@ -47,7 +47,7 @@ CountdownTimer.prototype.display_time = function(arr) {
 //Convert remaining_sec -> remaining_arr
 function parse_seconds(seconds) {
 	remaining_arr = {};
-	seconds -= WEEK*(remaining_arr['weeks'] = Math.floor(seconds / WEEK));
+	//seconds -= WEEK*(remaining_arr['weeks'] = Math.floor(seconds / WEEK));
 	seconds -= DAY*(remaining_arr['days'] = Math.floor(seconds / DAY));
 	seconds -= HOUR*(remaining_arr['hours'] = Math.floor(seconds / HOUR));
 	seconds -= MINUTE*(remaining_arr['minutes'] = Math.floor(seconds / MINUTE));

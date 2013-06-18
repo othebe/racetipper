@@ -116,4 +116,106 @@ class Race < ActiveRecord::Base
 			:ca_file => File.join("cacert.pem")) {|http| http.request(req)}
 		puts res.body
 	end
+	
+	#Title:			has_started
+	#Description:	Determines if a race has started
+	def self.has_started(race_id)
+		first_stage = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
+		if (!first_stage.nil?)
+			has_started = (first_stage.starts_on <= Time.now)
+		else 
+			has_started = false
+		end
+		
+		return has_started
+	end
+	
+	#Title:			get_global_competition_results
+	#Description:	Gets results for global competitions
+	def self.get_global_competition_results(race_id)
+		return nil if (!self.has_started(race_id))
+		
+		results = Result.get_results('race', race_id, {:index_by_rider=>true})
+		return nil if (results.empty?)
+		
+		data = []
+		
+		primaries = CompetitionParticipant.joins(:competition).where('competitions.race_id=? AND is_primary=? AND competition_participants.status=?', race_id, true, STATUS[:ACTIVE])
+		primaries.each do |primary|
+			tips = CompetitionTip.where({:competition_id=>primary.competition_id})
+			user = User.find_by_id(primary.user_id)
+			tip_data = {}
+			tips.each do |tip|
+				rider_id = tip.default_rider_id || tip.rider_id
+				stage_id = tip.stage_id
+				
+				next if (results[rider_id].nil?)
+				next if (results[rider_id][:stages][stage_id].nil? || results[rider_id][:stages][stage_id].empty?)
+				
+				tip_data[stage_id] ||= {}
+				
+				#Rider data
+				tip_data[stage_id][:rider] = {
+					:rider_id => rider_id,
+					:rider_name => results[rider_id][:rider_name]
+				}
+				
+				#Result data
+				tip_data[stage_id][:results] = results[rider_id][:stages][stage_id]
+			end
+			
+			data.push({
+				:user => user,
+				:tip_data => tip_data
+			})
+		end
+		
+		return data
+	end
+	
+	#Title:			get_global_competition_leaderboard
+	#Description:	Gets leaderboard for global competitions
+	def self.get_global_competition_leaderboard(race_id, group_type, group_id)
+		results = self.get_global_competition_results(race_id)
+		return nil if (results.nil?)
+		
+		unsorted = []
+		
+		results.each do |result|
+			time = bonus_time = kom_points = sprint_points = rank = 0
+			
+			#Cumulative data
+			if (group_type=='race')
+				result[:tip_data].each do |stage_id, stage_data|
+					time += stage_data[:results][:time]
+					bonus_time += (stage_data[:results][:bonus_time] || 0)
+					kom_points += (stage_data[:results][:kom_points] || 0)
+					sprint_points += (stage_data[:results][:sprint_points] || 0)
+				end
+			#Single stage data
+			else
+				time = result[:tip_data][group_id][:results][:time]
+				bonus_time = (result[:tip_data][group_id][:results][:bonus_time] || 0)
+				kom_points = (result[:tip_data][group_id][:results][:kom_points] || 0)
+				sprint_points = (result[:tip_data][group_id][:results][:sprint_points] || 0)
+				rank = (result[:tip_data][group_id][:results][:rank] || 0)
+			end
+			
+			unsorted.push({
+				:user => result[:user],
+				:time => time,
+				:bonus_time => bonus_time,
+				:kom_points => kom_points,
+				:sprint_points => sprint_points
+			})
+		end
+		
+		if (group_type=='race')
+			sorted = unsorted.sort{|x, y| x[:time] <=> y[:time]}
+		else
+			sorted = unsorted.sort{|x, y| x[:rank] <=> y[:rank]}
+		end
+		
+		return sorted
+	end
 end

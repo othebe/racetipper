@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130608140742) do
+ActiveRecord::Schema.define(:version => 20130530150704) do
 
   create_table "article_links", :force => true do |t|
     t.integer  "article_id"
@@ -39,7 +39,6 @@ ActiveRecord::Schema.define(:version => 20130608140742) do
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
     t.integer  "status",         :default => 1
-    t.integer  "inviter_id"
   end
 
   create_table "competition_participants", :force => true do |t|
@@ -182,7 +181,7 @@ ActiveRecord::Schema.define(:version => 20130608140742) do
     t.string   "end_location"
     t.float    "distance_km"
     t.boolean  "is_complete",    :default => false
-    t.string   "stage_type",     :default => "F"
+    t.string   "stage_type",     :default => "f"
   end
 
   create_table "team_riders", :force => true do |t|
@@ -200,11 +199,10 @@ ActiveRecord::Schema.define(:version => 20130608140742) do
   create_table "teams", :force => true do |t|
     t.string   "name"
     t.integer  "season_id"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
-    t.integer  "status",                  :default => 1
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "status",     :default => 1
     t.string   "image_url"
-    t.string   "initial",    :limit => 3
   end
 
   create_table "tipping_reports", :force => true do |t|
@@ -215,7 +213,6 @@ ActiveRecord::Schema.define(:version => 20130608140742) do
     t.integer  "status",         :default => 1
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
-    t.integer  "report_type",    :default => 1
   end
 
   create_table "users", :force => true do |t|
