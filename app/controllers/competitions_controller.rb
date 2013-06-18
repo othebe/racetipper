@@ -588,7 +588,7 @@ class CompetitionsController < ApplicationController
 			email_array.each do |email|
 				#If not empty
 				if(!email.strip().empty?)
-					invited_user_id = User.find_by_email(email.strip()).id
+					invited_user_id = User.find_by_email(email.strip().downcase()).id
 					CompetitionInvitation.invite_user(invited_user_id, competition.id)
 				end
 			end
