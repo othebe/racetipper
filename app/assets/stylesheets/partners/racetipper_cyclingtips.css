@@ -219,7 +219,7 @@ div.field-values {
 /* *** Buttons *** */
 div.btn {
 	padding: 5px 15px;
-	font-size: 14pt;
+	font-size: 14px;
 	text-transform: uppercase;
 	font-family: BrownStd-Bold;
 	font-weight: 700;
@@ -356,7 +356,7 @@ div#header {
 			color: #1B94E9;
 		}
 	div#header div.arrow-container {
-		margin: -28px 5px 0 5px;
+		margin: -30px 5px 0 5px;
 		padding: 27px 0 21px 0;
 		cursor: pointer;
 	}
@@ -376,8 +376,9 @@ div#header {
 			border-left: 7px solid transparent;
 			border-right: 7px solid transparent;
 			border-top: 7px solid #1b94e9;
-			margin: 10px 8px 0 8px;
+			position: relative;
 			cursor: pointer;
+			top: 5px;
 		}
 	div#header div#header-login {
 		float: right;
@@ -390,12 +391,10 @@ div#header {
 		div#header div#header-login div.login {
 			float: left;
 			cursor: pointer;
-			margin-top: 8px;
 		}
 		div#header div#header-login div.signup {
 			float: left;
 			cursor: pointer;
-			margin-top: 8px;
 		}
 	div#header div#header-login div.login-form {
 		position:absolute;
@@ -426,6 +425,7 @@ div#header {
 		div#header div#header-login div.arrow-container {
 			position: relative;
 			color: #1B94E9;
+			padding: 31.5px 2px;
 		}
 
 		div#header div#header-login div.login-form input {
@@ -926,7 +926,7 @@ div#competition-header {
 				text-transform: uppercase;
 			}
 			div#competition-header div.col.general div.title-2 {
-				font-size: 24pt;
+				font-size: 24px;
 				font-family: BrownStd-Bold;
 				text-transform: uppercase;
 			}
@@ -984,7 +984,7 @@ div.competitions-box {
 
 }
 	div.competitions-box div.title {
-		font-size: 24pt;
+		font-size: 24px;
 		text-align: center;
 		padding: 20px;
 		text-transform: uppercase;
@@ -1408,13 +1408,13 @@ div.tipping-report {
 		margin-bottom: 10px;
 	}
 	div.tipping-report div.title {
-		font-size: 14pt;
+		font-size: 14px;
 		margin-bottom: 20px;
 		font-family: BrownStd-Bold;
 		text-transform: uppercase;
 	}
 	div.tipping-report div.title-2 {
-		font-size: 24pt;
+		font-size: 24px;
 		margin-bottom: 20px;
 		font-family: BrownStd-Bold;
 		text-transform: uppercase;
@@ -1458,7 +1458,7 @@ div#other-information div.col {
 		padding-right: 30px;
 	}
 		div#other-information div.col div.title {
-			font-size: 24pt;
+			font-size: 24px;
 			font-family: BrownStd-Bold;
 			text-transform: uppercase;
 		}
@@ -1508,8 +1508,6 @@ div.race-teams {
 	div#tip-sheet div.title,
 	div.race-teams div.title {
 		font-size: 24pt;
-		font-family: BrownStd-Bold;
-		text-transform: uppercase;
 	}
 	div#tip-sheet div.teams,
 	div.race-teams div.teams {
@@ -1519,7 +1517,7 @@ div.race-teams {
 	div.race-teams div.team {
 		float: left;
 		padding-right: 20px;
-		min-width: 45%;
+		width: 100%;
 		margin-bottom: 20px;
 	}
 		div#tip-sheet div.team div.bar,
@@ -1550,9 +1548,73 @@ div.race-teams {
 			text-decoration: line-through;
 		}
 		div#tip-sheet div.team div.rider.selected {
-			background-color: lightgreen;
+			background: lightgreen;
 		}
 
+	@media only screen and (max-width: 767px) {
+		div#tip-sheet div.teams,
+		div.race-teams div.teams {
+			margin-top: 30px;
+		}
+
+			div#tip-sheet div.teams li,
+			div.race-teams div.teams li {
+				padding-bottom: 0;
+			}
+
+		div#tip-sheet div.team,
+		div.race-teams div.team {
+			position: relative;
+			padding-right: 0;
+			margin-bottom: 0;
+		}
+
+			div#tip-sheet div.team div.team-name,
+			div.race-teams div.team div.team-name {
+				cursor: pointer;
+				padding: 15px;
+				font-weight: 400;
+				font-size: 14pt;
+				text-transform: uppercase;
+				color: white;
+				margin-bottom: 0;
+				background-color: #333;
+			}
+
+				div#tip-sheet div.team div.team-name:after,
+				div.race-teams div.team div.team-name:after {
+					content: '';
+					position: absolute;
+					right: 10px;
+					top: 17px;
+					width: 0; height: 0;
+					font-size: 0px; line-height: 0%;
+					border-style: solid;
+					border-width: 12px 10px 0 10px;
+					border-color: white transparent transparent transparent;
+				}
+				
+			div#tip-sheet div.team div.team-name:hover,
+			div.race-teams div.team div.team-name:hover {
+				background-color: #555;
+			}
+				div#tip-sheet div.team div.team-name:hover:after,
+				div.race-teams div.team div.team-name:hover:after {
+					border-color: #1B94E9 transparent transparent transparent;
+				}
+
+		div#tip-sheet div.team div.rider,
+		div.race-teams div.team div.rider {
+			padding: 10px;
+			margin-bottom: 0;
+			background: #eee;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#e8e8e8'); /* for IE */
+			background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e8e8e8)); /* for webkit browsers */
+			background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
+			color: black;
+		}
+
+	}
 /* *** Competition leaderboard *** */
 div#competition-leaderboard, 
 div#stage-leaderboard {
