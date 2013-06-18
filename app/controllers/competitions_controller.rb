@@ -586,8 +586,11 @@ class CompetitionsController < ApplicationController
 			emails = competition_data[:invitations]
 			email_array = emails.split(',')
 			email_array.each do |email|
-				invited_user_id = User.find_by_email(email.strip()).id
-				CompetitionInvitation.invite_user(invited_user_id, competition.id)
+				#If not empty
+				if(!email.strip().empty?)
+					invited_user_id = User.find_by_email(email.strip()).id
+					CompetitionInvitation.invite_user(invited_user_id, competition.id)
+				end
 			end
 		end
 		
