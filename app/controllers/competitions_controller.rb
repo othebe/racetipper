@@ -540,15 +540,13 @@ class CompetitionsController < ApplicationController
 		participation.save
 		
 		#Generate invitations
-		if (competition_data[:open_to]=='private')
-			emails = competition_data[:invitations]
-			email_array = emails.split(',')
-			email_array.each do |email|
-				#If not empty
-				if(!email.strip().empty?)
-					invited_user_id = User.find_by_email(email.strip().downcase()).id
-					CompetitionInvitation.invite_user(invited_user_id, competition.id)
-				end
+		emails = competition_data[:invitations]
+		email_array = emails.split(',')
+		email_array.each do |email|
+			#If not empty
+			if(!email.strip().empty?)
+				invited_user_id = User.find_by_email(email.strip().downcase()).id
+				CompetitionInvitation.invite_user(invited_user_id, competition.id)
 			end
 		end
 		
