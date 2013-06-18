@@ -583,9 +583,12 @@ class CompetitionsController < ApplicationController
 		
 		#Generate invitations
 		if (competition_data[:open_to]=='private')
-			email = competition_data[:invitations]
-			invited_user_id = User.find_by_email(email).id
-			CompetitionInvitation.invite_user(invited_user_id, competition.id)
+			emails = competition_data[:invitations]
+			email_array = emails.split(',')
+			email_array.each do |email|
+				invited_user_id = User.find_by_email(email.strip()).id
+				CompetitionInvitation.invite_user(invited_user_id, competition.id)
+			end
 		end
 		
 		#Send emails
