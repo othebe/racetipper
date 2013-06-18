@@ -46,7 +46,7 @@ class CompetitionsController < ApplicationController
 		
 		#if params contain invitation code
 		if params[:code]
-			join_by_code()
+			redirect_to :root and return if (!join_by_code(params[:id], params[:code]))
 		end
 
 		#If competition is private and the user haven't participate
@@ -492,33 +492,6 @@ class CompetitionsController < ApplicationController
 	
 	
 	#POST
-	
-	def join_by_code
-		competition_id = params[:id]
-		code = params[:code]
-		
-		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
-		redirect_to :root and return if (competition.nil?)
-		
-		#If user not logged in, store invitation in session until they login.
-		if (@user.nil?)
-			session[:invited_competitions] ||= []
-			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
-			redirect_to('/competitions/'+competition_id) and return
-		else
-			#If the current user exist in Competition_Invitation table
-			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
-				CompetitionInvitation.delete_invitation(@user.id, competition.id)
-				CompetitionParticipant.add_participant(@user.id, competition.id)
-				redirect_to('/competitions/'+competition_id) and return
-			#If doesn't exist, it means the user is not invited but has the code
-			else
-				redirect_to :root and return
-			end
-			
-		end
-	end
-	
 	#Title:			save_competition
 	#Description:	Save competition (except image)
 	def save_competition
@@ -1602,5 +1575,31 @@ class CompetitionsController < ApplicationController
 		return {
 			:rank => rank,
 		}
+	end
+	
+	#Title:			join_by_code
+	#Description:	Join a competition via competition code
+	private
+	def join_by_code(competition_id, code)
+		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
+		return false if (competition.nil?)
+		
+		#If user not logged in, store invitation in session until they login.
+		if (@user.nil?)
+			session[:invited_competitions] ||= []
+			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
+			return false
+		else
+			#If the current user exist in Competition_Invitation table
+			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+				CompetitionInvitation.delete_invitation(@user.id, competition.id)
+				CompetitionParticipant.add_participant(@user.id, competition.id)
+				return true
+			#If doesn't exist, it means the user is not invited but has the code
+			else
+				return false
+			end
+			
+		end
 	end
 end
