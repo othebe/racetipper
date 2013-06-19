@@ -1,0 +1,118 @@
+<div class="content">
+	<div class="race-competitions">
+		<div class="header">
+			<div class="row collapse">
+				<div class="large-8 small-7 columns">
+					<div class="race-name bold">
+						<div class="title"><%=@race.name%></div>
+					</div>
+				</div>
+				<div class="large-4 small-5 columns">
+					<div class="race-details"><div class="timer" style="display: block;">
+						<% if (!@user_race_data[:race][:next_stage_name].nil?) %>
+							<div class="title">
+								<span class="bold">Stage 1</span> <span class="hide-for-small"> STARTING</span> IN
+							</div>
+							<div class="countdown hide-for-small">
+								<div class="col">
+									<div class="value days">--</div>
+									<div class="unit">DAYS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value hours">--</div>
+									<div class="unit">HOURS</div>
+								</div>
+								
+								<div class="col">
+									<div class="value minutes">--</div>
+									<div class="unit">MINS</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="countdown hide-for-medium-up">
+								<div class="col">
+									<span class="value days bold">--</span>
+									<span class="unit">D</span>
+								</div>
+								
+								<div class="col">
+									<span class="value hours bold">--</span>
+									<span class="unit">H</span>
+								</div>
+								
+								<div class="col">
+									<span class="value minutes bold">--</span>
+									<span class="unit">M</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						<% else %>
+							<div class="completed"><span class="bold">Race</span> completed</div>
+						<% end %>
+					</div></div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		
+		<table class="competitions">
+			<% if (@user_race_data[:global_results][:rank]>0) %>
+				<tr class="data" onclick="location.href='/competitions/'" style="cursor:pointer;">
+					<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
+					<td class="rank bold row">
+						<div class="text-center">
+							<div class="value"><%=@user_race_data[:global_results][:rank]%></div><div class="postfix">th</div>
+						</div>
+					</td>
+					<td class="competition bold row">
+						<div class="competition-name">Sitewide</div>
+					</td>
+					<td class="gray"></td>
+				</tr>
+			<% end %>
+			
+			<% @user_race_data[:competition].each do |competition| %>
+				<tr class="data" onclick="location.href='/competitions/<%=competition[:competition_id]%>?<%=@iframe_params%>'" style="cursor:pointer;">
+					<td class="logo hide-for-small"><%=image_tag 'users.png'%></td>
+					<td class="rank bold row">
+						<div class="text-center">
+							<div class="value"><%=competition[:rank]%></div><div class="postfix">th</div>
+						</div>
+					</td>
+					<td class="competition bold row">
+						<div class="competition-name"><%=competition[:competition_name]%></div>
+						
+						<% if (competition[:is_primary]) %>
+							<div class="btn yellow primary-competition">Primary</div>
+						<% else %>
+							<div class="btn yellow primary-competition" style="display:none;">Primary</div>
+						<% end %>
+						
+						<% if (!@user_race_data[:race][:has_started]) %>
+							<% if (competition[:is_primary]) %>
+								<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+								<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);" style="display:none;">Set Primary</div>
+							<% else %>
+								<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+								<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);">Set Primary</div>
+							<% end %>
+						<% end %>
+					</td>
+					<td class="gray"></td>	
+				</tr>
+			<% end %>
+		</table>
+		
+		<div class="competitions-box blue hide-for-small">
+			<div class="title bold">MORE COMPETITIONS</div>	
+			<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race}%>			
+			<div style="clear:both;"></div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(event) {
+	new CountdownTimer('div.countdown', <%=@user_race_data[:race][:next_stage_remaining]%>);
+});
+</script>

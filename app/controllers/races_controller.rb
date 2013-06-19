@@ -1,4 +1,6 @@
 class RacesController < ApplicationController
+	require_dependency 'race_module'
+	
 	#Title:			index
 	#Description:	Show competition grid
 	def index
@@ -73,6 +75,29 @@ class RacesController < ApplicationController
 		#Race first stage
 		@race[:first_stage] = @stages.first
 		@race[:last_stage] = @stages.last
+	end
+	
+	#Title:			racebox
+	#Description:	Show a single race box similar to a single instance of the races in the home screen
+	def racebox
+		redirect_to :root and return if (!params.has_key?(:id))
+		
+		#Check for login via access token
+		return if login_with_token.nil?
+		
+		user_id = 0
+		user_id = @user.id if (!@user.nil?)
+		
+		race_id = params[:id]
+		@race = Race.find_by_id(race_id)
+		@user_race_data = RaceModule::get_user_race_data(user_id, @race)
+		
+		logger.info(@user_race_data.inspect)
+		
+		redirect_to :root and return if (@race.nil?)
+		
+		#Cycling tips display
+		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
 	
 	#Title:			get_results
