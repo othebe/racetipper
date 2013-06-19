@@ -70,3 +70,9 @@ REPORT_TYPE = {
 PARTNER_ACCESS_TOKEN = {
 	:CYCLINGTIPS => '8JUDm7cFiVGLIqiWbkVs6S2gxxOvAvbl'
 }
+
+#Competition scopes
+COMPETITION_SCOPE = {
+	:SITE => 0,
+	:CYCLINGTIPS => 1
+}
