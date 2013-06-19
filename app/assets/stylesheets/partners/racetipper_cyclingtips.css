@@ -21,6 +21,7 @@ div.btn {
 }
 
 	div.timer div.title {
+		background: #ff4650;
 		font-family: BrownStd-Bold;
 		text-transform: uppercase;
 	}
@@ -75,6 +76,10 @@ div#competition-header {
 		text-transform: uppercase;
 	}
 /* *** Competitions box *** */			
+
+div.competitions-box {
+	background: #ff4650 !important; 
+}
 
 	div.competitions-box div.title {
 		font-size: 24px;
