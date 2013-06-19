@@ -320,7 +320,6 @@ div#header {
 	}
 		div#header div#header-logo img{
 			position: relative;
-			top: 10px;
 			width: 30px;
 			height: 30px;
 		}
@@ -330,6 +329,7 @@ div#header {
 			font-weight: 600;
 			font-size: 20px;
 			position: relative;
+			bottom: 5px;
 			color: white;
 		}
 		div#header div#header-logo span.plus {
@@ -342,7 +342,7 @@ div#header {
 		}
 	div#header div.arrow-container {
 		margin: -30px 5px 0 5px;
-		padding: 27px 0 21px 0;
+		padding: 27px 5px 30px 5px;
 		cursor: pointer;
 	}
 	/*
@@ -505,7 +505,12 @@ div#footer {
 }
 	div#footer a {
 		color: white;
+		margin-right: 30px;
 	}
+
+		div#footer a:hover {
+			color: #1B94E9;
+		}
 		
 /* *** Login page *** */
 div.login-page {
@@ -1171,7 +1176,7 @@ div#overview div.info,
 div#stage-overview div.info,
 div#stage-overview div.description,
 div.stacked-cols {
-	background-color: #1b94e9;
+	background: #1b94e9;
 	color: white;
 	font-size: 14pt;
 	padding: 10px 20px 10px 20px;
@@ -1759,3 +1764,42 @@ div#race-information  div.race-description {
 			width: auto;
 			height: auto;
 		}
+
+/* STATIC PAGES (ABOUT, RULES) */ 
+.static-page p {
+	line-height: 1.2;
+}
+
+	.static-page p:first-child:first-letter { 
+		float: left; 
+		color: #1B94E9;
+		font-size: 40pt;
+		padding-right: 8px; 
+		padding-left: 3px;
+		margin-top: -10px;
+	}
+
+.static-page ol, .static-page ul {
+	padding-left: 20px;
+}
+
+.static-page ol li {
+	line-height: 1.2;
+	margin-bottom: 15px;
+}
+
+	.static-page ol.style-alpha {
+		list-style-type: lower-alpha;
+	}
+		
+		.static-page ol.style-alpha li{
+			margin-bottom: 5px;
+		}
+
+	.static-page .list-no-margin li, .static-page ul li {
+		margin-bottom: 0;
+	}
+
+b {
+	font-weight: 700;
+}
