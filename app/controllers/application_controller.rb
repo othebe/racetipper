@@ -41,9 +41,15 @@ class ApplicationController < ActionController::Base
 		else
 			@sidebar_competitions ||= Competition.get_competitions(@user.id, {:limit=>5})
 		end
-		#@sidebar_races ||= Rails.cache.fetch('races') do
-		#	Race.where({:status=>STATUS[:ACTIVE], :season_id=>current_season.id}).order('id DESC').limit(10)
-		#end
+		
+		#Set scope
+		@scope = session['scope'] || COMPETITION_SCOPE[:SITE]
+		if (params.has_key?(:pid))
+			@scope = COMPETITION_SCOPE[:CYCLINGTIPS] if (params[:pid]=='cyclingtips')
+		elsif (request.get?)
+			@scope = COMPETITION_SCOPE[:SITE]
+		end
+		session['scope'] = @scope
 	end
 	
 	

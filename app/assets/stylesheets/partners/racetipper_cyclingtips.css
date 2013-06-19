@@ -808,6 +808,14 @@ div.race-competitions {
 				background: -moz-linear-gradient(top, #eeeeee, #e8e8e8); /* for firefox 3.6+ */
 				width: 60%;
 			}
+				div.race-competitions td.competition div.competition-name {
+					font-size: 16pt;
+					margin-top: 7px;
+					float: left;
+				}
+				div.race-competitions td.competition div.btn {
+					float: right;
+				}
 
 			div.race-competitions .competition div {
 				font-size: 16pt;

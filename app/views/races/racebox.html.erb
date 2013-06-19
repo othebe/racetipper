@@ -103,10 +103,10 @@
 				</tr>
 			<% end %>
 		</table>
-		
+
 		<div class="competitions-box blue hide-for-small">
 			<div class="title bold">MORE COMPETITIONS</div>	
-			<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race}%>			
+			<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} if (!@user_race_data[:race][:next_stage_name].nil?)%>			
 			<div style="clear:both;"></div>
 		</div>
 	</div>

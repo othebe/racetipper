@@ -210,7 +210,7 @@ class CompetitionsController < ApplicationController
 		user_id = params[:user_id]
 		
 		race = Race.find_by_id(race_id)
-		response = RaceModule::get_user_race_data(user_id, race)
+		response = RaceModule::get_user_race_data(user_id, race, @scope)
 		
 		render :json => response
 	end
@@ -524,6 +524,7 @@ class CompetitionsController < ApplicationController
 		competition.description = competition_data[:competition_description]
 		competition.season_id = season_id
 		competition.race_id = competition_data[:race_id]
+		competition.scope = @scope
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
 		else
@@ -987,7 +988,7 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'No competition specified'} and return if (!params.has_key?(:id))
 		render :json=>{:success=>false, :msg=>'User not logged in'} and return if (@user.nil?)
 		
-		success = CompetitionParticipant.set_primary_competition(params[:id], @user.id)
+		success = CompetitionParticipant.set_primary_competition(params[:id], @user.id, @scope)
 		if (success)
 			render :json=>{:success=>true, :msg=>'success'} and return
 		else
