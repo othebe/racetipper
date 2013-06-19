@@ -3,7 +3,7 @@ module RaceModule
 	
 	#Title:			get_user_race_data
 	#Description:	Gets race related information for a user
-	def self.get_user_race_data(user_id, race)
+	def self.get_user_race_data(user_id, race, scope)
 		#Next stage
 		next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first
 		#Has race started?
@@ -28,8 +28,8 @@ module RaceModule
 		more_competitions = []
 		
 		data = []
-		
-		competitions = Competition.where({:race_id=>race.id})
+
+		competitions = Competition.where({:race_id=>race.id, :status=>STATUS[:ACTIVE], :scope=>scope})
 		competitions.each do |competition|
 			participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
 			is_participant = (!participants.where({:user_id=>user_id}).empty?)

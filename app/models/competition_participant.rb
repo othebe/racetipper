@@ -29,7 +29,8 @@ class CompetitionParticipant < ActiveRecord::Base
 	#Description:	Designates a competition as the primary for sitewide
 	#Params:		competition_id - Competition ID
 	#				user_id - User ID
-	def self.set_primary_competition(competition_id, user_id) 
+	#				scope - COMPETITION_SCOPE
+	def self.set_primary_competition(competition_id, user_id, scope) 
 		#Get competition data
 		competition = Competition.find_by_id(competition_id)
 		return false if (competition.nil?)
@@ -46,10 +47,11 @@ class CompetitionParticipant < ActiveRecord::Base
 		first_stage = Stage.where({:race_id=>competition.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
 		has_started = (first_stage.starts_on <= Time.now) if (!first_stage.nil?)
 		has_chosen = !self.where({:user_id=>user_id, :status=>STATUS[:ACTIVE], :is_primary=>true}).empty?
+		has_chosen = !self.joins(:competition).where('user_id=? AND competition_participants.status=? AND is_primary=? AND scope=?', user_id, STATUS[:ACTIVE], true, scope).empty?
 		return if (has_started && has_chosen)
 		
 		#Remove primary status from other records
-		primaries = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=? AND competition_participants.id<>?', user_id, competition.race_id, true, participation.id)
+		primaries = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=? AND scope=? AND competition_participants.id<>?', user_id, competition.race_id, true, scope, participation.id)
 		primaries.each do |primary|
 			record = self.find_by_id(primary.id)
 			record.is_primary = false

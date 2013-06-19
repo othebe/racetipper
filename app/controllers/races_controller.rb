@@ -24,7 +24,7 @@ class RacesController < ApplicationController
 			
 			#Get competitions
 			competition_data = []
-			competitions = Competition.where({:race_id=>race.id})
+			competitions = Competition.where({:race_id=>race.id, :status=>STATUS[:ACTIVE], :scope=>@scope})
 			competitions.each do |competition|
 				#Only get valid competitions
 				next if (![STATUS[:ACTIVE], STATUS[:PRIVATE]].include?(competition.status))
@@ -81,7 +81,7 @@ class RacesController < ApplicationController
 	#Description:	Show a single race box similar to a single instance of the races in the home screen
 	def racebox
 		redirect_to :root and return if (!params.has_key?(:id))
-		
+
 		#Check for login via access token
 		return if login_with_token.nil?
 		
@@ -90,9 +90,7 @@ class RacesController < ApplicationController
 		
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
-		@user_race_data = RaceModule::get_user_race_data(user_id, @race)
-		
-		logger.info(@user_race_data.inspect)
+		@user_race_data = RaceModule::get_user_race_data(user_id, @race, @scope)
 		
 		redirect_to :root and return if (@race.nil?)
 		

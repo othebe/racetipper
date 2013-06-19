@@ -50,6 +50,14 @@ div.btn {
 				text-transform: uppercase;
 			}
 
+			div.race-competitions .competition div {
+				font-size: 16pt;
+			}
+
+				div.race-competitions .competition.new .btn{
+					font-size: 14pt;
+				}
+
 /* *** ********************************** Competitions ************************************** *** */
 
 /* *** Competition header *** */
