@@ -799,7 +799,7 @@ class CompetitionsController < ApplicationController
 		
 		competition = Competition.find_by_id(competition_id)
 		if (competition.status = STATUS[:ACTIVE])
-			CompetitionParticipant.add_participant(@user.id, competition_id)
+			CompetitionParticipant.add_participant(@user.id, competition_id, @scope)
 		elsif (competition.status = STATUS[:PRIVATE])
 			#Check if invited?
 		end
@@ -1288,7 +1288,7 @@ class CompetitionsController < ApplicationController
 			#If the current user exist in Competition_Invitation table
 			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
 				CompetitionInvitation.delete_invitation(@user.id, competition.id)
-				CompetitionParticipant.add_participant(@user.id, competition.id)
+				CompetitionParticipant.add_participant(@user.id, competition.id, @scope)
 				return true
 			#If doesn't exist, it means the user is not invited but has the code
 			else
