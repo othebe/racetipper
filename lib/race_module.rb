@@ -22,7 +22,7 @@ module RaceModule
 		race_data[:has_started] = has_started
 		
 		#Global results
-		global_results = self.get_global_competition_results(race.id)
+		global_results = self.get_global_competition_results(race.id, scope, user_id)
 		
 		#Competitions that haven't been joined
 		more_competitions = []
@@ -95,14 +95,14 @@ module RaceModule
 	
 	#Title:			get_global_competition_results
 	#Description:	Gets results for global competitions
-	def self.get_global_competition_results(race_id)
+	def self.get_global_competition_results(race_id, scope, user_id=0)
 		rank = 0
-		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil)
+		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil, scope)
 		
-		if (!@user.nil? && !leaderboard.nil?)
+		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
 				rank += 1
-				break if (entry[:user].id == @user.id)
+				break if (entry[:user].id == user_id)
 			end
 		end
 		

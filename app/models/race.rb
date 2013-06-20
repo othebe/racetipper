@@ -132,7 +132,7 @@ class Race < ActiveRecord::Base
 	
 	#Title:			get_global_competition_results
 	#Description:	Gets results for global competitions
-	def self.get_global_competition_results(race_id)
+	def self.get_global_competition_results(race_id, scope)
 		return nil if (!self.has_started(race_id))
 		
 		results = Result.get_results('race', race_id, {:index_by_rider=>true})
@@ -140,7 +140,7 @@ class Race < ActiveRecord::Base
 		
 		data = []
 		
-		primaries = CompetitionParticipant.joins(:competition).where('competitions.race_id=? AND is_primary=? AND competition_participants.status=?', race_id, true, STATUS[:ACTIVE])
+		primaries = CompetitionParticipant.joins(:competition).where('competitions.race_id=? AND is_primary=? AND competition_participants.status=? AND scope=?', race_id, true, STATUS[:ACTIVE], scope)
 		primaries.each do |primary|
 			tips = CompetitionTip.where({:competition_id=>primary.competition_id})
 			user = User.find_by_id(primary.user_id)
@@ -175,8 +175,8 @@ class Race < ActiveRecord::Base
 	
 	#Title:			get_global_competition_leaderboard
 	#Description:	Gets leaderboard for global competitions
-	def self.get_global_competition_leaderboard(race_id, group_type, group_id)
-		results = self.get_global_competition_results(race_id)
+	def self.get_global_competition_leaderboard(race_id, group_type, group_id, scope)
+		results = self.get_global_competition_results(race_id, scope)
 		return nil if (results.nil?)
 		
 		unsorted = []
