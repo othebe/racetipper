@@ -29,7 +29,7 @@ module RaceModule
 		
 		data = []
 
-		competitions = Competition.where({:race_id=>race.id, :status=>STATUS[:ACTIVE], :scope=>scope})
+		competitions = Competition.where('race_id=? AND scope=? AND (status=? OR status=?)', race.id, scope, STATUS[:ACTIVE], STATUS[:PRIVATE])
 		competitions.each do |competition|
 			participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
 			is_participant = (!participants.where({:user_id=>user_id}).empty?)
