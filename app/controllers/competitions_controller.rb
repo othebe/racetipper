@@ -53,7 +53,7 @@ class CompetitionsController < ApplicationController
 		end
 
 		#If competition is private and the user haven't participate
-		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>@user.id, :competition_id=>@competition.id, :status=>STATUS[:ACTIVE]})
+		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>user_id, :competition_id=>@competition.id, :status=>STATUS[:ACTIVE]})
 			redirect_to :root and return
 		end
 
