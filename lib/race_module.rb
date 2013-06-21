@@ -22,18 +22,18 @@ module RaceModule
 		race_data[:has_started] = has_started
 		
 		#Global results
-		global_results = self.get_global_competition_results(race.id)
+		global_results = self.get_global_competition_results(race.id, scope, user_id)
 		
 		#Competitions that haven't been joined
 		more_competitions = []
 		
 		data = []
 
-		competitions = Competition.where({:race_id=>race.id, :status=>STATUS[:ACTIVE], :scope=>scope})
+		competitions = Competition.where('race_id=? AND scope=? AND (status=? OR status=?)', race.id, scope, STATUS[:ACTIVE], STATUS[:PRIVATE])
 		competitions.each do |competition|
 			participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
 			is_participant = (!participants.where({:user_id=>user_id}).empty?)
-			
+
 			#For private competitions, check participation
 			if (competition.status == STATUS[:PRIVATE])
 				next if (!is_participant)
@@ -68,26 +68,28 @@ module RaceModule
 			current_time = nil;
 			rank = 0
 			
+			#Find leaderboard entry
+			username = formatted_time = ''
 			leaderboard.each do |entry|
-				if (current_time.nil? || entry[:time] > current_time)
-					rank += 1
-					current_time = entry[:time]
+				rank += 1
+				if (entry[:user_id]==user_id)
+					username = entry[:username]
+					formatted_time = entry[:formatted_time] || '--'
+					break
 				end
-
-				next if (entry[:user_id].to_i != user_id.to_i)
-
-				line = {
-					:user_id => entry[:user_id],
-					:username => entry[:username],
-					:time_formatted => entry[:formatted_time],
-					:competition_id => competition.id,
-					:competition_name => competition.name,
-					:rank => rank,
-					:next_rider => (rider.nil?)?nil:rider.name ,
-					:is_primary => is_primary
-				}
-				data.push(line)
 			end
+			
+			data.push({
+				:user_id => user_id,
+				:username => username,
+				:time_formatted => formatted_time,
+				:competition_id => competition.id,
+				:competition_name => competition.name,
+				:rank => rank,
+				:next_rider => (rider.nil?)?nil:rider.name ,
+				:is_primary => is_primary
+			})
+			
 		end
 		
 		return {:competition=>data, :global_results=>global_results, :race=>race_data, :more_competitions=>more_competitions}
@@ -95,14 +97,14 @@ module RaceModule
 	
 	#Title:			get_global_competition_results
 	#Description:	Gets results for global competitions
-	def self.get_global_competition_results(race_id)
+	def self.get_global_competition_results(race_id, scope, user_id=0)
 		rank = 0
-		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil)
+		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil, scope)
 		
-		if (!@user.nil? && !leaderboard.nil?)
+		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
 				rank += 1
-				break if (entry[:user].id == @user.id)
+				break if (entry[:user].id == user_id)
 			end
 		end
 		

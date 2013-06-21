@@ -7,7 +7,7 @@ class CompetitionParticipant < ActiveRecord::Base
 	#Description:	Adds a participant to a competition. Adds empty tips for all stages in the competition.
 	#Params:		user_id - Participant user ID
 	#				competition_id - Competition ID
-	def self.add_participant(user_id, competition_id)
+	def self.add_participant(user_id, competition_id, scope)
 		competition = Competition.find_by_id(competition_id)
 		return if (competition.nil?)
 		
@@ -22,7 +22,7 @@ class CompetitionParticipant < ActiveRecord::Base
 		
 		#Designate this competition as the primary if its the first
 		has_primary = (self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=?', user_id, competition.race_id, true).count > 0)
-		self.set_primary_competition(competition_id, user_id) if (!has_primary)
+		self.set_primary_competition(competition_id, user_id, scope) if (!has_primary)
 	end
 	
 	#Title:			set_primary_competition
