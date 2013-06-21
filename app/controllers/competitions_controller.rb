@@ -43,22 +43,24 @@ class CompetitionsController < ApplicationController
 
 		#Competition
 		@competition = Competition.find_by_id(params[:id])
+		redirect_to :root and return if (@competition.nil?)
 
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
 		
-		#if params contain invitation code
-		if params[:code]
-			redirect_to :root and return if (!join_by_code(params[:id], params[:code]))
-		end
-
-		#If competition is private and the user haven't participate
-		if @competition.status == STATUS[:PRIVATE] && !CompetitionParticipant.exists?({:user_id=>user_id, :competition_id=>@competition.id, :status=>STATUS[:ACTIVE]})
+		if (@competition.status==STATUS[:ACTIVE])
+		elsif (@competition.status==STATUS[:PRIVATE])
+			@code = nil
+			@code = params[:code] if (params.has_key?(:code))
+			redirect_to :root and return if (!Competition.is_competition_code_valid(@competition.id, @code))
+		else
 			redirect_to :root and return
 		end
-
-		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
+		#Show this competition on login
+		set_auth_redirect(request.fullpath) if (user_id == 0)
+		
+		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
 		#Get leaderboard
 		@leaderboard = LeaderboardModule::get_leaderboard(params[:id], 'race', @competition.race_id)
@@ -549,8 +551,8 @@ class CompetitionsController < ApplicationController
 		email_array.each do |email|
 			#If not empty
 			if(!email.strip().empty?)
-				invited_user_id = User.find_by_email(email.strip().downcase()).id
-				CompetitionInvitation.invite_user(invited_user_id, competition.id)
+				invited_user = User.find_by_email(email.strip.downcase)
+				CompetitionInvitation.invite_user(invited_user.id, competition.id)
 			end
 		end
 		
@@ -798,16 +800,23 @@ class CompetitionsController < ApplicationController
 		competition_id = params[:id]
 		
 		competition = Competition.find_by_id(competition_id)
-		if (competition.status = STATUS[:ACTIVE])
+		if (competition.status == STATUS[:ACTIVE])
 			CompetitionParticipant.add_participant(@user.id, competition_id, @scope)
-		elsif (competition.status = STATUS[:PRIVATE])
-			#Check if invited?
+		elsif (competition.status == STATUS[:PRIVATE])
+			code = nil
+			code = params[:code] if params.has_key?(:code)
+			if Competition.is_competition_code_valid(competition_id, code)
+				CompetitionParticipant.add_participant(@user.id, competition_id, @scope) 
+			else
+				render :json=>{:success=>false, :msg=>'Could not join competition. Incorrect invitation code.'} and return
+			end
 		end
 		
 		#Check if joined successfully
 		participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>@user.id, :status=>STATUS[:ACTIVE]}).first
 		render :json=>{:success=>false, :msg=>'Could not join competition. You may have been kicked out.'} and return if (participant.nil?)
 		
+		CompetitionInvitation.delete_invitation(@user.id, competition_id)
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
@@ -1270,31 +1279,5 @@ class CompetitionsController < ApplicationController
 		end
 		
 		return data
-	end
-	
-	#Title:			join_by_code
-	#Description:	Join a competition via competition code
-	private
-	def join_by_code(competition_id, code)
-		competition = Competition.where({:id=>competition_id, :invitation_code=>code}).first
-		return false if (competition.nil?)
-		
-		#If user not logged in, store invitation in session until they login.
-		if (@user.nil?)
-			session[:invited_competitions] ||= []
-			session[:invited_competitions].push(competition.id) if session[:invited_competitions].index(competition_id).nil?
-			return false
-		else
-			#If the current user exist in Competition_Invitation table
-			if CompetitionInvitation.exists?({:user_id=>@user.id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
-				CompetitionInvitation.delete_invitation(@user.id, competition.id)
-				CompetitionParticipant.add_participant(@user.id, competition.id, @scope)
-				return true
-			#If doesn't exist, it means the user is not invited but has the code
-			else
-				return false
-			end
-			
-		end
 	end
 end

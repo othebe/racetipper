@@ -1,8 +1,10 @@
 class ApplicationController < ActionController::Base
 	protect_from_forgery
-	before_filter :check_user
+	
 	before_filter :init_vars
+	before_filter :check_user
 	before_filter :set_iframe_data
+	before_filter :auth_redirect
 
 	private
 	def check_user
@@ -24,24 +26,16 @@ class ApplicationController < ActionController::Base
 		#Invite user to competitions if any
 		if (!@user.nil? && session.has_key?(:invited_competitions) && !session[:invited_competitions].empty?)
 			session[:invited_competitions].each do |competition_id|
-				CompetitionParticipant.add_participant(@user.id, competition_id)
+				CompetitionParticipant.add_participant(@user.id, competition_id, @scope)
 			end
 			session.delete(:invited_competitions)
 		end
 	end
   
+	private
 	#Title:			init_vars
 	#Description:	Initialize variables
 	def init_vars
-		current_season = Season.find_by_year(Time.now.year)
-		@sidebar_races ||= Race.where({:status=>STATUS[:ACTIVE], :season_id=>current_season.id}).order('id DESC').limit(10)
-		
-		if (@user.nil?)
-			@sidebar_competitions ||= Competition.where({:status=>STATUS[:ACTIVE], :is_complete=>false}).order('created_at DESC').limit(5)
-		else
-			@sidebar_competitions ||= Competition.get_competitions(@user.id, {:limit=>5})
-		end
-		
 		#Set scope
 		@scope = session['scope'] || COMPETITION_SCOPE[:SITE]
 		if (params.has_key?(:pid))
@@ -54,7 +48,7 @@ class ApplicationController < ActionController::Base
 	
 	
 	################### IFrame embedding stuff ###########################
-	
+	public
 	#Title:			login_with_token
 	#Description:	Takes user information and an access token, and authenticate the matched user. New user is created is no user found.
 	def login_with_token
@@ -101,6 +95,7 @@ class ApplicationController < ActionController::Base
 		return true
 	end
 	
+	private
 	#Title:			set_iframe_data
 	#Description:	Gets iframe params if any and sets the layout
 	def set_iframe_data
@@ -109,5 +104,27 @@ class ApplicationController < ActionController::Base
 		@iframe_params += ('&email=' + params[:email]) if (params.has_key?(:email))
 		@iframe_params += ('&key=' + params[:key]) if (params.has_key?(:key))
 		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
+	end
+	
+	######################## Auth stuff ##############################
+	
+	#Title:			set_auth_redirect
+	#Description:	Sets a URL to redirect to on successful login
+	public
+	def set_auth_redirect(path)
+		session['auth_redirect'] = path
+	end
+	
+	#Title:			auth_redirect
+	#Description:	Redirects to auth_redirect path
+	private
+	def auth_redirect
+		return if @user.nil?
+		
+		path = session['auth_redirect']
+		return if path.nil?
+		
+		set_auth_redirect(nil)
+		redirect_to path
 	end
 end

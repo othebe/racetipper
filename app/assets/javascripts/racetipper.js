@@ -324,7 +324,7 @@ function save_tip(competition_id, stage_id, rider_id, elt) {
 //Title:		Join a competition
 //Description:	Join a competition
 var joining_competition = false;
-function join_competition(competition_id, elt) {
+function join_competition(competition_id, code, elt) {
 	if (joining_competition) return;
 	
 	joining_competition = true;
@@ -332,7 +332,7 @@ function join_competition(competition_id, elt) {
 	
 	var url = '/competitions/join/'+competition_id;
 	
-	$.post(url, {}, function(response) {
+	$.post(url, {code:code}, function(response) {
 		if (response.success) {
 			location.reload();
 		} else {

@@ -37,13 +37,13 @@
 						</div>
 					<% end %>
 				<% elsif (!@user.nil?) %>
-					<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, this);">
+					<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, '<%=@code%>', this);">
 						<%=image_tag 'pencil.png'%>
 						<span>Join Competition</span>
 					</div>
 				<% else %>
 					<div class="btn gray">
-						<span>Login to tip</span>
+						<a href="/"><span>Login to tip</span></a>
 					</div>
 				<% end %>
 				</div>

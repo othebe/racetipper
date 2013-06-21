@@ -80,6 +80,15 @@ class Competition < ActiveRecord::Base
 		end
 	end
 	
+	#Title:			is_competition_code_valid
+	#Description:	Determines if a competition code is valid
+	#Params:		competition_id - Competition ID
+	#				code - Competition code
+	def self.is_competition_code_valid(competition_id, code)
+		competition = Competition.where({:id=>competition_id, :invitation_code=>code})
+		return !competition.empty?
+	end
+	
 	#Title:			add_participants_to_global_competition
 	#Description:	Adds participants to a global competition. Called as cron / worker.
 	#Returns:		status message
