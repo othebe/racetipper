@@ -1,4 +1,6 @@
 class StagesController < ApplicationController
+	require_dependency 'cache_module'
+
 	#Title:			information
 	#Description:	Gets stage information
 	def information
@@ -34,9 +36,8 @@ class StagesController < ApplicationController
 		end
 		
 		#Get stage images
-		cache_name = 'stage_'+params[:id].to_s+'_images'
-		stage_images = nil
-		stage_images = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
+		cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:STAGE_IMAGES], {:id=>params[:id]})
+		stage_images = CacheModule::get(cache_name)
 		if (stage_images.nil?)
 			stage_images = []
 			begin
@@ -49,8 +50,7 @@ class StagesController < ApplicationController
 			rescue
 				#
 			end
-			REDIS.set(cache_name, stage_images)
-			REDIS.expire(cache_name, 15*60)
+			CacheModule::set(stage_images, cache_name, CacheModule::CACHE_TTL[:HOUR])
 		end
 		
 		reports = {}

@@ -2,7 +2,9 @@ class CompetitionParticipant < ActiveRecord::Base
 	attr_accessible :competition_id, :user_id, :is_primary
 	belongs_to :user
 	belongs_to :competition
-  
+	
+	require_dependency 'cache_module'
+
 	#Title:			add_participant
 	#Description:	Adds a participant to a competition. Adds empty tips for all stages in the competition.
 	#Params:		user_id - Participant user ID
@@ -23,6 +25,12 @@ class CompetitionParticipant < ActiveRecord::Base
 		#Designate this competition as the primary if its the first
 		has_primary = (self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=?', user_id, competition.race_id, true).count > 0)
 		self.set_primary_competition(competition_id, user_id, scope) if (!has_primary)
+		
+		#Clear cache
+		cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:LEADERBOARD], {
+			:competition_id => competition_id,
+		})
+		CacheModule::delete(cache_name+'*')
 	end
 	
 	#Title:			set_primary_competition

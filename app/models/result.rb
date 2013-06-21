@@ -1,7 +1,9 @@
 class Result < ActiveRecord::Base
-  attr_accessible :kom_points, :rider_id, :season_stage_id, :sprint_points, :time
-  
-  belongs_to :rider
+	attr_accessible :kom_points, :rider_id, :season_stage_id, :sprint_points, :time
+
+	belongs_to :rider
+	
+	require_dependency 'cache_module'
   
 	#Title:			get_results
 	#Description:	Gets ordered results
@@ -12,12 +14,11 @@ class Result < ActiveRecord::Base
 	#					index_by_rank - Return indexed by rank (DEFAULT)
 	#					index_by_rider - Return indexed by rider ID
 	def self.get_results(group_type, group_id, options={})
-		cache_name = 'results_'+group_type.to_s+'_'+group_id.to_s
-		options.each do |k,v|
-			cache_name += (k.to_s+'_')
-		end
-		rider_points_sorted = nil
-		rider_points_sorted = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:RESULTS], 
+			{:group_type=>group_type, :group_id=>group_id, :options=>options}
+		)
+		rider_points_sorted = CacheModule::get(cache_name)
 		if (rider_points_sorted.nil?)
 			selector = nil
 			if (group_type == 'stage')
@@ -164,8 +165,7 @@ class Result < ActiveRecord::Base
 				base_time = (data[:time]-data[:bonus_time]) if (base_time.nil?)
 			end
 			rider_points_sorted = indexed_hash
-			REDIS.set(cache_name, rider_points_sorted)
-			REDIS.expire(cache_name, 24*60*60)
+			CacheModule::set(rider_points_sorted, cache_name, CacheModule::CACHE_TTL[:DAY])
 		end
 		
 		return rider_points_sorted

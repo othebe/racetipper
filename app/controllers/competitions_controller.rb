@@ -2,7 +2,7 @@ class CompetitionsController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 	
 	#require 'race_module'
-	require 'leaderboard_module'
+	require_dependency 'leaderboard_module'
 	require_dependency 'race_module'
 	
 	#Title:			index

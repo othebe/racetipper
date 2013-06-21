@@ -1,4 +1,6 @@
 module LeaderboardModule
+	require_dependency 'cache_module'
+	
 	#Title:			get_leaderboard
 	#Description:	Returns a sorted leaderboard for this competition
 	#Params:		competition_id - ID of competition
@@ -6,9 +8,11 @@ module LeaderboardModule
 	#				group_id - ID of stage/race
 	#				limit - How many entries in the leaderboard to show
 	def self.get_leaderboard(competition_id, group_type, group_id, limit=10)
-		cache_name = 'leaderboard_'+competition_id.to_s+'_'+group_type+'_'+group_id.to_s
-		leaderboard_with_gap = nil
-		leaderboard_with_gap = eval(REDIS.get(cache_name)) if (REDIS.exists(cache_name))
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:LEADERBOARD], 
+			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
+		)
+		leaderboard_with_gap = CacheModule::get(cache_name)
 		if (leaderboard_with_gap.nil?)
 			tip_conditions = {:competition_id=>competition_id}
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
@@ -137,8 +141,7 @@ module LeaderboardModule
 				
 				base_time ||= entry[1][:time]
 			end
-			REDIS.set(cache_name, leaderboard_with_gap)
-			REDIS.expire(cache_name, 24*60*60)
+			CacheModule::set(leaderboard_with_gap, cache_name, CacheModule::CACHE_TTL[:DAY])
 		end
 		
 		return leaderboard_with_gap
