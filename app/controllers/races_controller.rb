@@ -140,6 +140,9 @@ class RacesController < ApplicationController
 		@left_nav_data = RaceModule::get_left_nav_data(@stages, primary_competition_id, @user.id)
 		
 		@hide_action_buttons = true
+		
+		#Cycling tips display
+		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
 	
 	

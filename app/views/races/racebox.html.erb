@@ -15,7 +15,7 @@
 					<div class="race-details"><div class="timer" style="display: block;">
 						<% if (!@user_race_data[:race][:next_stage_name].nil?) %>
 							<div class="title">
-								<span class="bold">Stage 1</span> <span class="hide-for-small"> STARTING</span> IN
+								<span class="bold"><%=@user_race_data[:race][:next_stage_name]%></span> <span class="hide-for-small"> STARTING</span> IN
 							</div>
 							<div class="countdown hide-for-small">
 								<div class="col">
@@ -62,7 +62,7 @@
 		
 		<table class="competitions">
 			<% if (@user_race_data[:global_results][:rank]>0) %>
-				<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>'" style="cursor:pointer;">
+				<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>?<%=@iframe_params%>'" style="cursor:pointer;">
 					<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
 					<td class="rank bold row">
 						<div class="text-center">
