@@ -742,7 +742,8 @@ class CompetitionsController < ApplicationController
 			:is_participant=>is_participant, 
 			:default_riders=>default_riders, 
 			:tie_break_riders=>tie_break_riders,
-			:tie_break_time=>tie_break_time
+			:tie_break_time=>tie_break_time,
+			:is_creator => (competition.creator_id == uid)
 		}
 	end
 	
@@ -780,6 +781,27 @@ class CompetitionsController < ApplicationController
 	end
 	
 	#JSON
+	
+	#Title:			delete_competition
+	#Description:	Delete a competition
+	def delete_competition
+		render :json=>{:success=>false, :msg=>'User not logged in.'} and return if (@user.nil?)
+		render :json=>{:success=>false, :msg=>'Competition ID not specified.'} and return if (!params.has_key?(:id))
+		
+		#Check competition
+		competition_id = params[:id]
+		competition = Competition.find_by_id(competition_id)
+		render :json=>{:success=>false, :msg=>'Invalid competition'} and return if (competition.nil?)
+		
+		#Is user creator?
+		render :json=>{:success=>false, :msg=>'Only the creator can delete a competition.'} and return if (competition.creator_id != @user.id)
+		
+		competition.status = STATUS[:DELETED]
+		competition.save
+		
+		render :json=>{:success=>true, :msg=>'Competition deleted.'} and return
+		
+	end
 	
 	#Title:			remove_invitation
 	#Description:	Sets a invitation as DELETED

@@ -57,11 +57,19 @@
 				</div>
 			</div>
 			
-			<div class="row">
-				<div class="title black">Quit competition</div>
-				<p>Leaving a tipping competition is serious business. It's probably not really worth it. But if you want to, here is the button to do so. It might or might not be reversible, depending on how busy and/or clever we are.</p>
-				<a style="color:red;" onclick="leave_competition({{competition_id}}, {{user_id}});">Quit competition</a>
-			</div>
+			{{#if is_creator}}
+				<div class="row">
+					<div class="title black">Delete competition</div>
+					<p>Deleting a tipping competition is serious business. It's probably not really worth it. But if you want to, here is the button to do so. It might or might not be reversible, depending on how busy and/or clever we are.</p>
+					<a style="color:red;" onclick="delete_competition({{competition_id}});">Delete competition</a>
+				</div>
+			{{else}}
+				<div class="row">
+					<div class="title black">Quit competition</div>
+					<p>Leaving a tipping competition is serious business. It's probably not really worth it. But if you want to, here is the button to do so. It might or might not be reversible, depending on how busy and/or clever we are.</p>
+					<a style="color:red;" onclick="leave_competition({{competition_id}}, {{user_id}});">Quit competition</a>
+				</div>
+			{{/if}}
 		</div>
 		{{/if}}
 		

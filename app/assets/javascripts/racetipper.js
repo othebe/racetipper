@@ -599,6 +599,20 @@ function show_preview(coords) {
 	});
 }
 
+//Title:		delete_competition
+//Description:	Delete a competition
+function delete_competition(competition_id) {
+	if (!confirm("Are you sure you want to delete this competition?")) return;
+	
+	$.post('/competitions/delete_competition/'+competition_id, {}, function(response) {
+		if (response.success) {
+			window.location.reload();
+		} else {
+			alert(response.msg);
+		}
+	});
+}
+
 //Title:		save_competition
 //Description:	Save a competition
 var saving_competition = false;
@@ -1194,7 +1208,6 @@ function load_other_information(competition_id) {
 	var other_info_template = Handlebars.compile(other_info_source);
 	
 	$.get('/competitions/get_competition_other_info/'+competition_id, {}, function(response) {
-		console.log(response);
 		var other_info_html = other_info_template(response);
 		$('#content-with-nav').html(other_info_html);
 	});
