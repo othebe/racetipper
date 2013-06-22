@@ -9,11 +9,19 @@
 <div class="content">
 	<div class="row hide-for-medium-up">
 		<div class="large-12 columns">
-			<a href="/">
-				<div class="back-button">
-					<%=image_tag 'back.png' %> <span>Back to Race List</span>
-				</div>
-			</a>
+			<% if @scope == COMPETITION_SCOPE[:SITE] %>
+				<a href="/">
+					<div class="back-button">
+						<%=image_tag 'back.png' %> <span>Races</span>
+					</div>
+				</a>
+			<% else %>
+				<a href="/races/racebox/<%=@competition.race_id%>?<%=@iframe_params%>">
+					<div class="back-button">
+						<%=image_tag 'back.png' %> <span>Competitions</span>
+					</div>
+				</a>
+			<% end %>
 		</div>
 	</div>
 	<div class="row hide-for-medium-up">
