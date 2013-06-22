@@ -507,11 +507,13 @@ div#header {
 		
 div#footer {
 	margin-top: 20px;
-	padding: 20px 20px 20px 10%;
+	padding: 10px 20px 10px 10%;
 }
 	div#footer a {
 		color: white;
-		margin-right: 30px;
+		margin-right: 20px;
+		padding: 10px;
+		display: inline-block;
 	}
 
 		div#footer a:hover {
@@ -856,6 +858,11 @@ div.race-competitions {
 			background-image: url('/assets/backgrounds/race_competitions_01.jpg');
 			padding: 15px 10px;
 		}
+
+		div.race-competitions td.competition div.competition-name {
+			font-size: 12pt;
+		}
+
 		div.race-competitions div.header div.race-name div.title {
 			font-size: 18pt;
 		}
@@ -1038,15 +1045,17 @@ div#left-navigator {
 	width: 100%;
 	margin-right: 2%;
 }
+
 	div#left-navigator table {
 		width: 100%;
 	}
 		div#left-navigator table tr {
 			cursor: pointer;
+			-moz-backface-visibility: hidden;
 		}
 
-			div#left-navigator table tr:hover {
-				opacity: 0.7;
+			div#left-navigator table tr:hover{
+				opacity: 0.8;
 			}
 
 		div#left-navigator table img.add-tip {

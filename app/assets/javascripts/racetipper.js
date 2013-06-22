@@ -1045,11 +1045,13 @@ function load_stage_info(stage_id, competition_id) {
 					});
 				});
 				$('div#tip-sheet div.teams').append('<div style="clear:both;"></div>');
+				send_resize_msg();
 			});
 		}
 
 		//Stage leaderboard
 		else {
+			switched = false; //variable for responsive table
 			load_stage_leaderboard(competition_id, stage_info['race_id'], stage_id);
 		}
 		
@@ -1169,6 +1171,9 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 			stage_leaderboard_loaded_tables[type][scope] = true;
 			$('.tooltip').tipTip();
 			send_resize_msg();
+			
+			//Reformat the table to fit screen size
+			updateTables(); 
 		});
 	}
 	
@@ -1394,3 +1399,76 @@ function send_resize_msg() {
 	var padding = 50;
 	window.parent.postMessage(MSG_TYPES.indexOf('RESIZE')+SEPARATOR+($(document).height()+padding), '*');
 }
+
+/* ZURB Responsive Table | MIT License */
+
+switched = false; //If table has been reformatted, set to true
+//Title:		updateTables
+//Description:	Reformat the table to fit the screen size
+function updateTables() {
+	if (($(window).width() < 767) && !switched ){
+		switched = true;
+		$("table.responsive").each(function(i, element) {
+			splitTable($(element));
+		});
+		return true;
+	}
+	else if (switched && ($(window).width() > 767)) {
+		switched = false;
+		$("table.responsive").each(function(i, element) {
+			unsplitTable($(element));
+		});
+	}
+};
+
+	//Title:		splitTable
+	//Description:	Split the table into two, both are scrollable horizontally
+	//Param:        original - JQuery object of the table
+	function splitTable(original) {
+		original.wrap("<div class='table-wrapper' />");
+		
+		var copy = original.clone();
+		copy.find("td:not(:nth-child(-n+2)), th:not(:nth-child(-n+2))").css("display", "none");
+		copy.removeClass("responsive");
+		
+		original.closest(".table-wrapper").append(copy);
+		copy.wrap("<div class='pinned' />");
+		original.wrap("<div class='scrollable' />");
+
+		setCellHeights(original, copy);
+	}
+
+	//Title:		unsplitTable
+	//Description:	Return the table to normal
+	//Param:        original - JQuery object of the table
+	function unsplitTable(original) {
+		original.closest(".table-wrapper").find(".pinned").remove();
+		original.unwrap();
+		original.unwrap();
+	}
+
+	//Title:		setCellHeights
+	//Description:	Make both tables have same height
+	//Param:        original - JQuery object of the table
+	//              copy     - JQuery object of the copied table
+	function setCellHeights(original, copy) {
+		var tr = original.find('tr'),
+			tr_copy = copy.find('tr'),
+			heights = [];
+
+		tr.each(function (index) {
+			var self = $(this),
+				tx = self.find('th, td');
+
+			tx.each(function () {
+				var height = $(this).outerHeight(true);
+				heights[index] = heights[index] || 0;
+				if (height > heights[index]) heights[index] = height;
+			});
+
+		});
+
+		tr_copy.each(function (index) {
+			$(this).height(heights[index]);
+		});
+	}
