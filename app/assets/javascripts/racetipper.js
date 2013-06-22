@@ -346,7 +346,7 @@ function join_competition(competition_id, code, elt) {
 //Title:		remove_invitation
 //Description:	Remove an invitation
 function remove_invitation(competition_id, elt) {
-	var container = $(elt).parent().parent();
+	var container = $(elt).closest('.competition-invite');
 	$(container).fadeOut();
 	
 	$.post('/competitions/remove_invitation/'+competition_id, {}, function(response) {

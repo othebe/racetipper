@@ -68,26 +68,6 @@
 						<div style="clear:both;"></div>
 					</div>
 				</div>
-				<div class="stage-image-container">
-					<div class="stage-images flexslider">
-						<ul class="slides">
-							<li>
-								<img src="http://res.cloudinary.com/racetipper/image/upload/w_620,h_320,c_fit/stage_177_1_augbmo.jpg">
-							</li>
-							<li>
-								<img src="http://res.cloudinary.com/racetipper/image/upload/w_620,h_320,c_fit/stage_177_2_ov5pyw.jpg">
-							</li>
-						</ul>
-					</div>
-				</div>
-				<script>
-					$(window).load(function(){
-						$('.stage-images').flexslider({
-               				animation: "slide",
-               				controlNav: true,
-						});
-					});
-				</script>
 				<% @reports.reverse_each do |r| %>
 					<div class="tipping-report hide-for-small" style="margin-bottom:100px;">
 						<div class="bar">&nbsp;</div>
