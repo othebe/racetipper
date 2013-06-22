@@ -1,11 +1,21 @@
 <div id="left-navigator">
 	<table>
-		<thead></thead>
+		<thead>
+			<tr class="hide-for-small">
+				<td colspan="4" class="gray">
+					<a href="/">
+						<div class="back-button">
+							<%=image_tag 'back.png' %> <span>Back to Race List</span>
+						</div>
+					</a>
+				</td>
+			</tr>
+		</thead>
 		<tbody>
 			<% @left_nav_data.each do |nav_data| %>
 				<% open = !nav_data[:time_remaining].nil? %>
 				<% if (nav_data[:participation]=='OK') %>
-					<tr style="cursor:pointer;" onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open) ? 'gray' : 'darkgray'%> <%=nav_data[:stage_id]%>">
+					<tr onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open) ? 'gray' : 'darkgray'%> <%=nav_data[:stage_id]%>">
 				<% else %>
 					<tr class="<%=(open) ? 'gray' : 'darkgray'%>">
 				<% end %>
@@ -116,17 +126,20 @@
 			});
 		}
 
-		//ZURB Slide-in Side Bar | MIT License
+	/* ZURB Slide-in Side Bar | MIT License */
+		// "Arrow" button on click
 		$('#sidebarButton').on('click', function (e) {
 			e.preventDefault();
 			$('body').toggleClass('active');
 			$('#sidebarButton').toggleClass('active');
-	    });
-
-	    $(document).on('click', '.active div[role="main"]', function(e) {
-	    	e.preventDefault();
+		});
+		// Slide-out the sidebar after selecting stage
+		$('#left-navigator').on('click', function (e) {
 			$('body').toggleClass('active');
 			$('#sidebarButton').toggleClass('active');
-	    });
+			$('html, body').animate( {
+				scrollTop: $("#sidebarButton").offset().top
+			}, 500);
+		});
 	});
 </script>

@@ -281,9 +281,15 @@ div.timer {
 				div.timer div.countdown div.col div.value {
 					font-size: 48pt;
 				}
+	@media only screen and (max-width: 850px) {
+		div.timer div.countdown div.col div.value {
+			font-size: 36pt;
+		}
+	}
+
 	@media only screen and (max-width: 767px) {
 		div.timer {
-			min-width: 125px;
+			min-width : 130px;
 			margin-bottom: 0;
 		}
 		div.timer div.title {
@@ -823,6 +829,7 @@ div.race-competitions {
 				div.race-competitions .empty-tip-button img {
 					height: 25px;
 				}
+
 	@media only screen and (max-width: 1039px) {
 		div.race-competitions .rank .value {
 			font-size: 30pt;
@@ -839,6 +846,9 @@ div.race-competitions {
 		div.race-competitions .competition div {
 			font-size: 16pt;
 		}
+			div.race-competitions .competition div.btn {
+				font-size: 12pt;
+			}
 	}
 
 	@media only screen and (max-width: 767px) {
@@ -1031,6 +1041,14 @@ div#left-navigator {
 	div#left-navigator table {
 		width: 100%;
 	}
+		div#left-navigator table tr {
+			cursor: pointer;
+		}
+
+			div#left-navigator table tr:hover {
+				opacity: 0.7;
+			}
+
 		div#left-navigator table img.add-tip {
 			width: 20px;
 		}
@@ -1146,15 +1164,16 @@ body.off-canvas { padding: 0; margin: 0; }
 .content { overflow: hidden; }
 .row .row { overflow: visible; }
 
-[role="main"]:before { content: " "; position: absolute; z-index: -1; top: 0; left: -100%; width: 100%; height: 100%; }
+[role="main"]:before { content: " "; position: absolute; z-index: -1; top: 0; 
+	left: -100%; width: 100%; height: 100%; }
 [role="complementary"], [role="main"] { display: block; position: relative;}
 
 @media only screen and (max-width: 767px) {
-	[role="complementary"] { margin-left: -100%; width: 80%; float: left; z-index: 2; }
+	[role="complementary"] { margin-left: -100%; width: 100%; float: left; z-index: 2; }
 	[role="main"] { margin-left: 0; float: right; z-index: 1; position: relative; }
 
 	.active [role="complementary"] { margin-left: 0; }
-	.active [role="main"] { margin-right: -80%; }
+	.active [role="main"] { margin-right: -100%; }
 }
 
 /* *** Overview *** */
@@ -1261,10 +1280,6 @@ div#stage-overview div.status {
 	font-size: 18pt;
 }
 
-div.stage-image-container {
-	padding: 30px 22%;
-}
-	
 	@media only screen and (max-width: 1000px) {
 		div#overview div.info div.col.big,
 		div#stage-overview div.info div.col.big,
@@ -1673,7 +1688,10 @@ div#stage-leaderboard {
 	@media only screen and (max-width: 767px) {
 		table.responsive { margin-bottom: 0; }
 		
-		.pinned { position: absolute; left: 0; top: 0; background: #fff; width: 50%; overflow: hidden; overflow-x: scroll; border-right: 1px solid #ccc; border-left: 1px solid #ccc; }
+		.pinned { position: absolute; left: 0; top: 0; 
+			background: #fff; width: 50%; overflow: hidden; 
+			overflow-x: scroll; border-right: 1px solid #ccc; 
+			border-left: 1px solid #ccc; }
 		.pinned table { border-right: none; border-left: none; width: 100%; }
 		.pinned table th, .pinned table td { white-space: nowrap; }
 		.pinned td:last-child { border-bottom: 0; }
@@ -1692,7 +1710,7 @@ div#stage-leaderboard {
 		.pinned th:nth-child(n+3), 
 		.pinned td:nth-child(n+3) {
 			display: none;
-		} 
+		}
 	}
 				
 /* *** ********************************** User profile ************************************** *** */			
@@ -1737,33 +1755,45 @@ div#user-settings div.col {
 div#race-information  div.race-description {
 	padding: 20px;
 }
-	div#race-information  div.race-description p{
+	div#race-information  div.race-description p {
 		margin: 0;
 	}
 
 /* SLIDER */
+div.stage-image-container {
+	padding: 20px;
+	margin-bottom: 40px;
+}
+	
 .stage-images {
-	height: 300px;
-	max-width: 620px;
+	max-width : 70%;
+	margin    : 0 auto;
 }
 
-.stage-images .bjqs {
-	min-height: 300px;
-	height: 300px;
+.stage-images .slides {
 	width: 100%;
 	display: block;
 	text-align: center;
 }
-	.stage-images .bjqs .bjqs-slide {
+	.stage-images .slides > li {
 		width: 100%;
-		max-height: 300px;
-		text-align: center;
 	}
 
-		.stage-images .bjqs .bjqs-slide img{
+		.stage-images .slides > li img{
 			width: auto;
 			height: auto;
+			margin: 0 auto;
 		}
+
+.stage-images .active-marker a{
+	background: #1B94E9;
+}
+
+	@media only screen and (max-width: 767px) {
+		.stage-images {
+			max-width : 100%;
+		}
+	}
 
 /* STATIC PAGES (ABOUT, RULES) */ 
 .static-page p {
@@ -1803,3 +1833,39 @@ div#race-information  div.race-description {
 b {
 	font-weight: 700;
 }
+
+/* Back button */
+table .back-button {
+	margin-bottom: 0;
+}
+
+.back-button {
+	cursor: pointer;
+	margin-bottom: 15px;
+	padding: 5px 5px 5px 10px;
+}
+	.back-button img {
+		position: relative;
+		width  : 30px;
+		height : auto;
+		vertical-align : middle;
+		margin-right: 10px;
+	}
+
+	.back-button span {
+		text-transform: uppercase;
+		color : #333;
+		font-weight: 700;
+	}
+
+	.back-button:hover {
+		opacity: 0.7;
+	}
+
+		.back-button:hover img {
+			right: 5px;
+		}
+
+		.back-button:hover span {
+			color : #000;
+		}

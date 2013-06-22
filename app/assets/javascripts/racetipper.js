@@ -923,12 +923,9 @@ function load_stage_info(stage_id, competition_id) {
 			var stage_image_slider_template = Handlebars.compile(stage_image_slider_source);
 			var stage_image_slider_html = stage_image_slider_template(stage_info);
 			$('#content-with-nav').append(stage_image_slider_html);
-			$('.stage-images').bjqs({
-				height      : 320,
-				width       : 620,
-				showcontrols : false,
-				responsive  : true,
-				automatic: false,
+			$('.stage-images').flexslider({
+				animation: "slide",
+				controlNav: true,
 			});
 		}
 		
@@ -1044,7 +1041,7 @@ function load_stage_info(stage_id, competition_id) {
 		loading_stage_info = false;
 		$('#content-with-nav').removeClass('loading-overlay');
 		
-		send_resize_msg(); 
+		send_resize_msg();
 	});
 }
 
