@@ -599,6 +599,20 @@ function show_preview(coords) {
 	});
 }
 
+//Title:		delete_competition
+//Description:	Delete a competition
+function delete_competition(competition_id) {
+	if (!confirm("Are you sure you want to delete this competition?")) return;
+	
+	$.post('/competitions/delete_competition/'+competition_id, {}, function(response) {
+		if (response.success) {
+			window.location.reload();
+		} else {
+			alert(response.msg);
+		}
+	});
+}
+
 //Title:		save_competition
 //Description:	Save a competition
 var saving_competition = false;
@@ -781,6 +795,7 @@ function get_user_race_data(user_id, race_id, elt) {
 					postfix = 'rd';
 					
 				var competition_html = competition_template({
+					'race_id': response.race['id'], 
 					'rank': response.global_results['rank'],
 					'competition_name': 'Sitewide',
 					'postfix': postfix,
@@ -887,7 +902,7 @@ function load_stage_info(stage_id, competition_id) {
 	if (loading_stage_info) return;
 	if (current_stage_id==stage_id) return;
 	
-	window.history.pushState('Object', 'Title', '/competitions/'+competition_id+'?stage_id='+stage_id);
+	if (window.history.pushStage != null) window.history.pushState('Object', 'Title', '/competitions/'+competition_id+'?stage_id='+stage_id);
 	
 	current_stage_id = stage_id;
 	loading_stage_info = true;
@@ -1190,7 +1205,6 @@ function load_other_information(competition_id) {
 	var other_info_template = Handlebars.compile(other_info_source);
 	
 	$.get('/competitions/get_competition_other_info/'+competition_id, {}, function(response) {
-		console.log(response);
 		var other_info_html = other_info_template(response);
 		$('#content-with-nav').html(other_info_html);
 	});

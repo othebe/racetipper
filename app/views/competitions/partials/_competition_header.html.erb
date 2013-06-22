@@ -12,41 +12,43 @@
 					<%=@competition.name%>
 				</div>
 
-				<div class="action-buttons">
-				<% if (@participating) %>
-					<a href="/competitions/<%=@competition.id%>?<%=@iframe_params%>">
-						<div class="btn black">
-							<%=image_tag 'eye.png'%>
-							<span>Overview</span>
-						</div>
-					</a>
-					
-					<div class="btn yellow" style="margin-bottom: 10px;" onclick="load_other_information(<%=@competition.id%>)">
-						<%=image_tag 'more-options.png'%>
-						<span>Other Information</span>
-					</div>
-					
-					<% if (!@user.nil? && @user.id==@creator.id) %>
-						<div style="display:none;">
-							<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} %>
+				<% if (!@hide_action_buttons) %>
+					<div class="action-buttons">
+					<% if (@participating) %>
+						<a href="/competitions/<%=@competition.id%>?<%=@iframe_params%>">
+							<div class="btn black">
+								<%=image_tag 'eye.png'%>
+								<span>Overview</span>
+							</div>
+						</a>
+						
+						<div class="btn yellow" style="margin-bottom: 10px;" onclick="load_other_information(<%=@competition.id%>)">
+							<%=image_tag 'more-options.png'%>
+							<span>Other Information</span>
 						</div>
 						
-						<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>', '<%=@competition.name.tr("'", "`")%>', <%=@competition.status==STATUS[:ACTIVE]%>, '<%=@competition.description.tr("'", "`")%>');">
+						<% if (!@user.nil? && @user.id==@creator.id) %>
+							<div style="display:none;">
+								<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} %>
+							</div>
+							
+							<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>', '<%=@competition.name.tr("'", "`")%>', <%=@competition.status==STATUS[:ACTIVE]%>, '<%=@competition.description.tr("'", "`")%>');">
+								<%=image_tag 'pencil.png'%>
+								<span>Edit Competition</span>
+							</div>
+						<% end %>
+					<% elsif (!@user.nil?) %>
+						<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, '<%=@code%>', this);">
 							<%=image_tag 'pencil.png'%>
-							<span>Edit Competition</span>
+							<span>Join Competition</span>
+						</div>
+					<% else %>
+						<div class="btn gray">
+							<a href="/"><span>Login to tip</span></a>
 						</div>
 					<% end %>
-				<% elsif (!@user.nil?) %>
-					<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, '<%=@code%>', this);">
-						<%=image_tag 'pencil.png'%>
-						<span>Join Competition</span>
-					</div>
-				<% else %>
-					<div class="btn gray">
-						<a href="/"><span>Login to tip</span></a>
 					</div>
 				<% end %>
-				</div>
 				<div style="clear:both;"></div>
 			</div>
 		</div>

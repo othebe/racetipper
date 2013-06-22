@@ -67,7 +67,11 @@
 </script>
 
 <script id="race-competitions-data-template" type="text/x-handlebars-template">
+	{{#if is_global}}
+	<tr class="data" onclick="location.href='/races/leaderboard/{{race_id}}'" style="cursor:pointer;">
+	{{else}}
 	<tr class="data" onclick="location.href='/competitions/{{competition_id}}'" style="cursor:pointer;">
+	{{/if}}
 		{{#if is_global}}
 			<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
 		{{else}}

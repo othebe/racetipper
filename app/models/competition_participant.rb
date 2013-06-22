@@ -72,6 +72,13 @@ class CompetitionParticipant < ActiveRecord::Base
 		return true
 	end
 	
+	#Title:			get_primary_competition
+	#Description:	Gets primary competition for a user
+	def self.get_primary_competition(user_id, race_id, scope)
+		primary = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND scope=? AND is_primary=?', user_id, race_id, scope, true).first
+		return primary.competition_id if (!primary.nil?)
+	end
+	
 	#Title:			fix_set_primaries
 	#Description:	Set a primary competition for everyone. (Run once to initialize the site-wide functionality)
 	def self.fix_set_primaries
