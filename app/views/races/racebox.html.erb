@@ -1,4 +1,8 @@
 <div class="content">
+	<% @invitations.each do |invitation| %>
+		<%= render :partial=>'pages/partials/competition_invitations', :locals=>{:invitation=>invitation} %>
+	<% end %>
+	
 	<div class="race-competitions">
 		<div class="header">
 			<div class="row collapse">
@@ -58,7 +62,7 @@
 		
 		<table class="competitions">
 			<% if (@user_race_data[:global_results][:rank]>0) %>
-				<tr class="data" onclick="location.href='/competitions/'" style="cursor:pointer;">
+				<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>'" style="cursor:pointer;">
 					<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
 					<td class="rank bold row">
 						<div class="text-center">
@@ -107,6 +111,16 @@
 		<div class="competitions-box blue hide-for-small">
 			<div class="title bold">MORE COMPETITIONS</div>	
 			<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} if (!@user_race_data[:race][:next_stage_name].nil?)%>			
+			
+			<% @user_race_data[:more_competitions].each do |competition| %>
+				<a href="/competitions/<%=competition[:competition_id]%>?<%=@iframe_params%>">
+					<div class="competition grayblack">
+						<div class="name bold"><%=competition[:competition_name]%></div>
+						<div class="stats"><%=competition[:num_participants]%> tippers joined</div>
+						<div class="btn yellow" style="float:none; text-align:center;">View details</div>
+					</div>
+				</a>
+			<% end %>
 			<div style="clear:both;"></div>
 		</div>
 	</div>

@@ -93,6 +93,8 @@ class RacesController < ApplicationController
 		@race = Race.find_by_id(race_id)
 		@user_race_data = RaceModule::get_user_race_data(user_id, @race, @scope)
 		
+		@invitations = CompetitionInvitation.get_user_invitations(user_id)
+		
 		redirect_to :root and return if (@race.nil?)
 		
 		#Cycling tips display

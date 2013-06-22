@@ -5,12 +5,19 @@ class AppMailer < ActionMailer::Base
 	#Description:	Invite a user to a competition
 	#Params:		emails - Comma delimited list of email addresses
 	#				competition - Competition to invite to
-	def competition_invitation(emails, competition)
+	def competition_invitation(emails, competition, scope)
 		return if (emails.nil? || emails.strip.length==0)
 		creator = User.find_by_id(competition.creator_id)
 		@competition = competition
 		@invitor_name = (creator.firstname.strip.capitalize+' '+creator.lastname.strip.capitalize).strip
+		
 		@invitation_url = SITE_URL+'competitions/'+competition.id.to_s+'/?code='+competition.invitation_code
+		if (scope==COMPETITION_SCOPE[:CYCLINGTIPS])
+			race_id = @competition.race_id
+			invitation_data = InvitationEmailTarget.where({:race_id=>race_id, :scope=>scope}).first
+			@invitation_url = invitation_data.target if (!invitation_data.nil?)
+		end
+		
 		mail(:to => emails, :subject => "Invitation for competition.")
 	end
 	

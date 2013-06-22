@@ -23,7 +23,7 @@ class CompetitionParticipant < ActiveRecord::Base
 		CompetitionTip.fill_tips(user_id, competition_id)
 		
 		#Designate this competition as the primary if its the first
-		has_primary = (self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=?', user_id, competition.race_id, true).count > 0)
+		has_primary = (self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=? AND scope=?', user_id, competition.race_id, true, scope).count > 0)
 		self.set_primary_competition(competition_id, user_id, scope) if (!has_primary)
 		
 		#Clear cache
