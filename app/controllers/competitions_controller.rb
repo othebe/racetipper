@@ -50,9 +50,14 @@ class CompetitionsController < ApplicationController
 		
 		if (@competition.status==STATUS[:ACTIVE])
 		elsif (@competition.status==STATUS[:PRIVATE])
-			@code = nil
-			@code = params[:code] if (params.has_key?(:code))
-			redirect_to :root and return if (!Competition.is_competition_code_valid(@competition.id, @code))
+			#Check participation
+			participating = CompetitionParticipant.where({:competition_id=>@competition.id, :user_id=>user_id, :status=>STATUS[:ACTIVE]})
+			#Check code if not participating
+			if (participating.empty?)
+				@code = nil
+				@code = params[:code] if (params.has_key?(:code))
+				redirect_to :root and return if (!Competition.is_competition_code_valid(@competition.id, @code))
+			end
 		else
 			redirect_to :root and return
 		end
