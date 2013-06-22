@@ -781,6 +781,7 @@ function get_user_race_data(user_id, race_id, elt) {
 					postfix = 'rd';
 					
 				var competition_html = competition_template({
+					'race_id': response.race['id'], 
 					'rank': response.global_results['rank'],
 					'competition_name': 'Sitewide',
 					'postfix': postfix,
@@ -887,7 +888,7 @@ function load_stage_info(stage_id, competition_id) {
 	if (loading_stage_info) return;
 	if (current_stage_id==stage_id) return;
 	
-	window.history.pushState('Object', 'Title', '/competitions/'+competition_id+'?stage_id='+stage_id);
+	if (window.history.pushStage != null) window.history.pushState('Object', 'Title', '/competitions/'+competition_id+'?stage_id='+stage_id);
 	
 	current_stage_id = stage_id;
 	loading_stage_info = true;

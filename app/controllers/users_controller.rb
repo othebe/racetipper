@@ -46,10 +46,11 @@ class UsersController < ApplicationController
 		begin
 			fb_user = FbGraph::User.fetch('me', :access_token=>access_token)
 			fb_id = fb_user.identifier
-			email = fb_user.email
+			email = fb_user.email.trim.downcase
 			
-			#Check if user exists
+			#Check if user exists by Facebook ID
 			user = User.find_by_fb_id(fb_id)
+			user = User.find_by_email(email) if (user.nil?)
 				
 			#Create new user
 			if (user.nil?)

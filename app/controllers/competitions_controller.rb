@@ -86,10 +86,10 @@ class CompetitionsController < ApplicationController
 		@completed_stages = @stages.where({:is_complete=>true}).count
 		
 		#Get top 2 sprint
-		@top_sprints = get_top(:sprint, 2, @leaderboard)
+		@top_sprints = LeaderboardModule::get_top(:sprint, 2, @leaderboard)
 		
 		#Get top 2 KOM
-		@top_koms = get_top(:kom, 2, @leaderboard)
+		@top_koms = LeaderboardModule::get_top(:kom, 2, @leaderboard)
 		
 		#Competition reports
 		@reports = []
@@ -120,7 +120,7 @@ class CompetitionsController < ApplicationController
 		@reports = @reports.sort_by{|r| r[:stage_starts_on]}
 		
 		#Left nav data
-		@left_nav_data = get_left_nav_data(@stages, params[:id])
+		@left_nav_data = RaceModule::get_left_nav_data(@stages, params[:id], user_id)
 		
 		#Cycling tips display
 		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
@@ -552,7 +552,7 @@ class CompetitionsController < ApplicationController
 			#If not empty
 			if(!email.strip().empty?)
 				invited_user = User.find_by_email(email.strip.downcase)
-				CompetitionInvitation.invite_user(invited_user.id, competition.id)
+				CompetitionInvitation.invite_user(invited_user.id, competition.id) if (!invited_user.nil?)
 			end
 		end
 		
@@ -1193,91 +1193,5 @@ class CompetitionsController < ApplicationController
 		result[:seconds] = tt
 		
 		return result
-	end
-	
-	#Title:			get_top
-	#Description:	Get top scorers in the leaderboard
-	def get_top(data_sym, count, data)
-		top = []
-		added_ndx = []
-		
-		for i in 1..count
-			max = nil
-			current = nil
-			ndx = 0
-			
-			data.each do |d|
-				if (max.nil? || d[data_sym]>max)
-					if (!added_ndx.include?(ndx))
-						max = d[data_sym]
-						current = d
-						added_ndx.push(ndx)
-					end
-				end
-				ndx += 1
-			end
-			
-			top.push(current)
-		end
-		
-		return top
-	end
-	
-	#Title:			get_left_nav_data
-	#Description:	Gets data array for the left navigator
-	def get_left_nav_data(stages, competition_id)
-		user_id = (@user.nil?)?0:@user.id
-		
-		tips = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>stages.first.race_id, :competition_id=>competition_id})
-		
-		data = []
-		stages.each do |stage|
-			#Get remaining
-			remaining = (stage.starts_on-Time.now)
-			if (remaining > 86400)
-				remaining = (remaining/86400).to_i.to_s + ' days'
-			elsif (remaining > 3600)
-				remaining = (remaining/3600).to_i.to_s + ' hours'
-			elsif (remaining > 0)
-				remaining = (remaining/60).to_i.to_s + ' minutes'
-			else 
-				remaining = nil
-			end
-			
-			stage_info = {
-				:stage_id => stage.id,
-				:stage_name => stage.name,
-				:stage_type => stage.stage_type,
-				:time_remaining => remaining,
-			}
-			
-			#Check participation status
-			if (user_id==0)
-				stage_info[:participation] = 'NO_LOGIN'
-			else
-				participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id})
-				if (participant.empty?)
-					stage_info[:participation] = 'NO_PARTICIPATION'
-				else
-					stage_info[:participation] = 'OK'
-				end
-			end
-			
-			#Get tipped rider info
-			rider = nil
-			if (user_id > 0)
-				tip = tips.where({:stage_id => stage.id}).first
-				chosen_rider = (tip.nil?)?nil:(tip.default_rider_id || tip.rider_id)
-				if (!chosen_rider.nil?)
-					rider = Rider.find_by_id(chosen_rider)
-					rider = rider.name if (!rider.nil?)
-				end
-			end
-			stage_info[:tip] = rider;
-			
-			data.push(stage_info)
-		end
-		
-		return data
-	end
+	end	
 end

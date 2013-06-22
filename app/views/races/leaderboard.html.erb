@@ -1,0 +1,71 @@
+<%=render 'competitions/partials/competition_header'%>
+<%=render 'competitions/partials/stage_header'%>
+<%=render 'competitions/partials/tip_sheet_template'%>
+<%=render 'competitions/partials/stage_leaderboard_template'%>
+<%=render 'competitions/partials/stage_image_slider_template'%>
+<%=render 'competitions/partials/other_info_template'%>
+<%=render 'competitions/partials/tipping_report_template'%>
+
+<div class="content">
+	<div class="row hide-for-medium-up">
+		<div class="small-12 columns">
+			<a class="button grayblack hide-for-medium-up" id="sidebarButton">
+				<span class="arrow yellow">
+					<span class="arrow-shape"></span>
+				</span>
+				Select Stage
+			</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-3 columns" role="complementary">
+			<%=render 'competitions/partials/left_navigator'%>
+		</div>
+		<div class="large-9 small-12 columns" role="main" >
+			<div id="content-with-nav">
+				<!-- Overview -->
+				<div id="overview">
+					<div class="name">
+						OVERVIEW
+						<div class="title black"><%=@competition.name%></div>
+					</div>
+					
+					<div class="info">
+						<div class="row collapse">
+							<div class="large-4 small-4 columns">
+								<div class="big bold">
+									<%=@completed_stages%>/<%=@stages.length%>
+								</div>
+								
+								<div class="bold stacked">
+									STAGES</br>COMPLETED
+								</div>
+							</div>
+							<div class="large-4 small-3 columns">
+								<div class="big bold" style="margin-right:10px;">
+									<%=@num_participants%>
+								</div>
+								<div class="bold stacked">
+									TIPPERS</br>JOINED
+								</div>
+							</div>
+						</div>
+
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+
+				<%=render 'competitions/partials/global_leaderboard'%>
+
+			</div>
+		</div> <!--COLUMN-->
+	</div> <!--ROW-->
+</div>
+
+<% if (!@stage_id.nil?) %>
+	<script>
+		$(document).ready(function() {
+			load_stage_info('<%=@stage_id%>', '<%=@competition.id%>');
+		});
+	</script>
+<% end %>

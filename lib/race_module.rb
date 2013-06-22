@@ -16,6 +16,7 @@ module RaceModule
 
 		#Get race data
 		race_data = {}
+		race_data[:id] = race.id
 		race_data[:race_name] = race.name
 		race_data[:next_stage_name] = (next_stage.nil?)?nil:next_stage.name
 		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
@@ -101,6 +102,8 @@ module RaceModule
 		rank = 0
 		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil, scope)
 		
+		puts leaderboard.inspect
+		
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
 				rank += 1
@@ -110,6 +113,63 @@ module RaceModule
 		
 		return {
 			:rank => rank,
+			:leaderboard => leaderboard
 		}
+	end
+	
+	#Title:			get_left_nav_data
+	#Description:	Gets data array for the left navigator
+	def self.get_left_nav_data(stages, competition_id, user_id)		
+		tips = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>stages.first.race_id, :competition_id=>competition_id})
+		
+		data = []
+		stages.each do |stage|
+			#Get remaining
+			remaining = (stage.starts_on-Time.now)
+			if (remaining > 86400)
+				remaining = (remaining/86400).to_i.to_s + ' days'
+			elsif (remaining > 3600)
+				remaining = (remaining/3600).to_i.to_s + ' hours'
+			elsif (remaining > 0)
+				remaining = (remaining/60).to_i.to_s + ' minutes'
+			else 
+				remaining = nil
+			end
+			
+			stage_info = {
+				:stage_id => stage.id,
+				:stage_name => stage.name,
+				:stage_type => stage.stage_type,
+				:time_remaining => remaining,
+			}
+			
+			#Check participation status
+			if (user_id==0)
+				stage_info[:participation] = 'NO_LOGIN'
+			else
+				participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id})
+				if (participant.empty?)
+					stage_info[:participation] = 'NO_PARTICIPATION'
+				else
+					stage_info[:participation] = 'OK'
+				end
+			end
+			
+			#Get tipped rider info
+			rider = nil
+			if (user_id > 0)
+				tip = tips.where({:stage_id => stage.id}).first
+				chosen_rider = (tip.nil?)?nil:(tip.default_rider_id || tip.rider_id)
+				if (!chosen_rider.nil?)
+					rider = Rider.find_by_id(chosen_rider)
+					rider = rider.name if (!rider.nil?)
+				end
+			end
+			stage_info[:tip] = rider;
+			
+			data.push(stage_info)
+		end
+		
+		return data
 	end
 end

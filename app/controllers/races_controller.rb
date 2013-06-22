@@ -1,5 +1,6 @@
 class RacesController < ApplicationController
 	require_dependency 'race_module'
+	require_dependency 'leaderboard_module'
 	
 	#Title:			index
 	#Description:	Show competition grid
@@ -97,6 +98,52 @@ class RacesController < ApplicationController
 		#Cycling tips display
 		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
+	
+	#Title:			leaderboard
+	#Description:	Global (sitewide) leaderboard
+	def leaderboard
+		redirect_to :root and return if (!params.has_key?(:id))
+		redirect_to :root and return if (@user.nil?)
+		
+		race_id = params[:id]
+		@race = Race.find_by_id(race_id)
+		
+		competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
+		redirect_to :root and return if (competition_id.nil?)
+		
+		@competition = Competition.find_by_id(competition_id)
+		@competition.name = 'Sitewide'
+		@competition.description = ''
+		@leaderboard = LeaderboardModule::get_global_leaderboard(race_id, @scope)
+		
+		#Get primary competition
+		primary_competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
+		@stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
+		
+		@completed_stages = @stages.where({:is_complete=>true}).count
+		
+		#Number of participants
+		participants = CompetitionParticipant
+						.joins(:competition)
+						.where('competitions.race_id=? AND competitions.scope=? AND competition_participants.status=?', 
+							race_id, @scope, STATUS[:ACTIVE])
+		@num_participants = participants.count
+		
+		#Get top 2 sprint
+		@top_sprints = LeaderboardModule::get_top(:sprint, 2, @leaderboard)
+		
+		#Get top 2 KOM
+		@top_koms = LeaderboardModule::get_top(:kom, 2, @leaderboard)
+		
+		@left_nav_data = RaceModule::get_left_nav_data(@stages, primary_competition_id, @user.id)
+		
+		@hide_action_buttons = true
+	end
+	
+	
+	######################################
+	#### JSON
+	######################################
 	
 	#Title:			get_results
 	#Description:	Get results for a race
