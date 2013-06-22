@@ -44,7 +44,7 @@ module LeaderboardModule
 					.select('competition_tips.*').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
-					.where('competition_tips.race_id=? AND competitions.scope=?', race_id, scope)
+					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=?', race_id, scope, true)
 					
 			leaderboard = self.combine_leaderboard_tip_results(results, tips)
 		end
