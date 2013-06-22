@@ -1053,7 +1053,7 @@ class CompetitionsController < ApplicationController
 	#				competition - Competition activerecord
 	private
 	def send_competition_invitations(emails, competition)
-		AppMailer.competition_invitation(emails, competition).deliver
+		AppMailer.competition_invitation(emails, competition, @scope).deliver
 	end
 	
 	private

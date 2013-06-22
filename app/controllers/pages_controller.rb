@@ -11,7 +11,7 @@ class PagesController < ApplicationController
 	#Description:	Home page
 	def home
 		redirect_to :root and return if (@user.nil?)
-		@invitations = CompetitionInvitation.get_user_invitations(@user.id)
+		@invitations = CompetitionInvitation.get_user_invitations(@user.id, @scope)
 		@races = Race.where({:status=>STATUS[:ACTIVE]}).order('id DESC').limit(3)
 	end
 	

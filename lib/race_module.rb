@@ -42,55 +42,54 @@ module RaceModule
 			else
 				next if (competition.status != STATUS[:ACTIVE])
 			end
-			
-			#Check if participant
+
+			#Add to more competitions if not participant
 			if (!is_participant)
 				more_competitions.push({
 					:competition_id => competition.id,
 					:competition_name => competition.name,
 					:num_participants => participants.length
 				}) if (competition.status == STATUS[:ACTIVE])
-				next
-			end
-			
-			#Check if this competition is the primary
-			is_primary = participants.where({:user_id=>user_id}).first.is_primary
-			
-			#Leaderboard for this competition
-			leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
+			#Else add to current competitions
+			else
+				#Check if this competition is the primary
+				is_primary = participants.where({:user_id=>user_id}).first.is_primary
+				
+				#Leaderboard for this competition
+				leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
 
-			#Check tip for next stage
-			rider = nil
-			if (!next_stage.nil?)
-				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
-				rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
-			end
-			
-			current_time = nil;
-			rank = 0
-			
-			#Find leaderboard entry
-			username = formatted_time = ''
-			leaderboard.each do |entry|
-				rank += 1
-				if (entry[:user_id]==user_id)
-					username = entry[:username]
-					formatted_time = entry[:formatted_time] || '--'
-					break
+				#Check tip for next stage
+				rider = nil
+				if (!next_stage.nil?)
+					tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
+					rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
 				end
+				
+				current_time = nil;
+				rank = 0
+				
+				#Find leaderboard entry
+				username = formatted_time = ''
+				leaderboard.each do |entry|
+					rank += 1
+					if (entry[:user_id]==user_id)
+						username = entry[:username]
+						formatted_time = entry[:formatted_time] || '--'
+						break
+					end
+				end
+				
+				data.push({
+					:user_id => user_id,
+					:username => username,
+					:time_formatted => formatted_time,
+					:competition_id => competition.id,
+					:competition_name => competition.name,
+					:rank => rank,
+					:next_rider => (rider.nil?)?nil:rider.name ,
+					:is_primary => is_primary
+				})
 			end
-			
-			data.push({
-				:user_id => user_id,
-				:username => username,
-				:time_formatted => formatted_time,
-				:competition_id => competition.id,
-				:competition_name => competition.name,
-				:rank => rank,
-				:next_rider => (rider.nil?)?nil:rider.name ,
-				:is_primary => is_primary
-			})
-			
 		end
 		
 		return {:competition=>data, :global_results=>global_results, :race=>race_data, :more_competitions=>more_competitions}
@@ -100,14 +99,12 @@ module RaceModule
 	#Description:	Gets results for global competitions
 	def self.get_global_competition_results(race_id, scope, user_id=0)
 		rank = 0
-		leaderboard = Race.get_global_competition_leaderboard(race_id, 'race', nil, scope)
-		
-		puts leaderboard.inspect
+		leaderboard = LeaderboardModule::get_global_leaderboard(race_id, scope)
 		
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
 				rank += 1
-				break if (entry[:user].id == user_id)
+				break if (entry[:user_id] == user_id)
 			end
 		end
 		

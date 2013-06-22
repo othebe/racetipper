@@ -2,7 +2,7 @@
 	<div class="row collapse">
 		<div class="large-1 small-2 columns">
 			<div class="text-center">
-				<img src="/users/picture/<%=invitation[:creator].id%>" class="user-img">
+				<img src="/users/picture/<%=invitation[:creator].id%>?<%=@iframe_params%>" class="user-img">
 			</div>
 		</div>
 		
@@ -18,7 +18,7 @@
 		<div class="large-4 small-2 columns">
 			<div class="action">
 				<div class="btn black">
-					<a href="/competitions/<%= invitation[:competition].id %>?code=<%= invitation[:competition].invitation_code %>">
+					<a href="/competitions/<%= invitation[:competition].id %>?<%=@iframe_params%>&code=<%= invitation[:competition].invitation_code %>">
 						<%=image_tag 'tick.png', :style=>'min-width: 11px;' %>
 					
 						<span class="hide-for-small">Join competition</span>

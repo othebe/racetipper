@@ -32,9 +32,9 @@ class CompetitionInvitation < ActiveRecord::Base
 	#Title:			get_user_invitations
 	#Description:	Gets open invitations to a competiton
 	#Params:		user_id - User to search on
-	def self.get_user_invitations(user_id)
+	def self.get_user_invitations(user_id, scope=0)
 		response = []
-		invitations = self.where({:user_id=>user_id, :status=>STATUS[:ACTIVE]})
+		invitations = self.joins(:competition).where('user_id=? AND competition_invitations.status=? AND competitions.scope=?', user_id, STATUS[:ACTIVE], scope)
 		invitations.each do |invitation|
 			next if (invitation.competition.nil?)
 			race_id = CompetitionStage.select('race_id').where({:competition_id=>invitation.competition_id}).first
