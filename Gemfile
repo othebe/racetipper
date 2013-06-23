@@ -57,3 +57,6 @@ gem 'cloudinary'
 
 #Librato
 gem 'librato-rails'
+
+#New relic
+gem 'newrelic_rpm'
