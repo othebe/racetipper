@@ -1435,7 +1435,7 @@ function updateTables() {
 		original.closest(".table-wrapper").append(copy);
 		copy.wrap("<div class='pinned' />");
 		original.wrap("<div class='scrollable' />");
-
+		copy.tablesorter();
 		setCellHeights(original, copy);
 	}
 
