@@ -1313,7 +1313,6 @@ function save_tipping_report(competition_id, stage_id, elt) {
 			}
 			//Modify existing report
 			else {
-				console.log(title);
 				$(tipping_report).find('div.title-2').html(title);
 				$(tipping_report).find('p').html(report.replace(/\n/g, '</br>'));
 				$('.tipping-report.creator').hide();

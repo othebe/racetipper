@@ -2,6 +2,7 @@ module CacheModule
 	#Cache types
 	CACHE_TYPE = {
 		:LEADERBOARD => 'leaderboard',
+		:GLOBAL_LEADERBOARD => 'global_leaderboard',
 		:RESULTS => 'results',
 		:STAGE_IMAGES => 'stageimages'
 	}
@@ -24,6 +25,8 @@ module CacheModule
 			self.get_results_cache_name(identifiers)
 		when CACHE_TYPE[:STAGE_IMAGES]
 			self.get_stageimages_cache_name(identifiers)
+		when CACHE_TYPE[:GLOBAL_LEADERBOARD]
+			self.get_global_leaderboard_cache_name(identifiers)
 		end
 		
 		name = name.chop if (name.end_with?('_'))
@@ -61,6 +64,12 @@ module CacheModule
 	###############
 	# Cache names #
 	###############
+	
+	#Title:			get_global_leaderboard_cache_name
+	#Description:	Gets global leaderboard cache name
+	def self.get_global_leaderboard_cache_name(identifiers)
+		return [CACHE_TYPE[:GLOBAL_LEADERBOARD], identifiers[:race_id].to_s, identifiers[:scope].to_s].join('_')
+	end
 	
 	#Title:			get_leaderboard_cache_name
 	#Description:	Gets leaderboard cache name
