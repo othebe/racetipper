@@ -86,22 +86,30 @@
 					</td>
 					<td class="competition bold row">
 						<div class="competition-name"><%=competition[:competition_name]%></div>
-						
-						<% if (competition[:is_primary]) %>
-							<div class="btn yellow primary-competition">Primary</div>
-						<% else %>
-							<div class="btn yellow primary-competition" style="display:none;">Primary</div>
-						<% end %>
-						
-						<% if (!@user_race_data[:race][:has_started]) %>
+						<div class="primary-container">
 							<% if (competition[:is_primary]) %>
-								<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
-								<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);" style="display:none;">Set Primary</div>
+								<div class="btn yellow primary-competition">
+									P<span class="hide-for-small">rimary</span>
+								</div>
 							<% else %>
-								<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
-								<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);">Set Primary</div>
+								<div class="btn yellow primary-competition" style="display:none;">
+									P<span class="hide-for-small">rimary</span>
+								</div>
 							<% end %>
-						<% end %>
+							<div class="hide-for-small">
+							<% if (!@user_race_data[:race][:has_started]) %>
+								<% if (competition[:is_primary]) %>
+									<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+									<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);" style="display:none;">
+										Set Primary
+									</div>
+								<% else %>
+									<%= image_tag 'ajax-loader.gif', {:class=>'loading', :style=>'float:right; margin-top:10px;'} %>
+									<div class="btn black set-primary-competition" onclick="set_primary(<%=competition[:competition_id]%>, this, event);">Set Primary</div>
+								<% end %>
+							<% end %>
+							</div>
+						</div>
 					</td>
 					<td class="gray"></td>	
 				</tr>

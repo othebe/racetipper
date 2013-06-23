@@ -1380,10 +1380,10 @@ function set_primary(competition_id, elt, event) {
 		} else {
 			$(elt).parent().find('img.loading').hide();
 			$('td.competition div.primary-competition').hide();
-			$(elt).parent().find('.primary-competition').show();
+			$(elt).closest('.primary-container').find('.primary-competition').show();
 			
 			$('td.competition div.set-primary-competition').show();
-			$(elt).parent().find('.set-primary-competition').hide();
+			$(elt).closest('.primary-container').find('.set-primary-competition').hide();
 		}
 		
 		setting_primary = false;

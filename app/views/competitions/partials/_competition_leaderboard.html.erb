@@ -42,7 +42,10 @@
 
 <script>
 $(document).ready(function() {
-	 $("table.data").tablesorter();
+	if($(window).width() > 767 ) {
+		console.log('a');
+		$("table.data").tablesorter();
+	}
 });
 </script>
 
