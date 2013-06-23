@@ -1687,6 +1687,12 @@ div#stage-leaderboard {
 			padding: 10px;
 			width: auto;
 		}
+
+		div#competition-leaderboard table.data img,
+		div#stage-leaderboard table.data img{
+			width: auto;
+			height: 12px;
+		}
 	}
 
 	@media only screen and (max-width: 479px) {

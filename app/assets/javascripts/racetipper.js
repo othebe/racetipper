@@ -1430,6 +1430,7 @@ function updateTables() {
 		var copy = original.clone();
 		copy.find("td:not(:nth-child(-n+2)), th:not(:nth-child(-n+2))").css("display", "none");
 		copy.removeClass("responsive");
+		copy.addClass("copy");
 		
 		original.closest(".table-wrapper").append(copy);
 		copy.wrap("<div class='pinned' />");

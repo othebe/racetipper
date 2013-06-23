@@ -68,8 +68,7 @@
 </div>
 
 <script>
-
-	$(document).ready(function() {
+	$(function() {
 		//Responsive Table Event Listener
 		$(window).load(updateTables);
 		$(window).on("redraw", function(){switched=false; updateTables(); } );
@@ -90,5 +89,50 @@
 				scrollTop: $("#sidebarButton").offset().top
 			}, 500);
 		});
+
+		//On Sort
+		$(document).on('click', 'table.responsive .header', function(e){
+			e.preventDefault();
+			//If window is small size
+			if (($(window).width() < 767) ){
+				sortResponsiveTable();
+			};
+		});
+
+		//On sort for sticky table
+		$(document).on('click', 'table.copy .header', function(e){
+			e.preventDefault();
+			//If window is small size
+			if (($(window).width() < 767) ){
+				var index = $(this).index();
+
+				//Get the Target column
+				var $sortTarget = $(this).closest('#competition-leaderboard').find(
+					'table.responsive thead th:nth-child('+ (index+1) +')');
+				var sortOrder = 0; //ASC order
+				//If the column already sorted ASC
+				if($sortTarget.hasClass('headerSortDown') ) {
+					sortOrder = 1; //DESC order
+				}
+
+				var sortingIndex = [ [index, sortOrder] ];
+				$("table.responsive").trigger("sorton",[sortingIndex]);
+
+				sortResponsiveTable();
+			}
+		});
+
+		function sortResponsiveTable() {
+			$("table.responsive").each(function(i, element) {
+				unsplitTable($(element) );
+			});
+			var splitAgain = function(){
+				$("table.responsive").each(function(i, element) {
+					splitTable($(element) );
+				});
+			}
+			//Need to wait, if not the sorting will be messy
+			window.setTimeout(splitAgain, 30);
+		}
 	});
 </script>
