@@ -5,6 +5,30 @@ $(document).ready(function(event) {
 	send_resize_msg();
 });
 
+/* IE8 Array indexOf() fix*/
+if (!Array.prototype.indexOf)
+{
+  Array.prototype.indexOf = function(elt /*, from*/)
+  {
+    var len = this.length >>> 0;
+
+    var from = Number(arguments[1]) || 0;
+    from = (from < 0)
+         ? Math.ceil(from)
+         : Math.floor(from);
+    if (from < 0)
+      from += len;
+
+    for (; from < len; from++)
+    {
+      if (from in this &&
+          this[from] === elt)
+        return from;
+    }
+    return -1;
+  };
+}
+
 //Title:		login
 //Description:	Log a user in
 var logging_in = false;
