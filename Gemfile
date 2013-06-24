@@ -7,14 +7,8 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 
-#Use thin for production
-group :production do
-	gem 'thin'
-end
-
-group :development do
-	gem 'thin'
-end
+#Use unicorn
+gem 'unicorn'
 
 gem 'json'
 
@@ -54,9 +48,6 @@ gem 'fb_graph'
 
 #Cloudinary
 gem 'cloudinary'
-
-#Librato
-gem 'librato-rails'
 
 #New relic
 gem 'newrelic_rpm'
