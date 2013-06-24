@@ -105,7 +105,20 @@
 	height: 36px;
 	cursor: pointer;
 	z-index: 8040;
+	font-size: 20pt;
+	background-color: black;
+	border-radius: 100%;
+	border: 3px solid white;
 }
+
+	.fancybox-close:after {
+		content: '×';
+		position: absolute;
+		color: white;
+		top: 4px;
+		left: 8px;
+		font-weight: 700;
+	}
 
 .fancybox-nav {
 	position: absolute;

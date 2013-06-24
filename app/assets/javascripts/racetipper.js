@@ -5,6 +5,27 @@ $(document).ready(function(event) {
 	send_resize_msg();
 });
 
+/* IE8 Array indexOf() fix*/
+if (!Array.prototype.indexOf) {
+	Array.prototype.indexOf = function(elt /*, from*/)
+	{
+		var len = this.length >>> 0;
+
+		var from = Number(arguments[1]) || 0;
+		from = (from < 0)
+			? Math.ceil(from)
+			: Math.floor(from);
+		if (from < 0)
+			from += len;
+
+		for (; from < len; from++) {
+			if (from in this && this[from] === elt)
+				return from;
+		}
+		return -1;
+	};
+}
+
 //Title:		login
 //Description:	Log a user in
 var logging_in = false;
@@ -641,11 +662,23 @@ function save_competition() {
 			$(data_container).find('.footer .btn').removeClass('gray').addClass('yellow');
 		} else {
 			$(data_container).find('.footer .success').show();
+			//If request is Edit
+			if( data['id'] > 0 ) {
+				updateElements(data);
+			}
 		}
 		saving_competition = false;
 	});
 	return false;
 }
+	
+	//Title:		updateElements
+	//Description:	Update the elements to reflect the changes from Edit
+	function updateElements(data) {
+		$('#competition-header .title-2').text(data['competition_name']);
+		$('#content-with-nav .name .title').text(data['competition_name']);
+		$('#content-with-nav .description').text(data['competition_description']);
+	}
 
 //Title:		load_more_competitions
 //Description:	Loads more competitions
@@ -1429,11 +1462,12 @@ function updateTables() {
 		var copy = original.clone();
 		copy.find("td:not(:nth-child(-n+2)), th:not(:nth-child(-n+2))").css("display", "none");
 		copy.removeClass("responsive");
+		copy.addClass("copy");
 		
 		original.closest(".table-wrapper").append(copy);
 		copy.wrap("<div class='pinned' />");
 		original.wrap("<div class='scrollable' />");
-
+		copy.tablesorter();
 		setCellHeights(original, copy);
 	}
 

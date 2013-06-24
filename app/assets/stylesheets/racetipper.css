@@ -1210,6 +1210,7 @@ div#other-information div.name {
 	}
 
 div#overview div.info,
+div#overview div.description,
 div#stage-overview div.info,
 div#stage-overview div.description,
 div.stacked-cols {
@@ -1288,7 +1289,8 @@ div#stage-overview div.info div.col.add-tip {
 		color: white;
 		padding: 10px;
 	}
-div#stage-overview div.description {
+div#stage-overview div.description,
+div#overview div.description {
 	color: black;
 	line-height: 1.2;
 }
@@ -1686,6 +1688,12 @@ div#stage-leaderboard {
 		div#stage-leaderboard table.selector th.toggle {
 			padding: 10px;
 			width: auto;
+		}
+
+		div#competition-leaderboard table.data img,
+		div#stage-leaderboard table.data img{
+			width: auto;
+			height: 12px;
 		}
 	}
 
