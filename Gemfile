@@ -7,8 +7,14 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 
-#Use unicorn
-gem 'unicorn'
+group :development, :test do
+   gem 'webrick'
+end
+
+group :production do
+	#Use unicorn
+	gem 'unicorn'
+end
 
 gem 'json'
 
