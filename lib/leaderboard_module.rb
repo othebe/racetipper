@@ -37,7 +37,11 @@ module LeaderboardModule
 	#Params:		race_id - Race ID
 	#				scope - SCOPE
 	def self.get_global_leaderboard(race_id, scope)
-		leaderboard = nil
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
+			{:race_id=>race_id, :scope=>scope}
+		)
+		leaderboard = CacheModule::get(cache_name)
 		if (leaderboard.nil?)
 			results = Result.get_results('race', race_id, {:index_by_rider=>1})
 			tips = CompetitionTip
@@ -47,6 +51,8 @@ module LeaderboardModule
 					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=?', race_id, scope, true)
 					
 			leaderboard = self.combine_leaderboard_tip_results(results, tips)
+			
+			CacheModule::set(leaderboard, cache_name, CacheModule::CACHE_TTL[:DAY])
 		end
 		
 		return leaderboard
