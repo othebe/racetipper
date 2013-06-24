@@ -46,7 +46,7 @@ class UsersController < ApplicationController
 		begin
 			fb_user = FbGraph::User.fetch('me', :access_token=>access_token)
 			fb_id = fb_user.identifier
-			email = fb_user.email.trim.downcase
+			email = fb_user.email.strip.downcase
 			
 			#Check if user exists by Facebook ID
 			user = User.find_by_fb_id(fb_id)
