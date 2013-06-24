@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 		user = self.new
 		user.firstname = data[:firstname]
 		user.lastname = data[:lastname]
-		user.email = data[:email].downcase
+		user.email = data[:email].strip.downcase
 		user.salt = salt
 		user.password = enc_password
 		user.last_activity = Time.now.to_datetime
@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
 	#Description:	Checks to see if a username/password (unencrypted) matches any user
 	#Params:		data - Array of email and password
 	def self.check_credentials(data)
-		user = self.find_by_email(data[:email].downcase)
+		user = self.find_by_email(data[:email].strip.downcase)
 		
 		return nil if (user.nil?)
 		

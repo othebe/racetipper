@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 		userdata = {}
 		userdata[:firstname] = data[:firstname]
 		userdata[:lastname] = data[:lastname]
-		userdata[:email] = data[:email]
+		userdata[:email] = data[:email].strip.downcase
 		userdata[:password] = data[:password]
 		
 		user = User.create_new_user(userdata)
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 		render :json=>{:success=>false, :msg=>'There was an error. Please refresh and try again.'} and return if (!params.has_key?(:data))
 		
 		userdata = {}
-		userdata[:email] = data[:email]
+		userdata[:email] = data[:email].strip.downcase
 		userdata[:password] = data[:password]
 		
 		user = User.check_credentials(userdata)
@@ -76,7 +76,8 @@ class UsersController < ApplicationController
 			
 			render :json=>{:success=>true, :msg=>'success'} and return
 			
-		rescue
+		rescue => error
+			puts "Facebook auth error: " + error.inspect
 			render :json=>{:success=>false, :msg=>'There was an error. Refresh the page and try again.'} and return
 		end
 	end
@@ -92,7 +93,7 @@ class UsersController < ApplicationController
 		begin
 			fb_user = FbGraph::User.fetch('me', :access_token=>access_token)
 			fb_id = fb_user.identifier
-			email = fb_user.email
+			email = fb_user.email.strip.downcase
 			
 			#Check if user exists by email
 			user = User.find_by_email(email)

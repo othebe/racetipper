@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+ruby '2.0.0'
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
@@ -14,7 +15,6 @@ end
 group :production do
 	#Use unicorn
 	gem 'unicorn'
-	ruby '2.0.0'
 end
 
 gem 'json'
