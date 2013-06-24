@@ -1,4 +1,4 @@
-<a class="new-competition" onclick="edit_competition('<%=race.id%>', '', '<%=race.name.tr("'", '`')%>');">
+<a class="new-competition" onclick="edit_competition('<%=race.id%>', 0, '<%=race.name.tr("'", '`')%>');">
 	<div class="competition new yellow">
 		<div class="name">+</div>
 		<div class="btn grayblack" style="float:none; text-align:center;">Create new</div>
@@ -60,25 +60,30 @@ $(document).ready(function() {
 	}
 });
 
-function edit_competition(race_id, competition_id, race_name, competition_name, is_public, competition_dsec) {
-	$('#new-competition-fancybox input.race-id').val(race_id);
-	$('#new-competition-fancybox input.competition-id').val(competition_id);
-	$('#new-competition-fancybox div.header div.race-name').html(race_name);
-	$('#new-competition-fancybox div.field-values input.competition-name').val(competition_name);
-	$('#new-competition-fancybox div.field-values textarea.competition-description').html(competition_dsec);
-	if (!is_public) $('#privacy-private').attr('checked', true);
-	
-	
-	$.fancybox.open('#new-competition-fancybox', {
-		padding: 5,
-		width: 600,
-		autoSize: false,
-		autoHeight: true,
-		scrolling: 'no',
-		helpers: {
-			overlay: {
-				closeClick: false
-			}
+function edit_competition(race_id, competition_id, race_name) {
+	$.get('/competitions/get_competition_info/'+competition_id, {}, function(response) {
+		if (!response.success) {
+			alert(response.msg);
+		} else {
+			$('#new-competition-fancybox input.race-id').val(race_id);
+			$('#new-competition-fancybox input.competition-id').val(competition_id);
+			$('#new-competition-fancybox div.header div.race-name').html(race_name);
+			$('#new-competition-fancybox div.field-values input.competition-name').val(response.data['name']);
+			$('#new-competition-fancybox div.field-values textarea.competition-description').html(response.data['description']);
+			if (response.data['is_private']) $('#privacy-private').attr('checked', true);
+			
+			$.fancybox.open('#new-competition-fancybox', {
+				padding: 5,
+				width: 600,
+				autoSize: false,
+				autoHeight: true,
+				scrolling: 'no',
+				helpers: {
+					overlay: {
+						closeClick: false
+					}
+				}
+			});
 		}
 	});
 }

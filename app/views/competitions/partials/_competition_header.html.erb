@@ -32,7 +32,7 @@
 								<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} %>
 							</div>
 							
-							<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>', '<%=@competition.name.tr("'", "`")%>', <%=@competition.status==STATUS[:ACTIVE]%>, '<%=@competition.description.tr("'", "`")%>');">
+							<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>');">
 								<%=image_tag 'pencil.png'%>
 								<span>Edit Competition</span>
 							</div>

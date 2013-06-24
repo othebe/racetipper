@@ -647,6 +647,22 @@ class CompetitionsController < ApplicationController
 	
 	#JSON
 	
+	#Title:			get_competition_info
+	#Description:	Gets information about a competition
+	def get_competition_info
+		render :json=>{:success=>false, :msg=>'No competition ID specified.'} and return if (!params.has_key?(:id))
+		
+		competition_id = params[:id]
+		competition = Competition.find_by_id(competition_id) || Competition.new
+		
+		render :json=>{:success=>true, :data=>{
+			:id => competition_id,
+			:name => competition.name,
+			:description => competition.description,
+			:is_private => (competition.status == STATUS[:PRIVATE])
+		}} and return
+	end
+	
 	#Title:			get_competition_stage_info
 	#Description:	Retrieves stage info for a competition's race including selected tip.
 	#Returns:		JSON of data array
