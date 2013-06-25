@@ -1,5 +1,18 @@
 /* Velotipper iframe object */
 
+(function () {
+	var DEFAULT_IFRAME_ID = 'racetipper';
+	
+	/* for Mozilla/Opera9 */
+	if (document.addEventListener) {
+		document.addEventListener("DOMContentLoaded", function() {
+			new VelotipperIframeBuddy(DEFAULT_IFRAME_ID);
+		}, false);
+	} else window.onload = function() {
+		new VelotipperIframeBuddy(DEFAULT_IFRAME_ID);
+	};
+})();
+
 var VelotipperIframeBuddy = function(elt_id) {
 	this.SITE_URL = 'http://racetipper.herokuapp.com/';
 	this.MSG_TYPES = ['RESIZE'];
