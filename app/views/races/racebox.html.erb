@@ -63,6 +63,13 @@
 		</div>
 		
 		<table class="competitions">
+			<tr>
+				<td colspan="10" class="competition gray bold row">
+					<div class="competition-name">
+						Pools you've joined:
+					</div>
+				</td>
+			</tr>
 			<% if (@user_race_data[:global_results][:rank]>0) %>
 				<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>?<%=@iframe_params%>'" style="cursor:pointer;">
 					<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
@@ -114,6 +121,7 @@
 						</div>
 					</td>
 					<td class="gray"></td>
+					
 				</tr>
 			<% end %>
 		</table>

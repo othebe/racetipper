@@ -532,12 +532,15 @@ class CompetitionsController < ApplicationController
 		competition.season_id = season_id
 		competition.race_id = competition_data[:race_id]
 		competition.scope = @scope
+
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
 		else
 			competition.status = STATUS[:ACTIVE]
 		end
-		
+
+		competition.status = STATUS[:PRIVATE] if !@user.is_admin
+
 		#Generate competition invitation code
 		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
 		competition.invitation_code  ||=  (0...10).map{ base[rand(base.length)] }.join

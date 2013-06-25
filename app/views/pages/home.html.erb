@@ -35,7 +35,7 @@
 			<% next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first %>
 			<% if (!next_stage.nil?) %>
 				<div class="competitions-box blue hide-for-small">
-					<div class="title bold">MORE COMPETITIONS</div>
+					<div class="title bold">MORE POOLS</div>
 					<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>race}%>
 					
 					<div style="clear:both;"></div>

@@ -34,13 +34,13 @@
 							
 							<div class="btn yellow" onclick="edit_competition('<%=@race.id%>', <%=@competition.id%>, '<%=@race.name.tr("'", '`')%>');">
 								<%=image_tag 'pencil.png'%>
-								<span>Edit Competition</span>
+								<span>Edit Pool</span>
 							</div>
 						<% end %>
 					<% elsif (!@user.nil?) %>
 						<div class="btn yellow" onclick="join_competition(<%=@competition.id%>, '<%=@code%>', this);">
 							<%=image_tag 'pencil.png'%>
-							<span>Join Competition</span>
+							<span>Join Pool</span>
 						</div>
 					<% else %>
 						<div class="btn gray">
