@@ -524,6 +524,7 @@ class CompetitionsController < ApplicationController
 		render :json=>{:success=>false, :msg=>'Please enter a name for your competition.'} and return if (!competition_data.has_key?(:competition_name) || competition_data[:competition_name].empty?)
 		
 		#Save competition
+		new_competition = competition.nil?
 		competition ||= Competition.new
 		
 		competition.creator_id = @user.id
@@ -531,7 +532,7 @@ class CompetitionsController < ApplicationController
 		competition.description = competition_data[:competition_description]
 		competition.season_id = season_id
 		competition.race_id = competition_data[:race_id]
-		competition.scope = @scope
+		competition.scope = @scope if (new_competition)
 
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
@@ -564,9 +565,6 @@ class CompetitionsController < ApplicationController
 			end
 		end
 		
-		#Send emails
-		send_competition_invitations(competition_data[:invitations], competition)
-		
 		#Save races/stages
 		CompetitionStage.update_all({:status=>STATUS[:DELETED]}, {:competition_id=>competition.id})
 		race_id = competition_data[:race_id]
@@ -588,6 +586,12 @@ class CompetitionsController < ApplicationController
 			user_id = participant.user_id
 			CompetitionTip.fill_tips(user_id, competition.id)
 		end
+		
+		#Send user their competition link
+		AppMailer.competition_link(competition).deliver
+		
+		#Send emails
+		send_competition_invitations(competition_data[:invitations], competition)
 
 		render :json=>{:success=>true, :msg=>'success', :id=>competition.id}
 	end
@@ -1061,7 +1065,7 @@ class CompetitionsController < ApplicationController
 	
 		render :json=>{:success=>false, :msg=>'You do not have permission to do this.'} and return if (@user.id != competition.creator_id)
 		
-		send_competition_invitations(params[:emails], competition) if (params.has_key?(:emails))
+		send_competition_invitations(params[:emails], competition, @scope) if (params.has_key?(:emails))
 		
 		render :json=>{:success=>true, :msg=>'success'}
 	end

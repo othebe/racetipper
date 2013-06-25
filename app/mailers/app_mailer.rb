@@ -1,5 +1,27 @@
 class AppMailer < ActionMailer::Base
-  default from: "from@example.com"
+	default from: "from@example.com"
+	
+	#Title:			competition_link
+	#Description:	Sends creator the link to their competition
+	#Params:		competition - Competition that was created
+	def competition_link(competition)
+		creator = User.find_by_id(competition.creator_id)
+		scope = competition.scope
+		
+		@competition_name = competition.name
+		@creator_name = creator.firstname.strip.capitalize
+		@invitation_url = SITE_URL+'competitions/'+competition.id.to_s+'/?code='+competition.invitation_code
+		if (scope==COMPETITION_SCOPE[:CYCLINGTIPS])
+			race_id = competition.race_id
+			invitation_data = InvitationEmailTarget.where({:race_id=>race_id, :scope=>scope}).first
+			if (!invitation_data.nil?)
+				connector = (invitation_data.target.include?'?')?'&':'?'
+				@invitation_url = invitation_data.target + connector + 'competition_id='+competition.id.to_s + '&code=' + competition.invitation_code
+			end
+		end
+		
+		mail(:to => creator.email, :subject => "Competition created.")
+	end
   
 	#Title:			competition_invitation
 	#Description:	Invite a user to a competition
@@ -10,12 +32,14 @@ class AppMailer < ActionMailer::Base
 		creator = User.find_by_id(competition.creator_id)
 		@competition = competition
 		@invitor_name = (creator.firstname.strip.capitalize+' '+creator.lastname.strip.capitalize).strip
-		
 		@invitation_url = SITE_URL+'competitions/'+competition.id.to_s+'/?code='+competition.invitation_code
 		if (scope==COMPETITION_SCOPE[:CYCLINGTIPS])
 			race_id = @competition.race_id
 			invitation_data = InvitationEmailTarget.where({:race_id=>race_id, :scope=>scope}).first
-			@invitation_url = invitation_data.target if (!invitation_data.nil?)
+			if (!invitation_data.nil?)
+				connector = (invitation_data.target.include?'?')?'&':'?'
+				@invitation_url = invitation_data.target + connector + 'competition_id='+competition.id.to_s + '&code=' + competition.invitation_code
+			end
 		end
 		
 		mail(:to => emails, :subject => "Invitation for competition.")
