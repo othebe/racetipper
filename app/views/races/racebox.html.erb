@@ -12,7 +12,8 @@
 					</div>
 				</div>
 				<div class="large-4 small-5 columns">
-					<div class="race-details"><div class="timer" style="display: block;">
+					<div class="race-details">
+						<div class="timer" style="display: block;">
 						<% if (!@user_race_data[:race][:next_stage_name].nil?) %>
 							<div class="title">
 								<span class="bold"><%=@user_race_data[:race][:next_stage_name]%></span> <span class="hide-for-small"> STARTING</span> IN
@@ -54,7 +55,8 @@
 						<% else %>
 							<div class="completed"><span class="bold">Race</span> completed</div>
 						<% end %>
-					</div></div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div style="clear:both;"></div>
@@ -111,13 +113,13 @@
 							</div>
 						</div>
 					</td>
-					<td class="gray"></td>	
+					<td class="gray"></td>
 				</tr>
 			<% end %>
 		</table>
 
 		<div class="competitions-box blue hide-for-small">
-			<div class="title bold">MORE COMPETITIONS</div>	
+			<div class="title bold">MORE POOLS</div>	
 			<%=render :partial=>'competitions/partials/new_competition', :locals=>{:race=>@race} if (!@user_race_data[:race][:next_stage_name].nil?)%>			
 			
 			<% @user_race_data[:more_competitions].each do |competition| %>

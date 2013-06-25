@@ -27,8 +27,14 @@
 			<div><input type="text" class="competition-name"></div>
 			<div><input type="text" class="invitations"></div>
 			<div>
-				<input id="privacy-public" type="radio" name="privacy" value="public" checked><label for="privacy-public">Public </label>
-				<input id="privacy-private" type="radio" value="private" style="margin-left:30px;" name="privacy"><label for="privacy-private">Private</label>
+				<% if(@user.is_admin) %>
+					<input id="privacy-public" type="radio" name="privacy" value="public" checked><label for="privacy-public">Public </label>
+					<input id="privacy-private" type="radio" value="private" style="margin-left:30px;" name="privacy"><label for="privacy-private">Private</label>
+				<% else %>
+					<input id="privacy-private" class="hide" type="radio" value="private" style="margin-left:30px;" name="privacy" checked="checked">
+					<label for="privacy-private">Private</label>
+				<% end %>
+				
 			</div>
 			<div style="margin-top:10px;"><textarea class="competition-description" style="height:70px;"></textarea></div>
 		</div>

@@ -57,8 +57,8 @@ Racetipper::Application.configure do
 	  :address              => "smtp.gmail.com",
 	  :port                 => 587,
 	  :domain               => 'gmail.com',
-	  :user_name            => 'cyclingtipping@gmail.com',
-	  :password             => 'tipletour',
+	  :user_name            => 'velotipper@gmail.com',
+	  :password             => 'TimVeloTippe',
 	  :authentication       => 'plain',
 	  :enable_starttls_auto => true  
 	}
