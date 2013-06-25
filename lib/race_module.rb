@@ -99,7 +99,7 @@ module RaceModule
 	#Description:	Gets results for global competitions
 	def self.get_global_competition_results(race_id, scope, user_id=0)
 		rank = 0
-		leaderboard = LeaderboardModule::get_global_leaderboard(race_id, scope)
+		leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, scope)
 		
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|

@@ -34,16 +34,23 @@ module LeaderboardModule
 	
 	#Title:			get_global_leaderboard
 	#Description:	Get global leaderboard
-	#Params:		race_id - Race ID
+	#Params:		group_type - race/stage
+	#				group_id - Race/stage ID
 	#				scope - SCOPE
-	def self.get_global_leaderboard(race_id, scope)
+	def self.get_global_leaderboard(group_type, group_id, scope)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
-			{:race_id=>race_id, :scope=>scope}
+			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
 		)
 		leaderboard = CacheModule::get(cache_name)
 		if (leaderboard.nil?)
-			results = Result.get_results('race', race_id, {:index_by_rider=>1})
+			if (group_type=='race')
+				race_id = group_id
+			else
+				stage = Stage.find_by_id(group_id)
+				race_id = stage.race_id
+			end
+			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
 			tips = CompetitionTip
 					.select('competition_tips.*').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
@@ -65,6 +72,7 @@ module LeaderboardModule
 	#				sort_by_rank - Sort riders 
 	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
 		user_scores = {}
+		
 		tips.each do |tip|
 			#Skip non participants
 			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>tip.competition_id}).first
@@ -117,6 +125,8 @@ module LeaderboardModule
 			end
 			
 			rider = Rider.find_by_id(rider_id)
+
+			next if (results[rider_id].nil? || results[rider_id][:stages][stage_id].nil?)
 			
 			#User has not tipped for a stage that does not have results
 			if (rider.nil?)
@@ -126,41 +136,39 @@ module LeaderboardModule
 			end
 			
 			#Get tip data from results
-			if (!results[rider_id].nil? && !results[rider_id][:stages][stage_id].nil?)
-				#Cumulate times
-				if (user_score[:time].nil?)
-					user_score[:time] = results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
-				else 
-					user_score[:time] += results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
-				end
-				
-				#Formatted time
-				user_score[:formatted_time] = self.format_time(user_score[:time])
-				
-				#Cumulate points
-				if (user_score[:points].nil?)
-					user_score[:points] = results[rider_id][:stages][stage_id][:points]
-				else 
-					user_score[:points] += results[rider_id][:stages][stage_id][:points]
-				end
-				
-				#Cumulate KOM points
-				if (user_score[:kom].nil?)
-					user_score[:kom] = results[rider_id][:stages][stage_id][:kom_points]
-				else 
-					user_score[:kom] += results[rider_id][:stages][stage_id][:kom_points]
-				end
-				
-				#Cumulate sprint points
-				if (user_score[:sprint].nil?)
-					user_score[:sprint] = results[rider_id][:stages][stage_id][:sprint_points]
-				else 
-					user_score[:sprint] += results[rider_id][:stages][stage_id][:sprint_points]
-				end
-				
-				#Rank
-				user_score[:rank] = results[rider_id][:stages][stage_id][:rank]
+			#Cumulate times
+			if (user_score[:time].nil?)
+				user_score[:time] = results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
+			else 
+				user_score[:time] += results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
 			end
+			
+			#Formatted time
+			user_score[:formatted_time] = self.format_time(user_score[:time])
+			
+			#Cumulate points
+			if (user_score[:points].nil?)
+				user_score[:points] = results[rider_id][:stages][stage_id][:points]
+			else 
+				user_score[:points] += results[rider_id][:stages][stage_id][:points]
+			end
+			
+			#Cumulate KOM points
+			if (user_score[:kom].nil?)
+				user_score[:kom] = results[rider_id][:stages][stage_id][:kom_points]
+			else 
+				user_score[:kom] += results[rider_id][:stages][stage_id][:kom_points]
+			end
+			
+			#Cumulate sprint points
+			if (user_score[:sprint].nil?)
+				user_score[:sprint] = results[rider_id][:stages][stage_id][:sprint_points]
+			else 
+				user_score[:sprint] += results[rider_id][:stages][stage_id][:sprint_points]
+			end
+			
+			#Rank
+			user_score[:rank] = results[rider_id][:stages][stage_id][:rank]
 			
 			user_score[:tip].push({:id=>rider_id, :name=>rider.name})
 			user_scores[user_id] = user_score

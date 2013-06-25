@@ -68,7 +68,7 @@ module CacheModule
 	#Title:			get_global_leaderboard_cache_name
 	#Description:	Gets global leaderboard cache name
 	def self.get_global_leaderboard_cache_name(identifiers)
-		return [CACHE_TYPE[:GLOBAL_LEADERBOARD], identifiers[:race_id].to_s, identifiers[:scope].to_s].join('_')
+		return [CACHE_TYPE[:GLOBAL_LEADERBOARD], identifiers[:group_type], identifiers[:group_id].to_s, identifiers[:scope].to_s].join('_')
 	end
 	
 	#Title:			get_leaderboard_cache_name
