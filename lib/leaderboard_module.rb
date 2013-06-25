@@ -57,7 +57,11 @@ module LeaderboardModule
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
 					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=?', race_id, scope, true)
 					
-			leaderboard = self.combine_leaderboard_tip_results(results, tips)
+			if (group_type=='race')
+				leaderboard = self.combine_leaderboard_tip_results(results, tips)
+			else
+				leaderboard = self.combine_leaderboard_tip_results(results, tips, true)
+			end
 			
 			CacheModule::set(leaderboard, cache_name, CacheModule::CACHE_TTL[:DAY])
 		end
