@@ -10,6 +10,7 @@
 		<thead>
 			<th style="width:5%;">No.</th>
 			<th style="width:45%">Name</th>
+			<th>Tip</th>
 			<th >Time</th>
 			<th >Sprint</th>
 			<th >KOM</th>
@@ -22,6 +23,7 @@
 				<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
 					<td><%=ndx%></td>
 					<td class="gray"><%=entry[:username]%></td>
+					<td class="gray">--</td>
 					<td class="gray">
 						<%=entry[:formatted_time]%>
 						<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+'+entry[:formatted_gap]} if (!entry[:formatted_gap].nil?)%>
@@ -40,23 +42,20 @@ $(document).ready(function() {
 });
 </script>
 
-<script id="competition-race-result-template" type="text/x-handlebars-template">
-	<tr class="race">
-		<td>{{ndx}}</td>
-		<td class="gray">{{rider_name}}</td>
-		{{#if disqualified}}
-			<td class="gray">{{disqualified}}</td>
-			<td class="gray">--</td>
-			<td class="gray">--</td>
-		{{else}}
+<script id="global-race-row-template" type="text/x-handlebars-template">
+	{{#each entries}}
+		<tr class="entry {{this.type}} {{this.scope}}">
+			<td>{{this.rank}}</td>
+			<td class="gray">{{this.name}}</td>
+			<td class="gray">{{this.tip}}</td>
 			<td class="gray">
-				{{time_formatted}}
-				{{#if gap_formatted}}
-					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{gap_formatted}}'}%>
+				{{this.time}}
+				{{#if this.gap_formatted}}
+					<img alt="Stopwatch" class="tooltip" src="/assets/stopwatch.png" style="" title="+{{this.gap_formatted}}" />
 				{{/if}}
 			</td>
-			<td class="gray">{{sprint_points}}</td>
-			<td class="gray">{{kom_points}}</td>
-		{{/if}}
-	</tr>
+			<td class="gray">{{this.sprint}}</td>
+			<td class="gray">{{this.kom}}</td>
+		</tr>
+	{{/each}}
 </script>

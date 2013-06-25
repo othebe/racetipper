@@ -1236,6 +1236,45 @@ function change_stage_leaderboard(competition_id, race_id, stage_id, type, value
 	}
 }
 
+//Title:		load_stage_info_for_global
+//Description:	Loads stage info for a global competition
+var loading_stage_info_for_global = false;
+function load_stage_info_for_global(stage_id) {
+	if (loading_stage_info_for_global) return;
+	
+	loading_stage_info_for_global = true;
+	$('#content-with-nav').addClass('loading-overlay');
+	
+	$.get('/stages/get_leaderboard/'+stage_id, {}, function(response) {
+		var entries = [];
+		$(response).each(function(ndx, entry) {
+			entries.push({
+				'rank': ndx+1,
+				'name': entry['username'],
+				'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
+				'time': (entry['disqualified']==null)?entry['formatted_time']:'--',
+				'gap_formatted': entry['formatted_gap'],
+				'sprint': (entry['disqualified']==null)?entry['sprint']:'--',
+				'kom': (entry['disqualified']==null)?entry['kom']:'--',
+			});
+		});
+		var context = {};
+		context['entries'] = entries;
+		context['stage_id'] = stage_id;
+				
+		var global_race_row_source = $('#global-race-row-template').html();
+		var global_race_row_template = Handlebars.compile(global_race_row_source);
+		var global_race_row_html = global_race_row_template(context);
+		
+		$('div#competition-leaderboard tbody').html(global_race_row_html);
+		
+		$('div#competition-leaderboard table.data').trigger('update');
+		
+		loading_stage_info_for_global = false;
+		$('#content-with-nav').removeClass('loading-overlay');
+	});
+}
+
 //Title:		load_other_information
 //Description:	Loads other information into the competitions screen
 function load_other_information(competition_id) {

@@ -116,7 +116,7 @@ class RacesController < ApplicationController
 		@competition = Competition.find_by_id(competition_id)
 		@competition.name = 'Sitewide'
 		@competition.description = ''
-		@leaderboard = LeaderboardModule::get_global_leaderboard(race_id, @scope)
+		@leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, @scope)
 		
 		#Get primary competition
 		primary_competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
@@ -140,6 +140,7 @@ class RacesController < ApplicationController
 		@left_nav_data = RaceModule::get_left_nav_data(@stages, primary_competition_id, @user.id)
 		
 		@hide_action_buttons = true
+		@global = true
 		
 		#Cycling tips display
 		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')

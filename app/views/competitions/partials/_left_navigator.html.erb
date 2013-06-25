@@ -23,7 +23,11 @@
 			<% @left_nav_data.each do |nav_data| %>
 				<% open = !nav_data[:time_remaining].nil? %>
 				<% if (nav_data[:participation]=='OK') %>
-					<tr onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open) ? 'gray' : 'darkgray'%> <%=nav_data[:stage_id]%>">
+					<% if (@global) %>
+						<tr onclick="load_stage_info_for_global('<%=nav_data[:stage_id]%>');" class="<%=(open) ? 'gray' : 'darkgray'%> <%=nav_data[:stage_id]%>">
+					<% else %>
+						<tr onclick="load_stage_info('<%=nav_data[:stage_id]%>', '<%=@competition.id%>');" class="<%=(open) ? 'gray' : 'darkgray'%> <%=nav_data[:stage_id]%>">
+					<% end %>
 				<% else %>
 					<tr class="<%=(open) ? 'gray' : 'darkgray'%>">
 				<% end %>
