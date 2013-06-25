@@ -1,5 +1,6 @@
 class StagesController < ApplicationController
 	require_dependency 'cache_module'
+	require_dependency 'leaderboard_module'
 
 	#Title:			information
 	#Description:	Gets stage information
@@ -125,5 +126,15 @@ class StagesController < ApplicationController
 		}
 		
 		render :json=>{:results=>data, :stage=>stage_data}
+	end
+	
+	#Title:			get_leaderboard
+	#Description:	Gets global leaderboard
+	def get_leaderboard
+		render :json=>{:success=>false, :msg=>'Stage not specified.'} and return if (!params.has_key?(:id))
+		
+		leaderboard = LeaderboardModule::get_global_leaderboard('stage', params[:id], @scope)
+		
+		render :json=>leaderboard and return
 	end
 end
