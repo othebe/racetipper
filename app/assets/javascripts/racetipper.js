@@ -671,6 +671,13 @@ function save_competition() {
 			//If request is Edit
 			if( data['id'] > 0 ) {
 				updateElements(data);
+			} else {
+				var new_competition_created_source = $('#new-competition-created-template').html();
+				var new_competition_created_template = Handlebars.compile(new_competition_created_source);
+				var new_competition_created_html = new_competition_created_template(response.data);
+				$('#new-competition-created-container').html(new_competition_created_html);
+				
+				$.fancybox.open('#new-competition-created-container');
 			}
 		}
 		saving_competition = false;

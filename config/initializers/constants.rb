@@ -1,4 +1,4 @@
-SITE_URL = 'http://racetipper.herokuapp.com/'
+SITE_URL = 'http://www.velotipper.com/'
 COMPETITION_LOAD_QTY = 10
 ADMIN_ID = 2
 

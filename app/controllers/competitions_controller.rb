@@ -566,19 +566,19 @@ class CompetitionsController < ApplicationController
 		end
 		
 		#Save races/stages
-		CompetitionStage.update_all({:status=>STATUS[:DELETED]}, {:competition_id=>competition.id})
-		race_id = competition_data[:race_id]
-		competition_races = []
-		stages = Stage.where('race_id=? AND season_id=? AND status=?', race_id, season_id, STATUS[:ACTIVE])
-		stages.each do |stage|
-			competition_stage = CompetitionStage.where('stage_id=? AND competition_id=? AND status=?', stage.id, competition.id, STATUS[:ACTIVE]).first
-			competition_stage ||= CompetitionStage.new
-			competition_stage.competition_id = competition.id
-			competition_stage.stage_id = stage.id
-			competition_stage.race_id = race_id
-			competition_stage.status = STATUS[:ACTIVE]
-			competition_stage.save
-		end
+		#CompetitionStage.update_all({:status=>STATUS[:DELETED]}, {:competition_id=>competition.id})
+		#race_id = competition_data[:race_id]
+		#competition_races = []
+		#stages = Stage.where('race_id=? AND season_id=? AND status=?', race_id, season_id, STATUS[:ACTIVE])
+		#stages.each do |stage|
+		#	competition_stage = CompetitionStage.where('stage_id=? AND competition_id=? AND status=?', stage.id, competition.id, STATUS[:ACTIVE]).first
+		#	competition_stage ||= CompetitionStage.new
+		#	competition_stage.competition_id = competition.id
+		#	competition_stage.stage_id = stage.id
+		#	competition_stage.race_id = race_id
+		#	competition_stage.status = STATUS[:ACTIVE]
+		#	competition_stage.save
+		#end
 		
 		#Set default tips (also needed if new stages were added)
 		participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
@@ -593,7 +593,7 @@ class CompetitionsController < ApplicationController
 		#Send emails
 		send_competition_invitations(competition_data[:invitations], competition)
 
-		render :json=>{:success=>true, :msg=>'success', :id=>competition.id}
+		render :json=>{:success=>true, :msg=>'success', :id=>competition.id, :data=>{:name=>competition.name, :link=>competition.get_invitation_link}}
 	end
 	
 	#Title:			save_image

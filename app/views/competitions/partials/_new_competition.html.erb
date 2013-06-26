@@ -5,6 +5,17 @@
 	</div>
 </a>
 
+<div id="new-competition-created-container" style="display:none;"></div>
+
+<script id="new-competition-created-template" type="text/x-handlebars-template">
+	<div id="new-competition-created">
+		<h1>Thank you for creating {{this.name}}.</h1>
+
+		<p>Share the below link with your mates so they can join the pool. We have also sent you an email containing the link.</p>
+		<p class="italic">{{this.link}}</p>
+	</div>
+</script>
+
 <script id="new-competition-fancybox-template" type="text/x-handlebars-template">
 	<div id="new-competition-fancybox" class="gray">
 		<input class="competition-id" race-id="" type="hidden">

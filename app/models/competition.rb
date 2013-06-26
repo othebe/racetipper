@@ -104,4 +104,22 @@ class Competition < ActiveRecord::Base
 		
 		return "#{self.name} created. #{invitation_count}/#{users.length} users invited."
 	end
+	
+	#Title:			get_invitation_link
+	#Description:	Gets invitation link to competition
+	def get_invitation_link
+		scope = self.scope
+		race_id = self.race_id
+		
+		base_url = InvitationEmailTarget.get_base_url(race_id, scope)
+		
+		base_url += case self.scope
+		when (COMPETITION_SCOPE[:SITE])
+			'competitions/' + self.id.to_s + '?code=' + self.invitation_code
+		when (COMPETITION_SCOPE[:CYCLINGTIPS])
+			'?competition_id=' + self.id.to_s + '&code=' + self.invitation_code
+		end
+		
+		return base_url
+	end
 end
