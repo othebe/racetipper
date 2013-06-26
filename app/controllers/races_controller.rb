@@ -91,9 +91,9 @@ class RacesController < ApplicationController
 		
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
-		
+
 		Race.class_eval { attr_accessor :has_join_any }
-		@race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race_id).empty?
+		@race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race_id, @scope).empty?
 
 		@user_race_data = RaceModule::get_user_race_data(user_id, @race, @scope)
 		

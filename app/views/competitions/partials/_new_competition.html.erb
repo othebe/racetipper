@@ -25,7 +25,8 @@
 		
 		<div class="field-values gray">
 			<div><input type="text" class="competition-name"></div>
-			<div><input type="text" class="invitations"></div>
+			<div><input type="text" class="invitations" placeholder="Optional, comma separated email addresses">
+			</div>
 			<div>
 				<% if(@user.is_admin) %>
 					<input id="privacy-public" type="radio" name="privacy" value="public" checked><label for="privacy-public">Public </label>
@@ -37,6 +38,7 @@
 				
 			</div>
 			<div style="margin-top:10px;"><textarea class="competition-description" style="height:70px;"></textarea></div>
+			<span>We will email you a link to share with other participants</span>
 		</div>
 		
 		<div style="clear:both;"></div>
