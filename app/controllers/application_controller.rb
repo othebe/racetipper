@@ -80,13 +80,14 @@ class ApplicationController < ActionController::Base
 				render :json=>{:success=>false, :msg=>'Firstname cannot be empty.'} and return if (params[:firstname].empty?)
 			
 				pw_base = [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
-				password  =  (0...10).map{ base[rand(base.length)] }.join
+				password  =  (0...10).map{ pw_base[rand(pw_base.length)] }.join
 				@user = User.create_new_user({
 					:firstname => params[:firstname],
 					:lastname => params[:lastname],
 					:email => params[:email],
 					:password => password
 				})
+				session[:show_welcome] = true
 			end
 			
 			session[:user] = @user if (!@user.nil?)

@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 		user.last_activity = Time.now.to_datetime
 		user.fb_id = data[:fb_id] if (!data[:fb_id].nil?)
 		user.fb_access_token = data[:fb_access_token] if (!data[:fb_access_token].nil?)
-		user.display_name = (data[:firstname]+' '+data[:lastname]).strip
+		user.display_name = (user.firstname+' '+(user.lastname||'')).strip
 		
 		#Send welcome emails
 		if (data[:fb_id].nil?)

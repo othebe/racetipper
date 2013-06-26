@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 		userdata[:password] = data[:password]
 		
 		user = User.create_new_user(userdata)
+		session['show_welcome'] = true
 		session['user'] = user
 		
 		render :json=>{:success=>true, :msg=>'success'} and return
@@ -63,6 +64,7 @@ class UsersController < ApplicationController
 				userdata[:fb_access_token] = access_token
 				
 				user = User.create_new_user(userdata)
+				session['show_welcome'] = true
 			else
 				#Update Facebook info
 				user.fb_id = fb_user.identifier
@@ -278,6 +280,7 @@ class UsersController < ApplicationController
 				:email => params[:email],
 				:password => password
 			})
+			session['show_welcome'] = true
 		end
 		
 		session[:user] = @user if (!@user.nil?)

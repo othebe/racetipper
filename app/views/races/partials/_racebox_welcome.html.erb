@@ -1,0 +1,23 @@
+<div id="racebox-welcome" style="display:none;">
+	<h1>Thank you for joining the Cyclingtips Tour de France Tipping Competition.</h1>
+	
+	<p>In order to start tipping, you need to join a tipping pool. There are three primary ways you can join a pool: create your own private pool to tip against your mates, join the Cyclingtips Default Pool or join another public pool:</p>
+	
+	<p>
+		<div class="btn yellow" style="margin-right:20px;"><a href="#" onclick="create_competition();">Create Private</a></div>
+		<% if (!@default_competition.nil?) %>
+			<div class="btn yellow" style="margin-right:20px;"><a href="/competitions/<%=@default_competition.id%>?<%=@iframe_params%>">Join CT Default</a></div>
+		<% end %>
+		<div class="btn yellow" style="margin-right:20px;"><a href="#" onclick="close_fancybox();">Join Other Public</a></div>
+	</p>
+</div>
+
+<script>
+function create_competition() {
+	$('.competition.new').click();
+}
+
+function close_fancybox() {
+	$.fancybox.close();
+}
+</script>

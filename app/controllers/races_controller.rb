@@ -101,6 +101,12 @@ class RacesController < ApplicationController
 		
 		redirect_to :root and return if (@race.nil?)
 		
+		if (session['show_welcome'])
+			session['show_welcome'] = nil
+			@default_competition = Competition.where({:race_id=>race_id, :status=>STATUS[:ACTIVE], :scope=>@scope}).first
+			@show_welcome = true
+		end
+		
 		#Cycling tips display
 		render :layout=>'cyclingtips' and return if (params.has_key?(:display) && params[:display]=='cyclingtips')
 	end
