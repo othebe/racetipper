@@ -848,16 +848,20 @@ function get_user_race_data(user_id, race_id, elt) {
 			//Competition data
 			$(response.competition).each(function(ndx, elt) {
 				//Postfix
-				postfix = 'th';
-				var rank_str = elt['rank'].toString();
-				var ending = parseInt(rank_str.charAt(rank_str.length-1));
-				
-				if ([1].indexOf(ending)>=0) 
-					postfix = 'st';
-				else if ([2].indexOf(ending)>=0) 
-					postfix = 'nd';
-				else if ([3].indexOf(ending)>=0) 
-					postfix = 'rd';
+				var postfix = '';
+
+				if (elt['rank'] > 0) {
+					rank_str = elt['rank'].toString();
+					var ending = parseInt(rank_str.charAt(rank_str.length-1));
+					
+					if ([1].indexOf(ending)>=0) 
+						postfix = 'st';
+					else if ([2].indexOf(ending)>=0) 
+						postfix = 'nd';
+					else if ([3].indexOf(ending)>=0) 
+						postfix = 'rd';
+					else postfix = 'th';
+				} else elt['rank'] = '--';
 				
 				elt['postfix'] = postfix;
 				elt['completed'] = !(remaining>0);
