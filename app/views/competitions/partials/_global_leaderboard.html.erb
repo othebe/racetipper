@@ -10,7 +10,6 @@
 		<thead>
 			<th style="width:5%;">No.</th>
 			<th style="width:45%">Name</th>
-			<th>Tip</th>
 			<th >Time</th>
 			<th >Sprint</th>
 			<th >KOM</th>
@@ -23,7 +22,6 @@
 				<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
 					<td><%=ndx%></td>
 					<td class="gray"><%=entry[:username]%></td>
-					<td class="gray">--</td>
 					<td class="gray">
 						<%=entry[:formatted_time]%>
 						<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+'+entry[:formatted_gap]} if (!entry[:formatted_gap].nil?)%>

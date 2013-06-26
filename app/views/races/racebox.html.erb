@@ -64,9 +64,13 @@
 		
 		<table class="competitions">
 			<tr>
-				<td colspan="10" class="competition gray bold row">
-					<div class="competition-name">
-						Pools you've joined:
+				<td colspan="10" class="competition blue bold row">
+					<div class="competition-name competition-introduction">
+						<% if(@race.has_join_any) %>
+							My Pools:
+						<% else %>
+							You haven't joined any pool
+						<% end %>
 					</div>
 				</td>
 			</tr>
@@ -83,7 +87,7 @@
 						</div>
 					</td>
 					<td class="competition bold row">
-						<div class="competition-name">Sitewide</div>
+						<div class="competition-name">Cyclingtips Tipping Extravaganza Leaderboard</div>
 					</td>
 					<td class="gray"></td>
 				</tr>
@@ -131,13 +135,17 @@
 					<% if(competition[:status] == STATUS[:DELETED] ) %>
 						<td class="gray"></td>
 					<% else %>
-						<% if(@user_race_data[:next_rider]) %>
+						<% if(competition[:next_rider]) %>
 							<td class="tip bold row" colspan="2">
-								<span class="hide-for-small">You've tipped</span> <% @user_race_data[:next_rider] %>
+								<span class="hide-for-small">
+									<%= @user_race_data[:race][:next_stage_name]%> Tip:
+								</span> <% competition[:next_rider] %>
 							</td>
 						<% else %>
 							<td class="empty-tip italic bold row">
-								<span class="hide-for-small">You have not tipped any rider</span>
+								<span class="hide-for-small">
+									<%= @user_race_data[:race][:next_stage_name]%> Tip: None
+								</span>
 								<span class="hide-for-medium-up">No tip</span></td>
 							<td class="empty-tip-button hide-for-small"><%=image_tag 'add-black.png'%></td>
 						<% end %>

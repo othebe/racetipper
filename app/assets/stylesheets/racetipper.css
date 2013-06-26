@@ -812,6 +812,10 @@ div.race-competitions {
 					margin-top: 7px;
 					float: left;
 				}
+				div.race-competitions td.competition div.competition-introduction {
+					margin-top: 0;
+				}
+
 				div.race-competitions td.competition div.btn {
 					float: right;
 				}
