@@ -32,15 +32,21 @@ var logging_in = false;
 function login(elt) {
 	if (logging_in) return;
 	
-	var parent = $(elt).parent();
-	if ($(parent).find('input[name=email]').length==0) parent = $(parent).parent();
+	var $parent = $(elt).parent();
+	//IE9 Login Fix
+	if($(window).width() >= 768 ) {
+		$parent = $(elt).closest('#landing-header-login');
+	}
+	
+	if ($parent.find('input[name=email]').length==0) parent = $(parent).parent();
 	$(elt).removeClass('yellow').addClass('gray');
-	$(parent).find('div.loading').show();
+	$parent.find('div.loading').show();
 	
 	data = {};
-	data['email'] = $(parent).find('input[name=email]').val();
-	data['password'] = $(parent).find('input[name=password]').val();
-	
+	data['email'] = $parent.find('input[name=email]').val();
+	console.log(data['email']);
+	data['password'] = $parent.find('input[name=password]').val();
+	console.log(data['password']);
 	$.post('/users/login', {data:data}, function(response) {
 		if (response.success) {
 			window.location.reload();
