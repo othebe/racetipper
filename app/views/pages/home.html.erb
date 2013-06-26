@@ -26,16 +26,7 @@
 				<tr>
 					<td colspan="10" class="competition gray bold row">
 						<div class="competition-name">
-							<%
-								have_join_any = false
-								competitions = Competition.where("race_id=#{race.id}")
-								competitions.each do |competition|
-									if(CompetitionParticipant.where("user_id=#{@user.id} AND competition_id = #{competition.id}").exists? )
-										have_join_any = true
-									end
-								end
-							%>
-							<% if(have_join_any) %>
+							<% if(race.has_join_any) %>
 								Pools you've joined:
 							<% else %>
 								You haven't joined any pool
