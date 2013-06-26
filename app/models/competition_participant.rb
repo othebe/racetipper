@@ -91,4 +91,9 @@ class CompetitionParticipant < ActiveRecord::Base
 			self.set_primary_competition(competition.id, user_id) if (!has_primary)
 		end
 	end
+
+	def self.get_participated_competitions(user_id, race_id)
+		return CompetitionParticipant.joins(:competition).where(
+				'user_id=? AND competitions.race_id=?', user_id, race_id).all
+	end
 end
