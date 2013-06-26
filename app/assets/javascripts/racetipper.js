@@ -827,30 +827,28 @@ function get_user_race_data(user_id, race_id, elt) {
 				new CountdownTimer($(header).find('div.timer'), remaining);
 			}
 			
-			if (response.global_results['rank']>0) {
-				//Postfix
-				postfix = 'th';
-				var rank_str = response.global_results['rank'].toString();
-				var ending = parseInt(rank_str.charAt(rank_str.length-1));
+			//Postfix
+			postfix = 'th';
+			var rank_str = response.global_results['rank'].toString();
+			var ending = parseInt(rank_str.charAt(rank_str.length-1));
+			
+			if ([1].indexOf(ending)>=0) 
+				postfix = 'st';
+			else if ([2].indexOf(ending)>=0) 
+				postfix = 'nd';
+			else if ([3].indexOf(ending)>=0) 
+				postfix = 'rd';
 				
-				if ([1].indexOf(ending)>=0) 
-					postfix = 'st';
-				else if ([2].indexOf(ending)>=0) 
-					postfix = 'nd';
-				else if ([3].indexOf(ending)>=0) 
-					postfix = 'rd';
-					
-				var competition_html = competition_template({
-					'race_id': response.race['id'], 
-					'rank': response.global_results['rank'],
-					'competition_name': 'Sitewide',
-					'postfix': postfix,
-					'can_set_primary': false,
-					'completed': true,
-					'is_global': true,
-				});
-				$(container).find('table.competitions').append(competition_html);
-			}
+			var competition_html = competition_template({
+				'race_id': response.race['id'], 
+				'rank': (response.global_results['rank']>0)?response.global_results['rank']:'--',
+				'competition_name': 'Sitewide',
+				'postfix': (response.global_results['rank']>0)?postfix:'',
+				'can_set_primary': false,
+				'completed': true,
+				'is_global': true,
+			});
+			$(container).find('table.competitions').append(competition_html);
 			
 			//Competition data
 			$(response.competition).each(function(ndx, elt) {

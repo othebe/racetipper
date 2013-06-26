@@ -545,14 +545,11 @@ class CompetitionsController < ApplicationController
 		#Generate competition invitation code
 		base =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
 		competition.invitation_code  ||=  (0...10).map{ base[rand(base.length)] }.join
-
 		competition.save
 		
 		#Add user as participant
-		participation = CompetitionParticipant.where({:competition_id=>competition.id, :user_id=>@user.id}).first || CompetitionParticipant.new
-		participation.competition_id = competition.id
-		participation.user_id = @user.id
-		participation.save
+		participation = CompetitionParticipant.where({:competition_id=>competition.id, :user_id=>@user.id, :status=>STATUS[:ACTIVE]}).first
+		CompetitionParticipant.add_participant(@user.id, competition.id, @scope) if (participation.nil?)
 		
 		#Generate invitations
 		emails = competition_data[:invitations]
