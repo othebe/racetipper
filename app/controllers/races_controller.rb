@@ -131,8 +131,8 @@ class RacesController < ApplicationController
 		#Number of participants
 		participants = CompetitionParticipant
 						.joins(:competition)
-						.where('competitions.race_id=? AND competitions.scope=? AND competition_participants.status=?', 
-							race_id, @scope, STATUS[:ACTIVE])
+						.where('competitions.race_id=? AND competitions.scope=? AND competition_participants.status=? AND is_primary=?', 
+							race_id, @scope, STATUS[:ACTIVE], true)
 		@num_participants = participants.count
 		
 		#Get top 2 sprint
