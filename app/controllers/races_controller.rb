@@ -91,6 +91,10 @@ class RacesController < ApplicationController
 		
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
+		
+		Race.class_eval { attr_accessor :has_join_any }
+		@race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race_id).empty?
+
 		@user_race_data = RaceModule::get_user_race_data(user_id, @race, @scope)
 		
 		@invitations = CompetitionInvitation.get_user_invitations(user_id, @scope)
@@ -114,7 +118,7 @@ class RacesController < ApplicationController
 		redirect_to :root and return if (competition_id.nil?)
 		
 		@competition = Competition.find_by_id(competition_id)
-		@competition.name = 'Sitewide'
+		@competition.name = 'Cyclingtips Tipping Extravaganza Leaderboard'
 		@competition.description = ''
 		@leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, @scope)
 		
