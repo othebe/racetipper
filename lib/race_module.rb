@@ -103,8 +103,10 @@ module RaceModule
 		
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
-				rank += 1
-				break if (entry[:user_id] == user_id)
+				if (entry[:user_id] == user_id)
+					rank += 1
+					break
+				end
 			end
 		end
 		

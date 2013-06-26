@@ -74,24 +74,26 @@
 					</div>
 				</td>
 			</tr>
-			<% if (@user_race_data[:global_results][:rank]>0) %>
-				<% 	rank_th = @user_race_data[:global_results][:rank].ordinalize
-					postfix = rank_th[-2, 2]
-				%>
-				<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>?<%=@iframe_params%>'" style="cursor:pointer;">
-					<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
-					<td class="rank bold row">
-						<div class="text-center">
+			<% 	rank_th = @user_race_data[:global_results][:rank].ordinalize
+				postfix = rank_th[-2, 2]
+			%>
+			<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>?<%=@iframe_params%>'" style="cursor:pointer;">
+				<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
+				<td class="rank bold row">
+					<div class="text-center">
+						<% if (@user_race_data[:global_results][:rank] > 0) %>
 							<div class="value"><%= @user_race_data[:global_results][:rank]%></div>
 							<div class="postfix"><%= postfix %></div>
-						</div>
-					</td>
-					<td class="competition bold row">
-						<div class="competition-name">Cyclingtips Tipping Extravaganza Leaderboard</div>
-					</td>
-					<td class="gray"></td>
-				</tr>
-			<% end %>
+						<% else %>
+							<div class="value">--</div>
+						<% end %>
+					</div>
+				</td>
+				<td class="competition bold row">
+					<div class="competition-name">Cyclingtips Tipping Extravaganza Leaderboard</div>
+				</td>
+				<td class="gray"></td>
+			</tr>
 			
 			<% @user_race_data[:competition].each do |competition| %>
 				<% 	rank_th = competition[:rank].ordinalize
