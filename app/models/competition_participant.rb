@@ -92,8 +92,10 @@ class CompetitionParticipant < ActiveRecord::Base
 		end
 	end
 
-	def self.get_participated_competitions(user_id, race_id)
+	#Title:			get_participated_competitions
+	#Description:	Gets competitions a user is participating in
+	def self.get_participated_competitions(user_id, race_id, scope)
 		return CompetitionParticipant.joins(:competition).where(
-				'user_id=? AND competitions.race_id=?', user_id, race_id).all
+				'user_id=? AND competitions.race_id=? AND scope=?', user_id, race_id, scope).all
 	end
 end

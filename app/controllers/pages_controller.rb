@@ -17,7 +17,7 @@ class PagesController < ApplicationController
 		Race.class_eval { attr_accessor :has_join_any }
 
 		@races.each do |race|
-			race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race.id).empty?
+			race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race.id, @scope).empty?
 		end
 	end
 	
