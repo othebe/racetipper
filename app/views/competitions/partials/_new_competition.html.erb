@@ -29,27 +29,30 @@
 		
 		<div class="field-names blue">
 			<div>Title</div>
-			<div>Invite</div>
-			<div>Privacy</div>
+			<div style="padding-bottom: 35px;">Invite</div>
+			<% if @scope == COMPETITION_SCOPE[:SITE] or @user.is_admin %>
+				<div>Privacy</div>
+			<% end %>
 			<div style="padding-bottom:67px;">Description</div>
 		</div>
 		
 		<div class="field-values gray">
 			<div><input type="text" class="competition-name"></div>
 			<div><input type="text" class="invitations" placeholder="Optional, comma separated email addresses">
+			<span style="margin: 7px 0; display: inline-block;">We will email you a link to share with other participants</span>
 			</div>
 			<div>
 				<% if(@user.is_admin) %>
 					<input id="privacy-public" type="radio" name="privacy" value="public" checked><label for="privacy-public">Public </label>
 					<input id="privacy-private" type="radio" value="private" style="margin-left:30px;" name="privacy"><label for="privacy-private">Private</label>
 				<% else %>
-					<input id="privacy-private" class="hide" type="radio" value="private" style="margin-left:30px;" name="privacy" checked="checked">
-					<label for="privacy-private">Private</label>
+					<% if @scope == COMPETITION_SCOPE[:SITE] %>
+						<input id="privacy-private" class="hide" type="radio" value="private" style="margin-left:30px;" name="privacy" checked="checked">
+						<label for="privacy-private">Private</label>
+					<% end %>
 				<% end %>
-				
 			</div>
 			<div style="margin-top:10px;"><textarea class="competition-description" style="height:70px;"></textarea></div>
-			<span>We will email you a link to share with other participants</span>
 		</div>
 		
 		<div style="clear:both;"></div>

@@ -386,6 +386,7 @@ function remove_invitation(competition_id, elt) {
 //Params:		competition_id - Competition ID
 //				user_id - User to kick. Null for current user.
 function leave_competition(competition_id, user_id) {
+	user_id = typeof user_id !== 'undefined' ? user_id : null; //default value
 	if (!confirm("Are you sure you want to leave this competition?")) return;
 	
 	var url = '/competitions/kick/'+competition_id;
