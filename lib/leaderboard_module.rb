@@ -137,17 +137,16 @@ module LeaderboardModule
 			
 			rider = Rider.find_by_id(rider_id)
 			
-			#User has not tipped for a stage that does not have results
-			if (rider.nil?)
+			#Nil rider if no rider chosen, or stage results haven't been released yet
+			if (rider_id.nil? || results[rider_id].nil? || results[rider_id][:stages][stage_id].nil?)
 				user_score[:tip].push({:id=>nil, :name=>'TBA'})
 				user_scores[user_id] = user_score
 				next
+			#Record user tip
 			else
 				user_score[:tip].push({:id=>rider_id, :name=>rider.name})
 				user_scores[user_id] = user_score
 			end
-
-			next if (results[rider_id].nil? || results[rider_id][:stages][stage_id].nil?)
 				
 			#Get tip data from results
 			#Cumulate times
