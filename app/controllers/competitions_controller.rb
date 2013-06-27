@@ -4,6 +4,7 @@ class CompetitionsController < ApplicationController
 	#require 'race_module'
 	require_dependency 'leaderboard_module'
 	require_dependency 'race_module'
+	require_dependency 'cache_module'
 	
 	#Title:			index
 	#Description:	Show competition grid
@@ -645,7 +646,8 @@ class CompetitionsController < ApplicationController
 		competition.status = STATUS[:DELETED]
 		competition.save
 		
-		CompetitionParticipant.find_and_set_primary_competition(competition.race_id, @user.id, @scope)
+		#Clear leaderboard cache
+		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope) if (CompetitionParticipant.get_primary_competition(user_id, competition.race_id, @scope)==competition.id)
 		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
@@ -954,7 +956,9 @@ class CompetitionsController < ApplicationController
 			participant.save
 		end
 		
-		CompetitionParticipant.find_and_set_primary_competition(competition.race_id, user_id, @scope)
+		#Clear leaderboard cache
+		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope) if (CompetitionParticipant.get_primary_competition(user_id, competition.race_id, @scope)==competition_id)
+		
 		render :json=>{:success=>true, :msg=>msg}
 	end
 	

@@ -94,4 +94,31 @@ module CacheModule
 		
 		return base.join('_')
 	end
+	
+	###########
+	# Helpers #
+	###########
+	
+	#Title:			delete_global_leaderboard_for_race
+	#Description:	Deletes the global leaderboard for a race
+	def self.delete_global_leaderboard_for_race(race_id, scope)
+		#Clear global leaderboard race cache
+		cache_name = self.get_cache_name(CACHE_TYPE[:GLOBAL_LEADERBOARD], {
+			:group_type => 'race',
+			:group_id => race_id,
+			:scope => scope
+		})
+		self.delete(cache_name+'*')
+		
+		#Clear global leaderboard stage cache
+		stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]})
+		stages.each do |stage|
+			cache_name = self.get_cache_name(CACHE_TYPE[:GLOBAL_LEADERBOARD], {
+				:group_type => 'stage',
+				:group_id => stage.id,
+				:scope => scope
+			})
+			self.delete(cache_name+'*')
+		end
+	end
 end
