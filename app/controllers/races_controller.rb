@@ -118,7 +118,7 @@ class RacesController < ApplicationController
 		competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
 		
 		@competition = Competition.find_by_id(competition_id) || Competition.new
-		@competition.name = 'Cyclingtips Tipping Extravaganza Leaderboard'
+		@competition.name = 'Overall Leaderboard'
 		@competition.race_id = race_id
 		@competition.description = ''
 		@leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, @scope)
