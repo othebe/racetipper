@@ -18,6 +18,7 @@ class CompetitionParticipant < ActiveRecord::Base
 		participation ||= self.new
 		participation.competition_id = competition_id
 		participation.user_id = user_id
+		participation.status = STATUS[:ACTIVE]
 		participation.save
 		
 		CompetitionTip.fill_tips(user_id, competition_id)
