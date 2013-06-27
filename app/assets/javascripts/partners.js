@@ -18,7 +18,10 @@ var VelotipperIframeBuddy = function(elt_id) {
 	this.MSG_TYPES = ['RESIZE'];
 	this.SEPARATOR = '^';
 	
-	this.iframe_elt = document.getElementById(elt_id);
+	var iframe_elt = document.getElementById(elt_id);
+	if (iframe_elt==null) return;
+	
+	this.iframe_elt = iframe_elt;
 	this.parent_params = this.parse_parent_params();
 	this.iframe_params = this.parse_iframe_params();
 	
