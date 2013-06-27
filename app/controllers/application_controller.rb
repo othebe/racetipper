@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
 		if (params.has_key?(:pid))
 			@scope = COMPETITION_SCOPE[:CYCLINGTIPS] if (params[:pid]=='cyclingtips')
 		elsif (request.get?)
-			@scope = COMPETITION_SCOPE[:SITE]
+			@scope = COMPETITION_SCOPE[:SITE] if (!request.xhr?)
 		end
 		session['scope'] = @scope
 	end
