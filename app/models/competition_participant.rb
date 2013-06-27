@@ -33,6 +33,19 @@ class CompetitionParticipant < ActiveRecord::Base
 		CacheModule::delete(cache_name+'*')
 	end
 	
+	#Title:			find_and_set_primary_competition
+	#Description:	Finds and designates the first suitable competition as the sitewide
+	#Params:		race_id - Race ID
+	#				user_id - User ID
+	#				scope - COMPETITION_SCOPE
+	def self.find_and_set_primary_competition(race_id, user_id, scope)
+		primary = self.get_primary_competition(user_id, race_id, scope)
+		if (primary.nil?)
+			competitions = self.get_participated_competitions(user_id, race_id, scope)
+			self.set_primary_competition(competitions.first.competition_id, user_id, scope) if (!competitions.empty?)
+		end
+	end
+	
 	#Title:			set_primary_competition
 	#Description:	Designates a competition as the primary for sitewide
 	#Params:		competition_id - Competition ID
@@ -54,8 +67,7 @@ class CompetitionParticipant < ActiveRecord::Base
 		has_started = false
 		first_stage = Stage.where({:race_id=>competition.race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC').first
 		has_started = (first_stage.starts_on <= Time.now) if (!first_stage.nil?)
-		has_chosen = !self.where({:user_id=>user_id, :status=>STATUS[:ACTIVE], :is_primary=>true}).empty?
-		has_chosen = !self.joins(:competition).where('user_id=? AND competition_participants.status=? AND is_primary=? AND scope=?', user_id, STATUS[:ACTIVE], true, scope).empty?
+		has_chosen = !self.get_primary_competition(user_id, competition.race_id, scope).nil?
 		return if (has_started && has_chosen)
 		
 		#Remove primary status from other records
@@ -94,7 +106,8 @@ class CompetitionParticipant < ActiveRecord::Base
 	#Title:			get_primary_competition
 	#Description:	Gets primary competition for a user
 	def self.get_primary_competition(user_id, race_id, scope)
-		primary = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND scope=? AND is_primary=?', user_id, race_id, scope, true).first
+		primary = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND scope=? AND is_primary=? AND competition_participants.status=? AND competitions.status<>?', 
+			user_id, race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED]).first
 		return primary.competition_id if (!primary.nil?)
 	end
 	
@@ -115,6 +128,7 @@ class CompetitionParticipant < ActiveRecord::Base
 	#Description:	Gets competitions a user is participating in
 	def self.get_participated_competitions(user_id, race_id, scope)
 		return CompetitionParticipant.joins(:competition).where(
-				'user_id=? AND competitions.race_id=? AND scope=?', user_id, race_id, scope).all
+				'user_id=? AND competitions.race_id=? AND scope=? AND competitions.status<>? AND competition_participants.status=?', 
+					user_id, race_id, scope, STATUS[:DELETED], STATUS[:ACTIVE]).all
 	end
 end

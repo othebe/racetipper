@@ -44,6 +44,14 @@ class CompetitionsController < ApplicationController
 		#Competition
 		@competition = Competition.find_by_id(params[:id])
 		redirect_to :root and return if (@competition.nil?)
+		
+		#Redirect path
+		redirect_path = case @scope
+		when COMPETITION_SCOPE[:CYCLINGTIPS]
+			'/races/racebox/' + @competition.race_id.to_s + '?' + @iframe_params
+		else
+			:root
+		end
 
 		user_id = 0
 		user_id = @user.id if (!@user.nil?)
@@ -56,10 +64,10 @@ class CompetitionsController < ApplicationController
 			if (participating.empty?)
 				@code = nil
 				@code = params[:code] if (params.has_key?(:code))
-				redirect_to :root and return if (!Competition.is_competition_code_valid(@competition.id, @code))
+				redirect_to redirect_path and return if (!Competition.is_competition_code_valid(@competition.id, @code))
 			end
 		else
-			redirect_to :root and return
+			redirect_to redirect_path and return
 		end
 		
 		#Show this competition on login
@@ -637,6 +645,8 @@ class CompetitionsController < ApplicationController
 		competition.status = STATUS[:DELETED]
 		competition.save
 		
+		CompetitionParticipant.find_and_set_primary_competition(competition.race_id, @user.id, @scope)
+		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
@@ -935,7 +945,7 @@ class CompetitionsController < ApplicationController
 		#Check if user has authority
 		competition = Competition.find_by_id(competition_id)
 		render :json=>{:success=>false, :msg=>'Cannot kick creator.'} and return if (competition.creator_id == user_id)
-		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id)
+		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id && @user.id != user_id)
 			
 		#Find participant and kick
 		participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id}).first
@@ -943,6 +953,8 @@ class CompetitionsController < ApplicationController
 			participant.status = STATUS[:DELETED]
 			participant.save
 		end
+		
+		CompetitionParticipant.find_and_set_primary_competition(competition.race_id, user_id, @scope)
 		render :json=>{:success=>true, :msg=>msg}
 	end
 	

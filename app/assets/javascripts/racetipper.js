@@ -391,7 +391,7 @@ function leave_competition(competition_id, user_id) {
 	var url = '/competitions/kick/'+competition_id;
 	$.post(url, {user_id:user_id}, function(response) {
 		if (response.success) 
-			window.location.href = '/';
+			window.location.reload();
 		else alert(response.msg);
 	});
 }
