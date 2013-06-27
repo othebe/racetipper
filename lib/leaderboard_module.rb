@@ -50,7 +50,8 @@ module LeaderboardModule
 					.select('competition_tips.*').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
-					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=?', race_id, scope, true)
+					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=? AND competition_participants.status=? AND competitions.status<>?', 
+						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
 			else
 				stage = Stage.find_by_id(group_id)
 				race_id = stage.race_id
@@ -58,8 +59,8 @@ module LeaderboardModule
 					.select('competition_tips.*').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
-					.where('competition_tips.race_id=? AND competition_tips.stage_id=? AND competitions.scope=? AND competition_participants.is_primary=?',
-						race_id, stage.id, scope, true)
+					.where('competition_tips.race_id=? AND competition_tips.stage_id=? AND competitions.scope=? AND competition_participants.is_primary=? AND competition_participants.status=? AND competitions.status<>?',
+						race_id, stage.id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
 			end
 			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
 			
