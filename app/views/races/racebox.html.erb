@@ -178,7 +178,7 @@
 <script>
 $(document).ready(function(event) {
 	new CountdownTimer('div.countdown', <%=@user_race_data[:race][:next_stage_remaining]%>);
-	<% if (@show_welcome) %>
+	<% if (!@race.has_join_any) %>
 		$.fancybox.open('#racebox-welcome');
 	<% end %>
 });
