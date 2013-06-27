@@ -1266,7 +1266,7 @@ function load_stage_info_for_global(stage_id) {
 	
 	$.get('/stages/get_leaderboard/'+stage_id, {}, function(response) {
 		var entries = [];
-		$(response).each(function(ndx, entry) {
+		$(response.leaderboard).each(function(ndx, entry) {
 			entries.push({
 				'rank': ndx+1,
 				'name': entry['username'],
@@ -1288,6 +1288,9 @@ function load_stage_info_for_global(stage_id) {
 		$('div#competition-leaderboard tbody').html(global_race_row_html);
 		
 		$('div#competition-leaderboard table.data').trigger('update');
+		
+		//Stage names
+		$('div#overview div.name div.header').html(response.stage['name']);
 		
 		loading_stage_info_for_global = false;
 		$('#content-with-nav').removeClass('loading-overlay');
