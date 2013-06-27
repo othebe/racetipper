@@ -222,6 +222,7 @@ module LeaderboardModule
 			ndx = 0
 			
 			data.each do |d|
+				next if (d[data_sym].nil?)
 				if (max.nil? || d[data_sym]>max)
 					if (!added_ndx.include?(ndx))
 						max = d[data_sym]
