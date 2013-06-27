@@ -81,24 +81,8 @@ class CompetitionParticipant < ActiveRecord::Base
 		participation.is_primary = true
 		participation.save
 		
-		#Clear global leaderboard race cache
-		cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD], {
-			:group_type => 'race',
-			:group_id => competition.race_id,
-			:scope => scope
-		})
-		CacheModule::delete(cache_name+'*')
-		
-		#Clear global leaderboard stage cache
-		stages = Stage.where({:race_id=>competition.race_id, :status=>STATUS[:ACTIVE]})
-		stages.each do |stage|
-			cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD], {
-				:group_type => 'stage',
-				:group_id => stage.id,
-				:scope => scope
-			})
-			CacheModule::delete(cache_name+'*')
-		end
+		#Clear leaderboard cache
+		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope)
 		
 		return true
 	end
