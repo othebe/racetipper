@@ -927,15 +927,14 @@ class CompetitionsController < ApplicationController
 		if (params.has_key?(:user_id) && !params[:user_id].empty?)
 			msg = 'User has been kicked from the competition.'
 			user_id = params[:user_id].to_i
+			#Check if user has authority
+			competition = Competition.find_by_id(competition_id)
+			render :json=>{:success=>false, :msg=>'Cannot kick creator.'} and return if (competition.creator_id == user_id)
+			render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id)
 		else
 			msg = 'You have left the competition.'
 			user_id = @user.id
 		end
-		
-		#Check if user has authority
-		competition = Competition.find_by_id(competition_id)
-		render :json=>{:success=>false, :msg=>'Cannot kick creator.'} and return if (competition.creator_id == user_id)
-		render :json=>{:success=>false, :msg=>'You do not have permission to do that.'} and return if (competition.creator_id != @user.id)
 			
 		#Find participant and kick
 		participant = CompetitionParticipant.where({:competition_id=>competition_id, :user_id=>user_id}).first
