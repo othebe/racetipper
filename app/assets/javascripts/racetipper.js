@@ -677,7 +677,11 @@ function save_competition() {
 				var new_competition_created_html = new_competition_created_template(response.data);
 				$('#new-competition-created-container').html(new_competition_created_html);
 				
-				$.fancybox.open('#new-competition-created-container');
+				$.fancybox.open('#new-competition-created-container', {
+					afterClose: function(e) {
+						window.location.reload();
+					}
+				});
 			}
 		}
 		saving_competition = false;

@@ -46,17 +46,23 @@ module LeaderboardModule
 		if (leaderboard.nil?)
 			if (group_type=='race')
 				race_id = group_id
-			else
-				stage = Stage.find_by_id(group_id)
-				race_id = stage.race_id
-			end
-			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
-			tips = CompetitionTip
+				tips = CompetitionTip
 					.select('competition_tips.*').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
 					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=?', race_id, scope, true)
-					
+			else
+				stage = Stage.find_by_id(group_id)
+				race_id = stage.race_id
+				tips = CompetitionTip
+					.select('competition_tips.*').uniq
+					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
+					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
+					.where('competition_tips.race_id=? AND competition_tips.stage_id=? AND competitions.scope=? AND competition_participants.is_primary=?',
+						race_id, stage.id, scope, true)
+			end
+			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
+			
 			if (group_type=='race')
 				leaderboard = self.combine_leaderboard_tip_results(results, tips)
 			else
@@ -76,12 +82,12 @@ module LeaderboardModule
 	#				sort_by_rank - Sort riders 
 	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
 		user_scores = {}
-		
+
 		tips.each do |tip|
 			#Skip non participants
 			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>tip.competition_id}).first
 			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
-			
+
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
 				modifier = 0
@@ -136,6 +142,9 @@ module LeaderboardModule
 				user_score[:tip].push({:id=>nil, :name=>'TBA'})
 				user_scores[user_id] = user_score
 				next
+			else
+				user_score[:tip].push({:id=>rider_id, :name=>rider.name})
+				user_scores[user_id] = user_score
 			end
 
 			next if (results[rider_id].nil? || results[rider_id][:stages][stage_id].nil?)
@@ -175,7 +184,6 @@ module LeaderboardModule
 			#Rank
 			user_score[:rank] = results[rider_id][:stages][stage_id][:rank]
 			
-			user_score[:tip].push({:id=>rider_id, :name=>rider.name})
 			user_scores[user_id] = user_score
 		end
 		
@@ -214,6 +222,7 @@ module LeaderboardModule
 			ndx = 0
 			
 			data.each do |d|
+				next if (d[data_sym].nil?)
 				if (max.nil? || d[data_sym]>max)
 					if (!added_ndx.include?(ndx))
 						max = d[data_sym]
