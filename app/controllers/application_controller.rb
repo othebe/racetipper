@@ -105,6 +105,9 @@ class ApplicationController < ActionController::Base
 		@iframe_params += ('&email=' + params[:email]) if (params.has_key?(:email))
 		@iframe_params += ('&key=' + params[:key]) if (params.has_key?(:key))
 		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
+		
+		#Login user at this point if necessary (Safari cookie fix)
+		login_with_token if (@user.nil? && !@iframe_params.empty?)
 	end
 	
 	######################## Auth stuff ##############################
