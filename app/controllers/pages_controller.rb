@@ -21,6 +21,20 @@ class PagesController < ApplicationController
 		end
 	end
 	
+	#Title:			safari_fix
+	#Description:	Must visit a page in safari to store cookies
+	def safari_fix
+		if (params.has_key?(:redirect))
+			url = params[:redirect]
+			url += (url.include?('?'))?'&':'?'
+			url += 'safari_fix=true'
+		else
+			url = :root
+		end
+		
+		redirect_to url and return
+	end
+	
 	#Title:			about_us
 	#Description:	About us
 	def about

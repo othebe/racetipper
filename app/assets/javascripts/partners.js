@@ -21,9 +21,12 @@ var VelotipperIframeBuddy = function(elt_id) {
 	var iframe_elt = document.getElementById(elt_id);
 	if (iframe_elt==null) return;
 	
+	this.ua = this.detect_ua();
 	this.iframe_elt = iframe_elt;
 	this.parent_params = this.parse_parent_params();
 	this.iframe_params = this.parse_iframe_params();
+	
+	if (this.ua == 'safari') this.safari_fix();
 	
 	this.init_listeners();
 	
@@ -51,9 +54,9 @@ VelotipperIframeBuddy.prototype.init_listeners = function() {
 VelotipperIframeBuddy.prototype.parse_parent_params = function() {
 	var params = {};
 	var qry_ndx = window.location.href.indexOf('?');
-	
+
 	if (qry_ndx > -1) params = parseQuery(window.location.href.substr(qry_ndx+1));
-	
+
 	return params;
 }
 
@@ -73,6 +76,26 @@ VelotipperIframeBuddy.prototype.show_competition = function() {
 	
 	src = this.SITE_URL+'competitions/'+this.parent_params['competition_id']+src;
 	this.iframe_elt.src = src;
+}
+
+//Safari fix
+VelotipperIframeBuddy.prototype.safari_fix = function() {
+	if (this.parent_params['safari_fix']=='true') return;
+	
+	var url = this.SITE_URL + 'pages/safari_fix?redirect=' + window.location.href;
+	window.location.href = url;
+}
+
+
+//Detect browser
+VelotipperIframeBuddy.prototype.detect_ua = function() {
+	var ua = navigator.userAgent.toLowerCase();
+	
+	//Safari
+	if (ua.indexOf('safari/') >= 0) return 'safari';
+	
+	//Other
+	return 'other';
 }
 
 /******** parses query into key-value parameters ********/
