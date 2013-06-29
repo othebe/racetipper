@@ -64,7 +64,9 @@
 							<div class="title bold">GC</div>
 							<% count = 5 %>
 							<% for i in 0..(count-1) %>
-								<div><%= i+1 %>. <%= (@leaderboard[i].nil?) ? '--' : @leaderboard[i][:username]%></div>
+								<% if (!@leaderboard.nil? && !@leaderboard[i].nil?) %>
+									<div><%= i+1 %>. <%= (@leaderboard[i].nil?) ? '--' : @leaderboard[i][:username]%></div>
+								<% end %>
 							<% end %>
 						</div>
 					</div>

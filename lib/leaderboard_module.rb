@@ -219,6 +219,7 @@ module LeaderboardModule
 	#Title:			get_top
 	#Description:	Get top scorers in the leaderboard
 	def self.get_top(data_sym, count, data)
+		return [] if data.nil?
 		top = []
 		added_ndx = []
 		
