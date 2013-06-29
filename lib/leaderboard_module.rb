@@ -7,7 +7,7 @@ module LeaderboardModule
 	#				group_type - stage/race
 	#				group_id - ID of stage/race
 	#				limit - How many entries in the leaderboard to show
-	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=false)
+	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=true)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:LEADERBOARD], 
 			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
@@ -38,7 +38,7 @@ module LeaderboardModule
 	#Params:		group_type - race/stage
 	#				group_id - Race/stage ID
 	#				scope - SCOPE
-	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=false)
+	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=true)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
 			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
@@ -51,7 +51,8 @@ module LeaderboardModule
 				tips = []
 				participants = CompetitionParticipant.select('competition_id, user_id')
 					.joins('INNER JOIN competitions ON (competition_participants.competition_id = competitions.id)')
-					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ?', race_id, scope, true)
+					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status= ? AND competitions.status <> ?', 
+						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
 				participants.each do |participant|
 					tip = CompetitionTip.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id}).first
 					tips.push(tip)
@@ -59,12 +60,15 @@ module LeaderboardModule
 			else
 				stage = Stage.find_by_id(group_id)
 				race_id = stage.race_id
-				tips = CompetitionTip
-					.select('competition_tips.*').uniq
-					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
-					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
-					.where('competition_tips.race_id=? AND competition_tips.stage_id=? AND competitions.scope=? AND competition_participants.is_primary=? AND competition_participants.status=? AND competitions.status<>?',
-						race_id, stage.id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
+				tips = []
+				participants = CompetitionParticipant.select('competition_id, user_id')
+					.joins('INNER JOIN competitions ON (competition_participants.competition_id = competitions.id)')
+					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status = ? AND competitions.status <> ?', 
+						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
+				participants.each do |participant|
+					tip = CompetitionTip.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id, :stage_id=>stage.id}).first
+					tips.push(tip)
+				end
 			end
 			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
 			
