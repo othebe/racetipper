@@ -61,3 +61,6 @@ gem 'newrelic_rpm'
 
 #Rack iframe for iframe session management
 gem 'rack-iframe'
+
+#Librato
+gem 'librato-rails'

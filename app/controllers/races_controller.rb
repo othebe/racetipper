@@ -92,7 +92,6 @@ class RacesController < ApplicationController
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
 
-		Race.class_eval { attr_accessor :has_join_any }
 		@race.has_join_any = !CompetitionParticipant.get_participated_competitions(@user.id, race_id, @scope).empty?
 		@default_competition = Competition.where({:race_id=>race_id, :status=>STATUS[:ACTIVE], :scope=>@scope}).first if !@race.has_join_any
 
