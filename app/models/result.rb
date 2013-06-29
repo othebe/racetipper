@@ -177,7 +177,7 @@ class Result < ActiveRecord::Base
 		stage_id = self.season_stage_id
 		rider_id = self.rider_id
 
-		tips = CompetitionTip.where('stage_id=? AND (rider_id IS NULL OR rider_id=0 OR rider_id=?)', stage_id, rider_id)
+		tips = CompetitionTip.where('stage_id=? AND (rider_id IS NULL OR rider_id=0 OR rider_id=?) AND status=?', stage_id, rider_id, STATUS[:ACTIVE])
 		tips.each do |tip|
 			valid = true
 			

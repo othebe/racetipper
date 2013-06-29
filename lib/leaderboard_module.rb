@@ -54,8 +54,11 @@ module LeaderboardModule
 					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status= ? AND competitions.status <> ?', 
 						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
 				participants.each do |participant|
-					tip = CompetitionTip.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id}).first
-					tips.push(tip)
+					comp_tips = CompetitionTip
+						.joins('INNER JOIN stages ON competition_tips.stage_id = stages.id')
+						.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id})
+						.order('stages.starts_on ASC')
+					comp_tips.each {|tip| tips.push(tip)}
 				end
 			else
 				stage = Stage.find_by_id(group_id)
@@ -100,7 +103,6 @@ module LeaderboardModule
 			#Skip non participants
 			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>tip.competition_id}).first
 			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
-			
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
 				modifier = 0

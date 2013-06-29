@@ -17,9 +17,13 @@
 		
 		<tbody>
 			<% ndx = 0 %>
+			<% base_time = nil %>
 			<% if (!@leaderboard.nil?) %>
 				<% @leaderboard.each do |entry| %>
-					<% ndx += 1 %>
+					<% if (base_time.nil? || (entry[:time]>base_time)) %>
+						<% base_time = entry[:time] %>
+						<% ndx += 1 %>
+					<% end %>
 					<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
 						<td><%=ndx%></td>
 						<td class="gray"><%=entry[:username]%></td>

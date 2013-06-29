@@ -1266,9 +1266,16 @@ function load_stage_info_for_global(stage_id) {
 	
 	$.get('/stages/get_leaderboard/'+stage_id, {}, function(response) {
 		var entries = [];
+		var base_rank = null;
+		var rank_ndx = 0;
 		$(response.leaderboard).each(function(ndx, entry) {
+			rank = (entry['rank']);
+			if (rank!=null && base_rank == null || (rank > base_rank)) {
+				base_rank = rank;
+				rank_ndx++;
+			}
 			entries.push({
-				'rank': ndx+1,
+				'rank': (rank_ndx==0)?'--':rank_ndx,
 				'name': entry['username'],
 				'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
 				'time': (entry['disqualified']==null)?entry['formatted_time']:'--',
