@@ -82,9 +82,10 @@ module LeaderboardModule
 	#				tips - Tips
 	#				sort_by_rank - Sort riders 
 	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
+		first_tip = CompetitionTip.find_by_id(tips.first.id)
 		cached_users = {}
 		cached_riders = {}
-		cached_result = Result.where({:race_id=>tips.first.race_id})
+		cached_result = Result.where({:race_id=>first_tip.race_id})
 		
 		user_scores = {}
 		tips.each do |tip|
