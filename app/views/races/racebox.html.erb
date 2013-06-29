@@ -104,10 +104,17 @@
 				<tr class="data" onclick="location.href='/competitions/<%=competition[:competition_id]%>?<%=@iframe_params%>'" style="cursor:pointer;">
 					<td class="logo hide-for-small"><%=image_tag 'users.png'%></td>
 					<td class="rank bold row">
-						<div class="text-center">
-							<div class="value"><%=competition[:rank] %></div>
-							<div class="postfix"><%= postfix %></div>
-						</div>
+						<% if (competition[:rank]==0) %>
+							<div class="text-center">
+								<div class="value">--</div>
+								<div class="postfix"></div>
+							</div>
+						<% else %>
+							<div class="text-center">
+								<div class="value"><%=competition[:rank] %></div>
+								<div class="postfix"><%= postfix %></div>
+							</div>
+						<% end %>
 					</td>
 					<td class="competition bold row">
 						<div class="competition-name"><%=competition[:competition_name]%></div>

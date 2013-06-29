@@ -7,12 +7,13 @@ module LeaderboardModule
 	#				group_type - stage/race
 	#				group_id - ID of stage/race
 	#				limit - How many entries in the leaderboard to show
-	def self.get_leaderboard(competition_id, group_type, group_id, limit=10)
+	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:LEADERBOARD], 
 			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
 		)
 		leaderboard_with_gap = CacheModule::get(cache_name)
+		return [] if (leaderboard_with_gap.nil? and !regenerate)
 		if (leaderboard_with_gap.nil?)
 			tip_conditions = {:competition_id=>competition_id}
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
@@ -37,13 +38,13 @@ module LeaderboardModule
 	#Params:		group_type - race/stage
 	#				group_id - Race/stage ID
 	#				scope - SCOPE
-	def self.get_global_leaderboard(group_type, group_id, scope)
+	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
 			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
 		)
 		leaderboard = CacheModule::get(cache_name)
-		return nil
+		return nil if (leaderboard.nil? and !regenerate)
 		if (leaderboard.nil?)
 			if (group_type=='race')
 				race_id = group_id
