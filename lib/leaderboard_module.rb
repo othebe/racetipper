@@ -82,6 +82,10 @@ module LeaderboardModule
 	#				tips - Tips
 	#				sort_by_rank - Sort riders 
 	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
+		cached_users = {}
+		cached_riders = {}
+		cached_result = Result.where({:race_id=>tips.first.race_id})
+		
 		user_scores = {}
 		tips.each do |tip|
 			tip = CompetitionTip.find_by_id(tip.id)
@@ -102,7 +106,7 @@ module LeaderboardModule
 			stage_id = tip.stage_id
 			user_id = tip.competition_participant_id
 			
-			user = User.find_by_id(user_id)
+			user = cached_users[user_id] || User.find_by_id(user_id)
 			username = user.display_name
 			username = (user.firstname+' '+user.lastname).strip if (username.nil? || username.empty?)
 
@@ -116,12 +120,12 @@ module LeaderboardModule
 			#Original rider
 			user_score[:original_rider] = nil
 			if (user_score[:is_default])
-				original_rider = Rider.find_by_id(tip.rider_id)
+				original_rider = cached_riders[tip.rider_id] || Rider.find_by_id(tip.rider_id)
 				user_score[:original_rider] = nil
 				
 				#Get original rider only if it exists
 				if (!original_rider.nil?)
-					result = Result.where({:rider_id=>original_rider.id, :season_stage_id=>tip.stage_id}).first
+					result = cached_result.where({:rider_id=>original_rider.id, :season_stage_id=>tip.stage_id}).first
 					user_score[:original_rider] = {
 						:id => original_rider.id,
 						:name => original_rider.name,
@@ -137,7 +141,7 @@ module LeaderboardModule
 				} if (user_score[:original_rider].nil?)
 			end
 			
-			rider = Rider.find_by_id(rider_id)
+			rider = cached_riders[rider_id] || Rider.find_by_id(rider_id)
 			
 			#Nil rider if no rider chosen, or stage results haven't been released yet
 			if (rider_id.nil? || results[rider_id].nil? || results[rider_id][:stages][stage_id].nil?)
