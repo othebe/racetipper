@@ -18,7 +18,7 @@ module LeaderboardModule
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
 			
 			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
-			tips = CompetitionTip.where(tip_conditions)
+			tips = CompetitionTip.select(:id).where(tip_conditions)
 			
 			if (group_type=='stage')
 				leaderboard_with_gap = self.combine_leaderboard_tip_results(results, tips, true)
@@ -47,7 +47,7 @@ module LeaderboardModule
 			if (group_type=='race')
 				race_id = group_id
 				tips = CompetitionTip
-					.select('competition_tips.*').uniq
+					.select('competition_tips.id').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
 					.where('competition_tips.race_id=? AND competitions.scope=? AND competition_participants.is_primary=? AND competition_participants.status=? AND competitions.status<>?', 
@@ -56,7 +56,7 @@ module LeaderboardModule
 				stage = Stage.find_by_id(group_id)
 				race_id = stage.race_id
 				tips = CompetitionTip
-					.select('competition_tips.*').uniq
+					.select('competition_tips.id').uniq
 					.joins('INNER JOIN competition_participants ON competition_participants.competition_id=competition_tips.competition_id')
 					.joins('INNER JOIN competitions ON competitions.id=competition_participants.competition_id')
 					.where('competition_tips.race_id=? AND competition_tips.stage_id=? AND competitions.scope=? AND competition_participants.is_primary=? AND competition_participants.status=? AND competitions.status<>?',
@@ -83,12 +83,13 @@ module LeaderboardModule
 	#				sort_by_rank - Sort riders 
 	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
 		user_scores = {}
-
 		tips.each do |tip|
+			tip = CompetitionTip.find_by_id(tip.id)
+			
 			#Skip non participants
 			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>tip.competition_id}).first
 			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
-
+			
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
 				modifier = 0

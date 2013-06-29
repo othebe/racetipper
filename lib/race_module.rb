@@ -1,5 +1,5 @@
 module RaceModule
-	require 'leaderboard_module'
+	require_dependency 'leaderboard_module'
 	
 	#Title:			get_user_race_data
 	#Description:	Gets race related information for a user
@@ -32,8 +32,8 @@ module RaceModule
 
 		competitions = Competition.where('race_id=? AND scope=? AND (status=? OR status=?)', race.id, scope, STATUS[:ACTIVE], STATUS[:PRIVATE])
 		competitions.each do |competition|
-			participants = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]})
-			is_participant = (!participants.where({:user_id=>user_id}).empty?)
+			participation_data = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE], :user_id=>user_id}).first
+			is_participant = !participation_data.nil?
 
 			#For private competitions, check participation
 			if (competition.status == STATUS[:PRIVATE])
@@ -48,12 +48,12 @@ module RaceModule
 				more_competitions.push({
 					:competition_id => competition.id,
 					:competition_name => competition.name,
-					:num_participants => participants.length
+					:num_participants =>CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]}).count
 				}) if (competition.status == STATUS[:ACTIVE])
 			#Else add to current competitions
 			else
 				#Check if this competition is the primary
-				is_primary = participants.where({:user_id=>user_id}).first.is_primary
+				is_primary = participation_data.is_primary
 				
 				#Leaderboard for this competition
 				leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
