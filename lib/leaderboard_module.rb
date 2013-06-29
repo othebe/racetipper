@@ -43,6 +43,7 @@ module LeaderboardModule
 			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
 		)
 		leaderboard = CacheModule::get(cache_name)
+		return nil
 		if (leaderboard.nil?)
 			if (group_type=='race')
 				race_id = group_id
