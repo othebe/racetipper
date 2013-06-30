@@ -695,9 +695,6 @@ class CompetitionsController < ApplicationController
 		competition.status = STATUS[:DELETED]
 		competition.save
 		
-		#Clear leaderboard cache
-		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope) if (CompetitionParticipant.get_primary_competition(user_id, competition.race_id, @scope)==competition.id)
-		
 		render :json=>{:success=>true, :msg=>'success'}
 	end
 	
@@ -1003,9 +1000,6 @@ class CompetitionsController < ApplicationController
 			participant.status = STATUS[:DELETED]
 			participant.save
 		end
-		
-		#Clear leaderboard cache
-		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope) if (CompetitionParticipant.get_primary_competition(user_id, competition.race_id, @scope)==competition_id)
 		
 		render :json=>{:success=>true, :msg=>msg}
 	end

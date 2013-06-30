@@ -26,12 +26,6 @@ class CompetitionParticipant < ActiveRecord::Base
 		#Designate this competition as the primary if its the first
 		has_primary = (self.joins(:competition).where('user_id=? AND competitions.race_id=? AND is_primary=? AND scope=?', user_id, competition.race_id, true, scope).count > 0)
 		self.set_primary_competition(competition_id, user_id, scope) if (!has_primary)
-		
-		#Clear cache
-		cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:LEADERBOARD], {
-			:competition_id => competition_id,
-		})
-		CacheModule::delete(cache_name+'*')
 	end
 	
 	#Title:			find_and_set_primary_competition
@@ -81,9 +75,6 @@ class CompetitionParticipant < ActiveRecord::Base
 		
 		participation.is_primary = true
 		participation.save
-		
-		#Clear leaderboard cache
-		CacheModule::delete_global_leaderboard_for_race(competition.race_id, scope)
 		
 		return true
 	end

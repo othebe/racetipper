@@ -64,5 +64,7 @@ module Racetipper
 	
 	#Add asset path
 	config.assets.paths << "#{Rails.root}/lib/plugins"
+	
+	config.autoload_paths += Dir["#{config.root}/lib/**/"]
   end
 end
