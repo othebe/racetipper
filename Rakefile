@@ -7,8 +7,8 @@ require File.expand_path('../config/application', __FILE__)
 require File.expand_path('../lib/resque_tasks', __FILE__)
 require 'resque/tasks'
 
-task "resque:setup" do
-      ENV['QUEUE'] ||= '*'
+task "resque:setup" => :environment do
+  ENV['QUEUE'] = '*'
 end
 
 Racetipper::Application.load_tasks
