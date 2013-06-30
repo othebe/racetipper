@@ -7,7 +7,7 @@ module LeaderboardModule
 	#				group_type - stage/race
 	#				group_id - ID of stage/race
 	#				limit - How many entries in the leaderboard to show
-	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=false)
+	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=true)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:LEADERBOARD], 
 			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
