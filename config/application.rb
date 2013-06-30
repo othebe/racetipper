@@ -66,17 +66,5 @@ module Racetipper
 	config.assets.paths << "#{Rails.root}/lib/plugins"
 	
 	config.autoload_paths += Dir["#{config.root}/lib/**/"]
-	
-	#Initializer function
-	def initialize!(group=:default) #:nodoc:
-		raise "Application has been already initialized." if @initialized
-		run_initializers(group, self)
-		@initialized = true
-		
-		#Start leaderboard generation loop
-		ResqueTasks::cron_leaderboard
-		self
-	end
-
   end
 end
