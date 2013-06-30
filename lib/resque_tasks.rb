@@ -3,6 +3,7 @@ class ResqueTasks
 	
 	#Resque tasks
 	RESQUE_TASK = {
+		:CRON_LEADERBOARD => 'CRON_LEADERBOARD',
 		:GENERATE_GLOBAL_LEADERBOARD => 'GENERATE_GLOBAL_LEADERBOARD',
 		:GENERATE_COMPETITION_LEADERBOARDS => 'GENERATE_COMPETITION_LEADERBOARDS',
 		:GENERATE_COMPETITION_LEADERBOARD => 'GENERATE_COMPETITION_LEADERBOARD',
@@ -20,6 +21,8 @@ class ResqueTasks
 		puts "Starting: [#{task_type}]: " + data.to_s + Time.now.to_s
 		
 		case task_type
+			when RESQUE_TASK[:CRON_LEADERBOARD]
+				self.cron_leaderboard()
 			when RESQUE_TASK[:GENERATE_GLOBAL_LEADERBOARD]
 				self.generate_global_leaderboard(data)
 			when RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARDS]
@@ -58,8 +61,19 @@ class ResqueTasks
 			#Competition race leaderboard
 			self.q_generate_competition_leaderboards('race', race.id)
 		end
+		
+		#Loop back to self
+		self.q_cron_leaderboard
 	end
 	
+	#Title:			q_cron_leaderboard
+	#Description:	Adds cron-loop
+	def self.q_cron_leaderboard
+		Resque.enqueue(self, {
+			:type => RESQUE_TASK[:CRON_LEADERBOARD],
+			:data => {}
+		})
+	end
 	
 	#############################
 	# Enqueue functions         #
