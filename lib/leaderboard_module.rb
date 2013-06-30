@@ -63,8 +63,7 @@ module LeaderboardModule
 				participants.each do |participant|
 					comp_tips = CompetitionTip
 						.joins('INNER JOIN stages ON competition_tips.stage_id = stages.id')
-						.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id})
-						.order('stages.starts_on ASC')
+						.where('competition_participant_id=? AND competition_id=? AND stages.starts_on < ?', participant.user_id, participant.competition_id, Time.now)
 					comp_tips.each {|tip| tips.push(tip)}
 				end
 			else
@@ -131,7 +130,7 @@ module LeaderboardModule
 			user_score[:user_id] = user_id
 			user_score[:username] = username
 			user_score[:is_default] = !tip.default_rider_id.nil?
-			user_score[:time] = 0
+			user_score[:time] ||= 0
 			
 			#Original rider
 			user_score[:original_rider] = nil
@@ -157,7 +156,7 @@ module LeaderboardModule
 					:reason => 'No rider chosen'
 				} if (user_score[:original_rider].nil?)
 			end
-			
+
 			rider = cached_riders[rider_id] || Rider.find_by_id(rider_id)
 			cached_riders[tip.rider_id] = original_rider if (cached_riders[tip.rider_id].nil?)
 			
