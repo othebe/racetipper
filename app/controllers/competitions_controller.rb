@@ -77,7 +77,7 @@ class CompetitionsController < ApplicationController
 		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
 		#Get leaderboard
-		@leaderboard = LeaderboardModule::get_leaderboard(params[:id], 'race', @competition.race_id)
+		@leaderboard = LeaderboardModule::get_leaderboard(params[:id], 'race', @competition.race_id) || []
 
 		#Creator
 		@creator = User.find_by_id(@competition.creator_id)
@@ -182,11 +182,60 @@ class CompetitionsController < ApplicationController
 		group_id = params[:group_id]
 		
 		leaderboard = LeaderboardModule::get_leaderboard(competition_id, group_type, group_id)
+		
+		#If stage hasn't started, release the tip list
+		if (leaderboard.nil? && group_type=='stage')
+			stage = Stage.find_by_id(group_id)
+			if (!stage.nil? && (stage.starts_on < Time.now))
+				cache_name = CacheModule::get_cache_name(CacheModule::CACHE_TYPE[:COMPETITION_TIPS], {
+					:competition_id => competition_id,
+					:stage_id => group_id
+				})
+				leaderboard = CacheModule::get(cache_name)
+				if (leaderboard.nil?)
+					leaderboard = []
+					cached_riders = {}
+					tips = CompetitionTip.where({:stage_id=>group_id, :competition_id=>competition_id, :status=>STATUS[:ACTIVE]})
+					tips.each do |tip|
+						#Get user data
+						user = User.find_by_id(tip.competition_participant_id)
+						next if (user.nil?)
+						username = user.display_name
+						username = (user.firstname+' '+user.lastname).strip if (username.nil? || username.empty?)
+						
+						#Get rider data
+						tip_data = [{:id=>nil, :name=>'--'}]
+						rider = nil
+						if (!tip.rider_id.nil?)
+							rider = cached_riders[tip.rider_id] || Rider.find_by_id(tip.rider_id)
+							cached_riders[tip.rider_id] = rider
+							tip_data = [{:id=>tip.rider_id, :name=>rider.name}]
+						end
+			
+						leaderboard.push({
+							:user_id => tip.competition_participant_id,
+							:username => username,
+							:time_formatted => 'TBA',
+							:gap_formatted => 'TBA',
+							:kom => '--',
+							:sprint => '--',
+							:rank => 0,
+							:tip => tip_data,
+							:is_default => false,
+							:original_rider => false
+						})
+					end
+					CacheModule::set(leaderboard, cache_name)
+				end
+			end
+		end
+		
 		@data = []
 		
 		ndx = 1
 		max_rank = display_rank = 0
 		
+		leaderboard ||= []
 		leaderboard.each do |entry|
 			if (!entry[:rank].nil?)
 				#Same rider ranking = same user ranking

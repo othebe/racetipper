@@ -4,7 +4,8 @@ module CacheModule
 		:LEADERBOARD => 'leaderboard',
 		:GLOBAL_LEADERBOARD => 'global_leaderboard',
 		:RESULTS => 'results',
-		:STAGE_IMAGES => 'stageimages'
+		:STAGE_IMAGES => 'stageimages',
+		:COMPETITION_TIPS => 'competition_tips'
 	}
 	
 	#Cache TTL
@@ -27,6 +28,8 @@ module CacheModule
 			self.get_stageimages_cache_name(identifiers)
 		when CACHE_TYPE[:GLOBAL_LEADERBOARD]
 			self.get_global_leaderboard_cache_name(identifiers)
+		when CACHE_TYPE[:COMPETITION_TIPS]
+			self.get_competition_tips_cache_name(identifiers)
 		end
 		
 		name = name.chop if (name.end_with?('_'))
@@ -49,9 +52,9 @@ module CacheModule
 	
 	#Title:			set
 	#Description:	Sets value in cache
-	def self.set(data, cache_name, ttl)
+	def self.set(data, cache_name, ttl=nil)
 		REDIS.set(cache_name, data)
-		REDIS.expire(cache_name, ttl)
+		REDIS.expire(cache_name, ttl) if (!ttl.nil?)
 	end
 	
 	#Title:			delete
@@ -93,6 +96,12 @@ module CacheModule
 		end
 		
 		return base.join('_')
+	end
+	
+	#Title:			get_competition_tips_cache_name
+	#Description:	Gets results cache name
+	def self.get_competition_tips_cache_name(identifiers)
+		return base = [CACHE_TYPE[:COMPETITION_TIPS], identifiers[:competition_id].to_s, identifiers[:stage_id].to_s].join('_')
 	end
 	
 	###########

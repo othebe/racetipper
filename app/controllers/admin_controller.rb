@@ -346,8 +346,12 @@ class AdminController < ApplicationController
 			Competition.check_completion_status(competition.competition_id)
 		end
 		
-		#Clear cache
-		REDIS.flushall()
+		#Worker leaderboard generation
+		COMPETITION_SCOPE.each do |k, scope|
+			ResqueTasks::q_generate_global_leaderboard('stage', stage_id, scope)
+			ResqueTasks::q_generate_global_leaderboard('race', race_id, scope)
+		end
+		ResqueTasks::q_generate_competition_leaderboards('stage', stage_id)
 		
 		render :json=>{:success=>true}
 	end

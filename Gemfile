@@ -17,7 +17,7 @@ group :production do
 	gem 'unicorn'
 end
 
-gem 'json'
+gem 'json', '~> 1.7.7'
 
 gem 'redis'
 
@@ -64,3 +64,6 @@ gem 'rack-iframe'
 
 #Librato
 gem 'librato-rails'
+
+#Resque
+gem 'resque', "~> 1.22.0"

@@ -57,6 +57,7 @@ module RaceModule
 				
 				#Leaderboard for this competition
 				leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
+				leaderboard = [] if leaderboard.nil?
 
 				#Check tip for next stage
 				rider = nil

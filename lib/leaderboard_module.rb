@@ -7,14 +7,17 @@ module LeaderboardModule
 	#				group_type - stage/race
 	#				group_id - ID of stage/race
 	#				limit - How many entries in the leaderboard to show
-	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=true)
+	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:LEADERBOARD], 
 			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
 		)
 		leaderboard_with_gap = CacheModule::get(cache_name)
-		return [] if (leaderboard_with_gap.nil? and !regenerate)
-		if (leaderboard_with_gap.nil?)
+		
+		#If not regenerating leaderboard, return cached data
+		return leaderboard_with_gap if (!regenerate)
+		
+		if (regenerate)
 			tip_conditions = {:competition_id=>competition_id}
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
 			
@@ -27,7 +30,7 @@ module LeaderboardModule
 				leaderboard_with_gap = self.combine_leaderboard_tip_results(results, tips, false)
 			end
 			
-			CacheModule::set(leaderboard_with_gap, cache_name, CacheModule::CACHE_TTL[:DAY])
+			CacheModule::set(leaderboard_with_gap, cache_name)
 		end
 		
 		return leaderboard_with_gap
@@ -38,14 +41,18 @@ module LeaderboardModule
 	#Params:		group_type - race/stage
 	#				group_id - Race/stage ID
 	#				scope - SCOPE
-	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=true)
+	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
 			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
 		)
 		leaderboard = CacheModule::get(cache_name)
-		return nil if (leaderboard.nil? and !regenerate)
-		if (leaderboard.nil?)
+		
+		#If not regenerating leaderboard, return cached data
+		return leaderboard if (!regenerate)
+		
+		#Regenerate leaderboard
+		if (regenerate)
 			if (group_type=='race')
 				race_id = group_id
 				tips = []
@@ -81,7 +88,7 @@ module LeaderboardModule
 				leaderboard = self.combine_leaderboard_tip_results(results, tips, true)
 			end
 			
-			CacheModule::set(leaderboard, cache_name, CacheModule::CACHE_TTL[:DAY])
+			CacheModule::set(leaderboard, cache_name)
 		end
 		
 		return leaderboard
