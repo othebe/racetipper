@@ -63,7 +63,7 @@ module LeaderboardModule
 				participants.each do |participant|
 					comp_tips = CompetitionTip
 						.joins('INNER JOIN stages ON competition_tips.stage_id = stages.id')
-						.where('competition_participant_id=? AND competition_id=? AND stages.starts_on < ?', participant.user_id, participant.competition_id, Time.now)
+						.where('competition_participant_id=? AND competition_id=?', participant.user_id, participant.competition_id)
 					comp_tips.each {|tip| tips.push(tip)}
 				end
 			else
