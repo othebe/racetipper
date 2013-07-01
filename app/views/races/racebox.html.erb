@@ -76,8 +76,12 @@
 					</div>
 				</td>
 			</tr>
-			<% 	rank_th = @user_race_data[:global_results][:rank].ordinalize
-				postfix = rank_th[-2, 2]
+			<%	if (!@user_race_data[:global_results][:rank].nil?)
+					rank_th = @user_race_data[:global_results][:rank].ordinalize if (!@user_race_data[:global_results][:rank].nil?)
+					postfix = rank_th[-2, 2]
+				else
+					postfix = ''
+				end
 			%>
 			<tr class="data" onclick="location.href='/races/leaderboard/<%=@race.id%>?<%=@iframe_params%>'" style="cursor:pointer;">
 				<td class="logo hide-for-small"><%=image_tag 'earth.png'%></td>
