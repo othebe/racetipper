@@ -134,14 +134,14 @@ class ResqueTasks
 	def self.generate_competition_leaderboards(data)
 		group_type = data['group_type']
 		group_id = data['group_id']
-		
+
 		#Find race ID
 		race_id = data['group_id']
 		if (group_type == 'stage')
 			stage = Stage.find_by_id(group_id)
 			race_id = stage.race_id
 		end
-
+		
 		#Generate leaderboards for all related competitions
 		competitions = Competition.where({:race_id=>race_id})
 		competitions.each do |competition|
@@ -165,7 +165,7 @@ class ResqueTasks
 					:group_type => 'race',
 					:group_id => race_id
 				}
-			}) if (!data['stage_only'] && group_type=='stage')
+			}) if (!data['stage_only'])
 		end
 	end
 	
