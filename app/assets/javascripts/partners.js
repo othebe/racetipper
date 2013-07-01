@@ -82,7 +82,7 @@ VelotipperIframeBuddy.prototype.show_competition = function() {
 VelotipperIframeBuddy.prototype.safari_fix = function() {
 	if (this.parent_params['safari_fix']=='true') return;
 	
-	var url = this.SITE_URL + 'pages/safari_fix?redirect=' + window.location.href;
+	var url = this.SITE_URL + 'pages/safari_fix?redirect=' + encodeURIComponent(window.location.href);
 	window.location.href = url;
 }
 
@@ -91,8 +91,12 @@ VelotipperIframeBuddy.prototype.safari_fix = function() {
 VelotipperIframeBuddy.prototype.detect_ua = function() {
 	var ua = navigator.userAgent.toLowerCase();
 	
+	//Chrome
+	if (ua.indexOf('chrome/') >= 0) return 'chrome';
 	//Safari
-	if (ua.indexOf('safari/') >= 0) return 'safari';
+	else if (ua.indexOf('safari/') >= 0) return 'safari';
+	//Apple webkit
+	else if (ua.indexOf('applewebkit/') >= 0) return 'safari';
 	
 	//Other
 	return 'other';
