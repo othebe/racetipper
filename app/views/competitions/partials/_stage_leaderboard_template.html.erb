@@ -51,8 +51,8 @@
 						</td>
 						<td class="gray">
 							{{this.time}}
-							{{#if this.gap_formatted}}
-								<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.gap_formatted}}'}%>
+							{{#if this.formatted_gap}}
+								<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.formatted_gap}}'}%>
 							{{/if}}
 						</td>
 						<td class="gray">{{this.sprint}}</td>
@@ -78,8 +78,8 @@
 			<td class="gray">{{this.tip}}</td>
 			<td class="gray">
 				{{this.time}}
-				{{#if this.gap_formatted}}
-					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.gap_formatted}}'}%>
+				{{#if this.formatted_gap}}
+					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'+{{this.formatted_gap}}'}%>
 				{{/if}}
 			</td>
 			<td class="gray">{{this.sprint}}</td>

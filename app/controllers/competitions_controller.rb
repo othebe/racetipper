@@ -236,36 +236,8 @@ class CompetitionsController < ApplicationController
 		max_rank = display_rank = 0
 		
 		leaderboard ||= []
-		leaderboard.each do |entry|
-			if (!entry[:rank].nil?)
-				#Same rider ranking = same user ranking
-				if (entry[:rank] > max_rank) 
-					display_rank = ndx
-					max_rank = entry[:rank]
-				end
-			else
-				display_rank = ndx
-			end
-			
-			line = {
-				:user_id => entry[:user_id],
-				:username => entry[:username],
-				:time_formatted => entry[:formatted_time],
-				:gap_formatted => entry[:formatted_gap],
-				:kom => entry[:kom],
-				:sprint => entry[:sprint],
-				:rank => display_rank
-			}
-			if (group_type == 'stage')
-				line[:tip] = entry[:tip]
-				line[:is_default] = entry[:is_default]
-				line[:original_rider] = entry[:original_rider]
-			end
-			@data.push(line)
-			ndx += 1
-		end
 		
-		render :json => {:leaderboard => @data}
+		render :json => {:leaderboard => leaderboard}
 	end
 	
 	#Title:			user_race_data

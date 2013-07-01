@@ -25,7 +25,7 @@
 						<% ndx += 1 %>
 					<% end %>
 					<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
-						<td><%=ndx%></td>
+						<td><%=entry[:rank]%></td>
 						<td class="gray"><%=entry[:username]%></td>
 						<td class="gray">
 							<%=entry[:formatted_time]%>

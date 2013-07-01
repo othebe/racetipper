@@ -122,16 +122,25 @@ class Result < ActiveRecord::Base
 				rider_points_unsorted[rider_id] = rider_data
 			end
 			
-			#Sort to get rank
-			riders_ranked = rider_points_unsorted.sort_by{|k, v| v[:sort_score]}
-			rank = 1
-			riders_ranked.each do |id, data|
-				rider_data = rider_points_unsorted[id]
-				rider_data[:rank] = rank if (rider_data[:rank].nil? || rider_data[:rank]==0)
-				rider_points_unsorted[id] = rider_data
-				rank += 1
+			#If indexed by rider, sort by time to get the rank
+			if (!options.has_key?(:index_by_rider))
+				riders_ranked = rider_points_unsorted.sort_by{|k, v| v[:sort_score]}
+				rank = 0
+				ndx = 0
+				base_time = nil
+
+				riders_ranked.each do |id, data|
+					rider_data = rider_points_unsorted[id]
+					ndx += 1
+					if (base_time.nil? || (base_time<rider_data[:time]))
+						base_time = rider_data[:time]
+						rank = ndx
+					end
+					rider_data[:rank] = rank if (rider_data[:rank].nil? || rider_data[:rank]==0)
+					rider_points_unsorted[id] = rider_data
+				end
 			end
-			
+
 			rider_points_sorted = rider_points_unsorted.sort_by{|k, v| v[sort_field.to_sym]}
 			rider_points_sorted = rider_points_sorted.reverse if (sort_dir=='DESC')
 			

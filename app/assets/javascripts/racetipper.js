@@ -921,7 +921,6 @@ function show_race_leaderboard_from_competition(race_id) {
 			var template = Handlebars.compile(source);
 		
 			$(response.results).each(function(ndx, result) {
-				result['ndx'] = ndx+1;
 				var row = template(result);
 				$('table.data tbody').append(row);
 			});
@@ -1164,8 +1163,8 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 						'rank': entry['rank'],
 						'name': entry['username'],
 						'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
-						'gap_formatted': entry['gap_formatted'],
-						'time': entry['time_formatted'],
+						'formatted_gap': entry['formatted_gap'],
+						'time': entry['formatted_time'],
 						'sprint': entry['sprint'],
 						'kom': entry['kom'],
 						'type': type,
@@ -1275,7 +1274,7 @@ function load_stage_info_for_global(stage_id) {
 				rank_ndx++;
 			}
 			entries.push({
-				'rank': (rank_ndx==0)?'--':rank_ndx,
+				'rank': entry['rank'],
 				'name': entry['username'],
 				'tip': (entry['tip']==null)?null:entry['tip'][0]['name'],
 				'time': (entry['disqualified']==null)?entry['formatted_time']:'--',

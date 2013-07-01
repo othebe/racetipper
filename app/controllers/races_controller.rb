@@ -163,7 +163,7 @@ class RacesController < ApplicationController
 		
 		race = Race.find_by_id(race_id)
 		results = Result.get_results('race', race_id)
-		
+
 		data = []
 		results.each do |ndx, result|
 			data.push({

@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
 		@iframe_params += ('&display=' + params[:display]) if (params.has_key?(:display))
 		
 		#Login user at this point if necessary (Safari cookie fix)
-		login_with_token if (@user.nil? && !@iframe_params.empty?)
+		login_with_token if (@user.nil? && params.has_key?(:pid))
 	end
 	
 	######################## Auth stuff ##############################

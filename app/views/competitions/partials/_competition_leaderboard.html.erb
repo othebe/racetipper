@@ -18,13 +18,15 @@
 		<tbody>
 			<% ndx = 0 %>
 			<% base_time = nil %>
+			<% rank = 0 %>
 			<% @leaderboard.each do |entry| %>
+				<% ndx += 1 %>
 				<% if (base_time.nil? || (entry[:time]>base_time)) %>
 					<% base_time = entry[:time] %>
-					<% ndx += 1 %>
+					<% rank = ndx %>
 				<% end %>
 				<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
-					<td><%=ndx%></td>
+					<td><%=rank%></td>
 					<td class="gray"><%=entry[:username]%></td>
 					<td class="gray">
 						<%=entry[:formatted_time]%>
@@ -52,7 +54,7 @@ $(document).ready(function() {
 
 <script id="competition-race-result-template" type="text/x-handlebars-template">
 	<tr class="race">
-		<td>{{ndx}}</td>
+		<td>{{rank}}</td>
 		<td class="gray">{{rider_name}}</td>
 		{{#if disqualified}}
 			<td class="gray">{{disqualified}}</td>
@@ -60,9 +62,9 @@ $(document).ready(function() {
 			<td class="gray">--</td>
 		{{else}}
 			<td class="gray">
-				{{time_formatted}}
-				{{#if gap_formatted}}
-					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{gap_formatted}}'}%>
+				{{formatted_time}}
+				{{#if formatted_gap}}
+					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{formatted_gap}}'}%>
 				{{/if}}
 			</td>
 			<td class="gray">{{sprint_points}}</td>

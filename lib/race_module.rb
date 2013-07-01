@@ -72,10 +72,10 @@ module RaceModule
 				#Find leaderboard entry
 				username = formatted_time = ''
 				leaderboard.each do |entry|
-					rank += 1
 					if (entry[:user_id]==user_id)
 						username = entry[:username]
 						formatted_time = entry[:formatted_time] || '--'
+						rank = entry[:rank]
 						break
 					end
 				end
@@ -105,7 +105,7 @@ module RaceModule
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
 				if (entry[:user_id] == user_id)
-					rank += 1
+					rank = entry[:rank]
 					break
 				end
 			end

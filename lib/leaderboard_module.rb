@@ -111,11 +111,9 @@ module LeaderboardModule
 			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
-				modifier = 0
 				rider_id = tip.rider_id
 			else
 				rider_id = tip.default_rider_id || tip.rider_id
-				modifier = 1/(SCORE_MODIFIER[:DEFAULT]**5.to_f)
 			end
 			
 			stage_id = tip.stage_id
@@ -174,9 +172,9 @@ module LeaderboardModule
 			#Get tip data from results
 			#Cumulate times
 			if (user_score[:time].nil?)
-				user_score[:time] = results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
+				user_score[:time] = results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time]
 			else 
-				user_score[:time] += results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time] + modifier
+				user_score[:time] += results[rider_id][:stages][stage_id][:time] - results[rider_id][:stages][stage_id][:bonus_time]
 			end
 			
 			#Formatted time
@@ -203,8 +201,8 @@ module LeaderboardModule
 				user_score[:sprint] += results[rider_id][:stages][stage_id][:sprint_points]
 			end
 			
-			#Rank
-			user_score[:rank] = results[rider_id][:stages][stage_id][:rank]
+			#Consider rank if sorting by rank
+			user_score[:rank] = (sort_by_rank)?results[rider_id][:stages][stage_id][:rank]:nil
 			
 			user_scores[user_id] = user_score
 		end
@@ -216,19 +214,35 @@ module LeaderboardModule
 			leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
 		end
 		
-		#Get gap times
+		#Get gap times and user rank
 		leaderboard_with_gap = []
-		base_time = nil
+		base_time = base_rank = nil
+		rank = ndx = gap = 0
 		leaderboard.each do |entry|
+			ndx += 1
 			gap_formatted = nil
-			gap = (entry[1][:time] - base_time) if (!base_time.nil?)
-			gap_formatted = self.format_time(gap) if (!gap.nil?)
-			entry[1][:formatted_gap] = gap_formatted
-			leaderboard_with_gap.push(entry[1])
 			
-			base_time ||= entry[1][:time]
+			if (base_time.nil? || (entry[1][:time] > base_time))
+				#Rank by time
+				rank = ndx if (!sort_by_rank)
+				gap = (entry[1][:time] - base_time) if (!base_time.nil?)
+				base_time = entry[1][:time]
+			end
+			
+			if (sort_by_rank)
+				if (base_rank.nil? || (entry[1][:rank] > base_rank))
+					rank = ndx
+					base_rank = entry[1][:rank]
+				end
+			end
+			
+			gap_formatted = self.format_time(gap) if (ndx > 1)
+
+			entry[1][:formatted_gap] = gap_formatted
+			entry[1][:rank] = rank
+			leaderboard_with_gap.push(entry[1])
 		end
-		
+
 		return leaderboard_with_gap
 	end
 	
