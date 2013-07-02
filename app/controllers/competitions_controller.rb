@@ -219,7 +219,7 @@ class CompetitionsController < ApplicationController
 							:gap_formatted => 'TBA',
 							:kom => '--',
 							:sprint => '--',
-							:rank => 0,
+							:rank => '--',
 							:tip => tip_data,
 							:is_default => false,
 							:original_rider => false

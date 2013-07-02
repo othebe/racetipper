@@ -13,13 +13,18 @@ class Result < ActiveRecord::Base
 	#					sort_field - Sort results by (DEFAULT: sort_score)
 	#					index_by_rank - Return indexed by rank (DEFAULT)
 	#					index_by_rider - Return indexed by rider ID
-	def self.get_results(group_type, group_id, options={})
+	#				regenerate - Determines if cache should be generated
+	def self.get_results(group_type, group_id, options={}, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:RESULTS], 
 			{:group_type=>group_type, :group_id=>group_id, :options=>options}
 		)
 		rider_points_sorted = CacheModule::get(cache_name)
-		if (rider_points_sorted.nil?)
+		
+		#If not regenerating results, return data
+		return rider_points_sorted if (!regenerate)
+		
+		if (regenerate)
 			selector = nil
 			if (group_type == 'stage')
 				selector = 'season_stage_id'

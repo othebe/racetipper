@@ -162,7 +162,7 @@ class RacesController < ApplicationController
 		race_id = params[:id]
 		
 		race = Race.find_by_id(race_id)
-		results = Result.get_results('race', race_id)
+		results = Result.get_results('race', race_id, {}, true)
 
 		data = []
 		results.each do |ndx, result|

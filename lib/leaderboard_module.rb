@@ -21,7 +21,7 @@ module LeaderboardModule
 			tip_conditions = {:competition_id=>competition_id}
 			tip_conditions[:stage_id] = group_id if (group_type=='stage')
 			
-			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
+			results = Result.get_results(group_type, group_id, {:index_by_rider=>1}, true)
 			tips = CompetitionTip.where(tip_conditions)
 			
 			if (group_type=='stage')
@@ -79,7 +79,7 @@ module LeaderboardModule
 					tips.push(tip)
 				end
 			end
-			results = Result.get_results(group_type, group_id, {:index_by_rider=>1})
+			results = Result.get_results(group_type, group_id, {:index_by_rider=>1}, true)
 			
 			if (group_type=='race')
 				leaderboard = self.combine_leaderboard_tip_results(results, tips)

@@ -93,7 +93,7 @@ class StagesController < ApplicationController
 	def get_results
 		stage_id = params[:id]
 		
-		results = Result.get_results('stage', stage_id)
+		results = Result.get_results('stage', stage_id, {}, true)
 		stage = Stage.find_by_id(stage_id)
 		
 		data = []

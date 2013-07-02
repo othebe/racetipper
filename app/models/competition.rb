@@ -40,16 +40,12 @@ class Competition < ActiveRecord::Base
 	#Title:			check_completion_status
 	#Description:	Checks if all races in a competition are completed, and marks competition as inactive
 	#Params:		competition_id
-	def self.check_completion_status(competition_id)
-		races = CompetitionStage.where('competition_id=? AND races.is_complete=FALSE', competition_id).joins(:race)
-		competition = Competition.find_by_id(competition_id)
-		return if (competition.nil?)
-		if (races.empty?)
-			competition.is_complete = true
-		else
-			competition.is_complete = false
-		end
-		competition.save
+	def check_completion_status
+		race = Race.find_by_id(self.race_id)
+		return if (race.nil?)
+		
+		self.is_complete = race.is_complete 
+		self.save
 	end
 	
 	#Title:			fix_completion_status

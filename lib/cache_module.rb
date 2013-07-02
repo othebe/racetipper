@@ -130,4 +130,16 @@ module CacheModule
 			self.delete(cache_name+'*')
 		end
 	end
+	
+	#Title:			delete_results
+	#Description:	Deletes results cache
+	def self.delete_results(group_type, group_id)
+		#Cache name
+		cache_name = self.get_cache_name(CACHE_TYPE[:RESULTS], {
+			:group_type => group_type,
+			:group_id => group_id,
+			:options => {}
+		})
+		self.delete(cache_name+'*')
+	end
 end

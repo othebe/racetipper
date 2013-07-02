@@ -326,32 +326,8 @@ class AdminController < ApplicationController
 			data.save
 		end
 		
-		#Check if any tips for this result need to be defaulted.
-		results = Result.where({:season_stage_id=>stage_id})
-		results.each do |result|
-			result.check_valid_tips
-		end
-		
-		#Mark stage as done
-		stage = Stage.find_by_id(stage_id)
-		stage.is_complete = true
-		stage.save
-		
-		#Check if any races need to be marked as completed
-		Race.check_completion_status(race_id)
-		
-		#Check if any competitions need to be marked as completed
-		competitions = CompetitionStage.where('stage_id=?', stage_id).select('competition_id').group('competition_id, id')
-		competitions.each do |competition|
-			Competition.check_completion_status(competition.competition_id)
-		end
-		
-		#Worker leaderboard generation
-		COMPETITION_SCOPE.each do |k, scope|
-			ResqueTasks::q_generate_global_leaderboard('stage', stage_id, scope)
-			ResqueTasks::q_generate_global_leaderboard('race', race_id, scope)
-		end
-		ResqueTasks::q_generate_competition_leaderboards('stage', stage_id)
+		ResqueTasks::clear_pending
+		ResqueTasks::q_check_default_riders_for_stage(stage_id)
 		
 		render :json=>{:success=>true}
 	end
