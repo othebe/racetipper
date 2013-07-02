@@ -115,6 +115,10 @@ class ResqueTasks
 	def self.check_default_riders_for_stage(data)
 		stage_id = data['stage_id']
 		
+		#Check riders are valid in tips
+		tips = CompetitionTip.where('stage_id = ? AND rider_id IS NOT NULL', stage_id)
+		tips.each {|tip| tip.check_valid_rider}
+		
 		results = Result.where({:season_stage_id=>stage_id, :status=>STATUS[:ACTIVE]})
 		
 		#Check if any tips for this result need to be defaulted.

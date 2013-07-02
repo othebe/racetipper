@@ -80,4 +80,17 @@ class CompetitionTip < ActiveRecord::Base
 			tip.save
 		end
 	end
+	
+	#Title:			check_valid_rider
+	#Description:	Check if rider is valid
+	def check_valid_rider
+		race_id = self.race_id
+		return if (self.rider_id.nil? || self.rider_id==0)
+		
+		teamrider = TeamRider.where({:rider_id=>self.rider_id, :race_id=>race_id}).first
+		if (teamrider.nil?)
+			self.rider_id = nil
+			self.save
+		end
+	end
 end
