@@ -84,7 +84,7 @@ class CompetitionParticipant < ActiveRecord::Base
 	def self.get_primary_competition(user_id, race_id, scope)
 		primary = self.joins(:competition).where('user_id=? AND competitions.race_id=? AND scope=? AND is_primary=? AND competition_participants.status=? AND competitions.status<>?', 
 			user_id, race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED]).first
-		return primary.competition_id if (!primary.nil?)
+		return primary
 	end
 	
 	#Title:			fix_set_primaries
@@ -103,8 +103,14 @@ class CompetitionParticipant < ActiveRecord::Base
 	#Title:			get_participated_competitions
 	#Description:	Gets competitions a user is participating in
 	def self.get_participated_competitions(user_id, race_id, scope)
-		return CompetitionParticipant.joins(:competition).where(
-				'user_id=? AND competitions.race_id=? AND scope=? AND competitions.status<>? AND competition_participants.status=?', 
-					user_id, race_id, scope, STATUS[:DELETED], STATUS[:ACTIVE]).all
+		participation_data = CompetitionParticipant
+			.joins(:competition)
+			.where('competition_participants.user_id = ? AND competitions.race_id = ? AND competitions.scope = ? AND competitions.status <> ? AND competition_participants.status = ?', 
+				user_id, race_id, scope, STATUS[:DELETED], STATUS[:ACTIVE])
+			.order('competitions.status')
+		competitions = []
+		participation_data.each {|p| competitions.push(p.competition)}
+		
+		return competitions
 	end
 end

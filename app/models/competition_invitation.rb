@@ -32,9 +32,22 @@ class CompetitionInvitation < ActiveRecord::Base
 	#Title:			get_user_invitations
 	#Description:	Gets open invitations to a competiton
 	#Params:		user_id - User to search on
-	def self.get_user_invitations(user_id, scope=0)
+	#				scope - COMPETITION_SCOPE
+	#				race_id - Optional (Filter by race ID)
+	def self.get_user_invitations(user_id, scope=0, race_id=nil)
 		response = []
-		invitations = self.joins(:competition).where('user_id=? AND competition_invitations.status=? AND competitions.scope=?', user_id, STATUS[:ACTIVE], scope)
+		if (race_id.nil?)
+			invitations = self
+				.joins(:competition)
+				.where('competition_invitations.user_id=? AND competition_invitations.status=? AND competitions.scope=? AND competitions.status <> ?', 
+					user_id, STATUS[:ACTIVE], scope, STATUS[:DELETED])
+		else
+			invitations = self
+				.joins(:competition)
+				.where('competition_invitations.user_id=? AND competition_invitations.status=? AND competitions.scope=? AND competitions.status <> ? AND competitions.race_id=?', 
+					user_id, STATUS[:ACTIVE], scope, STATUS[:DELETED], race_id)
+		end
+		
 		invitations.each do |invitation|
 			next if (invitation.competition.nil?)
 			race_id = CompetitionStage.select('race_id').where({:competition_id=>invitation.competition_id}).first

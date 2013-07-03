@@ -15,82 +15,85 @@ module RaceModule
 		end
 
 		#Get race data
+		race_id = race.id
 		race_data = {}
-		race_data[:id] = race.id
+		race_data[:id] = race_id
 		race_data[:race_name] = race.name
 		race_data[:next_stage_name] = (next_stage.nil?)?nil:next_stage.name
 		race_data[:next_stage_remaining] = (next_stage.nil?)?0:(next_stage.starts_on-Time.now).to_i
 		race_data[:has_started] = has_started
+		
+		#Get primary competition
+		primary_competition = CompetitionParticipant.get_primary_competition(user_id, race_id, scope)
 		
 		#Global results
 		global_results = self.get_global_competition_results(race.id, scope, user_id)
 		
 		#Competitions that haven't been joined
 		more_competitions = []
+		more_competitions_seen = {}
+		#Invited competitions
+		CompetitionInvitation.get_user_invitations(user_id, scope, race_id).each do |invitation|
+			more_competitions_seen[competition.id] = true
+			competition = invitation[:competition]
+			more_competitions.push({
+				:competition_id => competition.id,
+				:competition_name => competition.name,
+				:num_participants =>CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]}).count
+			})
+		end
+		#Public competitions
+		Competition.where({:race_id=>race_id, :scope=>scope, :status=>STATUS[:ACTIVE]}).each do |competition|
+			next if (!more_competitions_seen[competition.id].nil?)
+			next if (!CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE], :user_id=>user_id}).empty?)
+			more_competitions.push({
+				:competition_id => competition.id,
+				:competition_name => competition.name,
+				:num_participants =>CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]}).count
+			})
+		end
 		
+		#Competitions user is participating in
 		data = []
+		CompetitionParticipant.get_participated_competitions(user_id, race_id, scope).each do |competition|
+			#Check if this competition is the primary
+			is_primary = (primary_competition.nil?)?false:(competition.id == primary_competition.id)
+			
+			#Leaderboard for this competition
+			leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
+			leaderboard = [] if leaderboard.nil?
 
-		competitions = Competition.where('race_id=? AND scope=? AND (status=? OR status=?)', race.id, scope, STATUS[:ACTIVE], STATUS[:PRIVATE])
-		competitions.each do |competition|
-			participation_data = CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE], :user_id=>user_id}).first
-			is_participant = !participation_data.nil?
-
-			#For private competitions, check participation
-			if (competition.status == STATUS[:PRIVATE])
-				next if (!is_participant)
-			#Ignore non-active competitions
-			else
-				next if (competition.status != STATUS[:ACTIVE])
+			#Check tip for next stage
+			rider = nil
+			if (!next_stage.nil?)
+				tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
+				rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
 			end
-
-			#Add to more competitions if not participant
-			if (!is_participant)
-				more_competitions.push({
-					:competition_id => competition.id,
-					:competition_name => competition.name,
-					:num_participants =>CompetitionParticipant.where({:competition_id=>competition.id, :status=>STATUS[:ACTIVE]}).count
-				}) if (competition.status == STATUS[:ACTIVE])
-			#Else add to current competitions
-			else
-				#Check if this competition is the primary
-				is_primary = participation_data.is_primary
-				
-				#Leaderboard for this competition
-				leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
-				leaderboard = [] if leaderboard.nil?
-
-				#Check tip for next stage
-				rider = nil
-				if (!next_stage.nil?)
-					tip = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>race.id, :stage_id=>next_stage.id, :competition_id=>competition.id}).first
-					rider = Rider.find_by_id(tip.rider_id) if (!tip.nil? && !tip.rider_id.nil?) 
+			
+			current_time = nil;
+			rank = 0
+			
+			#Find leaderboard entry
+			username = formatted_time = ''
+			leaderboard.each do |entry|
+				if (entry[:user_id]==user_id)
+					username = entry[:username]
+					formatted_time = entry[:formatted_time] || '--'
+					rank = entry[:rank]
+					break
 				end
-				
-				current_time = nil;
-				rank = 0
-				
-				#Find leaderboard entry
-				username = formatted_time = ''
-				leaderboard.each do |entry|
-					if (entry[:user_id]==user_id)
-						username = entry[:username]
-						formatted_time = entry[:formatted_time] || '--'
-						rank = entry[:rank]
-						break
-					end
-				end
-				
-				data.push({
-					:user_id => user_id,
-					:username => username,
-					:time_formatted => formatted_time,
-					:competition_id => competition.id,
-					:competition_name => competition.name,
-					:rank => rank,
-					:next_rider => (rider.nil?)?nil:rider.name ,
-					:is_primary => is_primary
-				})
 			end
+			
+			data.push({
+				:user_id => user_id,
+				:username => username,
+				:time_formatted => formatted_time,
+				:competition_id => competition.id,
+				:competition_name => competition.name,
+				:rank => rank,
+				:next_rider => (rider.nil?)?nil:rider.name ,
+				:is_primary => is_primary
+			})
 		end
 		
 		return {:competition=>data, :global_results=>global_results, :race=>race_data, :more_competitions=>more_competitions}

@@ -98,7 +98,7 @@ class RacesController < ApplicationController
 
 		@user_race_data = RaceModule::get_user_race_data(user_id, @race, @scope)
 		
-		@invitations = CompetitionInvitation.get_user_invitations(user_id, @scope)
+		@invitations = CompetitionInvitation.get_user_invitations(user_id, @scope, race_id)
 		
 		redirect_to :root and return if (@race.nil?)
 		
@@ -115,17 +115,15 @@ class RacesController < ApplicationController
 		race_id = params[:id]
 		@race = Race.find_by_id(race_id)
 		
-		competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
+		#Get primary competition
+		primary_competition = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
+		competition_id = (primary_competition.nil?)?nil:primary_competition.id
 		
 		@competition = Competition.find_by_id(competition_id) || Competition.new
 		@competition.name = 'Overall Leaderboard'
 		@competition.race_id = race_id
 		@competition.description = ''
 		@leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, @scope)
-		
-		#Get primary competition
-		primary_competition_id = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
-		@stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on')
 		
 		@completed_stages = @stages.where({:is_complete=>true}).count
 		
@@ -142,7 +140,7 @@ class RacesController < ApplicationController
 		#Get top 2 KOM
 		@top_koms = LeaderboardModule::get_top(:kom, 2, @leaderboard)
 		
-		@left_nav_data = RaceModule::get_left_nav_data(@stages, primary_competition_id, @user.id)
+		@left_nav_data = RaceModule::get_left_nav_data(@stages, competition_id, @user.id)
 		
 		@hide_action_buttons = true
 		@global = true
