@@ -1,16 +1,15 @@
 module LeaderboardModule
 	require_dependency 'cache_module'
 	
-	#Title:			get_leaderboard
-	#Description:	Returns a sorted leaderboard for this competition
+	#Title:			get_competition_stage_leaderboard
+	#Description:	Returns a sorted leaderboard for this competition stage
 	#Params:		competition_id - ID of competition
 	#				group_type - stage/race
 	#				group_id - ID of stage/race
-	#				limit - How many entries in the leaderboard to show
-	def self.get_leaderboard(competition_id, group_type, group_id, limit=10, regenerate=false)
+	def self.get_competition_stage_leaderboard(competition_id, stage_id, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:LEADERBOARD], 
-			{:competition_id=>competition_id, :group_type=>group_type, :group_id=>group_id}
+			{:competition_id=>competition_id, :group_type=>'stage', :group_id=>stage_id}
 		)
 		leaderboard_with_gap = CacheModule::get(cache_name)
 		
@@ -18,33 +17,89 @@ module LeaderboardModule
 		return leaderboard_with_gap if (!regenerate)
 		
 		if (regenerate)
-			tip_conditions = {:competition_id=>competition_id}
-			tip_conditions[:stage_id] = group_id if (group_type=='stage')
-			
-			results = Result.get_results(group_type, group_id, {:index_by_rider=>1}, true)
+			tip_conditions = {:competition_id=>competition_id, :stage_id=>stage_id}
 			tips = CompetitionTip.where(tip_conditions)
 			
-			if (group_type=='stage')
-				leaderboard_with_gap = self.combine_leaderboard_tip_results(results, tips, true)
-			else
-				leaderboard_with_gap = self.combine_leaderboard_tip_results(results, tips, false)
-			end
+			results = Result.get_results('stage', stage_id, {:index_by_rider=>1}, true)
 			
+			leaderboard_with_gap = self.combine_leaderboard_tip_results(results, tips)
+			
+			#Store leaderboard in cache
 			CacheModule::set(leaderboard_with_gap, cache_name)
+			
+			#Index leaderboard by user
+			user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+				CacheModule::CACHE_TYPE[:LEADERBOARD_BY_USER],
+				{:competition_id=>competition_id, :group_type=>'stage', :group_id=>stage_id}
+			)
+			CacheModule::set(self.index_leaderboard_by_user(leaderboard_with_gap), user_indexed_leaderboard_cache_name)
 		end
 		
 		return leaderboard_with_gap
 	end
 	
-	#Title:			get_global_leaderboard
-	#Description:	Get global leaderboard
-	#Params:		group_type - race/stage
-	#				group_id - Race/stage ID
+	#Title:			get_cumulative_competition_stage_leaderboard
+	#Description:	Gets the cumulative leaderboard for a given array of stages in a competition
+	#Note:			Individual stage leaderboards will need to be calculated prior to this. Function will NOT regenerate that.
+	def self.get_cumulative_competition_stage_leaderboard(competition_id, stages=[], regenerate=false)
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:LEADERBOARD_CUMULATIVE],
+			{:competition_id=>competition_id, :stages=>stages}
+		)
+		leaderboard = CacheModule::get(cache_name)
+		
+		return leaderboard if (!regenerate)
+		
+		if (regenerate)
+			unranked_cumulative_leaderboard = {}
+			stages.each do |stage_id|
+				self.get_competition_stage_leaderboard(competition_id, stage_id)
+				
+				#Get user indexed leaderboard
+				user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+					CacheModule::CACHE_TYPE[:LEADERBOARD_BY_USER],
+					{:competition_id=>competition_id, :group_type=>'stage', :group_id=>stage_id}
+				)
+				leaderboard = CacheModule::get(user_indexed_leaderboard_cache_name)
+				next if (leaderboard.nil?)
+
+				unranked_cumulative_leaderboard = self.combine_stage_leaderboards(unranked_cumulative_leaderboard, leaderboard)
+			end
+			
+			#Add rank, formatted times, formatted gaps etc
+			leaderboard = self.format_leaderboard(unranked_cumulative_leaderboard, competition_id, nil, 0, stages)
+
+			CacheModule::set(leaderboard, cache_name)
+		end
+		
+		return leaderboard
+	end
+	
+	#Title:			get_competition_race_leaderboard
+	#Description:	Gets the cumulative leaderboard for all stages in a competition
+	#Params:		competition_id - Competition ID
+	#				regenerate - Regenerate caches
+	def self.get_competition_race_leaderboard(competition_id, regenerate=false)
+		competition = Competition.find_by_id(competition_id)
+		
+		leaderboard = nil
+		
+		#Stages in race
+		race_stages = []
+		stages = Stage.where('stages.race_id=?', competition.race_id).order('starts_on ASC')
+		stages.each {|stage| race_stages.push(stage.id) if (!Result.where({:season_stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).first.nil?)}
+
+		return self.get_cumulative_competition_stage_leaderboard(competition_id, race_stages, regenerate)
+	end
+	
+	#Title:			get_global_stage_leaderboard
+	#Description:	Get global leaderboard for a stage
+	#Params:		stage_id - Stage ID
 	#				scope - SCOPE
-	def self.get_global_leaderboard(group_type, group_id, scope, regenerate=false)
+	def self.get_global_stage_leaderboard(stage_id, scope, regenerate=false)
 		cache_name = CacheModule::get_cache_name(
 			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD],
-			{:group_type=>group_type, :group_id=>group_id, :scope=>scope}
+			{:group_type=>'stage', :group_id=>stage_id, :scope=>scope}
 		)
 		leaderboard = CacheModule::get(cache_name)
 		
@@ -53,39 +108,70 @@ module LeaderboardModule
 		
 		#Regenerate leaderboard
 		if (regenerate)
-			if (group_type=='race')
-				race_id = group_id
-				tips = []
-				participants = CompetitionParticipant.select('competition_id, user_id')
-					.joins('INNER JOIN competitions ON (competition_participants.competition_id = competitions.id)')
-					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status= ? AND competitions.status <> ?', 
-						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
-				participants.each do |participant|
-					comp_tips = CompetitionTip
-						.joins('INNER JOIN stages ON competition_tips.stage_id = stages.id')
-						.where('competition_participant_id=? AND competition_id=?', participant.user_id, participant.competition_id)
-					comp_tips.each {|tip| tips.push(tip)}
-				end
-			else
-				stage = Stage.find_by_id(group_id)
-				race_id = stage.race_id
-				tips = []
-				participants = CompetitionParticipant.select('competition_id, user_id')
-					.joins('INNER JOIN competitions ON (competition_participants.competition_id = competitions.id)')
-					.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status = ? AND competitions.status <> ?', 
-						race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
-				participants.each do |participant|
-					tip = CompetitionTip.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id, :stage_id=>stage.id}).first
-					tips.push(tip)
-				end
+			stage = Stage.find_by_id(stage_id)
+			race_id = stage.race_id
+			tips = []
+			participants = CompetitionParticipant.select('competition_id, user_id')
+				.joins('INNER JOIN competitions ON (competition_participants.competition_id = competitions.id)')
+				.where('competitions.race_id = ? AND competitions.scope = ? AND competition_participants.is_primary = ? AND competition_participants.status = ? AND competitions.status <> ?', 
+					race_id, scope, true, STATUS[:ACTIVE], STATUS[:DELETED])
+			participants.each do |participant|
+				tip = CompetitionTip.where({:competition_participant_id=>participant.user_id, :competition_id=>participant.competition_id, :stage_id=>stage.id}).first
+				tips.push(tip)
 			end
-			results = Result.get_results(group_type, group_id, {:index_by_rider=>1}, true)
+
+			results = Result.get_results('stage', stage_id, {:index_by_rider=>1}, true)
 			
-			if (group_type=='race')
-				leaderboard = self.combine_leaderboard_tip_results(results, tips)
-			else
-				leaderboard = self.combine_leaderboard_tip_results(results, tips, true)
+			leaderboard = self.combine_leaderboard_tip_results(results, tips)
+			
+			#Store leaderboard in cache
+			CacheModule::set(leaderboard, cache_name)
+			
+			#Index leaderboard by user
+			user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+				CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD_BY_USER],
+				{:group_type=>'stage', :group_id=>stage_id, :scope=>scope}
+			)
+			CacheModule::set(self.index_leaderboard_by_user(leaderboard), user_indexed_leaderboard_cache_name)
+		end
+		
+		return leaderboard
+	end
+	
+	#Title:			get_cumulative_global_stage_leaderboard
+	#Description:	Gets the cumulative global leaderboard for a given array of stages in a race
+	#Note:			Individual stage leaderboards will need to be calculated prior to this. Function will NOT regenerate that.
+	def self.get_cumulative_global_stage_leaderboard(stages, scope, regenerate=false)
+		return if stages.nil?
+		
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD_CUMULATIVE],
+			{:stages=>stages, :scope=>scope}
+		)
+		leaderboard = CacheModule::get(cache_name)
+		
+		return leaderboard if (!regenerate)
+		
+		if (regenerate)
+			stage = Stage.find_by_id(stages.first)
+			
+			unranked_cumulative_leaderboard = {}
+			stages.each do |stage_id|
+				self.get_global_stage_leaderboard(stage_id, scope)
+				
+				#Get user indexed leaderboard
+				user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+					CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD_BY_USER],
+					{:group_type=>'stage', :group_id=>stage_id, :scope=>scope}
+				)
+				leaderboard = CacheModule::get(user_indexed_leaderboard_cache_name)
+				next if (leaderboard.nil?)
+
+				unranked_cumulative_leaderboard = self.combine_stage_leaderboards(unranked_cumulative_leaderboard, leaderboard)
 			end
+			
+			#Add rank, formatted times, formatted gaps etc
+			leaderboard = self.format_leaderboard(unranked_cumulative_leaderboard, nil, stage.race_id, scope, stages)
 			
 			CacheModule::set(leaderboard, cache_name)
 		end
@@ -93,22 +179,33 @@ module LeaderboardModule
 		return leaderboard
 	end
 	
+	#Title:			get_global_race_leaderboard
+	#Description:	Gets the cumulative leaderboard for all stages in a race
+	#Params:		race_id - Competition ID
+	#				scope - COMPETITION_SCOPE
+	#				regenerate - Regenerate caches
+	def self.get_global_race_leaderboard(race_id, scope, regenerate=false)
+		leaderboard = nil
+		
+		#Stages in race
+		race_stages = []
+		stages = Stage.where('stages.race_id=?', race_id).order('starts_on ASC')
+		stages.each {|stage| race_stages.push(stage.id) if (!Result.where({:season_stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).first.nil?)}
+
+		return self.get_cumulative_global_stage_leaderboard(race_stages, scope, regenerate)
+	end
+	
 	#Title:			combine_leaderboard_tip_results
 	#Description:	Combines tips and results to get leaderboard data
 	#Params:		results - Results
 	#				tips - Tips
-	#				sort_by_rank - Sort riders 
-	def self.combine_leaderboard_tip_results(results, tips, sort_by_rank=false)
+	def self.combine_leaderboard_tip_results(results, tips)
 		cached_users = {}
 		cached_riders = {}
 		cached_result = Result.where({:race_id=>tips.first.race_id})
 		
 		user_scores = {}
 		tips.each do |tip|
-			
-			#Skip non participants
-			participation_data = CompetitionParticipant.select(:status).where({:user_id=>tip.competition_participant_id, :competition_id=>tip.competition_id}).first
-			next if (participation_data.nil? || participation_data.status != STATUS[:ACTIVE])
 			#Account for default riders
 			if (tip.default_rider_id.nil?)
 				rider_id = tip.rider_id
@@ -128,7 +225,10 @@ module LeaderboardModule
 			user_score[:user_id] = user_id
 			user_score[:username] = username
 			user_score[:is_default] = !tip.default_rider_id.nil?
+			user_score[:competition_id] = tip.competition_id
 			user_score[:time] ||= 0
+			user_score[:kom] ||= 0
+			user_score[:sprint] ||= 0
 			
 			#Original rider
 			user_score[:original_rider] = nil
@@ -202,17 +302,12 @@ module LeaderboardModule
 			end
 			
 			#Consider rank if sorting by rank
-			user_score[:rank] = (sort_by_rank)?results[rider_id][:stages][stage_id][:rank]:nil
+			user_score[:rank] = results[rider_id][:stages][stage_id][:rank]
 			
 			user_scores[user_id] = user_score
 		end
 		
-		#Sort leaderboard
-		if (sort_by_rank)
-			leaderboard = user_scores.sort_by {|user_id, data| data[:rank]}
-		else
-			leaderboard = user_scores.sort_by {|user_id, data| data[:time]}
-		end
+		leaderboard = user_scores.sort_by {|user_id, data| data[:rank]}
 		
 		#Get gap times and user rank
 		leaderboard_with_gap = []
@@ -222,20 +317,11 @@ module LeaderboardModule
 			ndx += 1
 			gap_formatted = nil
 			
-			if (base_time.nil? || (entry[1][:time] > base_time))
-				#Rank by time
-				rank = ndx if (!sort_by_rank)
-				gap = (entry[1][:time] - base_time) if (!base_time.nil?)
-				base_time = entry[1][:time]
+			if (base_rank.nil? || (entry[1][:rank] > base_rank))
+				rank = ndx
+				base_rank = entry[1][:rank]
 			end
-			
-			if (sort_by_rank)
-				if (base_rank.nil? || (entry[1][:rank] > base_rank))
-					rank = ndx
-					base_rank = entry[1][:rank]
-				end
-			end
-			
+		
 			gap_formatted = self.format_time(gap) if (ndx > 1)
 
 			entry[1][:formatted_gap] = gap_formatted
@@ -244,6 +330,179 @@ module LeaderboardModule
 		end
 
 		return leaderboard_with_gap
+	end
+	
+	#Title:			combine_stage_leaderboards
+	#Description:	Accumulate user indexed leaderboards across individual leaderboards
+	#Params:		cumulative_leaderboard - User indexed hash storing cumulative data
+	#				leaderboard_data - Data to add to cumulative_leaderboard
+	def self.combine_stage_leaderboards(cumulative_leaderboard, leaderboard_data=[])
+		leaderboard_data.each do |uid, data|	
+			#First entry
+			if (cumulative_leaderboard[uid].nil?)
+				cumulative_leaderboard[uid] = data
+			#Cumulate
+			else
+				user_data = cumulative_leaderboard[uid]
+				user_data[:time] += data[:time]
+				user_data[:kom] += data[:kom]
+				user_data[:sprint] += data[:sprint]
+				
+				cumulative_leaderboard[uid] = user_data
+			end
+		end
+		
+		return cumulative_leaderboard
+	end
+	
+	#Title:			index_leaderboard_by_user
+	#Description:	Index a leaderboard according to user
+	#Params:		leaderboard - Leaderboard to be indexed
+	def self.index_leaderboard_by_user(leaderboard)
+		indexed_leaderboard = {}
+		leaderboard.each {|data| indexed_leaderboard[data[:user_id]] = data}
+		
+		return indexed_leaderboard
+	end
+	
+	#Title:			score_leaderboard
+	#Description:	Adds a :sort_score to every entry in the leaderboard
+	#Params:		leaderboard[uid] = data
+	#				competition_id - Competition ID (nil for global competition)
+	#				race_id - Race the competition is associated with. (Req for global competition)
+	def self.score_leaderboard(leaderboard, competition_id, race_id, scope, allowed_stages=[])
+		is_global = competition_id.nil?
+		
+		#Get stages in this race
+		if (!is_global)
+			#Get race ID		
+			competition = Competition.find_by_id(competition_id)
+			race_id = competition.race_id
+		end
+		stages = Stage.where({:id=>allowed_stages, :race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC')
+		
+		#Cache the stage results locally
+		cached_stage_results = {}
+		stages.each do |stage| 
+			next if (Result.where({:season_stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).first.nil?)
+			
+			#Get global rank data
+			if (is_global)
+				user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+					CacheModule::CACHE_TYPE[:GLOBAL_LEADERBOARD_BY_USER],
+					{:group_type=>'stage', :group_id=>stage.id, :scope=>scope}
+				)
+			#Get competition rank data
+			else
+				user_indexed_leaderboard_cache_name = CacheModule::get_cache_name(
+					CacheModule::CACHE_TYPE[:LEADERBOARD_BY_USER],
+					{:competition_id=>competition_id, :group_type=>'stage', :group_id=>stage.id}
+				)
+			end
+			leaderboard_data = CacheModule::get(user_indexed_leaderboard_cache_name)
+			cached_stage_results[stage.id] = leaderboard_data
+		end
+		
+		#Generate a user score for the rankings
+		leaderboard.each do |uid, data|
+			user_id = data[:user_id]
+			
+			#Get primary competition for global race
+			if (is_global)
+				competition = CompetitionParticipant.get_primary_competition(user_id, race_id, scope)
+				competition_id = competition.competition_id
+			end
+			
+			#Get num participants
+			if (is_global)
+				num_participants = CompetitionParticipant
+					.joins(:competition)
+					.where('competitions.race_id=? AND competition_participants.is_primary=? AND competition_participants.status=?',
+						race_id, true, STATUS[:ACTIVE])
+					.count
+			else
+				num_participants = CompetitionParticipant.where({:competition_id=>competition_id, :status=>STATUS[:ACTIVE]}).count
+			end
+			
+			#Get rankings in recent stages
+			rankings = []
+			stages.each do |stage| 
+				leaderboard_data = cached_stage_results[stage.id]
+				
+				next if (leaderboard_data.nil?)
+				
+				#Add to rankings
+				rank = leaderboard_data[user_id][:rank]
+				rankings.push(rank)
+			end
+
+			################
+			#Ranking scores:
+			
+			#Time provides the base score
+			data[:sort_score] = data[:time]
+			
+			#Use the average of all previous rankings
+			average_rank = 0
+			if (!rankings.empty?)
+				rankings.each {|rank| average_rank += rank}
+				average_rank = (average_rank)/(rankings.length)
+				data[:sort_score] -= (num_participants-average_rank)*0.1/(num_participants)
+			end
+			
+			#Use lowest ranking on most recent stage
+			if (!rankings.empty?)
+				data[:sort_score] -= (num_participants-rankings.last)*0.01/(num_participants)
+			end
+		end
+		
+		return leaderboard
+	end
+	
+	#Title:			format_leaderboard
+	#Description:	Format a leaderboard by adding rank, formatting time, gap time etc
+	#Params:		leaderboard[uid] = data
+	#				competition_id - Competition ID (nil for global competition)
+	#				race_id - Race the competition is associated with. (Req for global competition)
+	#				scope - COMPETITION_SCOPE
+	#				stages - Limit scoring to these stage IDs (Array)
+	def self.format_leaderboard(leaderboard, competition_id, race_id, scope=0, stages)
+		formatted_leaderboard = []
+		
+		return formatted_leaderboard if (leaderboard.empty?)
+		
+		#Add sorting score for ranking
+		leaderboard = self.score_leaderboard(leaderboard, competition_id, race_id, scope, stages)
+		
+		#Sort leaderboard
+		leaderboard = leaderboard.sort_by {|user_id, data| data[:sort_score]}
+		
+		#Add gaps and ranks
+		base_time = leaderboard[0][1][:time]
+		base_rank = nil
+		rank = ndx = gap = 0
+		
+		leaderboard.each do |uid, data|
+			ndx += 1
+			
+			#Format gap
+			gap = (data[:time] - base_time)
+			data[:formatted_gap] = (gap>0)?self.format_time(gap):nil
+			
+			#Format time
+			data[:formatted_time] = self.format_time(data[:time])
+			
+			#Rank
+			if (base_rank.nil? || (data[:sort_score] > base_rank))
+				rank = ndx
+				base_rank = data[:sort_score]
+			end
+			data[:rank] = rank
+			
+			formatted_leaderboard.push(data)
+		end
+		
+		return formatted_leaderboard
 	end
 	
 	#Title:			get_top

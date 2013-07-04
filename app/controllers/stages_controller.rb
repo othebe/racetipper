@@ -136,7 +136,7 @@ class StagesController < ApplicationController
 		stage = Stage.find_by_id(params[:id])
 		render :json=>{:success=>false, :msg=>'Invalid stage.'} and return if (stage.nil?)
 		
-		leaderboard = LeaderboardModule::get_global_leaderboard('stage', params[:id], @scope)
+		leaderboard = LeaderboardModule::get_global_stage_leaderboard(params[:id], @scope)
 		
 		render :json=>{:leaderboard=>leaderboard, :stage=>{:name=>stage.name}} and return
 	end

@@ -1135,7 +1135,7 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 		}
 		if (scope=='cumulative') {
 			url = '/competitions/get_competition_leaderboard/'+competition_id;
-			params = {'group_type':'race', 'group_id':race_id};
+			params = {'group_type':'cumulative', 'group_id':stage_id};
 		}
 	}
 	if (type=='race') {
@@ -1143,7 +1143,8 @@ function load_stage_leaderboard(competition_id, race_id, stage_id, type, scope) 
 			url = '/stages/get_results/'+stage_id;
 		}
 		if (scope=='cumulative') {
-			url = '/races/get_results/'+race_id;
+			url = '/races/get_cumulative_results/'+race_id;
+			params = {'stage_id':stage_id}
 		}
 	}
 	

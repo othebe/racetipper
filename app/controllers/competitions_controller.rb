@@ -77,7 +77,7 @@ class CompetitionsController < ApplicationController
 		@stage_id = params[:stage_id] if (params.has_key?(:stage_id))
 		
 		#Get leaderboard
-		@leaderboard = LeaderboardModule::get_leaderboard(params[:id], 'race', @competition.race_id) || []
+		@leaderboard = LeaderboardModule::get_competition_race_leaderboard(@competition.id) || []
 
 		#Creator
 		@creator = User.find_by_id(@competition.creator_id)
@@ -180,8 +180,21 @@ class CompetitionsController < ApplicationController
 		competition_id = params[:id]
 		group_type = params[:group_type]
 		group_id = params[:group_id]
+		leaderboard = nil
 		
-		leaderboard = LeaderboardModule::get_leaderboard(competition_id, group_type, group_id)
+		#Get leaderboard
+		if (group_type == 'stage')
+			leaderboard = LeaderboardModule::get_competition_stage_leaderboard(competition_id, group_id)
+		elsif (group_type == 'cumulative')
+			stage = Stage.find_by_id(group_id)
+			stages = Stage
+				.select(:id)
+				.where('stages.race_id = ? AND stages.status = ? AND stages.starts_on <= ?', stage.race_id, STATUS[:ACTIVE], stage.starts_on)
+				.order('starts_on ASC')
+			stage_list = []
+			stages.each {|s| stage_list.push(s.id)}
+			leaderboard = LeaderboardModule::get_cumulative_competition_stage_leaderboard(competition_id, stage_list)
+		end
 		
 		#If stage hasn't started, release the tip list
 		if (leaderboard.nil? && group_type=='stage')

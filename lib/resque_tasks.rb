@@ -7,7 +7,6 @@ class ResqueTasks
 		:CHECK_DEFAULT_RIDERS_FOR_STAGE => 'CHECK_DEFAULT_RIDERS_FOR_STAGE',
 		:GENERATE_RESULTS_FOR_STAGE => 'GENERATE_RESULTS_FOR_STAGE',
 		:GENERATE_GLOBAL_LEADERBOARD => 'GENERATE_GLOBAL_LEADERBOARD',
-		:GENERATE_COMPETITION_LEADERBOARDS => 'GENERATE_COMPETITION_LEADERBOARDS',
 		:GENERATE_COMPETITION_LEADERBOARD => 'GENERATE_COMPETITION_LEADERBOARD',
 	}
 	
@@ -31,8 +30,6 @@ class ResqueTasks
 				self.generate_results_for_stage(data)
 			when RESQUE_TASK[:GENERATE_GLOBAL_LEADERBOARD]
 				self.generate_global_leaderboard(data)
-			when RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARDS]
-				self.generate_competition_leaderboards(data)
 			when RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARD]
 				self.generate_competition_leaderboard(data)
 		end
@@ -55,28 +52,28 @@ class ResqueTasks
 	#Description:	Generate leaderboards for on-going races
 	def self.cron_leaderboard
 		return if (Resque.info[:pending] > 0)
+		
 		races = Race.where({:status=>STATUS[:ACTIVE], :is_complete=>false})
 		races.each do |race|
-			#Global leaderboard
-			COMPETITION_SCOPE.each do |k, scope|
-				stages = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]})
-				#Stage leaderboard
-				stages.each {|stage| self.q_generate_global_leaderboard('stage', stage.id, scope)}
+			stages = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC')
+			competitions = Competition.where({:race_id=>race.id})
+			
+			stages.each do |stage|
+				next if (Result.where({:season_stage_id=>stage.id, :status=>STATUS[:ACTIVE]}).first.nil?)
 				
-				#Race leaderboard
-				self.q_generate_global_leaderboard('race', race.id, scope)
+				#Generate stage results
+				self.q_generate_results_for_stage(stage.id)
+				
+				#Global leaderboard
+				COMPETITION_SCOPE.each {|k, scope| self.q_generate_global_leaderboard(stage.id, scope)}
+				
+				#Competition leaderboards
+				competitions.each {|competition| self.q_generate_competition_leaderboard(competition.id, stage.id)}
 			end
-			
-			#Competition stage leaderboards
-			stages = Stage.where({:race_id=>race.id, :status=>STATUS[:ACTIVE]})
-			stages.each {|stage| self.q_generate_competition_leaderboards('stage', stage.id, true)}
-			
-			#Competition race leaderboard
-			self.q_generate_competition_leaderboards('race', race.id)
 		end
 		
 		#Loop back to self
-		self.q_cron_leaderboard
+		#self.q_cron_leaderboard
 	end
 	
 	#Title:			q_cron_leaderboard
@@ -148,12 +145,10 @@ class ResqueTasks
 		#Regenerate results cache
 		self.q_generate_results_for_stage(stage_id)
 		
-		#Worker leaderboard generation
-		COMPETITION_SCOPE.each do |k, scope|
-			ResqueTasks::q_generate_global_leaderboard('stage', stage_id, scope)
-			ResqueTasks::q_generate_global_leaderboard('race', race_id, scope)
-		end
-		ResqueTasks::q_generate_competition_leaderboards('stage', stage_id)
+		#Global leaderboard generation
+		COMPETITION_SCOPE.each {|k, scope| self.q_generate_global_leaderboard(stage_id, scope)}
+		
+		competitions.each {|competition| self.q_generate_competition_leaderboard(competition.id, stage_id)}
 	end
 	
 	#########################
@@ -188,6 +183,17 @@ class ResqueTasks
 		race = Race.find_by_id(stage.race_id)
 		return if (race.nil?)
 		Result.get_results('race', race.id, {}, true)
+		
+		#Generate cumulative stage results
+		stage_list = []
+		stages = Stage
+			.select(:id)
+			.where('stages.race_id  = ? AND stages.starts_on <=? AND stages.status = ?', 
+				stage.race_id, stage.starts_on, STATUS[:ACTIVE])
+		stages.each do |stage|
+			stage_list.push(stage.id) 
+			Result.get_cumulative_stage_results(stage_list)
+		end
 	end
 	
 	#########################
@@ -198,12 +204,11 @@ class ResqueTasks
 	#Params:		group_type - race / stage
 	#				group_id - Race or stage ID
 	#				scope - COMPETITION_SCOPE constants
-	def self.q_generate_global_leaderboard(group_type, group_id, scope)
+	def self.q_generate_global_leaderboard(stage_id, scope)
 		Resque.enqueue(self, {
 			:type => RESQUE_TASK[:GENERATE_GLOBAL_LEADERBOARD],
 			:data => {
-				:group_type => group_type,
-				:group_id => group_id,
+				:stage_id => stage_id,
 				:scope => scope
 			}
 		})
@@ -211,12 +216,24 @@ class ResqueTasks
 	
 	#Title:			generate_global_leaderboard
 	#Description:	Generates global leaderboard
-	#Params:		group_type - race / stage
-	#				group_id - Race or stage ID
+	#Params:		stage_id - Stage ID
 	#				scope - COMPETITION_SCOPE constants
 	def self.generate_global_leaderboard(data)
 		require_dependency 'leaderboard_module'
-		LeaderboardModule::get_global_leaderboard(data['group_type'], data['group_id'], data['scope'], true)
+		
+		stage_id = data['stage_id']
+		scope = data['scope']
+		
+		#Individual
+		LeaderboardModule::get_global_stage_leaderboard(stage_id, scope, true)
+		
+		#Cumulative
+		stage_list = []
+		stage = Stage.find_by_id(stage_id)
+		stages = Stage.where('stages.race_id=? AND stages.status=? AND stages.starts_on <=?', stage.race_id, STATUS[:ACTIVE], stage.starts_on).order('starts_on ASC')
+		stages.each {|s| stage_list.push(s.id)}
+		
+		LeaderboardModule::get_cumulative_global_stage_leaderboard(stage_list, scope, true)
 	end
 	
 	##############################
@@ -224,60 +241,16 @@ class ResqueTasks
 	
 	#Title:			q_generate_competition_leaderboards
 	#Description:	Adds request to generate competition leaderboards
-	#Params:		group_type - race / stage
-	#				group_id - Race or stage ID
-	#				stage_only - Ignore race leaderboard
-	def self.q_generate_competition_leaderboards(group_type, group_id, stage_only=false)
+	#Params:		competition_id - Competition ID
+	#				stage_id - Stage ID
+	def self.q_generate_competition_leaderboard(competition_id, stage_id)
 		Resque.enqueue(self, {
-			:type => RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARDS],
+			:type => RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARD],
 			:data => {
-				:group_type => group_type,
-				:group_id => group_id,
-				:stage_only => stage_only
+				:competition_id => competition_id,
+				:stage_id => stage_id
 			}
 		})
-	end
-	
-	#Title:			generate_competition_leaderboards
-	#Description:	Prepares request to generate leaderboards for all competitions by group ID and type
-	#Params:		group_type - race / stage
-	#				group_id - Race or stage ID
-	def self.generate_competition_leaderboards(data)
-		group_type = data['group_type']
-		group_id = data['group_id']
-
-		#Find race ID
-		race_id = data['group_id']
-		if (group_type == 'stage')
-			stage = Stage.find_by_id(group_id)
-			race_id = stage.race_id
-		end
-		
-		#Generate leaderboards for all related competitions
-		competitions = Competition.where({:race_id=>race_id})
-		competitions.each do |competition|
-			#Generate stage leaderboard
-			if (group_type == 'stage')
-				Resque.enqueue(self, {
-					:type => RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARD],
-					:data => {
-						:competition_id => competition.id,
-						:group_type => 'stage',
-						:group_id => group_id
-					}
-				})
-			end
-			
-			#Also regenerate race leaderboard
-			Resque.enqueue(self, {
-				:type => RESQUE_TASK[:GENERATE_COMPETITION_LEADERBOARD],
-				:data => {
-					:competition_id => competition.id,
-					:group_type => 'race',
-					:group_id => race_id
-				}
-			}) if (!data['stage_only'])
-		end
 	end
 	
 	#Title:			generate_competition_leaderboard
@@ -287,6 +260,26 @@ class ResqueTasks
 	#				group_id - Race or stage ID
 	def self.generate_competition_leaderboard(data)
 		require_dependency 'leaderboard_module'
-		LeaderboardModule::get_leaderboard(data['competition_id'], data['group_type'], data['group_id'], 10, true)		
+		
+		competition_id = data['competition_id']
+		stage_id = data['stage_id']
+		stage = Stage.find_by_id(stage_id)
+		
+		LeaderboardModule::get_competition_stage_leaderboard(competition_id, stage_id, true)
+		
+		#Get leaderboard for this stage
+		LeaderboardModule::get_competition_stage_leaderboard(competition_id, stage_id, true)
+
+		#Also prepare cumulative stage results
+		stage_list = []
+		stages = Stage
+			.select(:id)
+			.where('stages.race_id  = ? AND stages.starts_on <=? AND stages.status = ?', 
+				stage.race_id, stage.starts_on, STATUS[:ACTIVE]
+			)
+		stages.each do |stage|
+			stage_list.push(stage.id)
+			LeaderboardModule::get_cumulative_competition_stage_leaderboard(competition_id, stage_list, true)
+		end
 	end
 end

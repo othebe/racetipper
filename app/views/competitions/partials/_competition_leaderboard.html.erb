@@ -26,7 +26,7 @@
 					<% rank = ndx %>
 				<% end %>
 				<tr class="tipping <%='black' if (!@user.nil? && @user.id==entry[:user_id])%>">
-					<td><%=rank%></td>
+					<td><%=entry[:rank]%></td>
 					<td class="gray"><%=entry[:username]%></td>
 					<td class="gray">
 						<%=entry[:formatted_time]%>
@@ -62,9 +62,9 @@ $(document).ready(function() {
 			<td class="gray">--</td>
 		{{else}}
 			<td class="gray">
-				{{formatted_time}}
-				{{#if formatted_gap}}
-					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{formatted_gap}}'}%>
+				{{time_formatted}}
+				{{#if gap_formatted}}
+					<%=image_tag 'stopwatch.png', {:class=>'tooltip', :style=>'', :title=>'{{gap_formatted}}'}%>
 				{{/if}}
 			</td>
 			<td class="gray">{{sprint_points}}</td>

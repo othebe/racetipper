@@ -2,8 +2,13 @@ module CacheModule
 	#Cache types
 	CACHE_TYPE = {
 		:LEADERBOARD => 'leaderboard',
+		:LEADERBOARD_BY_USER => 'leaderboard_by_user',
+		:LEADERBOARD_CUMULATIVE => 'leaderboard_cumulative',
 		:GLOBAL_LEADERBOARD => 'global_leaderboard',
+		:GLOBAL_LEADERBOARD_BY_USER => 'global_leaderboard_by_user',
+		:GLOBAL_LEADERBOARD_CUMULATIVE => 'global_leaderboard_cumulative',
 		:RESULTS => 'results',
+		:RESULTS_CUMULATIVE => 'results_cumulative',
 		:STAGE_IMAGES => 'stageimages',
 		:COMPETITION_TIPS => 'competition_tips'
 	}
@@ -22,14 +27,26 @@ module CacheModule
 		name = case cache_type
 		when CACHE_TYPE[:LEADERBOARD]
 			self.get_leaderboard_cache_name(identifiers)
+		when CACHE_TYPE[:LEADERBOARD_BY_USER]
+			self.get_leaderboard_by_user_cache_name(identifiers)
+		when CACHE_TYPE[:LEADERBOARD_CUMULATIVE]
+			self.get_leaderboard_cumulative_cache_name(identifiers)
 		when CACHE_TYPE[:RESULTS]
 			self.get_results_cache_name(identifiers)
+		when CACHE_TYPE[:RESULTS_CUMULATIVE]
+			self.get_results_cumulative_cache_name(identifiers)
 		when CACHE_TYPE[:STAGE_IMAGES]
 			self.get_stageimages_cache_name(identifiers)
 		when CACHE_TYPE[:GLOBAL_LEADERBOARD]
 			self.get_global_leaderboard_cache_name(identifiers)
+		when CACHE_TYPE[:GLOBAL_LEADERBOARD_BY_USER]
+			self.get_global_leaderboard_by_user_cache_name(identifiers)
+		when CACHE_TYPE[:GLOBAL_LEADERBOARD_CUMULATIVE]
+			self.get_global_leaderboard_cumulative_cache_name(identifiers)
 		when CACHE_TYPE[:COMPETITION_TIPS]
 			self.get_competition_tips_cache_name(identifiers)
+		else
+			return nil
 		end
 		
 		name = name.chop if (name.end_with?('_'))
@@ -53,6 +70,8 @@ module CacheModule
 	#Title:			set
 	#Description:	Sets value in cache
 	def self.set(data, cache_name, ttl=nil)
+		return if (cache_name.nil?)
+		
 		REDIS.set(cache_name, data)
 		REDIS.expire(cache_name, ttl) if (!ttl.nil?)
 	end
@@ -74,10 +93,40 @@ module CacheModule
 		return [CACHE_TYPE[:GLOBAL_LEADERBOARD], identifiers[:group_type], identifiers[:group_id].to_s, identifiers[:scope].to_s].join('_')
 	end
 	
+	#Title:			get_global_leaderboard_by_user_cache_name
+	#Description:	Gets global leaderboard indexed by user cache name
+	def self.get_global_leaderboard_by_user_cache_name(identifiers)
+		return [CACHE_TYPE[:GLOBAL_LEADERBOARD_BY_USER], identifiers[:group_type], identifiers[:group_id].to_s, identifiers[:scope].to_s].join('_')
+	end
+	
+	#Title:			get_global_leaderboard_cumulative_cache_name
+	#Description:	Gets cumulative global leaderboard across stages
+	def self.get_global_leaderboard_cumulative_cache_name(identifiers)
+		base = [CACHE_TYPE[:LEADERBOARD_CUMULATIVE], identifiers[:scope].to_s]
+		identifiers[:stages].each {|stage_id| base.push(stage_id)}
+		
+		return base.join('_')
+	end
+	
 	#Title:			get_leaderboard_cache_name
 	#Description:	Gets leaderboard cache name
 	def self.get_leaderboard_cache_name(identifiers)
 		return [CACHE_TYPE[:LEADERBOARD], identifiers[:competition_id].to_s, identifiers[:group_type], identifiers[:group_id].to_s].join('_')
+	end
+	
+	#Title:			get_leaderboard_by_user_cache_name
+	#Description:	Gets leaderboard indexed by user cache name
+	def self.get_leaderboard_by_user_cache_name(identifiers)
+		return [CACHE_TYPE[:LEADERBOARD_BY_USER], identifiers[:competition_id].to_s, identifiers[:group_type], identifiers[:group_id].to_s].join('_')
+	end
+	
+	#Title:			get_leaderboard_cumulative_cache_name
+	#Description:	Gets cumulative leaderboard across stages
+	def self.get_leaderboard_cumulative_cache_name(identifiers)
+		base = [CACHE_TYPE[:LEADERBOARD_CUMULATIVE], identifiers[:competition_id].to_s]
+		identifiers[:stages].each {|stage_id| base.push(stage_id)}
+		
+		return base.join('_')
 	end
 	
 	#Title:			get_stageimages_cache_name
@@ -94,6 +143,15 @@ module CacheModule
 			base.push(k)
 			base.push(v)
 		end
+		
+		return base.join('_')
+	end
+	
+	#Title:			get_results_cumulative_cache_name
+	#Description:	Gets cumulative results across stages
+	def self.get_results_cumulative_cache_name(identifiers)
+		base = [CACHE_TYPE[:RESULTS_CUMULATIVE]]
+		identifiers[:stages].each {|stage_id| base.push(stage_id)}
 		
 		return base.join('_')
 	end

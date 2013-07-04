@@ -4,6 +4,7 @@ class Result < ActiveRecord::Base
 	belongs_to :rider
 	
 	require_dependency 'cache_module'
+	require_dependency 'leaderboard_module'
   
 	#Title:			get_results
 	#Description:	Gets ordered results
@@ -179,10 +180,93 @@ class Result < ActiveRecord::Base
 				base_time = (data[:time]-data[:bonus_time]) if (base_time.nil?)
 			end
 			rider_points_sorted = indexed_hash
-			CacheModule::set(rider_points_sorted, cache_name, CacheModule::CACHE_TTL[:DAY])
+			CacheModule::set(rider_points_sorted, cache_name)
 		end
 		
 		return rider_points_sorted
+	end
+	
+	#Title:			get_cumulative_stage_results
+	#Description:	Return aggregate results for an array of stages
+	#Params:		stages - Array of Stage ID's
+	#				options - get_results options
+	def self.get_cumulative_stage_results(stages, options={}, regenerate=false)
+		cache_name = CacheModule::get_cache_name(
+			CacheModule::CACHE_TYPE[:RESULTS_CUMULATIVE],
+			{:stages=>stages}
+		)
+		cumulative_results = CacheModule::get(cache_name)
+		cumulative_results = nil if (regenerate)
+		
+		return cumulative_results if (!cumulative_results.nil?)
+		
+		cumulative_results = []
+		
+		#Unsorted cumulative
+		interim_results = {}
+		stages.each do |stage_id|
+			stage_results = self.get_results('stage', stage_id, options)
+			next if (stage_results.nil?)
+			
+			stage_results.each do |result|
+				rider_id = result[1][:id]
+				result_data = result[1]
+				if (interim_results[rider_id].nil?)
+					interim_results[rider_id] = result_data
+				else
+					rider_data = interim_results[rider_id]
+					rider_data[:time] += result_data[:time]
+					rider_data[:bonus_time] += result_data[:bonus_time]
+					rider_data[:kom_points] += result_data[:kom_points]
+					rider_data[:sprint_points] += result_data[:sprint_points]
+					rider_data[:disqualified] ||= result_data[:disqualified]
+					
+					interim_results[rider_id] = rider_data
+				end
+			end
+		end
+		
+		#No results?
+		return interim_results if (interim_results.empty?)
+		
+		#Sort by net time
+		interim_results = interim_results.sort_by{|rider_id, rider_data| (rider_data[:time]-rider_data[:bonus_time])}
+		
+		#Format results
+		rank = 0
+		base_time = interim_results.first[1][:time] - interim_results.first[1][:bonus_time]
+		interim_results.each do |rider_id, rider_data|
+			#Format time
+			rider_data[:time_formatted] = LeaderboardModule::format_time(rider_data[:time]-rider_data[:bonus_time])
+			
+			#Format bonus time
+			rider_data[:bonus_time_formatted] = LeaderboardModule::format_time(rider_data[:bonus_time])
+			
+			#Format gap
+			gap = (rider_data[:time] - rider_data[:bonus_time])
+			rider_data[:gap_formatted] = LeaderboardModule::format_time(gap)
+			
+			#Rank
+			rank += 1
+			rider_data[:rank] = rank
+			
+			cumulative_results.push(rider_data)
+		end
+		
+		CacheModule::set(cumulative_results, cache_name)
+		
+		return cumulative_results
+	end
+	
+	#Title:			get_race_results
+	#Description:	Return aggregate results for an array of completed stages
+	#Params:		race_id
+	def self.get_race_results(race_id, regenerate=false)
+		stage_list = []
+		stages = Stage.where('stages.race_id=?', race_id).order('starts_on ASC')
+		stages.each {|stage| stage_list.push(stage.id) if (!Result.where(:season_stage_id=>stage.id, :status=>STATUS[:ACTIVE]).first.nil?)}
+		
+		return self.get_cumulative_stage_results(stage_list)
 	end
 	
 	#Title:			check_valid_tips

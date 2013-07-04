@@ -117,14 +117,15 @@ class RacesController < ApplicationController
 		
 		#Get primary competition
 		primary_competition = CompetitionParticipant.get_primary_competition(@user.id, race_id, @scope)
-		competition_id = (primary_competition.nil?)?nil:primary_competition.id
+		competition_id = (primary_competition.nil?)?nil:primary_competition.competition_id
 		
 		@competition = Competition.find_by_id(competition_id) || Competition.new
 		@competition.name = 'Overall Leaderboard'
 		@competition.race_id = race_id
 		@competition.description = ''
-		@leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, @scope)
+		@leaderboard = LeaderboardModule::get_global_race_leaderboard(race_id, @scope)
 		
+		@stages = Stage.where({:race_id=>race_id, :status=>STATUS[:ACTIVE]}).order('starts_on ASC')
 		@completed_stages = @stages.where({:is_complete=>true}).count
 		
 		#Number of participants
@@ -160,29 +161,32 @@ class RacesController < ApplicationController
 		race_id = params[:id]
 		
 		race = Race.find_by_id(race_id)
-		results = Result.get_results('race', race_id, {}, true)
-
-		data = []
-		results.each do |ndx, result|
-			data.push({
-				:rider_name => result[:rider_name],
-				:kom_points => result[:kom_points],
-				:sprint_points => result[:sprint_points],
-				:disqualified => result[:disqualified],
-				:rank => result[:rank],
-				:time_formatted => result[:time_formatted],
-				:bonus_time_formatted => result[:bonus_time_formatted],
-				:gap_formatted => result[:gap_formatted]
-			})
-		end
+		results = Result.get_race_results(race_id)
 		
-		race_data = {
-			:name => race.name,
-			:description => race.description,
-			:season => Season.find_by_id(race.season_id).year
-		}
+		render :json=>{:results=>results}
+	end
+	
+	#Title:			get_cumulative_results
+	#Description:	Gets cumulative races results up to a certain stage
+	#Params:		stage_id - Get results up to this stage
+	def get_cumulative_results
+		render :json=>'Stage ID not specified' and return if (!params.has_key?(:stage_id))
+		stage_id = params[:stage_id]
 		
-		render :json=>{:results=>data, :race=>race_data}
+		stage = Stage.find_by_id(stage_id)
+		render :json=>'Invalid stage ID' and return if (stage.nil?)
+		
+		stages = Stage
+			.select(:id)
+			.where('stages.race_id  = ? AND stages.starts_on <=? AND stages.status = ?', 
+				stage.race_id, stage.starts_on, STATUS[:ACTIVE]
+			)
+		stage_list = []
+		stages.each {|stage| stage_list.push(stage.id)}
+		
+		results = Result.get_cumulative_stage_results(stage_list)
+		
+		render :json=>{:results=>results}
 	end
 	
 	#Title:			get_stages

@@ -4,6 +4,8 @@ module RaceModule
 	#Title:			get_user_race_data
 	#Description:	Gets race related information for a user
 	def self.get_user_race_data(user_id, race, scope)
+		user_id = user_id.to_i if (user_id.class==String)
+		
 		#Next stage
 		next_stage = Stage.where('race_id=? AND is_complete=FALSE AND starts_on>NOW()', race.id).order('starts_on ASC').first
 		#Has race started?
@@ -57,10 +59,10 @@ module RaceModule
 		data = []
 		CompetitionParticipant.get_participated_competitions(user_id, race_id, scope).each do |competition|
 			#Check if this competition is the primary
-			is_primary = (primary_competition.nil?)?false:(competition.id == primary_competition.id)
+			is_primary = (primary_competition.nil?)?false:(competition.id == primary_competition.competition_id)
 			
 			#Leaderboard for this competition
-			leaderboard = LeaderboardModule::get_leaderboard(competition.id, 'race', race.id)
+			leaderboard = LeaderboardModule::get_competition_race_leaderboard(competition.id)
 			leaderboard = [] if leaderboard.nil?
 
 			#Check tip for next stage
@@ -103,7 +105,7 @@ module RaceModule
 	#Description:	Gets results for global competitions
 	def self.get_global_competition_results(race_id, scope, user_id=0)
 		rank = 0
-		leaderboard = LeaderboardModule::get_global_leaderboard('race', race_id, scope)
+		leaderboard = LeaderboardModule::get_global_race_leaderboard(race_id, scope)
 		
 		if (user_id.to_i>0 && !leaderboard.nil?)
 			leaderboard.each do |entry|
@@ -122,7 +124,7 @@ module RaceModule
 	
 	#Title:			get_left_nav_data
 	#Description:	Gets data array for the left navigator
-	def self.get_left_nav_data(stages, competition_id, user_id)		
+	def self.get_left_nav_data(stages, competition_id, user_id)
 		tips = CompetitionTip.where({:competition_participant_id=>user_id, :race_id=>stages.first.race_id, :competition_id=>competition_id})
 		
 		data = []
