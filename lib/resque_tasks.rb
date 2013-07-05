@@ -265,8 +265,6 @@ class ResqueTasks
 		stage_id = data['stage_id']
 		stage = Stage.find_by_id(stage_id)
 		
-		LeaderboardModule::get_competition_stage_leaderboard(competition_id, stage_id, true)
-		
 		#Get leaderboard for this stage
 		LeaderboardModule::get_competition_stage_leaderboard(competition_id, stage_id, true)
 
@@ -276,7 +274,7 @@ class ResqueTasks
 			.select(:id)
 			.where('stages.race_id  = ? AND stages.starts_on <=? AND stages.status = ?', 
 				stage.race_id, stage.starts_on, STATUS[:ACTIVE]
-			)
+			).order('starts_on ASC')
 		stages.each do |stage|
 			stage_list.push(stage.id)
 			LeaderboardModule::get_cumulative_competition_stage_leaderboard(competition_id, stage_list, true)
