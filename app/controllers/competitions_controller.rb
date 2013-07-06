@@ -1255,7 +1255,7 @@ class CompetitionsController < ApplicationController
 	def format_time(time_in_sec)
 		if (time_in_sec >= 86400)
 			days = (Time.at(time_in_sec).gmtime.strftime('%-d').to_i - 1).to_s
-			return Time.at(time_in_sec).gmtime.strftime(days+' day(s), %R:%S')
+			return Time.at(time_in_sec).gmtime.strftime(days+'d %R:%S')
 		else
 			return Time.at(time_in_sec).gmtime.strftime('%R:%S')
 		end
