@@ -72,7 +72,7 @@ class Result < ActiveRecord::Base
 					net_time = rider_data[:stages][result.season_stage_id][:time] - rider_data[:stages][result.season_stage_id][:bonus_time]
 					if (net_time >= 86400)
 						days = (Time.at(net_time).gmtime.strftime('%-d').to_i - 1).to_s
-						rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(net_time).gmtime.strftime(days+' day(s), %R:%S')
+						rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(net_time).gmtime.strftime(days+'d %R:%S')
 					else
 						rider_data[:stages][result.season_stage_id][:time_formatted] = Time.at(net_time).gmtime.strftime('%R:%S')
 					end
@@ -80,7 +80,7 @@ class Result < ActiveRecord::Base
 					#Format bonus time
 					if (result.bonus_time >= 86400)
 						days = (Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime('%-d').to_i - 1).to_s
-						rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime(days+' day(s), %R:%S')
+						rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = Time.at(rider_data[:stages][result.season_stage_id][:bonus_time]).gmtime.strftime(days+'d %R:%S')
 					elsif (result.bonus_time.nil? || result.bonus_time == 0)
 						rider_data[:stages][result.season_stage_id][:bonus_time_formatted] = nil
 					elsif (result.bonus_time <= 60)
@@ -108,7 +108,7 @@ class Result < ActiveRecord::Base
 					net_time = rider_data[:time] - rider_data[:bonus_time]
 					if (net_time >= 86400)
 						days = (Time.at(net_time).gmtime.strftime('%-d').to_i - 1).to_s
-						rider_data[:time_formatted] = Time.at(net_time).gmtime.strftime(days+' day(s), %R:%S')
+						rider_data[:time_formatted] = Time.at(net_time).gmtime.strftime(days+'d %R:%S')
 					else
 						rider_data[:time_formatted] = Time.at(net_time).gmtime.strftime('%R:%S')
 					end
@@ -116,7 +116,7 @@ class Result < ActiveRecord::Base
 					#Format bonus time
 					if (rider_data[:bonus_time] >= 86400)
 						days = (Time.at(rider_data[:bonus_time]).gmtime.strftime('%-d').to_i - 1).to_s
-						rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime(days+' day(s), %R:%S')
+						rider_data[:bonus_time_formatted] = Time.at(rider_data[:bonus_time]).gmtime.strftime(days+'d %R:%S')
 					elsif (rider_data[:bonus_time].nil? || rider_data[:bonus_time] == 0)
 						rider_data[:bonus_time_formatted] = nil
 					elsif (rider_data[:bonus_time] <= 60)
@@ -166,7 +166,7 @@ class Result < ActiveRecord::Base
 				data[:gap_formatted] = ''
 				if (gap >= 86400)
 					days = (Time.at(gap).gmtime.strftime('%-d').to_i - 1).to_s
-					data[:gap_formatted] = Time.at(gap).gmtime.strftime(days+'day(s), %R:%S') if (!base_time.nil?)
+					data[:gap_formatted] = Time.at(gap).gmtime.strftime(days+'d %R:%S') if (!base_time.nil?)
 				else
 					data[:gap_formatted] = Time.at(gap).gmtime.strftime('%R:%S') if (!base_time.nil?)
 				end
