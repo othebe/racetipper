@@ -576,6 +576,9 @@ class CompetitionsController < ApplicationController
 		competition.season_id = season_id
 		competition.race_id = competition_data[:race_id]
 		competition.scope = @scope if (new_competition)
+		
+		#No new competition allowed if past halfway point
+		render :json=>{:success=>false, :msg=>'A new competition cannot be created after the race is halfway complete.'} and return if (new_competition && Race.past_halfway(competition.race_id))
 
 		if (competition_data[:open_to]=='private')
 			competition.status = STATUS[:PRIVATE]
@@ -788,6 +791,9 @@ class CompetitionsController < ApplicationController
 		tie_break_rider_id = nil
 		tie_break_rider_id = competition_participant.tie_break_rider_id if (!competition_participant.nil?)
 		
+		#Tie breaker allowed?
+		over_halfway = Race.past_halfway(competition.race_id)
+		
 		#Rider list
 		tie_break_riders = []
 		riders = TeamRider.where({:race_id=>competition.race_id, :rider_status=>STATUS[:ACTIVE]})
@@ -806,6 +812,7 @@ class CompetitionsController < ApplicationController
 			:default_riders=>default_riders, 
 			:tie_break_riders=>tie_break_riders,
 			:tie_break_time=>tie_break_time,
+			:tie_break_allowed => !over_halfway,
 			:is_creator => (competition.creator_id == uid)
 		}
 	end
@@ -999,10 +1006,8 @@ class CompetitionsController < ApplicationController
 		competition = Competition.find_by_id(competition_id)
 		render :json=>{:success=>false, :msg=>'Invalid competition.'} and return if (competition.nil?)
 		
-		####
-		## Some logic to check whether tie break can be save.
-		## can_save = Model.can_save? (Use this in the get_other_info function to determine whether to disable tie breaks
-		###
+		#Check if tie breaks can be saved
+		render :json=>{:success=>false, :msg=>'Tie breaks cannot be saved after the race is halfway complete.'} and return if (Race.past_halfway(competition.race_id))
 		
 		#Rider ID
 		render :json=>{:success=>false, :msg=>'Please select a rider.'} and return if (!params.has_key?(:rider_id))

@@ -41,9 +41,11 @@
 				<div style="clear:both;"></div>
 				
 				<div class="tie-break-footer">
-					<div class="btn yellow" onclick="save_tie_break_info({{competition_id}});">
-						Save tie break selection
-					</div>
+					{{#if tie_break_allowed}}
+						<div class="btn yellow" onclick="save_tie_break_info({{competition_id}});">
+							Save tie break selection
+						</div>
+					{{/if}}
 					
 					<div class="loading">
 						<%=image_tag 'ajax-spinner.gif'%>
