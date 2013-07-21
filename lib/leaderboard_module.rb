@@ -454,6 +454,12 @@ module LeaderboardModule
 			if (!rankings.empty?)
 				data[:sort_score] -= (num_participants-rankings.last)*0.01/(num_participants)
 			end
+			
+			#Use tie break
+			if (!rankings.empty?)
+				tie_break_score = CompetitionParticipant.get_tie_break_score(competition_id, user_id)
+				data[:sort_score] -= (tie_break_score*0.001)
+			end
 		end
 		
 		return leaderboard

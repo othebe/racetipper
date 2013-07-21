@@ -113,4 +113,38 @@ class CompetitionParticipant < ActiveRecord::Base
 		
 		return competitions
 	end
+	
+	#Title:			get_tie_break_score
+	#Description:	0.5 weight each for correct rider and correct time
+	def self.get_tie_break_score(competition_id, user_id)
+		score = 0
+		
+		#Check competition
+		competition = Competition.find_by_id(competition_id)
+		return score if (competition.nil?)
+		
+		#Check if race is complete
+		race = Race.find_by_id(competition.race_id)
+		return score if (race.nil?)
+		return score if (!race.is_complete)
+		
+		#Retrieve tie break info
+		tie_break_data = self.where({:competition_id=>competition_id, :user_id=>user_id}).first
+		return score if tie_break_data.nil?
+		tie_break_rider_id = tie_break_data.tie_break_rider_id
+		tie_break_rider_time = tie_break_data.tie_break_time
+		
+		return score if (tie_break_rider_id.nil? && tie_break_rider_time.nil?)
+		
+		#Get race winner
+		race_leaderboard = Result.get_race_results(competition.race_id)
+		race_winner = race_leaderboard.first
+		
+		#Race winner ID match
+		score += 0.5 if (tie_break_rider_id == race_winner[:id])
+		#Race winner time match
+		score += 0.5 if (tie_break_rider_time == race_winner[:time])
+		
+		return score
+	end
 end
