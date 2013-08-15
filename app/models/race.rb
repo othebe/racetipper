@@ -80,7 +80,7 @@ class Race < ActiveRecord::Base
 	#Description:	Determines if over half of the stages in the race have started
 	def self.past_halfway(race_id)
 		total_stages = Stage.where('race_id = ? AND status = ?', race_id, STATUS[:ACTIVE]).count
-		remaining_stages = Stage.where('race_id = ? AND status = ? AND starts_on < ?', race_id, STATUS[:ACTIVE], Time.now).count
+		remaining_stages = Stage.where('race_id = ? AND status = ? AND starts_on > ?', race_id, STATUS[:ACTIVE], Time.now).count
 
 		return (remaining_stages < (total_stages*0.5).ceil)
 	end
